@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Infinite Stickman Hook</title>
+    <title>Infinite Stickman Hook - Extended Edition</title>
     <style>
         body {
             margin: 0;
@@ -26,21 +26,30 @@
             position: absolute;
             top: 20px;
             text-align: center;
-            pointer-events: none;
             display: flex;
-            gap: 40px;
-            font-size: 20px;
+            gap: 30px;
+            font-size: 18px;
             font-weight: bold;
-            background: rgba(26, 26, 46, 0.8);
+            background: rgba(26, 26, 46, 0.9);
             padding: 10px 20px;
             border-radius: 20px;
             border: 1px solid #1f4068;
+            pointer-events: none;
         }
-        .score-val {
-            color: #4ecca3;
-        }
-        .high-val {
-            color: #f9a826;
+        .score-val { color: #4ecca3; }
+        .high-val { color: #f9a826; }
+        .skin-val { color: #00adb5; text-transform: capitalize; }
+        
+        /* The Invisible Developer Button */
+        #devSecret {
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 60px;
+            height: 60px;
+            background: transparent;
+            cursor: pointer;
+            z-index: 999;
         }
     </style>
 </head>
@@ -49,7 +58,10 @@
     <div id="ui">
         <div>Score: <span id="scoreDisplay" class="score-val">0</span></div>
         <div>High Score: <span id="highScoreDisplay" class="high-val">0</span></div>
+        <div>Skin: <span id="skinDisplay" class="skin-val">Default</span></div>
     </div>
+
+    <div id="devSecret" title="???"></div>
 
     <canvas id="gameCanvas" width="800" height="500"></canvas>
 
@@ -58,11 +70,13 @@
         const ctx = canvas.getContext("2d");
         const scoreDisplay = document.getElementById("scoreDisplay");
         const highScoreDisplay = document.getElementById("highScoreDisplay");
+        const skinDisplay = document.getElementById("skinDisplay");
+        const devSecret = document.getElementById("devSecret");
 
         // --- Game Config & Physics Constants ---
-        const GRAVITY = 0.45;
+        const GRAVITY = 0.42; // Slightly lower gravity for lighter drops
         const FRICTION = 0.996; 
-        const MAX_HOOK_RANGE = 350;
+        const MAX_HOOK_RANGE = 370; // Slightly extended hook reach
 
         // --- Game State ---
         let player = {
@@ -77,46 +91,76 @@
         };
 
         let hooks = [];
-        let targetHook = null; // The hook the player is currently aiming at
+        let bouncers = []; // Trampolines
+        let targetHook = null;
         let cameraX = 0;
         let score = 0;
         let highScore = parseInt(localStorage.getItem("stickman_high_score")) || 0;
-        let gameStatus = "playing"; // playing, lost
+        let hasDevSkin = false;
+        let gameStatus = "playing";
 
-        // Initialize UI High Score
+        // --- Secret Code Trigger ---
+        devSecret.addEventListener("click", () => {
+            let code = prompt("ENTER ACCESS CODE:");
+            if (code === "IAMXAVIER") {
+                hasDevSkin = true;
+                alert("😇 ANGELIC DEV MODE ACTIVATED 😇");
+                updateSkinName();
+            } else if (code !== null) {
+                alert("ACCESS DENIED.");
+            }
+        });
+
+        // --- Dynamic Skin Logic ---
+        function getSkinColor() {
+            if (hasDevSkin) return "#ffffff"; // Angelic White
+            if (highScore >= 100000) return "#d4af37"; // Gold
+            if (highScore >= 20000) return "#ffff00";  // Yellow
+            if (highScore >= 10000) return "#ffa500";  // Orange
+            if (highScore >= 7000) return "#ff0000";   // Red
+            if (highScore >= 5000) return "#0000ff";   // Blue
+            if (highScore >= 1000) return "#ffc0cb";   // Pink
+            if (highScore >= 500) return "#00ff00";    // Green
+            if (highScore >= 100) return "#8b4513";    // Brown
+            return "#00adb5"; // Default Cyan
+        }
+
+        function updateSkinName() {
+            if (hasDevSkin) { skinDisplay.textContent = "Angelic Dev"; skinDisplay.style.color = "#fff"; return; }
+            if (highScore >= 100000) { skinDisplay.textContent = "Gold"; skinDisplay.style.color = "#d4af37"; return; }
+            if (highScore >= 20000) { skinDisplay.textContent = "Yellow"; skinDisplay.style.color = "#ffff00"; return; }
+            if (highScore >= 10000) { skinDisplay.textContent = "Orange"; skinDisplay.style.color = "#ffa500"; return; }
+            if (highScore >= 7000) { skinDisplay.textContent = "Red"; skinDisplay.style.color = "#ff0000"; return; }
+            if (highScore >= 5000) { skinDisplay.textContent = "Blue"; skinDisplay.style.color = "#0000ff"; return; }
+            if (highScore >= 1000) { skinDisplay.textContent = "Pink"; skinDisplay.style.color = "#ffc0cb"; return; }
+            if (highScore >= 500) { skinDisplay.textContent = "Green"; skinDisplay.style.color = "#00ff00"; return; }
+            if (highScore >= 100) { skinDisplay.textContent = "Brown"; skinDisplay.style.color = "#8b4513"; return; }
+            skinDisplay.textContent = "Default";
+            skinDisplay.style.color = "#00adb5";
+        }
+
+        // Initialize UI Elements
         highScoreDisplay.textContent = highScore;
+        updateSkinName();
 
-        // --- Input Handling ---
-        // Mouse/Touch triggers
+        // --- Controls ---
         window.addEventListener("mousedown", handleActionStart);
         window.addEventListener("mouseup", handleActionEnd);
         window.addEventListener("touchstart", (e) => { e.preventDefault(); handleActionStart(); }, { passive: false });
         window.addEventListener("touchend", (e) => { e.preventDefault(); handleActionEnd(); }, { passive: false });
 
-        // Keyboard triggers (Spacebar)
         window.addEventListener("keydown", (e) => {
-            if (e.code === "Space") {
-                e.preventDefault(); // Stop page from scrolling down
-                handleActionStart();
-            }
+            if (e.code === "Space") { e.preventDefault(); handleActionStart(); }
         });
         window.addEventListener("keyup", (e) => {
-            if (e.code === "Space") {
-                handleActionEnd();
-            }
+            if (e.code === "Space") handleActionEnd();
         });
 
         function handleActionStart() {
-            if (gameStatus !== "playing") {
-                resetGame();
-                return;
-            }
-
-            // If we have a valid targeted hook, lock onto it
+            if (gameStatus !== "playing") { resetGame(); return; }
             if (targetHook && !player.isSwinging) {
                 let dx = targetHook.x - player.x;
                 let dy = targetHook.y - player.y;
-                
                 player.isSwinging = true;
                 player.hookedTo = targetHook;
                 player.ropeLength = Math.sqrt(dx * dx + dy * dy);
@@ -128,25 +172,35 @@
             player.hookedTo = null;
         }
 
-        // --- Procedural Generation Logic ---
-        function manageHooks() {
-            // If hooks array is empty, seed the first few hooks
+        // --- Procedural World Generation ---
+        function manageEnvironment() {
             if (hooks.length === 0) {
-                hooks.push({ x: 300, y: 150 });
+                hooks.push({ x: 300, y: 160 });
             }
 
-            // Always make sure there are hooks generated at least 1000px ahead of the player
             let lastHook = hooks[hooks.length - 1];
             while (lastHook.x < player.x + 1000) {
-                let nextX = lastHook.x + Math.floor(Math.random() * 120) + 160; // Distance between hooks (160px to 280px)
-                let nextY = Math.floor(Math.random() * 180) + 80;             // Height variation (80px to 260px)
+                // More space & gentler intervals to make swings less punishing
+                let nextX = lastHook.x + Math.floor(Math.random() * 100) + 180; 
+                let nextY = Math.floor(Math.random() * 140) + 100; // Constrained range keeps them closer to view
                 
                 hooks.push({ x: nextX, y: nextY });
+
+                // Spawning Bounce Pads right below the action gap
+                if (Math.random() < 0.45) {
+                    bouncers.push({
+                        x: nextX - 60,
+                        y: 440,
+                        width: 55,
+                        height: 12
+                    });
+                }
                 lastHook = hooks[hooks.length - 1];
             }
 
-            // Performance cleanup: Remove hooks that are completely off-screen to the left
-            hooks = hooks.filter(hook => hook.x > cameraX - 100);
+            // Cleanup offscreen objects
+            hooks = hooks.filter(h => h.x > cameraX - 100);
+            bouncers = bouncers.filter(b => b.x > cameraX - 100);
         }
 
         function findClosestTarget() {
@@ -158,13 +212,11 @@
                 let dy = hook.y - player.y;
                 let dist = Math.sqrt(dx * dx + dy * dy);
 
-                // Target points that are reasonably ahead/around the player and within range
-                if (dist < minDist && hook.x > player.x - 40 && dist < MAX_HOOK_RANGE) {
+                if (dist < minDist && hook.x > player.x - 30 && dist < MAX_HOOK_RANGE) {
                     minDist = dist;
                     closestHook = hook;
                 }
             });
-
             targetHook = closestHook;
         }
 
@@ -176,32 +228,47 @@
             player.isSwinging = false;
             player.hookedTo = null;
             hooks = [];
+            bouncers = [];
             score = 0;
             scoreDisplay.textContent = 0;
-            manageHooks();
+            manageEnvironment();
+            updateSkinName();
             gameStatus = "playing";
         }
 
-        // --- Core Engine Update Loop ---
+        // --- Core Physics Engine Update Loop ---
         function update() {
             if (gameStatus !== "playing") return;
 
-            // Apply Basic Physics
+            // Apply Physics Movement
             player.vy += GRAVITY;
             player.vx *= FRICTION;
             player.vy *= FRICTION;
             player.x += player.vx;
             player.y += player.vy;
 
-            // Manage Infinite Environment
-            manageHooks();
+            manageEnvironment();
 
-            // Find the point we will attach to if we press space/click
             if (!player.isSwinging) {
                 findClosestTarget();
             }
 
-            // Handle Rope Physics
+            // Bounce Pad Collisions
+            bouncers.forEach(pad => {
+                if (player.x + player.radius > pad.x && 
+                    player.x - player.radius < pad.x + pad.width &&
+                    player.y + player.radius > pad.y && 
+                    player.y - player.radius < pad.y + pad.height) {
+                    
+                    // Fire player upward with high energy momentum
+                    player.vy = -13.5;
+                    player.vx += 2.5; 
+                    player.isSwinging = false;
+                    player.hookedTo = null;
+                }
+            });
+
+            // Rope Mechanics
             if (player.isSwinging && player.hookedTo) {
                 let hook = player.hookedTo;
                 let dx = player.x - hook.x;
@@ -210,7 +277,6 @@
 
                 if (currentDist > player.ropeLength) {
                     let angle = Math.atan2(dy, dx);
-                    
                     player.x = hook.x + Math.cos(angle) * player.ropeLength;
                     player.y = hook.y + Math.sin(angle) * player.ropeLength;
 
@@ -220,26 +286,22 @@
 
                     player.vx -= velAlongNormal * nx;
                     player.vy -= velAlongNormal * ny;
-
-                    // Centrifugal acceleration boost
-                    player.vx += Math.sin(angle) * 0.12; 
+                    player.vx += Math.sin(angle) * 0.14; // Whip velocity speed boost
                 }
             }
 
-            // Dynamic Camera
             cameraX = player.x - 200;
 
-            // Update Score based on distance traveled
+            // Score Processing
             let currentScore = Math.floor(player.x / 10) - 10;
             if (currentScore > score) {
                 score = currentScore;
                 scoreDisplay.textContent = score;
             }
 
-            // Check Defeat
-            if (player.y > canvas.height + 100) {
+            // Check Drop Defeat Line (extended out further to make drops easier)
+            if (player.y > canvas.height + 140) {
                 gameStatus = "lost";
-                // Save High Score via Local Storage
                 if (score > highScore) {
                     highScore = score;
                     localStorage.setItem("stickman_high_score", highScore);
@@ -248,14 +310,14 @@
             }
         }
 
-        // --- Rendering Engine ---
+        // --- Render Frame Loops ---
         function draw() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
             ctx.save();
             ctx.translate(-cameraX, 0);
 
-            // Draw Parallax Moving Grid background lines
+            // Background Parallax
             ctx.strokeStyle = "#1f4068";
             ctx.lineWidth = 1;
             let startGridX = Math.floor(cameraX / 100) * 100;
@@ -266,35 +328,42 @@
                 ctx.stroke();
             }
 
+            // Draw Bounce Pads
+            bouncers.forEach(pad => {
+                // Outer bounce plate
+                ctx.fillStyle = "#e94560";
+                ctx.fillRect(pad.x, pad.y, pad.width, pad.height);
+                // Inner glowing energy bar
+                ctx.fillStyle = "#ffdd59";
+                ctx.fillRect(pad.x + 4, pad.y + 2, pad.width - 8, 3);
+            });
+
             // Draw Hooks
             hooks.forEach(hook => {
                 let isTargeted = (hook === targetHook && !player.isSwinging);
-                
                 ctx.fillStyle = isTargeted ? "#4ecca3" : "#e94560";
                 ctx.beginPath();
                 ctx.arc(hook.x, hook.y, 8, 0, Math.PI * 2);
                 ctx.fill();
                 
-                // Outer Ring Ring
                 ctx.strokeStyle = isTargeted ? "rgba(78, 204, 163, 0.4)" : "rgba(233, 69, 96, 0.2)";
                 ctx.lineWidth = isTargeted ? 4 : 2;
                 ctx.beginPath();
                 ctx.arc(hook.x, hook.y, 16, 0, Math.PI * 2);
                 ctx.stroke();
 
-                // If targeted, draw a dashed outer locking ring (like crosshairs)
                 if (isTargeted) {
                     ctx.strokeStyle = "#4ecca3";
                     ctx.lineWidth = 1.5;
                     ctx.setLineDash([4, 4]);
                     ctx.beginPath();
-                    ctx.arc(hook.x, hook.y, 26, 0, Math.PI * 2);
+                    ctx.arc(hook.x, hook.y, 25, 0, Math.PI * 2);
                     ctx.stroke();
-                    ctx.setLineDash([]); // Reset line dash
+                    ctx.setLineDash([]);
                 }
             });
 
-            // Draw Active Grapple Rope
+            // Draw Grappling Line
             if (player.isSwinging && player.hookedTo) {
                 ctx.strokeStyle = "#ffffff";
                 ctx.lineWidth = 3;
@@ -304,15 +373,25 @@
                 ctx.stroke();
             }
 
-            // Draw Player Blob
-            ctx.fillStyle = player.isSwinging ? "#f9a826" : "#00adb5";
+            // Draw Player with Selected Skin Color
+            let activeColor = getSkinColor();
+            ctx.fillStyle = activeColor;
             ctx.beginPath();
             ctx.arc(player.x, player.y, player.radius, 0, Math.PI * 2);
             ctx.fill();
 
+            // Special Visual Effect: Angelic Halo
+            if (hasDevSkin) {
+                ctx.strokeStyle = "#ffeaa7";
+                ctx.lineWidth = 3;
+                ctx.beginPath();
+                ctx.ellipse(player.x, player.y - 20, 14, 4, 0, 0, Math.PI * 2);
+                ctx.stroke();
+            }
+
             ctx.restore();
 
-            // Game Over Banner Overlay
+            // End Screen Overlay
             if (gameStatus === "lost") {
                 ctx.fillStyle = "rgba(15, 15, 26, 0.85)";
                 ctx.fillRect(0, 0, canvas.width, canvas.height);
@@ -323,14 +402,14 @@
                 
                 ctx.font = "20px sans-serif";
                 ctx.fillStyle = "#fff";
-                ctx.fillText(`You reached ${score} points!`, canvas.width / 2, canvas.height / 2 + 20);
+                ctx.fillText(`Final Distance: ${score} points`, canvas.width / 2, canvas.height / 2 + 20);
                 ctx.fillStyle = "#888";
-                ctx.fillText("Press Space or Click anywhere to retry", canvas.width / 2, canvas.height / 2 + 60);
+                ctx.fillText("Press Space or Click anywhere to swing back in!", canvas.width / 2, canvas.height / 2 + 65);
             }
         }
 
-        // Initialize and Start Loop
-        manageHooks();
+        // Init loop runtime
+        manageEnvironment();
         function loop() {
             update();
             draw();
