@@ -547,6 +547,7 @@
 
         // --- Skins Database Config ---
         const SKINS_CONFIG = {
+            og_stickman: { name: "OG Founder", color: "#ff00ff", condition: "First 10 Players" },
             default: { name: "Default", color: "#00adb5" },
             brown: { name: "Brown", color: "#8b4513", score: 100 },
             green: { name: "Green", color: "#00ff00", score: 500 },
@@ -1123,6 +1124,15 @@
                 ctx.beginPath(); ctx.moveTo(player.x - 6, player.y); ctx.quadraticCurveTo(player.x - 25, player.y - 18, player.x - 30, player.y - 5); ctx.quadraticCurveTo(player.x - 20, player.y + 12, player.x - 8, player.y + 4); ctx.fill();
                 ctx.beginPath(); ctx.moveTo(player.x + 6, player.y); ctx.quadraticCurveTo(player.x + 25, player.y - 18, player.x + 30, player.y - 5); ctx.quadraticCurveTo(player.x + 20, player.y + 12, player.x + 8, player.y + 4); ctx.fill();
             }
+            if (equippedSkin === "og_stickman") {
+    ctx.shadowColor = "#ff00ff";
+    ctx.shadowBlur = 15;
+}
+
+ctx.beginPath(); ctx.arc(player.x, player.y, player.radius, 0, Math.PI * 2); ctx.fill();
+
+// Reset shadow instantly so it doesn't leak onto other game elements
+ctx.shadowBlur = 0;
 
             if (equippedSkin === "yin_yang") {
                 let flapAnim = Math.sin(flameOffset * 4) * 5; 
