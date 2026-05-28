@@ -105,15 +105,16 @@
             border: 1px solid rgba(255,255,255,0.2);
         }
 
+        /* Reinforced Invisible Developer Button (Absolute Top-Right Corner) */
         #devSecret {
             position: absolute;
             top: 0;
             right: 0;
-            width: 50px;
-            height: 50px;
+            width: 55px;
+            height: 55px;
             background: transparent;
             cursor: pointer;
-            z-index: 999;
+            z-index: 9999;
         }
     </style>
 </head>
@@ -126,7 +127,7 @@
             <div>Equipped: <span id="skinDisplay" class="skin-val">Default</span></div>
         </div>
 
-        <div id="devSecret" title="???"></div>
+        <div id="devSecret"></div>
 
         <canvas id="gameCanvas" width="800" height="480"></canvas>
 
@@ -157,7 +158,7 @@
         };
 
         let hooks = [];
-        let bouncers = []; 
+        let bouncers = []; // Holds both horizontal and vertical pads
         let targetHook = null;
         let cameraX = 0;
         let score = 0;
@@ -166,7 +167,7 @@
         let equippedSkin = localStorage.getItem("stickman_equipped_skin") || "default";
         let gameStatus = "playing";
 
-        // --- Skins Database config ---
+        // --- Skins Configurations Database ---
         const SKINS_CONFIG = {
             default: { name: "Default", color: "#00adb5" },
             devil: { name: "Devil", color: "#ff0055", condition: "End on negative score" },
@@ -181,10 +182,10 @@
             angelic: { name: "Angelic Dev", color: "#ffffff", condition: "Secret Code" }
         };
 
-        // --- Secret Developer Unlock ---
+        // --- Secret Developer Unlock Event Listener ---
         devSecret.addEventListener("click", () => {
             let code = prompt("ENTER ACCESS CODE:");
-            if (code === "IAMXAVIER") {
+            if (code && code.toUpperCase() === "IAMXAVIER") {
                 localStorage.setItem("stickman_skin_angelic", "true");
                 alert("😇 ANGELIC DEV MODE UNLOCKED 😇");
                 renderChangingRoom();
@@ -193,7 +194,6 @@
             }
         });
 
-        // --- Core Skin Logic ---
         function checkUnlockStatus(key) {
             if (key === "default") return true;
             if (key === "devil") return localStorage.getItem("stickman_skin_devil") === "true";
@@ -211,11 +211,9 @@
                 const btn = document.createElement("button");
                 btn.className = `skin-btn ${isUnlocked ? 'unlocked' : ''} ${isEquipped ? 'equipped' : ''}`;
                 
-                // Dot preview
                 const preview = document.createElement("span");
                 preview.className = "skin-preview";
                 preview.style.backgroundColor = skin.color;
-                
                 btn.appendChild(preview);
                 
                 const nameLabel = document.createElement("span");
@@ -238,20 +236,18 @@
                         renderChangingRoom();
                     });
                 }
-
                 skinsGrid.appendChild(btn);
             });
 
-            // Sync top bar label info
             skinDisplay.textContent = SKINS_CONFIG[equippedSkin].name;
             skinDisplay.style.color = SKINS_CONFIG[equippedSkin].color;
         }
 
-        // Initialize UI values
+        // Initialize display values
         highScoreDisplay.textContent = highScore;
         renderChangingRoom();
 
-        // --- Controls (Scoped to canvas to prevent interface click conflicts) ---
+        // --- Control Scopes ---
         canvas.addEventListener("mousedown", handleActionStart);
         window.addEventListener("mouseup", handleActionEnd);
         canvas.addEventListener("touchstart", (e) => { e.preventDefault(); handleActionStart(); }, { passive: false });
@@ -288,13 +284,19 @@
 
             let lastHook = hooks[hooks.length - 1];
             while (lastHook.x < player.x + 1000) {
-                let nextX = lastHook.x + Math.floor(Math.random() * 100) + 180; 
-                let nextY = Math.floor(Math.random() * 140) + 100; 
+                let nextX = lastHook.x + Math.floor(Math.random() * 100) + 190; 
+                let nextY = Math.floor(Math.random() * 130) + 100; 
                 
                 hooks.push({ x: nextX, y: nextY });
 
-                if (Math.random() < 0.45) {
-                    bouncers.push({ x: nextX - 60, y: 420, width: 55, height: 12 });
+                // Spawning mixed bounce elements
+                let rand = Math.random();
+                if (rand < 0.35) {
+                    // Horizontal Trampoline Floor Pad
+                    bouncers.push({ type: "horizontal", x: nextX - 50, y: 430, width: 65, height: 12 });
+                } else if (rand < 0.55) {
+                    // Vertical Neon Bumper Pillar (Airspace obstacle)
+                    bouncers.push({ type: "vertical", x: nextX - 110, y: nextY + 50, width: 14, height: 80 });
                 }
                 lastHook = hooks[hooks.length - 1];
             }
@@ -318,6 +320,18 @@
                 }
             });
             targetHook = closestHook;
+        }
+
+        // AABB Circle-to-Box Collision Helper
+        function checkCollision(circle, rect) {
+            let closestX = Math.max(rect.x, Math.min(circle.x, rect.x + rect.width));
+            let closestY = Math.max(rect.y, Math.min(circle.y, rect.y + rect.height));
+
+            let dx = circle.x - closestX;
+            let dy = circle.y - closestY;
+            let distanceSquared = (dx * dx) + (dy * dy);
+
+            return distanceSquared < (circle.radius * circle.radius);
         }
 
         function resetGame() {
@@ -345,21 +359,40 @@
                 findClosestTarget();
             }
 
-            // Trampoline Physics
+            // --- Advanced Directional Kinetic Bounce Mechanics ---
             bouncers.forEach(pad => {
-                if (player.x + player.radius > pad.x && 
-                    player.x - player.radius < pad.x + pad.width &&
-                    player.y + player.radius > pad.y && 
-                    player.y - player.radius < pad.y + pad.height) {
+                if (checkCollision(player, pad)) {
+                    if (pad.type === "horizontal") {
+                        // Position snap out of the box floor
+                        player.y = pad.y - player.radius;
+                        
+                        // Reflect vertical velocity upward and scale based on approach force
+                        // Ensures an energetic minimum bounce even if arriving slowly
+                        player.vy = -Math.max(Math.abs(player.vy) * 1.35, 11);
+                        
+                        // Conserve horizontal direction but inject scaling momentum forward
+                        player.vx *= 1.25;
+
+                    } else if (pad.type === "vertical") {
+                        // Determine whether hitting left or right side of column
+                        if (player.x < pad.x) {
+                            player.x = pad.x - player.radius;
+                            player.vx = -Math.max(Math.abs(player.vx) * 1.35, 8); // Bounce backward hard
+                        } else {
+                            player.x = pad.x + pad.width + player.radius;
+                            player.vx = Math.max(Math.abs(player.vx) * 1.35, 8);  // Bounce forward hard
+                        }
+                        // Add a vertical recovery lift pop so players don't instantly slide down wall edges
+                        player.vy = -Math.max(Math.abs(player.vy) * 0.9, 5);
+                    }
                     
-                    player.vy = -13.5;
-                    player.vx += 2.5; 
+                    // Break active grappling cables upon impact
                     player.isSwinging = false;
                     player.hookedTo = null;
                 }
             });
 
-            // Pendulum Rope Mechanics
+            // Pendulum Cable Constraint
             if (player.isSwinging && player.hookedTo) {
                 let hook = player.hookedTo;
                 let dx = player.x - hook.x;
@@ -383,28 +416,26 @@
 
             cameraX = player.x - 200;
 
-            // --- Real-time Score Tracking (Can decrease or go negative!) ---
+            // Score Tracker (Can decline when swinging backwards!)
             score = Math.floor(player.x / 10) - 10;
             scoreDisplay.textContent = score;
 
-            // Check Drop Defeat Line
+            // Check Defeat Threshold
             if (player.y > canvas.height + 140) {
                 gameStatus = "lost";
 
-                // Process high scores only for positive gains
                 if (score > highScore) {
                     highScore = score;
                     localStorage.setItem("stickman_high_score", highScore);
                     highScoreDisplay.textContent = highScore;
                 }
 
-                // --- Devil Skin Unlock Condition ---
+                // Devil Skin Sub-Zero Unlock Condition
                 if (score < 0) {
                     localStorage.setItem("stickman_skin_devil", "true");
                     alert("👹 UNLOCKED: THE DEVIL SKIN (Ended run on negative points!)");
                 }
 
-                // Refresh panel styles instantly on death to update unsealed awards
                 renderChangingRoom();
             }
         }
@@ -427,12 +458,20 @@
                 ctx.stroke();
             }
 
-            // Draw Bounce Pads
+            // Draw Bounce Elements
             bouncers.forEach(pad => {
-                ctx.fillStyle = "#e94560";
-                ctx.fillRect(pad.x, pad.y, pad.width, pad.height);
-                ctx.fillStyle = "#ffdd59";
-                ctx.fillRect(pad.x + 4, pad.y + 2, pad.width - 8, 3);
+                if (pad.type === "horizontal") {
+                    ctx.fillStyle = "#e94560";
+                    ctx.fillRect(pad.x, pad.y, pad.width, pad.height);
+                    ctx.fillStyle = "#ffdd59";
+                    ctx.fillRect(pad.x + 4, pad.y + 2, pad.width - 8, 3);
+                } else if (pad.type === "vertical") {
+                    // Draw distinct vertical neon bumpers
+                    ctx.fillStyle = "#00ffcc";
+                    ctx.fillRect(pad.x, pad.y, pad.width, pad.height);
+                    ctx.fillStyle = "#ffffff";
+                    ctx.fillRect(pad.x + 2, pad.y + 4, pad.width - 4, pad.height - 8);
+                }
             });
 
             // Draw Hooks
@@ -460,7 +499,7 @@
                 }
             });
 
-            // Draw Grappling Line
+            // Draw Cable
             if (player.isSwinging && player.hookedTo) {
                 ctx.strokeStyle = "#ffffff";
                 ctx.lineWidth = 3;
@@ -470,13 +509,13 @@
                 ctx.stroke();
             }
 
-            // Draw Player using Equipped Color Properties
+            // Draw Player with Skin Properties
             ctx.fillStyle = SKINS_CONFIG[equippedSkin].color;
             ctx.beginPath();
             ctx.arc(player.x, player.y, player.radius, 0, Math.PI * 2);
             ctx.fill();
 
-            // Special Visual Effect: Angelic Halo
+            // Angel Halo Overlay
             if (equippedSkin === "angelic") {
                 ctx.strokeStyle = "#ffeaa7";
                 ctx.lineWidth = 3;
@@ -485,25 +524,16 @@
                 ctx.stroke();
             }
             
-            // Special Visual Effect: Devil Horns
+            // Devil Horns Overlay
             if (equippedSkin === "devil") {
                 ctx.fillStyle = "#ff0055";
-                ctx.beginPath();
-                ctx.moveTo(player.x - 8, player.y - 8);
-                ctx.lineTo(player.x - 14, player.y - 18);
-                ctx.lineTo(player.x - 2, player.y - 11);
-                ctx.fill();
-
-                ctx.beginPath();
-                ctx.moveTo(player.x + 8, player.y - 8);
-                ctx.lineTo(player.x + 14, player.y - 18);
-                ctx.lineTo(player.x + 2, player.y - 11);
-                ctx.fill();
+                ctx.beginPath(); ctx.moveTo(player.x - 8, player.y - 8); ctx.lineTo(player.x - 14, player.y - 18); ctx.lineTo(player.x - 2, player.y - 11); ctx.fill();
+                ctx.beginPath(); ctx.moveTo(player.x + 8, player.y - 8); ctx.lineTo(player.x + 14, player.y - 18); ctx.lineTo(player.x + 2, player.y - 11); ctx.fill();
             }
 
             ctx.restore();
 
-            // Death Screen Overlay
+            // Death Overlays
             if (gameStatus === "lost") {
                 ctx.fillStyle = "rgba(15, 15, 26, 0.85)";
                 ctx.fillRect(0, 0, canvas.width, canvas.height);
@@ -516,11 +546,10 @@
                 ctx.fillStyle = "#fff";
                 ctx.fillText(`Final Score: ${score} points`, canvas.width / 2, canvas.height / 2 + 20);
                 ctx.fillStyle = "#888";
-                ctx.fillText("Press Space or Click the grid to restart!", canvas.width / 2, canvas.height / 2 + 65);
+                ctx.fillText("Press Space or Click the grid to snap back in!", canvas.width / 2, canvas.height / 2 + 65);
             }
         }
 
-        // Init loops
         manageEnvironment();
         function loop() {
             update();
