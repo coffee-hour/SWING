@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Swing!</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>☯️</text></svg>">
+    <title>Infinite Stickman Hook - Exalted Edition</title>
     <style>
         body {
             margin: 0;
@@ -45,7 +46,7 @@
             border-radius: 8px;
             padding: 15px;
             box-sizing: border-box;
-            height: 595px; /* Matches height of canvas + UI panels */
+            height: 595px;
             display: flex;
             flex-direction: column;
         }
@@ -67,7 +68,6 @@
             flex-direction: column;
             gap: 8px;
         }
-        /* Custom scrollbar for the leaderboard container */
         #leaderboardList::-webkit-scrollbar { width: 6px; }
         #leaderboardList::-webkit-scrollbar-track { background: #1a1a2e; border-radius: 4px; }
         #leaderboardList::-webkit-scrollbar-thumb { background: #f9a826; border-radius: 4px; }
@@ -237,7 +237,6 @@
         .skin-btn.unlocked {
             border-color: #4ecca3;
             color: #fff;
-            cursor: pointer;
         }
         .skin-btn.unlocked:hover {
             background: #1f4068;
@@ -399,9 +398,38 @@
         // Populate offline unlocks array from localStorage on initial load
         Object.keys(localStorage).forEach(key => {
             if (key.startsWith("stickman_skin_") && localStorage.getItem(key) === "true") {
-                unlockedSkinsArray.push(key.replace("stickman_skin_", ""));
+                let skinName = key.replace("stickman_skin_", "");
+                if (!unlockedSkinsArray.includes(skinName)) {
+                    unlockedSkinsArray.push(skinName);
+                }
             }
         });
+
+        // --- Skins Database Config ---
+        const SKINS_CONFIG = {
+            og_stickman: { name: "OG Founder", color: "#ff00ff", condition: "First 10 Players" },
+            default: { name: "Default", color: "#00adb5" },
+            brown: { name: "Brown", color: "#8b4513", score: 100 },
+            green: { name: "Green", color: "#00ff00", score: 500 },
+            pink: { name: "Pink", color: "#ffc0cb", score: 1000 },
+            blue: { name: "Blue", color: "#0000ff", score: 5000 },
+            red: { name: "Red", color: "#ff0000", score: 7000 },
+            orange: { name: "Orange", color: "#ffa500", score: 10000 },
+            yellow: { name: "Yellow", color: "#ffff00", score: 20000 },
+            gold: { name: "Gold", color: "#d4af37", score: 100000 },
+            
+            angelic: { name: "Angelic Dev", color: "#ffffff", condition: "Secret Code" },
+            denied_angel: { name: "Denied Angel", color: "#ffffff", condition: "???", parent: "angelic" },
+            accurate_angel: { name: "Accurate Angel", color: "#ffffff", condition: "???", parent: "angelic" },
+            exalted_angel: { name: "Exalted Angel", color: "#ffffff", condition: "???", parent: "angelic" },
+            
+            devil: { name: "Devil", color: "#ff0055", condition: "???" }, 
+            denied_devil: { name: "Denied Devil", color: "#ff0055", condition: "???", parent: "devil" },
+            accurate_devil: { name: "Accurate Devil", color: "#d4af37", condition: "???", parent: "devil" },
+            exalted_devil: { name: "Exalted Devil", color: "#ff0055", condition: "???", parent: "devil" },
+
+            yin_yang: { name: "Yin Yang", color: "#888", condition: "Merge Shards" }
+        };
 
         // --- FETCH LEADERBOARD FUNCTION ---
         async function fetchLeaderboard() {
@@ -418,7 +446,6 @@
                         const item = document.createElement("div");
                         item.className = "leaderboard-item";
                         
-                        // Highlight current user
                         if(currentUser && row.username === currentUser) {
                             item.style.borderColor = "#4ecca3";
                             item.style.background = "#232342";
@@ -438,8 +465,6 @@
                 leaderboardList.innerHTML = '<div style="text-align: center; color: #ff0055; margin-top: 20px;">Failed to load ranks.</div>';
             }
         }
-
-        // Fetch leaderboard instantly on startup
         fetchLeaderboard();
 
         // --- CLOUDFLARE SYNC FUNCTIONS ---
@@ -462,15 +487,12 @@
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify(payload)
                 });
-                console.log("Saved to cloud.");
-                // Update leaderboard instantly after a cloud save occurs
                 fetchLeaderboard();
             } catch (e) {
                 console.error("Cloud save failed:", e);
             }
         }
 
-        // Helper function to safely unlock a skin both locally and in the cloud
         function unlockSkin(skinKey) {
             if (!unlockedSkinsArray.includes(skinKey)) {
                 unlockedSkinsArray.push(skinKey);
@@ -516,7 +538,6 @@
                     currentUser = u;
                     currentPassword = p;
                     
-                    // Load cloud state into session
                     highScore = data.userData.high_score;
                     equippedSkin = data.userData.equipped_skin;
                     unlockedSkinsArray = data.userData.unlocked_skins || [];
@@ -528,14 +549,13 @@
                     
                     highScoreDisplay.textContent = highScore;
                     
-                    // Hide forms, reveal welcome banner
                     document.getElementById("authInputs").style.display = "none";
                     const welcome = document.getElementById("welcomeMessage");
                     welcome.textContent = `👋 Welcome back, ${u}!`;
                     welcome.style.display = "block";
                     
                     renderChangingRoom();
-                    fetchLeaderboard(); // Update highlighted user cards inside sidebar
+                    fetchLeaderboard(); 
                 } else {
                     alert("Login failed: " + data.error);
                 }
@@ -543,33 +563,6 @@
                 alert("Failed to connect to API.");
             }
         });
-
-
-        // --- Skins Database Config ---
-        const SKINS_CONFIG = {
-            og_stickman: { name: "OG Founder", color: "#ff00ff", condition: "First 10 Players" },
-            default: { name: "Default", color: "#00adb5" },
-            brown: { name: "Brown", color: "#8b4513", score: 100 },
-            green: { name: "Green", color: "#00ff00", score: 500 },
-            pink: { name: "Pink", color: "#ffc0cb", score: 1000 },
-            blue: { name: "Blue", color: "#0000ff", score: 5000 },
-            red: { name: "Red", color: "#ff0000", score: 7000 },
-            orange: { name: "Orange", color: "#ffa500", score: 10000 },
-            yellow: { name: "Yellow", color: "#ffff00", score: 20000 },
-            gold: { name: "Gold", color: "#d4af37", score: 100000 },
-            
-            angelic: { name: "Angelic Dev", color: "#ffffff", condition: "Secret Code" },
-            denied_angel: { name: "Denied Angel", color: "#ffffff", condition: "???", parent: "angelic" },
-            accurate_angel: { name: "Accurate Angel", color: "#ffffff", condition: "???", parent: "angelic" },
-            exalted_angel: { name: "Exalted Angel", color: "#ffffff", condition: "???", parent: "angelic" },
-            
-            devil: { name: "Devil", color: "#ff0055", condition: "???" }, 
-            denied_devil: { name: "Denied Devil", color: "#ff0055", condition: "???", parent: "devil" },
-            accurate_devil: { name: "Accurate Devil", color: "#d4af37", condition: "???", parent: "devil" },
-            exalted_devil: { name: "Exalted Devil", color: "#ff0055", condition: "???", parent: "devil" },
-
-            yin_yang: { name: "Yin Yang", color: "#888", condition: "Merge Shards" }
-        };
 
         // --- Cheats & Codes ---
         document.getElementById("highScoreClickable").addEventListener("click", () => {
@@ -597,27 +590,33 @@
             }
         });
 
+        // --- THE FIXED UNLOCK LOGIC ---
         function checkUnlockStatus(key) {
-    if (key === "default") return true;
-    
-    // 1. Check if the backend worker added it to our live unlocked list
-    if (unlockedSkinsArray.includes(key)) return true; 
-    
-    // 2. Fallback check for special condition/secret code skins saved locally
-    if (SKINS_CONFIG[key].condition && SKINS_CONFIG[key].score === undefined) {
-        return localStorage.getItem(`stickman_skin_${key}`) === "true"; 
-    }
-    
-    // 3. Fallback check for regular score-based progression skins
-    return highScore >= SKINS_CONFIG[key].score;
-}
+            // 1. Default skin is always free
+            if (key === "default") return true;
+            
+            // 2. SERVER-DRIVEN UNLOCKS (OG Skin, Secret Shard Skins, etc.)
+            if (unlockedSkinsArray && unlockedSkinsArray.includes(key)) return true; 
+            
+            // 3. SPECIAL LOCAL CONDITION FALLBACKS
+            if (SKINS_CONFIG[key].condition && SKINS_CONFIG[key].score === undefined) {
+                return localStorage.getItem(`stickman_skin_${key}`) === "true"; 
+            }
+            
+            // 4. SCORE-BASED UNLOCKS
+            if (SKINS_CONFIG[key].score !== undefined) {
+                return highScore >= SKINS_CONFIG[key].score;
+            }
+
+            return false;
+        }
 
         function hasBothShards() {
             return localStorage.getItem("stickman_black_shard") === "true" && 
                    localStorage.getItem("stickman_white_shard") === "true";
         }
 
-        // --- Changing Room Render ---
+        // --- FIXED Changing Room Render ---
         function renderChangingRoom() {
             skinsGrid.innerHTML = "";
             
@@ -649,6 +648,9 @@
                 if (key === "yin_yang") {
                     preview.style.background = "linear-gradient(90deg, #fff 50%, #000 50%)";
                     preview.style.boxShadow = "0 0 5px #fff, 0 0 5px #000";
+                } else if (key === "og_stickman") {
+                    preview.style.backgroundColor = skin.color;
+                    preview.style.boxShadow = "0 0 8px #ff00ff";
                 } else {
                     preview.style.backgroundColor = skin.color;
                 }
@@ -686,19 +688,25 @@
                     btn.appendChild(arrow);
                 }
 
+                // SECURE CLICK LOGIC
                 if (isUnlocked) {
-                    btn.addEventListener("click", () => {
+                    btn.style.cursor = "pointer";
+                    btn.onclick = () => {
                         equippedSkin = key;
                         localStorage.setItem("stickman_equipped_skin", key);
-                        syncCloudSave(); // SAVE TO CLOUD WHEN SKIN CHANGES
+                        syncCloudSave(); 
                         renderChangingRoom();
-                    });
+                    };
+                } else {
+                    btn.style.cursor = "not-allowed";
+                    btn.onclick = null;
                 }
+
                 skinsGrid.appendChild(btn);
             });
 
-            skinDisplay.textContent = SKINS_CONFIG[equippedSkin].name;
-            skinDisplay.style.color = SKINS_CONFIG[equippedSkin].color;
+            skinDisplay.textContent = SKINS_CONFIG[equippedSkin] ? SKINS_CONFIG[equippedSkin].name : "Default";
+            skinDisplay.style.color = SKINS_CONFIG[equippedSkin] ? SKINS_CONFIG[equippedSkin].color : "#00adb5";
         }
 
         highScoreDisplay.textContent = highScore;
@@ -809,7 +817,6 @@
             manageEnvironment();
         }
 
-        // --- Reset Game Function ---
         function resetGame() {
             player.x = 100; player.y = 200; player.vx = 6; player.vy = 0;
             player.isSwinging = false; player.hookedTo = null;
@@ -818,10 +825,9 @@
             manageEnvironment();
             gameStatus = "playing";
             currentRealm = null;
-            fetchLeaderboard(); // Pull fresh database context on loop reset
+            fetchLeaderboard(); 
         }
 
-        // --- Core Update Loop ---
         function update() {
             if (gameStatus === "fusion") return; 
             if (gameStatus === "lost") return;
@@ -902,7 +908,7 @@
                         localStorage.setItem("stickman_white_shard", "true");
                         alert("⬜ COLLECTED THE WHITE SHARD");
                     }
-                    syncCloudSave(); // SAVE SHARD TO CLOUD
+                    syncCloudSave(); 
                     renderChangingRoom();
                     resetGame(); 
                 }
@@ -1029,7 +1035,7 @@
                     localStorage.setItem("stickman_equipped_skin", "yin_yang");
                     localStorage.setItem("stickman_black_shard", "false");
                     localStorage.setItem("stickman_white_shard", "false");
-                    unlockSkin("yin_yang"); // UNLOCK AND CLOUD SYNC
+                    unlockSkin("yin_yang"); 
                     
                     alert("☯️ PERFECT BALANCE ACHIEVED: YIN YANG UNLOCKED ☯️\n(Click anywhere to flap your wings!)");
                     renderChangingRoom();
@@ -1130,15 +1136,6 @@
                 ctx.beginPath(); ctx.moveTo(player.x - 6, player.y); ctx.quadraticCurveTo(player.x - 25, player.y - 18, player.x - 30, player.y - 5); ctx.quadraticCurveTo(player.x - 20, player.y + 12, player.x - 8, player.y + 4); ctx.fill();
                 ctx.beginPath(); ctx.moveTo(player.x + 6, player.y); ctx.quadraticCurveTo(player.x + 25, player.y - 18, player.x + 30, player.y - 5); ctx.quadraticCurveTo(player.x + 20, player.y + 12, player.x + 8, player.y + 4); ctx.fill();
             }
-            if (equippedSkin === "og_stickman") {
-    ctx.shadowColor = "#ff00ff";
-    ctx.shadowBlur = 15;
-}
-
-ctx.beginPath(); ctx.arc(player.x, player.y, player.radius, 0, Math.PI * 2); ctx.fill();
-
-// Reset shadow instantly so it doesn't leak onto other game elements
-ctx.shadowBlur = 0;
 
             if (equippedSkin === "yin_yang") {
                 let flapAnim = Math.sin(flameOffset * 4) * 5; 
@@ -1157,8 +1154,14 @@ ctx.shadowBlur = 0;
                 ctx.fillStyle = "#fff"; ctx.beginPath(); ctx.arc(player.x + 3, player.y, 2, 0, Math.PI*2); ctx.fill();
             } else {
                 if (gameStatus === "realm") ctx.fillStyle = currentRealm === "devil" ? "#fff" : "#000";
-                else ctx.fillStyle = SKINS_CONFIG[equippedSkin].color;
+                else ctx.fillStyle = SKINS_CONFIG[equippedSkin] ? SKINS_CONFIG[equippedSkin].color : "#00adb5";
+                
+                if (equippedSkin === "og_stickman") {
+                    ctx.shadowColor = "#ff00ff";
+                    ctx.shadowBlur = 15;
+                }
                 ctx.beginPath(); ctx.arc(player.x, player.y, player.radius, 0, Math.PI * 2); ctx.fill();
+                ctx.shadowBlur = 0;
                 
                 if (gameStatus !== "realm") {
                     if (equippedSkin === "angelic" || equippedSkin === "accurate_angel" || equippedSkin === "exalted_angel" || equippedSkin === "denied_devil") {
