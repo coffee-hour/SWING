@@ -443,4 +443,91 @@
                 ctx.arc(hook.x, hook.y, 8, 0, Math.PI * 2);
                 ctx.fill();
                 
-                ctx.strokeStyle = isTargeted ? "rgba(78, 204, 1
+                ctx.strokeStyle = isTargeted ? "rgba(78, 204, 163, 0.4)" : "rgba(233, 69, 96, 0.2)";
+                ctx.lineWidth = isTargeted ? 4 : 2;
+                ctx.beginPath();
+                ctx.arc(hook.x, hook.y, 16, 0, Math.PI * 2);
+                ctx.stroke();
+
+                if (isTargeted) {
+                    ctx.strokeStyle = "#4ecca3";
+                    ctx.lineWidth = 1.5;
+                    ctx.setLineDash([4, 4]);
+                    ctx.beginPath();
+                    ctx.arc(hook.x, hook.y, 25, 0, Math.PI * 2);
+                    ctx.stroke();
+                    ctx.setLineDash([]);
+                }
+            });
+
+            // Draw Grappling Line
+            if (player.isSwinging && player.hookedTo) {
+                ctx.strokeStyle = "#ffffff";
+                ctx.lineWidth = 3;
+                ctx.beginPath();
+                ctx.moveTo(player.hookedTo.x, player.hookedTo.y);
+                ctx.lineTo(player.x, player.y);
+                ctx.stroke();
+            }
+
+            // Draw Player using Equipped Color Properties
+            ctx.fillStyle = SKINS_CONFIG[equippedSkin].color;
+            ctx.beginPath();
+            ctx.arc(player.x, player.y, player.radius, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Special Visual Effect: Angelic Halo
+            if (equippedSkin === "angelic") {
+                ctx.strokeStyle = "#ffeaa7";
+                ctx.lineWidth = 3;
+                ctx.beginPath();
+                ctx.ellipse(player.x, player.y - 20, 14, 4, 0, 0, Math.PI * 2);
+                ctx.stroke();
+            }
+            
+            // Special Visual Effect: Devil Horns
+            if (equippedSkin === "devil") {
+                ctx.fillStyle = "#ff0055";
+                ctx.beginPath();
+                ctx.moveTo(player.x - 8, player.y - 8);
+                ctx.lineTo(player.x - 14, player.y - 18);
+                ctx.lineTo(player.x - 2, player.y - 11);
+                ctx.fill();
+
+                ctx.beginPath();
+                ctx.moveTo(player.x + 8, player.y - 8);
+                ctx.lineTo(player.x + 14, player.y - 18);
+                ctx.lineTo(player.x + 2, player.y - 11);
+                ctx.fill();
+            }
+
+            ctx.restore();
+
+            // Death Screen Overlay
+            if (gameStatus === "lost") {
+                ctx.fillStyle = "rgba(15, 15, 26, 0.85)";
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                ctx.fillStyle = score < 0 ? "#ff0055" : "#e94560";
+                ctx.font = "bold 42px sans-serif";
+                ctx.textAlign = "center";
+                ctx.fillText(score < 0 ? "UNDERWORLD DESCENT" : "GAME OVER", canvas.width / 2, canvas.height / 2 - 20);
+                
+                ctx.font = "20px sans-serif";
+                ctx.fillStyle = "#fff";
+                ctx.fillText(`Final Score: ${score} points`, canvas.width / 2, canvas.height / 2 + 20);
+                ctx.fillStyle = "#888";
+                ctx.fillText("Press Space or Click the grid to restart!", canvas.width / 2, canvas.height / 2 + 65);
+            }
+        }
+
+        // Init loops
+        manageEnvironment();
+        function loop() {
+            update();
+            draw();
+            requestAnimationFrame(loop);
+        }
+        loop();
+    </script>
+</body>
+</html>
