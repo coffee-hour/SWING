@@ -3,29 +3,35 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Infinite Stickman Hook - Extended Edition</title>
+    <title>SWING!↺</title>
     <style>
         body {
             margin: 0;
             background: #1a1a2e;
             display: flex;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
-            height: 100vh;
+            min-height: 100vh;
             overflow: hidden;
             font-family: sans-serif;
             color: white;
             user-select: none;
         }
+        #game-container {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+        }
         canvas {
             background: #162447;
             box-shadow: 0 10px 30px rgba(0,0,0,0.5);
             border-radius: 8px;
+            cursor: pointer;
         }
         #ui {
-            position: absolute;
-            top: 20px;
-            text-align: center;
             display: flex;
             gap: 30px;
             font-size: 18px;
@@ -40,13 +46,71 @@
         .high-val { color: #f9a826; }
         .skin-val { color: #00adb5; text-transform: capitalize; }
         
-        /* The Invisible Developer Button */
+        /* Changing Room Styles */
+        #changingRoom {
+            background: rgba(22, 36, 71, 0.8);
+            border: 1px solid #1f4068;
+            border-radius: 8px;
+            padding: 15px;
+            width: 770px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+        #changingRoom h3 {
+            margin: 0 0 10px 0;
+            font-size: 16px;
+            color: #00adb5;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .skins-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .skin-btn {
+            background: #1a1a2e;
+            border: 2px solid #1f4068;
+            color: #888;
+            padding: 8px 12px;
+            border-radius: 6px;
+            cursor: not-allowed;
+            font-size: 12px;
+            font-weight: bold;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            min-width: 75px;
+            transition: all 0.2s;
+        }
+        .skin-btn.unlocked {
+            border-color: #4ecca3;
+            color: #fff;
+            cursor: pointer;
+        }
+        .skin-btn.unlocked:hover {
+            background: #1f4068;
+            transform: translateY(-2px);
+        }
+        .skin-btn.equipped {
+            border-color: #f9a826;
+            background: #232342;
+            color: #f9a826;
+        }
+        .skin-preview {
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            display: inline-block;
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+
         #devSecret {
             position: absolute;
             top: 0;
             right: 0;
-            width: 60px;
-            height: 60px;
+            width: 50px;
+            height: 50px;
             background: transparent;
             cursor: pointer;
             z-index: 999;
@@ -55,15 +119,22 @@
 </head>
 <body>
 
-    <div id="ui">
-        <div>Score: <span id="scoreDisplay" class="score-val">0</span></div>
-        <div>High Score: <span id="highScoreDisplay" class="high-val">0</span></div>
-        <div>Skin: <span id="skinDisplay" class="skin-val">Default</span></div>
+    <div id="game-container">
+        <div id="ui">
+            <div>Score: <span id="scoreDisplay" class="score-val">0</span></div>
+            <div>High Score: <span id="highScoreDisplay" class="high-val">0</span></div>
+            <div>Equipped: <span id="skinDisplay" class="skin-val">Default</span></div>
+        </div>
+
+        <div id="devSecret" title="???"></div>
+
+        <canvas id="gameCanvas" width="800" height="480"></canvas>
+
+        <div id="changingRoom">
+            <h3>👕 Changing Room</h3>
+            <div class="skins-grid" id="skinsGrid"></div>
+        </div>
     </div>
-
-    <div id="devSecret" title="???"></div>
-
-    <canvas id="gameCanvas" width="800" height="500"></canvas>
 
     <script>
         const canvas = document.getElementById("gameCanvas");
@@ -72,81 +143,118 @@
         const highScoreDisplay = document.getElementById("highScoreDisplay");
         const skinDisplay = document.getElementById("skinDisplay");
         const devSecret = document.getElementById("devSecret");
+        const skinsGrid = document.getElementById("skinsGrid");
 
-        // --- Game Config & Physics Constants ---
-        const GRAVITY = 0.42; // Slightly lower gravity for lighter drops
+        // --- Game Config & Physics ---
+        const GRAVITY = 0.42; 
         const FRICTION = 0.996; 
-        const MAX_HOOK_RANGE = 370; // Slightly extended hook reach
+        const MAX_HOOK_RANGE = 370; 
 
         // --- Game State ---
         let player = {
-            x: 100,
-            y: 200,
-            vx: 6,
-            vy: 0,
-            radius: 12,
-            isSwinging: false,
-            hookedTo: null,
-            ropeLength: 0
+            x: 100, y: 200, vx: 6, vy: 0, radius: 12,
+            isSwinging: false, hookedTo: null, ropeLength: 0
         };
 
         let hooks = [];
-        let bouncers = []; // Trampolines
+        let bouncers = []; 
         let targetHook = null;
         let cameraX = 0;
         let score = 0;
+        
         let highScore = parseInt(localStorage.getItem("stickman_high_score")) || 0;
-        let hasDevSkin = false;
+        let equippedSkin = localStorage.getItem("stickman_equipped_skin") || "default";
         let gameStatus = "playing";
 
-        // --- Secret Code Trigger ---
+        // --- Skins Database config ---
+        const SKINS_CONFIG = {
+            default: { name: "Default", color: "#00adb5" },
+            devil: { name: "Devil", color: "#ff0055", condition: "End on negative score" },
+            brown: { name: "Brown", color: "#8b4513", score: 100 },
+            green: { name: "Green", color: "#00ff00", score: 500 },
+            pink: { name: "Pink", color: "#ffc0cb", score: 1000 },
+            blue: { name: "Blue", color: "#0000ff", score: 5000 },
+            red: { name: "Red", color: "#ff0000", score: 7000 },
+            orange: { name: "Orange", color: "#ffa500", score: 10000 },
+            yellow: { name: "Yellow", color: "#ffff00", score: 20000 },
+            gold: { name: "Gold", color: "#d4af37", score: 100000 },
+            angelic: { name: "Angelic Dev", color: "#ffffff", condition: "Secret Code" }
+        };
+
+        // --- Secret Developer Unlock ---
         devSecret.addEventListener("click", () => {
             let code = prompt("ENTER ACCESS CODE:");
             if (code === "IAMXAVIER") {
-                hasDevSkin = true;
-                alert("😇 ANGELIC DEV MODE ACTIVATED 😇");
-                updateSkinName();
+                localStorage.setItem("stickman_skin_angelic", "true");
+                alert("😇 ANGELIC DEV MODE UNLOCKED 😇");
+                renderChangingRoom();
             } else if (code !== null) {
                 alert("ACCESS DENIED.");
             }
         });
 
-        // --- Dynamic Skin Logic ---
-        function getSkinColor() {
-            if (hasDevSkin) return "#ffffff"; // Angelic White
-            if (highScore >= 100000) return "#d4af37"; // Gold
-            if (highScore >= 20000) return "#ffff00";  // Yellow
-            if (highScore >= 10000) return "#ffa500";  // Orange
-            if (highScore >= 7000) return "#ff0000";   // Red
-            if (highScore >= 5000) return "#0000ff";   // Blue
-            if (highScore >= 1000) return "#ffc0cb";   // Pink
-            if (highScore >= 500) return "#00ff00";    // Green
-            if (highScore >= 100) return "#8b4513";    // Brown
-            return "#00adb5"; // Default Cyan
+        // --- Core Skin Logic ---
+        function checkUnlockStatus(key) {
+            if (key === "default") return true;
+            if (key === "devil") return localStorage.getItem("stickman_skin_devil") === "true";
+            if (key === "angelic") return localStorage.getItem("stickman_skin_angelic") === "true";
+            return highScore >= SKINS_CONFIG[key].score;
         }
 
-        function updateSkinName() {
-            if (hasDevSkin) { skinDisplay.textContent = "Angelic Dev"; skinDisplay.style.color = "#fff"; return; }
-            if (highScore >= 100000) { skinDisplay.textContent = "Gold"; skinDisplay.style.color = "#d4af37"; return; }
-            if (highScore >= 20000) { skinDisplay.textContent = "Yellow"; skinDisplay.style.color = "#ffff00"; return; }
-            if (highScore >= 10000) { skinDisplay.textContent = "Orange"; skinDisplay.style.color = "#ffa500"; return; }
-            if (highScore >= 7000) { skinDisplay.textContent = "Red"; skinDisplay.style.color = "#ff0000"; return; }
-            if (highScore >= 5000) { skinDisplay.textContent = "Blue"; skinDisplay.style.color = "#0000ff"; return; }
-            if (highScore >= 1000) { skinDisplay.textContent = "Pink"; skinDisplay.style.color = "#ffc0cb"; return; }
-            if (highScore >= 500) { skinDisplay.textContent = "Green"; skinDisplay.style.color = "#00ff00"; return; }
-            if (highScore >= 100) { skinDisplay.textContent = "Brown"; skinDisplay.style.color = "#8b4513"; return; }
-            skinDisplay.textContent = "Default";
-            skinDisplay.style.color = "#00adb5";
+        function renderChangingRoom() {
+            skinsGrid.innerHTML = "";
+            Object.keys(SKINS_CONFIG).forEach(key => {
+                const skin = SKINS_CONFIG[key];
+                const isUnlocked = checkUnlockStatus(key);
+                const isEquipped = equippedSkin === key;
+
+                const btn = document.createElement("button");
+                btn.className = `skin-btn ${isUnlocked ? 'unlocked' : ''} ${isEquipped ? 'equipped' : ''}`;
+                
+                // Dot preview
+                const preview = document.createElement("span");
+                preview.className = "skin-preview";
+                preview.style.backgroundColor = skin.color;
+                
+                btn.appendChild(preview);
+                
+                const nameLabel = document.createElement("span");
+                nameLabel.textContent = skin.name;
+                btn.appendChild(nameLabel);
+
+                const infoLabel = document.createElement("span");
+                infoLabel.style.fontSize = "9px";
+                infoLabel.style.color = "#666";
+                if (skin.score !== undefined) infoLabel.textContent = `Score: ${skin.score}`;
+                else if (skin.condition) infoLabel.textContent = skin.condition;
+                btn.appendChild(infoLabel);
+
+                if (isUnlocked) {
+                    btn.addEventListener("click", () => {
+                        equippedSkin = key;
+                        localStorage.setItem("stickman_equipped_skin", key);
+                        skinDisplay.textContent = skin.name;
+                        skinDisplay.style.color = skin.color;
+                        renderChangingRoom();
+                    });
+                }
+
+                skinsGrid.appendChild(btn);
+            });
+
+            // Sync top bar label info
+            skinDisplay.textContent = SKINS_CONFIG[equippedSkin].name;
+            skinDisplay.style.color = SKINS_CONFIG[equippedSkin].color;
         }
 
-        // Initialize UI Elements
+        // Initialize UI values
         highScoreDisplay.textContent = highScore;
-        updateSkinName();
+        renderChangingRoom();
 
-        // --- Controls ---
-        window.addEventListener("mousedown", handleActionStart);
+        // --- Controls (Scoped to canvas to prevent interface click conflicts) ---
+        canvas.addEventListener("mousedown", handleActionStart);
         window.addEventListener("mouseup", handleActionEnd);
-        window.addEventListener("touchstart", (e) => { e.preventDefault(); handleActionStart(); }, { passive: false });
+        canvas.addEventListener("touchstart", (e) => { e.preventDefault(); handleActionStart(); }, { passive: false });
         window.addEventListener("touchend", (e) => { e.preventDefault(); handleActionEnd(); }, { passive: false });
 
         window.addEventListener("keydown", (e) => {
@@ -180,25 +288,17 @@
 
             let lastHook = hooks[hooks.length - 1];
             while (lastHook.x < player.x + 1000) {
-                // More space & gentler intervals to make swings less punishing
                 let nextX = lastHook.x + Math.floor(Math.random() * 100) + 180; 
-                let nextY = Math.floor(Math.random() * 140) + 100; // Constrained range keeps them closer to view
+                let nextY = Math.floor(Math.random() * 140) + 100; 
                 
                 hooks.push({ x: nextX, y: nextY });
 
-                // Spawning Bounce Pads right below the action gap
                 if (Math.random() < 0.45) {
-                    bouncers.push({
-                        x: nextX - 60,
-                        y: 440,
-                        width: 55,
-                        height: 12
-                    });
+                    bouncers.push({ x: nextX - 60, y: 420, width: 55, height: 12 });
                 }
                 lastHook = hooks[hooks.length - 1];
             }
 
-            // Cleanup offscreen objects
             hooks = hooks.filter(h => h.x > cameraX - 100);
             bouncers = bouncers.filter(b => b.x > cameraX - 100);
         }
@@ -221,26 +321,18 @@
         }
 
         function resetGame() {
-            player.x = 100;
-            player.y = 200;
-            player.vx = 6;
-            player.vy = 0;
-            player.isSwinging = false;
-            player.hookedTo = null;
-            hooks = [];
-            bouncers = [];
-            score = 0;
+            player.x = 100; player.y = 200; player.vx = 6; player.vy = 0;
+            player.isSwinging = false; player.hookedTo = null;
+            hooks = []; bouncers = []; score = 0;
             scoreDisplay.textContent = 0;
             manageEnvironment();
-            updateSkinName();
             gameStatus = "playing";
         }
 
-        // --- Core Physics Engine Update Loop ---
+        // --- Core Game Update Loop ---
         function update() {
             if (gameStatus !== "playing") return;
 
-            // Apply Physics Movement
             player.vy += GRAVITY;
             player.vx *= FRICTION;
             player.vy *= FRICTION;
@@ -253,14 +345,13 @@
                 findClosestTarget();
             }
 
-            // Bounce Pad Collisions
+            // Trampoline Physics
             bouncers.forEach(pad => {
                 if (player.x + player.radius > pad.x && 
                     player.x - player.radius < pad.x + pad.width &&
                     player.y + player.radius > pad.y && 
                     player.y - player.radius < pad.y + pad.height) {
                     
-                    // Fire player upward with high energy momentum
                     player.vy = -13.5;
                     player.vx += 2.5; 
                     player.isSwinging = false;
@@ -268,7 +359,7 @@
                 }
             });
 
-            // Rope Mechanics
+            // Pendulum Rope Mechanics
             if (player.isSwinging && player.hookedTo) {
                 let hook = player.hookedTo;
                 let dx = player.x - hook.x;
@@ -286,27 +377,35 @@
 
                     player.vx -= velAlongNormal * nx;
                     player.vy -= velAlongNormal * ny;
-                    player.vx += Math.sin(angle) * 0.14; // Whip velocity speed boost
+                    player.vx += Math.sin(angle) * 0.14; 
                 }
             }
 
             cameraX = player.x - 200;
 
-            // Score Processing
-            let currentScore = Math.floor(player.x / 10) - 10;
-            if (currentScore > score) {
-                score = currentScore;
-                scoreDisplay.textContent = score;
-            }
+            // --- Real-time Score Tracking (Can decrease or go negative!) ---
+            score = Math.floor(player.x / 10) - 10;
+            scoreDisplay.textContent = score;
 
-            // Check Drop Defeat Line (extended out further to make drops easier)
+            // Check Drop Defeat Line
             if (player.y > canvas.height + 140) {
                 gameStatus = "lost";
+
+                // Process high scores only for positive gains
                 if (score > highScore) {
                     highScore = score;
                     localStorage.setItem("stickman_high_score", highScore);
                     highScoreDisplay.textContent = highScore;
                 }
+
+                // --- Devil Skin Unlock Condition ---
+                if (score < 0) {
+                    localStorage.setItem("stickman_skin_devil", "true");
+                    alert("👹 UNLOCKED: THE DEVIL SKIN (Ended run on negative points!)");
+                }
+
+                // Refresh panel styles instantly on death to update unsealed awards
+                renderChangingRoom();
             }
         }
 
@@ -317,7 +416,7 @@
             ctx.save();
             ctx.translate(-cameraX, 0);
 
-            // Background Parallax
+            // Grid Lines
             ctx.strokeStyle = "#1f4068";
             ctx.lineWidth = 1;
             let startGridX = Math.floor(cameraX / 100) * 100;
@@ -330,10 +429,8 @@
 
             // Draw Bounce Pads
             bouncers.forEach(pad => {
-                // Outer bounce plate
                 ctx.fillStyle = "#e94560";
                 ctx.fillRect(pad.x, pad.y, pad.width, pad.height);
-                // Inner glowing energy bar
                 ctx.fillStyle = "#ffdd59";
                 ctx.fillRect(pad.x + 4, pad.y + 2, pad.width - 8, 3);
             });
@@ -346,76 +443,4 @@
                 ctx.arc(hook.x, hook.y, 8, 0, Math.PI * 2);
                 ctx.fill();
                 
-                ctx.strokeStyle = isTargeted ? "rgba(78, 204, 163, 0.4)" : "rgba(233, 69, 96, 0.2)";
-                ctx.lineWidth = isTargeted ? 4 : 2;
-                ctx.beginPath();
-                ctx.arc(hook.x, hook.y, 16, 0, Math.PI * 2);
-                ctx.stroke();
-
-                if (isTargeted) {
-                    ctx.strokeStyle = "#4ecca3";
-                    ctx.lineWidth = 1.5;
-                    ctx.setLineDash([4, 4]);
-                    ctx.beginPath();
-                    ctx.arc(hook.x, hook.y, 25, 0, Math.PI * 2);
-                    ctx.stroke();
-                    ctx.setLineDash([]);
-                }
-            });
-
-            // Draw Grappling Line
-            if (player.isSwinging && player.hookedTo) {
-                ctx.strokeStyle = "#ffffff";
-                ctx.lineWidth = 3;
-                ctx.beginPath();
-                ctx.moveTo(player.hookedTo.x, player.hookedTo.y);
-                ctx.lineTo(player.x, player.y);
-                ctx.stroke();
-            }
-
-            // Draw Player with Selected Skin Color
-            let activeColor = getSkinColor();
-            ctx.fillStyle = activeColor;
-            ctx.beginPath();
-            ctx.arc(player.x, player.y, player.radius, 0, Math.PI * 2);
-            ctx.fill();
-
-            // Special Visual Effect: Angelic Halo
-            if (hasDevSkin) {
-                ctx.strokeStyle = "#ffeaa7";
-                ctx.lineWidth = 3;
-                ctx.beginPath();
-                ctx.ellipse(player.x, player.y - 20, 14, 4, 0, 0, Math.PI * 2);
-                ctx.stroke();
-            }
-
-            ctx.restore();
-
-            // End Screen Overlay
-            if (gameStatus === "lost") {
-                ctx.fillStyle = "rgba(15, 15, 26, 0.85)";
-                ctx.fillRect(0, 0, canvas.width, canvas.height);
-                ctx.fillStyle = "#e94560";
-                ctx.font = "bold 42px sans-serif";
-                ctx.textAlign = "center";
-                ctx.fillText("GAME OVER", canvas.width / 2, canvas.height / 2 - 20);
-                
-                ctx.font = "20px sans-serif";
-                ctx.fillStyle = "#fff";
-                ctx.fillText(`Final Distance: ${score} points`, canvas.width / 2, canvas.height / 2 + 20);
-                ctx.fillStyle = "#888";
-                ctx.fillText("Press Space or Click anywhere to swing back in!", canvas.width / 2, canvas.height / 2 + 65);
-            }
-        }
-
-        // Init loop runtime
-        manageEnvironment();
-        function loop() {
-            update();
-            draw();
-            requestAnimationFrame(loop);
-        }
-        loop();
-    </script>
-</body>
-</html>
+                ctx.strokeStyle = isTargeted ? "rgba(78, 204, 1
