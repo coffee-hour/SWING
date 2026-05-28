@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Stickman Hook Prototype</title>
+    <title>Infinite Stickman Hook</title>
     <style>
         body {
             margin: 0;
@@ -15,25 +15,40 @@
             overflow: hidden;
             font-family: sans-serif;
             color: white;
+            user-select: none;
         }
         canvas {
             background: #162447;
             box-shadow: 0 10px 30px rgba(0,0,0,0.5);
             border-radius: 8px;
         }
-        #info {
+        #ui {
             position: absolute;
             top: 20px;
             text-align: center;
             pointer-events: none;
+            display: flex;
+            gap: 40px;
+            font-size: 20px;
+            font-weight: bold;
+            background: rgba(26, 26, 46, 0.8);
+            padding: 10px 20px;
+            border-radius: 20px;
+            border: 1px solid #1f4068;
+        }
+        .score-val {
+            color: #4ecca3;
+        }
+        .high-val {
+            color: #f9a826;
         }
     </style>
 </head>
 <body>
 
-    <div id="info">
-        <h2>Stickman Hook Clone</h2>
-        <p>Click and HOLD to hook onto the nearest point. Release to launch!</p>
+    <div id="ui">
+        <div>Score: <span id="scoreDisplay" class="score-val">0</span></div>
+        <div>High Score: <span id="highScoreDisplay" class="high-val">0</span></div>
     </div>
 
     <canvas id="gameCanvas" width="800" height="500"></canvas>
@@ -41,16 +56,19 @@
     <script>
         const canvas = document.getElementById("gameCanvas");
         const ctx = canvas.getContext("2d");
+        const scoreDisplay = document.getElementById("scoreDisplay");
+        const highScoreDisplay = document.getElementById("highScoreDisplay");
 
         // --- Game Config & Physics Constants ---
-        const GRAVITY = 0.4;
-        const FRICTION = 0.995; // Air resistance
+        const GRAVITY = 0.45;
+        const FRICTION = 0.996; 
+        const MAX_HOOK_RANGE = 350;
 
         // --- Game State ---
         let player = {
             x: 100,
-            y: 250,
-            vx: 5,
+            y: 200,
+            vx: 6,
             vy: 0,
             radius: 12,
             isSwinging: false,
@@ -58,26 +76,35 @@
             ropeLength: 0
         };
 
-        // Grappling points (Hooks)
-        let hooks = [
-            { x: 250, y: 150 },
-            { x: 450, y: 100 },
-            { x: 650, y: 180 },
-            { x: 900, y: 120 },
-            { x: 1150, y: 150 },
-            { x: 1400, y: 100 }
-        ];
-
-        // Level goal position
-        const finishLineX = 1600;
+        let hooks = [];
+        let targetHook = null; // The hook the player is currently aiming at
         let cameraX = 0;
-        let gameStatus = "playing"; // playing, won, lost
+        let score = 0;
+        let highScore = parseInt(localStorage.getItem("stickman_high_score")) || 0;
+        let gameStatus = "playing"; // playing, lost
+
+        // Initialize UI High Score
+        highScoreDisplay.textContent = highScore;
 
         // --- Input Handling ---
+        // Mouse/Touch triggers
         window.addEventListener("mousedown", handleActionStart);
         window.addEventListener("mouseup", handleActionEnd);
-        window.addEventListener("touchstart", (e) => { e.preventDefault(); handleActionStart(); });
-        window.addEventListener("touchend", (e) => { e.preventDefault(); handleActionEnd(); });
+        window.addEventListener("touchstart", (e) => { e.preventDefault(); handleActionStart(); }, { passive: false });
+        window.addEventListener("touchend", (e) => { e.preventDefault(); handleActionEnd(); }, { passive: false });
+
+        // Keyboard triggers (Spacebar)
+        window.addEventListener("keydown", (e) => {
+            if (e.code === "Space") {
+                e.preventDefault(); // Stop page from scrolling down
+                handleActionStart();
+            }
+        });
+        window.addEventListener("keyup", (e) => {
+            if (e.code === "Space") {
+                handleActionEnd();
+            }
+        });
 
         function handleActionStart() {
             if (gameStatus !== "playing") {
@@ -85,26 +112,14 @@
                 return;
             }
 
-            // Find the closest hook that is ahead of or near the player
-            let closestHook = null;
-            let minDist = Infinity;
-
-            hooks.forEach(hook => {
-                let dx = hook.x - player.x;
-                let dy = hook.y - player.y;
-                let dist = Math.sqrt(dx * dx + dy * dy);
-
-                // Prioritize hooks in front of the player
-                if (dist < minDist && hook.x > player.x - 50) {
-                    minDist = dist;
-                    closestHook = hook;
-                }
-            });
-
-            if (closestHook && minDist < 350) { // Max hook range
+            // If we have a valid targeted hook, lock onto it
+            if (targetHook && !player.isSwinging) {
+                let dx = targetHook.x - player.x;
+                let dy = targetHook.y - player.y;
+                
                 player.isSwinging = true;
-                player.hookedTo = closestHook;
-                player.ropeLength = minDist;
+                player.hookedTo = targetHook;
+                player.ropeLength = Math.sqrt(dx * dx + dy * dy);
             }
         }
 
@@ -113,113 +128,173 @@
             player.hookedTo = null;
         }
 
+        // --- Procedural Generation Logic ---
+        function manageHooks() {
+            // If hooks array is empty, seed the first few hooks
+            if (hooks.length === 0) {
+                hooks.push({ x: 300, y: 150 });
+            }
+
+            // Always make sure there are hooks generated at least 1000px ahead of the player
+            let lastHook = hooks[hooks.length - 1];
+            while (lastHook.x < player.x + 1000) {
+                let nextX = lastHook.x + Math.floor(Math.random() * 120) + 160; // Distance between hooks (160px to 280px)
+                let nextY = Math.floor(Math.random() * 180) + 80;             // Height variation (80px to 260px)
+                
+                hooks.push({ x: nextX, y: nextY });
+                lastHook = hooks[hooks.length - 1];
+            }
+
+            // Performance cleanup: Remove hooks that are completely off-screen to the left
+            hooks = hooks.filter(hook => hook.x > cameraX - 100);
+        }
+
+        function findClosestTarget() {
+            let closestHook = null;
+            let minDist = Infinity;
+
+            hooks.forEach(hook => {
+                let dx = hook.x - player.x;
+                let dy = hook.y - player.y;
+                let dist = Math.sqrt(dx * dx + dy * dy);
+
+                // Target points that are reasonably ahead/around the player and within range
+                if (dist < minDist && hook.x > player.x - 40 && dist < MAX_HOOK_RANGE) {
+                    minDist = dist;
+                    closestHook = hook;
+                }
+            });
+
+            targetHook = closestHook;
+        }
+
         function resetGame() {
             player.x = 100;
-            player.y = 250;
-            player.vx = 5;
+            player.y = 200;
+            player.vx = 6;
             player.vy = 0;
             player.isSwinging = false;
             player.hookedTo = null;
+            hooks = [];
+            score = 0;
+            scoreDisplay.textContent = 0;
+            manageHooks();
             gameStatus = "playing";
         }
 
-        // --- Core Physics & Update Loop ---
+        // --- Core Engine Update Loop ---
         function update() {
             if (gameStatus !== "playing") return;
 
-            // Apply Gravity
+            // Apply Basic Physics
             player.vy += GRAVITY;
-
-            // Apply air resistance
             player.vx *= FRICTION;
             player.vy *= FRICTION;
-
-            // Apply basic movement
             player.x += player.vx;
             player.y += player.vy;
 
-            // Handle Rope Swing Physics (The magic part)
+            // Manage Infinite Environment
+            manageHooks();
+
+            // Find the point we will attach to if we press space/click
+            if (!player.isSwinging) {
+                findClosestTarget();
+            }
+
+            // Handle Rope Physics
             if (player.isSwinging && player.hookedTo) {
                 let hook = player.hookedTo;
                 let dx = player.x - hook.x;
                 let dy = player.y - hook.y;
                 let currentDist = Math.sqrt(dx * dx + dy * dy);
 
-                // If the rope stretches past its length, constrain the player
                 if (currentDist > player.ropeLength) {
                     let angle = Math.atan2(dy, dx);
                     
-                    // Pull player back to the rope circumference
                     player.x = hook.x + Math.cos(angle) * player.ropeLength;
                     player.y = hook.y + Math.sin(angle) * player.ropeLength;
 
-                    // Constrain velocity to be perpendicular to the rope (angular velocity)
-                    let nx = dx / currentDist; // Normal vector
+                    let nx = dx / currentDist;
                     let ny = dy / currentDist;
-
-                    // Calculate how much velocity is pushing "outward" along the rope
                     let velAlongNormal = player.vx * nx + player.vy * ny;
 
-                    // Remove the outward velocity so the player swings in an arc
                     player.vx -= velAlongNormal * nx;
                     player.vy -= velAlongNormal * ny;
 
-                    // Add a tiny bit of acceleration to make the swing feel satisfying
-                    player.vx += Math.sin(angle) * 0.1; 
+                    // Centrifugal acceleration boost
+                    player.vx += Math.sin(angle) * 0.12; 
                 }
             }
 
-            // Camera follow (locks onto player horizontally)
+            // Dynamic Camera
             cameraX = player.x - 200;
 
-            // Check Win/Loss conditions
+            // Update Score based on distance traveled
+            let currentScore = Math.floor(player.x / 10) - 10;
+            if (currentScore > score) {
+                score = currentScore;
+                scoreDisplay.textContent = score;
+            }
+
+            // Check Defeat
             if (player.y > canvas.height + 100) {
                 gameStatus = "lost";
-            }
-            if (player.x >= finishLineX) {
-                gameStatus = "won";
+                // Save High Score via Local Storage
+                if (score > highScore) {
+                    highScore = score;
+                    localStorage.setItem("stickman_high_score", highScore);
+                    highScoreDisplay.textContent = highScore;
+                }
             }
         }
 
-        // --- Rendering Code ---
+        // --- Rendering Engine ---
         function draw() {
-            // Clear screen
             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
             ctx.save();
-            // Translate context to simulate a moving camera
             ctx.translate(-cameraX, 0);
 
-            // Draw Background Grids/Lines for depth
+            // Draw Parallax Moving Grid background lines
             ctx.strokeStyle = "#1f4068";
             ctx.lineWidth = 1;
-            for (let i = 0; i < finishLineX + 400; i += 100) {
+            let startGridX = Math.floor(cameraX / 100) * 100;
+            for (let i = startGridX; i < startGridX + canvas.width + 200; i += 100) {
                 ctx.beginPath();
                 ctx.moveTo(i, 0);
                 ctx.lineTo(i, canvas.height);
                 ctx.stroke();
             }
 
-            // Draw Finish Line
-            ctx.fillStyle = "#4ecca3";
-            ctx.fillRect(finishLineX, 0, 20, canvas.height);
-
             // Draw Hooks
             hooks.forEach(hook => {
-                ctx.fillStyle = "#e94560";
+                let isTargeted = (hook === targetHook && !player.isSwinging);
+                
+                ctx.fillStyle = isTargeted ? "#4ecca3" : "#e94560";
                 ctx.beginPath();
                 ctx.arc(hook.x, hook.y, 8, 0, Math.PI * 2);
                 ctx.fill();
                 
-                // Outer ring
-                ctx.strokeStyle = "rgba(233, 69, 96, 0.3)";
-                ctx.lineWidth = 4;
+                // Outer Ring Ring
+                ctx.strokeStyle = isTargeted ? "rgba(78, 204, 163, 0.4)" : "rgba(233, 69, 96, 0.2)";
+                ctx.lineWidth = isTargeted ? 4 : 2;
                 ctx.beginPath();
                 ctx.arc(hook.x, hook.y, 16, 0, Math.PI * 2);
                 ctx.stroke();
+
+                // If targeted, draw a dashed outer locking ring (like crosshairs)
+                if (isTargeted) {
+                    ctx.strokeStyle = "#4ecca3";
+                    ctx.lineWidth = 1.5;
+                    ctx.setLineDash([4, 4]);
+                    ctx.beginPath();
+                    ctx.arc(hook.x, hook.y, 26, 0, Math.PI * 2);
+                    ctx.stroke();
+                    ctx.setLineDash([]); // Reset line dash
+                }
             });
 
-            // Draw Rope
+            // Draw Active Grapple Rope
             if (player.isSwinging && player.hookedTo) {
                 ctx.strokeStyle = "#ffffff";
                 ctx.lineWidth = 3;
@@ -229,7 +304,7 @@
                 ctx.stroke();
             }
 
-            // Draw Player (Stickman replacement for now)
+            // Draw Player Blob
             ctx.fillStyle = player.isSwinging ? "#f9a826" : "#00adb5";
             ctx.beginPath();
             ctx.arc(player.x, player.y, player.radius, 0, Math.PI * 2);
@@ -237,36 +312,30 @@
 
             ctx.restore();
 
-            // Draw UI (static on screen, ignoring camera)
+            // Game Over Banner Overlay
             if (gameStatus === "lost") {
-                ctx.fillStyle = "rgba(0, 0, 0, 0.7)";
+                ctx.fillStyle = "rgba(15, 15, 26, 0.85)";
                 ctx.fillRect(0, 0, canvas.width, canvas.height);
                 ctx.fillStyle = "#e94560";
-                ctx.font = "bold 40px sans-serif";
-                ctx.fillText("GAME OVER", canvas.width / 2 - 120, canvas.height / 2);
+                ctx.font = "bold 42px sans-serif";
+                ctx.textAlign = "center";
+                ctx.fillText("GAME OVER", canvas.width / 2, canvas.height / 2 - 20);
+                
                 ctx.font = "20px sans-serif";
                 ctx.fillStyle = "#fff";
-                ctx.fillText("Click anywhere to restart", canvas.width / 2 - 100, canvas.height / 2 + 50);
-            } else if (gameStatus === "won") {
-                ctx.fillStyle = "rgba(0, 0, 0, 0.7)";
-                ctx.fillRect(0, 0, canvas.width, canvas.height);
-                ctx.fillStyle = "#4ecca3";
-                ctx.font = "bold 40px sans-serif";
-                ctx.fillText("YOU WIN!", canvas.width / 2 - 100, canvas.height / 2);
-                ctx.font = "20px sans-serif";
-                ctx.fillStyle = "#fff";
-                ctx.fillText("Click anywhere to play again", canvas.width / 2 - 110, canvas.height / 2 + 50);
+                ctx.fillText(`You reached ${score} points!`, canvas.width / 2, canvas.height / 2 + 20);
+                ctx.fillStyle = "#888";
+                ctx.fillText("Press Space or Click anywhere to retry", canvas.width / 2, canvas.height / 2 + 60);
             }
         }
 
-        // --- Main Game Loop ---
+        // Initialize and Start Loop
+        manageHooks();
         function loop() {
             update();
             draw();
             requestAnimationFrame(loop);
         }
-
-        // Start the game loop
         loop();
     </script>
 </body>
