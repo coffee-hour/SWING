@@ -754,21 +754,40 @@
         // --- Visual Renderers ---
         function drawDevilBackground() {
             let baseGrad = ctx.createLinearGradient(0, 0, 0, canvas.height);
-            baseGrad.addColorStop(0, "#0b0005"); baseGrad.addColorStop(0.7, "#22000b"); baseGrad.addColorStop(1, "#4a0010");
-            ctx.fillStyle = baseGrad; ctx.fillRect(0, 0, canvas.width, canvas.height);
-            ctx.fillStyle = "rgba(233, 69, 96, 0.18)";
+            baseGrad.addColorStop(0, "#1a0000"); 
+            baseGrad.addColorStop(0.6, "#8b0000"); 
+            baseGrad.addColorStop(1, "#ff0000"); 
+            ctx.fillStyle = baseGrad; 
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            ctx.fillStyle = "rgba(255, 69, 0, 0.4)"; 
             for (let i = 0; i < canvas.width + 100; i += 40) {
-                let flameHeight = 80 + Math.sin((i / 20) + flameOffset) * 25;
-                ctx.beginPath(); ctx.moveTo(i, canvas.height); ctx.quadraticCurveTo(i + 20, canvas.height - flameHeight, i + 40, canvas.height); ctx.fill();
+                let flameHeight = 100 + Math.sin((i / 20) + flameOffset) * 40;
+                ctx.beginPath(); 
+                ctx.moveTo(i, canvas.height); 
+                ctx.quadraticCurveTo(i + 20, canvas.height - flameHeight, i + 40, canvas.height); 
+                ctx.fill();
             }
         }
+
         function drawAngelicBackground() {
             let skyGrad = ctx.createLinearGradient(0, 0, 0, canvas.height);
-            skyGrad.addColorStop(0, "#74b9ff"); skyGrad.addColorStop(0.6, "#a29bfe"); skyGrad.addColorStop(1, "#dfe6e9");
-            ctx.fillStyle = skyGrad; ctx.fillRect(0, 0, canvas.width, canvas.height);
-            let sunX = canvas.width / 2; let sunY = -20; ctx.fillStyle = "rgba(255, 255, 210, 0.08)";
-            for (let i = 0; i < Math.PI * 2; i += Math.PI / 8) { ctx.beginPath(); ctx.moveTo(sunX, sunY); ctx.arc(sunX, sunY, 900, i - 0.1, i + 0.1); ctx.fill(); }
+            skyGrad.addColorStop(0, "#00a8ff"); 
+            skyGrad.addColorStop(0.6, "#9c88ff"); 
+            skyGrad.addColorStop(1, "#f5f6fa"); 
+            ctx.fillStyle = skyGrad; 
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            let sunX = canvas.width / 2; let sunY = -50; 
+            ctx.fillStyle = "rgba(255, 255, 255, 0.15)"; 
+            for (let i = 0; i < Math.PI * 2; i += Math.PI / 8) { 
+                ctx.beginPath(); 
+                ctx.moveTo(sunX, sunY); 
+                ctx.arc(sunX, sunY, 1000, i - 0.1, i + 0.1); 
+                ctx.fill(); 
+            }
         }
+
         function drawRealmBackground() {
             ctx.fillStyle = currentRealm === "devil" ? "#111" : "#eee"; ctx.fillRect(0, 0, canvas.width, canvas.height);
             ctx.save(); ctx.translate(-cameraX, 0); ctx.strokeStyle = currentRealm === "devil" ? "#333" : "#ccc"; ctx.lineWidth = 2;
@@ -778,6 +797,7 @@
             }
             ctx.restore();
         }
+
         function drawDefaultBackground() {
             ctx.fillStyle = "#162447"; ctx.fillRect(0, 0, canvas.width, canvas.height);
             ctx.save(); ctx.translate(-cameraX, 0); ctx.strokeStyle = "#1f4068"; ctx.lineWidth = 1;
@@ -787,14 +807,22 @@
         }
 
         function drawFusionCutscene() {
-            ctx.fillStyle = "rgba(0,0,0,0.2)"; ctx.fillRect(0, 0, canvas.width, canvas.height);
-            let cx = canvas.width / 2; let cy = canvas.height / 2;
-            fusionAngle += fusionSpeed; fusionSpeed += 0.002; fusionDistance -= 0.6; 
+            ctx.fillStyle = "rgba(0,0,0,0.2)"; 
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            let cx = canvas.width / 2; 
+            let cy = canvas.height / 2;
+            
+            fusionAngle += fusionSpeed; 
+            fusionSpeed += 0.002; 
+            fusionDistance -= 0.6; 
 
             if (fusionDistance <= 0) {
                 fusionFlash += 5; 
                 if (fusionFlash > 255) {
-                    localStorage.setItem("stickman_black_shard", "false"); localStorage.setItem("stickman_white_shard", "false");
+                    
+                    localStorage.setItem("stickman_black_shard", "false"); 
+                    localStorage.setItem("stickman_white_shard", "false");
                     
                     let unlockedSkinKey = "yin_yang";
                     let alertMsg = "☯️ PERFECT BALANCE ACHIEVED: YIN YANG UNLOCKED ☯️\n(Click anywhere to flap your wings!)";
@@ -805,25 +833,42 @@
                         
                         if (available.length > 0) {
                             unlockedSkinKey = available[Math.floor(Math.random() * available.length)];
-                            alertMsg = `🎉 GACHA ROLL SUCCESS! UNLOCKED: ${SKINS_CONFIG[unlockedSkinKey].name.toUpperCase()} 🎉`;
+                            alertMsg = `🎉 GACHA ROLL SUCCESS! 🎉\nCost: 1⬛ + 1⬜\nUnlocked: ${SKINS_CONFIG[unlockedSkinKey].name.toUpperCase()}`;
                         } else {
-                            highScore += 5000; localStorage.setItem("stickman_high_score", highScore);
-                            alertMsg = "💎 GACHA MAXED OUT! You received 5000 Bonus Points instead! 💎";
+                            highScore += 5000; 
+                            localStorage.setItem("stickman_high_score", highScore);
+                            alertMsg = "💎 GACHA MAXED OUT! 💎\nCost: 1⬛ + 1⬜\nYou received 5000 Bonus Points instead!";
                             unlockedSkinKey = equippedSkin; 
                         }
                     }
+                    
                     if (unlockedSkinKey !== equippedSkin) {
-                        equippedSkin = unlockedSkinKey; localStorage.setItem("stickman_equipped_skin", unlockedSkinKey); unlockSkin(unlockedSkinKey); 
+                        equippedSkin = unlockedSkinKey; 
+                        localStorage.setItem("stickman_equipped_skin", unlockedSkinKey); 
+                        unlockSkin(unlockedSkinKey); 
                     }
-                    alert(alertMsg); renderChangingRoom(); resetGame(); return;
+                    
+                    alert(alertMsg); 
+                    renderChangingRoom(); 
+                    resetGame(); 
+                    return;
                 }
             } else {
-                let bx = cx + Math.cos(fusionAngle) * fusionDistance; let by = cy + Math.sin(fusionAngle) * fusionDistance;
-                ctx.fillStyle = "#000"; ctx.strokeStyle = "#fff"; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(bx, by, 15, 0, Math.PI*2); ctx.fill(); ctx.stroke();
-                let wx = cx + Math.cos(fusionAngle + Math.PI) * fusionDistance; let wy = cy + Math.sin(fusionAngle + Math.PI) * fusionDistance;
-                ctx.fillStyle = "#fff"; ctx.strokeStyle = "#000"; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(wx, wy, 15, 0, Math.PI*2); ctx.fill(); ctx.stroke();
+                let bx = cx + Math.cos(fusionAngle) * fusionDistance; 
+                let by = cy + Math.sin(fusionAngle) * fusionDistance;
+                ctx.fillStyle = "#000"; ctx.strokeStyle = "#fff"; ctx.lineWidth = 2; 
+                ctx.beginPath(); ctx.arc(bx, by, 15, 0, Math.PI*2); ctx.fill(); ctx.stroke();
+                
+                let wx = cx + Math.cos(fusionAngle + Math.PI) * fusionDistance; 
+                let wy = cy + Math.sin(fusionAngle + Math.PI) * fusionDistance;
+                ctx.fillStyle = "#fff"; ctx.strokeStyle = "#000"; ctx.lineWidth = 2; 
+                ctx.beginPath(); ctx.arc(wx, wy, 15, 0, Math.PI*2); ctx.fill(); ctx.stroke();
             }
-            if (fusionFlash > 0) { ctx.fillStyle = `rgba(255, 255, 255, ${fusionFlash / 255})`; ctx.fillRect(0, 0, canvas.width, canvas.height); }
+            
+            if (fusionFlash > 0) { 
+                ctx.fillStyle = `rgba(255, 255, 255, ${fusionFlash / 255})`; 
+                ctx.fillRect(0, 0, canvas.width, canvas.height); 
+            }
         }
 
         function drawHalo(x, y, color) { ctx.strokeStyle = color; ctx.lineWidth = 3; ctx.beginPath(); ctx.ellipse(x, y - 20, 14, 4, 0, 0, Math.PI * 2); ctx.stroke(); }
