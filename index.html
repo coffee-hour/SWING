@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>☯️</text></svg>">
-    <title>Swing!</title>
+    <title>Infinite Stickman Hook - Exalted Edition</title>
     <style>
         body {
             margin: 0;
@@ -19,6 +19,7 @@
             user-select: none;
         }
         
+        /* Master Layout Grid */
         #main-layout {
             display: flex;
             gap: 20px;
@@ -37,6 +38,7 @@
             flex: 1;
         }
         
+        /* Sidebar Styling */
         #sidebar {
             width: 260px;
             background: rgba(22, 36, 71, 0.9);
@@ -44,7 +46,7 @@
             border-radius: 8px;
             padding: 15px;
             box-sizing: border-box;
-            height: 700px;
+            height: 595px;
             display: flex;
             flex-direction: column;
         }
@@ -80,10 +82,23 @@
             border: 1px solid #1f4068;
             font-size: 14px;
         }
-        .leaderboard-rank { font-weight: bold; color: #00adb5; margin-right: 5px; }
-        .leaderboard-name { flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .leaderboard-score { color: #4ecca3; font-weight: bold; }
+        .leaderboard-rank {
+            font-weight: bold;
+            color: #00adb5;
+            margin-right: 5px;
+        }
+        .leaderboard-name {
+            flex: 1;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .leaderboard-score {
+            color: #4ecca3;
+            font-weight: bold;
+        }
 
+        /* Auth Panel Styles */
         #authContainer {
             background: rgba(22, 36, 71, 0.9);
             padding: 15px;
@@ -96,12 +111,32 @@
             box-sizing: border-box;
             justify-content: space-between;
         }
-        .auth-input { padding: 8px; border-radius: 4px; border: 1px solid #1a1a2e; background: #1a1a2e; color: white; width: 110px; }
-        .auth-btn { padding: 8px 15px; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; transition: opacity 0.2s; }
+        .auth-input {
+            padding: 8px;
+            border-radius: 4px;
+            border: 1px solid #1a1a2e;
+            background: #1a1a2e;
+            color: white;
+            font-family: inherit;
+            width: 110px;
+        }
+        .auth-btn {
+            padding: 8px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: opacity 0.2s;
+        }
         .auth-btn:hover { opacity: 0.8; }
         #loginBtn { background: #4ecca3; color: #1a1a2e; }
         #registerBtn { background: #00adb5; color: #fff; }
-        #welcomeMessage { display: none; font-weight: bold; color: #4ecca3; font-size: 16px; }
+        #welcomeMessage {
+            display: none;
+            font-weight: bold;
+            color: #4ecca3;
+            font-size: 16px;
+        }
         #authInputs { display: flex; gap: 10px; }
 
         canvas {
@@ -112,11 +147,10 @@
             width: 100%;
             max-width: 800px;
         }
-        
         #ui {
             display: flex;
-            gap: 15px;
-            font-size: 15px;
+            gap: 20px;
+            font-size: 16px;
             font-weight: bold;
             background: rgba(26, 26, 46, 0.9);
             padding: 10px 20px;
@@ -129,53 +163,53 @@
         }
         .score-val { color: #4ecca3; }
         .high-val { color: #f9a826; }
-        .coin-val { color: #ffd700; }
         .skin-val { color: #00adb5; text-transform: capitalize; }
         
-        .clickable-ui { cursor: pointer; transition: color 0.2s; }
+        .clickable-ui {
+            cursor: pointer;
+            transition: color 0.2s;
+        }
         .clickable-ui:hover { color: #fff; }
         
-        #shardDisplay { display: flex; gap: 8px; }
-        .shard { width: 15px; height: 15px; border-radius: 3px; border: 1px solid #555; opacity: 0.2; }
+        #shardDisplay {
+            display: flex;
+            gap: 10px;
+        }
+        .shard {
+            width: 15px; height: 15px;
+            border-radius: 3px;
+            border: 1px solid #555;
+            opacity: 0.2;
+        }
         .shard.owned { opacity: 1; box-shadow: 0 0 8px rgba(255,255,255,0.5); }
         .shard-black { background: #000; border-color: #fff; }
         .shard-white { background: #fff; border-color: #000; }
 
-        #bottom-panels {
-            display: flex;
-            gap: 15px;
-            width: 100%;
-        }
-
-        .panel-box {
+        /* Changing Room Styles */
+        #changingRoom {
             background: rgba(22, 36, 71, 0.8);
             border: 1px solid #1f4068;
             border-radius: 8px;
             padding: 15px;
+            width: 100%;
             box-sizing: border-box;
             box-shadow: 0 5px 15px rgba(0,0,0,0.3);
             position: relative;
         }
-        
-        #changingRoom { flex: 2; }
-        #upgradeShop { flex: 1; }
-        
-        .panel-box h3 {
+        #changingRoom h3 {
             margin: 0 0 10px 0;
-            font-size: 14px;
+            font-size: 16px;
             color: #00adb5;
             text-transform: uppercase;
             letter-spacing: 1px;
-            border-bottom: 1px solid #1f4068;
-            padding-bottom: 5px;
         }
         
         .skins-grid {
             display: flex;
             flex-wrap: wrap;
-            gap: 8px;
+            gap: 10px;
             align-items: flex-start;
-            max-height: 110px; 
+            max-height: 120px; 
             overflow-y: auto;
             padding-right: 5px;
         }
@@ -187,58 +221,84 @@
             background: #1a1a2e;
             border: 2px solid #1f4068;
             color: #888;
-            padding: 6px 10px;
+            padding: 8px 12px;
             border-radius: 6px;
             cursor: not-allowed;
-            font-size: 11px;
+            font-size: 12px;
             font-weight: bold;
             display: flex;
             flex-direction: column;
             align-items: center;
             gap: 4px;
-            min-width: 80px;
+            min-width: 75px;
             transition: all 0.2s;
             position: relative;
         }
-        .skin-btn.unlocked { border-color: #4ecca3; color: #fff; }
-        .skin-btn.unlocked:hover { background: #1f4068; transform: translateY(-2px); }
-        .skin-btn.equipped { border-color: #f9a826; background: #232342; color: #f9a826; }
-        .skin-btn.sub-skin { border-style: dashed; background: #162447; transform: scale(0.95); }
-        .skin-preview { width: 14px; height: 14px; border-radius: 50%; display: inline-block; border: 1px solid rgba(255,255,255,0.2); }
+        .skin-btn.unlocked {
+            border-color: #4ecca3;
+            color: #fff;
+        }
+        .skin-btn.unlocked:hover {
+            background: #1f4068;
+            transform: translateY(-2px);
+        }
+        .skin-btn.equipped {
+            border-color: #f9a826;
+            background: #232342;
+            color: #f9a826;
+        }
+        .skin-btn.sub-skin {
+            border-style: dashed;
+            background: #162447;
+            transform: scale(0.95);
+        }
+        .skin-preview {
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            display: inline-block;
+            border: 1px solid rgba(255,255,255,0.2);
+        }
         
-        .ability-text { font-size: 9px; color: #ffeb3b; text-align: center; line-height: 1.1; margin-top: 2px;}
-
         .dropdown-arrow {
-            position: absolute; top: -8px; right: -8px; background: #f9a826; color: #1a1a2e;
-            border-radius: 50%; width: 18px; height: 18px; font-size: 10px; display: flex;
-            justify-content: center; align-items: center; cursor: pointer; box-shadow: 0 2px 5px rgba(0,0,0,0.5); z-index: 10;
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: #f9a826;
+            color: #1a1a2e;
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            font-size: 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.5);
+            z-index: 10;
         }
         .dropdown-arrow:hover { background: #fff; }
 
         #fuseBtn {
-            position: absolute; top: 10px; right: 15px;
+            position: absolute;
+            top: 10px; right: 25px;
             background: linear-gradient(90deg, #ffffff 50%, #000000 50%);
-            color: #1a1a2e; border: 2px solid #f9a826; padding: 5px 10px; font-size: 11px;
-            border-radius: 6px; font-weight: bold; cursor: pointer; display: none;
-            text-shadow: 0px 0px 4px #fff; box-shadow: 0 0 10px #f9a826; animation: pulse 1.5s infinite;
+            color: #1a1a2e;
+            border: 2px solid #f9a826;
+            padding: 8px 15px;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            display: none;
+            text-shadow: 0px 0px 4px #fff;
+            box-shadow: 0 0 10px #f9a826;
+            animation: pulse 1.5s infinite;
         }
-        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
-
-        .upgrade-item {
-            display: flex; justify-content: space-between; align-items: center;
-            background: #1a1a2e; padding: 6px 10px; border-radius: 6px; margin-bottom: 6px;
-            border: 1px solid #1f4068; font-size: 12px;
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
         }
-        .upgrade-info { display: flex; flex-direction: column; gap: 2px; }
-        .upgrade-name { font-weight: bold; color: #4ecca3; }
-        .upgrade-lvl { font-size: 10px; color: #888; }
-        .buy-btn {
-            background: #f9a826; color: #1a1a2e; border: none; border-radius: 4px;
-            padding: 4px 8px; font-weight: bold; cursor: pointer; font-size: 11px;
-        }
-        .buy-btn:hover { background: #fff; }
-        .buy-btn:disabled { background: #555; color: #888; cursor: not-allowed; }
-
     </style>
 </head>
 <body>
@@ -258,28 +318,20 @@
 
             <div id="ui">
                 <div>Score: <span id="scoreDisplay" class="score-val">0</span></div>
-                <div id="highScoreClickable" class="clickable-ui">High: <span id="highScoreDisplay" class="high-val">0</span></div>
-                <div>🪙 Coins: <span id="coinDisplay" class="coin-val">0</span></div>
-                <div id="equippedClickable" class="clickable-ui">Skin: <span id="skinDisplay" class="skin-val">Default</span></div>
+                <div id="highScoreClickable" class="clickable-ui">High Score: <span id="highScoreDisplay" class="high-val">0</span></div>
+                <div id="equippedClickable" class="clickable-ui">Equipped: <span id="skinDisplay" class="skin-val">Default</span></div>
                 <div id="shardDisplay">
                     <div id="whiteShard" class="shard shard-white" title="White Shard"></div>
                     <div id="blackShard" class="shard shard-black" title="Black Shard"></div>
                 </div>
             </div>
 
-            <canvas id="gameCanvas" width="800" height="420"></canvas>
+            <canvas id="gameCanvas" width="800" height="480"></canvas>
 
-            <div id="bottom-panels">
-                <div id="changingRoom" class="panel-box">
-                    <h3>👕 Changing Room</h3>
-                    <button id="fuseBtn">FUSE?</button>
-                    <div class="skins-grid" id="skinsGrid"></div>
-                </div>
-
-                <div id="upgradeShop" class="panel-box">
-                    <h3>🛒 Upgrades</h3>
-                    <div id="shopContent"></div>
-                </div>
+            <div id="changingRoom">
+                <h3>👕 Changing Room</h3>
+                <button id="fuseBtn">FUSE SHARDS?</button>
+                <div class="skins-grid" id="skinsGrid"></div>
             </div>
         </div>
 
@@ -292,6 +344,7 @@
     </div>
 
     <script>
+        // --- ONLINE CLOUDFLARE VARIABLES ---
         const API_URL = "https://swingworker.xaviersgames.workers.dev";
         let currentUser = null;
         let currentPassword = null;
@@ -301,43 +354,29 @@
         const ctx = canvas.getContext("2d");
         const scoreDisplay = document.getElementById("scoreDisplay");
         const highScoreDisplay = document.getElementById("highScoreDisplay");
-        const coinDisplay = document.getElementById("coinDisplay");
         const skinDisplay = document.getElementById("skinDisplay");
         const skinsGrid = document.getElementById("skinsGrid");
-        const shopContent = document.getElementById("shopContent");
         const fuseBtn = document.getElementById("fuseBtn");
         const leaderboardList = document.getElementById("leaderboardList");
 
-        // --- Game Config & Economy State ---
-        let highScore = parseInt(localStorage.getItem("stickman_high_score")) || 0;
-        let coins = parseInt(localStorage.getItem("stickman_coins")) || 0;
-        let equippedSkin = localStorage.getItem("stickman_equipped_skin") || "default";
-        
-        let upgrades = JSON.parse(localStorage.getItem("stickman_upgrades")) || { hook: 0, bounce: 0, magnet: 0 };
-        const MAX_UPGRADE_LEVEL = 5;
+        // --- Game Config & Physics ---
+        const GRAVITY = 0.42; 
+        const FRICTION = 0.996; 
+        const MAX_HOOK_RANGE = 370; 
 
-        // Base Physics Constants
-        const BASE_GRAVITY = 0.42; 
-        const BASE_FRICTION = 0.996; 
-        const BASE_HOOK_RANGE = 370; 
-
-        // Mutable Physics State
-        let currentGravity = BASE_GRAVITY;
-        let currentFriction = BASE_FRICTION;
-        let maxHookRange = BASE_HOOK_RANGE;
-        let currentBouncePower = 0;
-        let currentCoinMult = 1;
-        let magnetRadius = 0;
-
+        // --- Game State ---
         let player = { x: 100, y: 200, vx: 6, vy: 0, radius: 12, isSwinging: false, hookedTo: null, ropeLength: 0 };
-        let hooks = []; let bouncers = []; let portals = []; let coinEntities = [];
+        let hooks = []; let bouncers = []; let portals = [];
         let targetHook = null; let cameraX = 0; let score = 0; let flameOffset = 0; 
         
+        let highScore = parseInt(localStorage.getItem("stickman_high_score")) || 0;
+        let equippedSkin = localStorage.getItem("stickman_equipped_skin") || "default";
         let angelicDropdownOpen = false; let devilDropdownOpen = false;
-        let gameStatus = "playing"; let currentRealm = null; 
+        let gameStatus = "playing"; let currentRealm = null; let realmStartScore = 0; 
 
         let fusionAngle = 0; let fusionSpeed = 0.05; let fusionDistance = 150; let fusionFlash = 0;
 
+        // Populate offline unlocks array from localStorage on initial load
         Object.keys(localStorage).forEach(key => {
             if (key.startsWith("stickman_skin_") && localStorage.getItem(key) === "true") {
                 let skinName = key.replace("stickman_skin_", "");
@@ -345,18 +384,18 @@
             }
         });
 
-        // --- Skins Database with Abilities ---
+        // --- Skins Database Config ---
         const SKINS_CONFIG = {
-            og_stickman: { name: "Exquisite OG", color: "#ff00ff", condition: "First 10 Players", ability: "Looking Dapper" },
+            og_stickman: { name: "OG Founder", color: "#ff00ff", condition: "First 10 Players" },
             default: { name: "Default", color: "#00adb5" },
-            brown: { name: "Brown", color: "#8b4513", score: 100, ability: "+ Hook Range" },
-            green: { name: "Green", color: "#00ff00", score: 500, ability: "+ Bounce" },
-            pink: { name: "Pink", color: "#ffc0cb", score: 1000, ability: "Low Gravity" },
-            blue: { name: "Blue", color: "#0000ff", score: 5000, ability: "Slippery" },
-            red: { name: "Red", color: "#ff0000", score: 7000, ability: "Heavy Momentum" },
-            orange: { name: "Orange", color: "#ffa500", score: 10000, ability: "x2 Coins" },
-            yellow: { name: "Yellow", color: "#ffff00", score: 20000, ability: "Base Magnet" },
-            gold: { name: "Gold", color: "#d4af37", score: 100000, ability: "x5 Coins + Magnet" },
+            brown: { name: "Brown", color: "#8b4513", score: 100 },
+            green: { name: "Green", color: "#00ff00", score: 500 },
+            pink: { name: "Pink", color: "#ffc0cb", score: 1000 },
+            blue: { name: "Blue", color: "#0000ff", score: 5000 },
+            red: { name: "Red", color: "#ff0000", score: 7000 },
+            orange: { name: "Orange", color: "#ffa500", score: 10000 },
+            yellow: { name: "Yellow", color: "#ffff00", score: 20000 },
+            gold: { name: "Gold", color: "#d4af37", score: 100000 },
             
             angelic: { name: "Angelic Dev", color: "#ffffff", condition: "Secret Code" },
             denied_angel: { name: "Denied Angel", color: "#ffffff", condition: "???", parent: "angelic" },
@@ -375,55 +414,107 @@
             split_neon_synth: { name: "Neon Synth", color: "#ff00ff", splitColor: "#00ffff", condition: "Gacha Roll" }
         };
 
-        // --- CLOUDFLARE API & SYNC ---
+        // --- FETCH LEADERBOARD FUNCTION ---
         async function fetchLeaderboard() {
             try {
                 const res = await fetch(`${API_URL}/api/leaderboard`);
                 const data = await res.json();
                 if (data.success) {
                     leaderboardList.innerHTML = "";
-                    if (data.leaderboard.length === 0) return leaderboardList.innerHTML = '<div style="text-align: center; color: #666; margin-top: 20px;">No scores recorded yet!</div>';
+                    if (data.leaderboard.length === 0) {
+                        leaderboardList.innerHTML = '<div style="text-align: center; color: #666; margin-top: 20px;">No scores recorded yet!</div>';
+                        return;
+                    }
                     data.leaderboard.forEach((row, index) => {
-                        const item = document.createElement("div"); item.className = "leaderboard-item";
-                        if(currentUser && row.username === currentUser) { item.style.borderColor = "#4ecca3"; item.style.background = "#232342"; }
+                        const item = document.createElement("div");
+                        item.className = "leaderboard-item";
+                        if(currentUser && row.username === currentUser) {
+                            item.style.borderColor = "#4ecca3"; item.style.background = "#232342";
+                        }
                         item.innerHTML = `<div><span class="leaderboard-rank">#${index + 1}</span><span class="leaderboard-name">${row.username}</span></div><span class="leaderboard-score">${row.score}</span>`;
                         leaderboardList.appendChild(item);
                     });
                 }
-            } catch (e) { leaderboardList.innerHTML = '<div style="text-align: center; color: #ff0055; margin-top: 20px;">Offline Mode.</div>'; }
+            } catch (e) { leaderboardList.innerHTML = '<div style="text-align: center; color: #ff0055; margin-top: 20px;">Failed to load ranks.</div>'; }
         }
         fetchLeaderboard();
 
-        function saveLocalData() {
-            localStorage.setItem("stickman_high_score", highScore);
-            localStorage.setItem("stickman_coins", coins);
-            localStorage.setItem("stickman_equipped_skin", equippedSkin);
-            localStorage.setItem("stickman_upgrades", JSON.stringify(upgrades));
-        }
-
+        // --- CLOUDFLARE SYNC FUNCTIONS ---
         async function syncCloudSave() {
-            saveLocalData();
             if (!currentUser) return; 
             const payload = {
                 username: currentUser, password: currentPassword, high_score: highScore, equipped_skin: equippedSkin,
-                coins: coins, upgrades: upgrades,
                 black_shard: localStorage.getItem("stickman_black_shard") === "true",
                 white_shard: localStorage.getItem("stickman_white_shard") === "true",
                 unlocked_skins: unlockedSkinsArray
             };
-            try { await fetch(`${API_URL}/api/save`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload) }); fetchLeaderboard(); } catch (e) {}
+            try {
+                await fetch(`${API_URL}/api/save`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload) });
+                fetchLeaderboard();
+            } catch (e) { console.error("Cloud save failed:", e); }
         }
 
         function unlockSkin(skinKey) {
             if (!unlockedSkinsArray.includes(skinKey)) unlockedSkinsArray.push(skinKey);
-            localStorage.setItem(`stickman_skin_${skinKey}`, "true"); syncCloudSave();
+            localStorage.setItem(`stickman_skin_${skinKey}`, "true");
+            syncCloudSave();
         }
 
-        // --- AUTH ---
-        document.getElementById("registerBtn").addEventListener("click", async () => { /* Logic hidden for brevity */ });
-        document.getElementById("loginBtn").addEventListener("click", async () => { /* Logic hidden for brevity */ });
+        // --- AUTHENTICATION LISTENERS ---
+        document.getElementById("registerBtn").addEventListener("click", async () => {
+            const u = document.getElementById("usernameInput").value.trim(); const p = document.getElementById("passwordInput").value;
+            if(!u || !p) return alert("Please fill in both username and password.");
+            if(u.length > 15) return alert("Usernames must be 15 characters or less.");
+            try {
+                const res = await fetch(`${API_URL}/api/register`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ username: u, password: p }) });
+                const data = await res.json();
+                alert(data.success ? "Registration successful! You can now log in." : "Error: " + data.error);
+            } catch (err) { alert("Failed to connect to API."); }
+        });
 
-        // --- UNLOCK & RENDER LOGIC ---
+        document.getElementById("loginBtn").addEventListener("click", async () => {
+            const u = document.getElementById("usernameInput").value.trim(); const p = document.getElementById("passwordInput").value;
+            if(!u || !p) return alert("Please fill in both username and password.");
+            try {
+                const res = await fetch(`${API_URL}/api/login`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ username: u, password: p }) });
+                const data = await res.json();
+                if (data.success) {
+                    currentUser = u; currentPassword = p;
+                    highScore = data.userData.high_score; equippedSkin = data.userData.equipped_skin; unlockedSkinsArray = data.userData.unlocked_skins || [];
+                    localStorage.setItem("stickman_high_score", highScore); localStorage.setItem("stickman_equipped_skin", equippedSkin);
+                    localStorage.setItem("stickman_black_shard", data.userData.black_shard ? "true" : "false");
+                    localStorage.setItem("stickman_white_shard", data.userData.white_shard ? "true" : "false");
+                    highScoreDisplay.textContent = highScore;
+                    document.getElementById("authInputs").style.display = "none";
+                    const welcome = document.getElementById("welcomeMessage");
+                    welcome.textContent = `👋 Welcome back, ${u}!`; welcome.style.display = "block";
+                    renderChangingRoom(); fetchLeaderboard(); 
+                } else alert("Login failed: " + data.error);
+            } catch (err) { alert("Failed to connect to API."); }
+        });
+
+        // --- Cheats & Codes ---
+        document.getElementById("highScoreClickable").addEventListener("click", () => {
+            let code = prompt("ENTER ACCESS CODE:");
+            if (code && code.toUpperCase() === "IAMXAVIER") {
+                unlockSkin("angelic");
+                if (equippedSkin.includes("devil") && !unlockedSkinsArray.includes("denied_devil")) {
+                    unlockSkin("denied_devil"); alert("😈 UNLOCKED: DENIED DEVIL");
+                } else alert("😇 ANGELIC DEV MODE UNLOCKED 😇");
+                renderChangingRoom();
+            }
+        });
+
+        document.getElementById("equippedClickable").addEventListener("click", () => {
+            let code = prompt("ENTER ACCESS CODE:");
+            if (code && code.toUpperCase() === "PT") {
+                player.x = 1000100; player.y = 100; player.vx = 12; player.vy = 0;
+                player.isSwinging = false; player.hookedTo = null; hooks = []; bouncers = []; portals = [];
+                manageEnvironment(); alert("⏩ WARP SPEED ENGAGED: 100,000 POINTS");
+            }
+        });
+
+        // --- THE UNLOCK LOGIC ---
         function checkUnlockStatus(key) {
             if (key === "default") return true;
             if (unlockedSkinsArray && unlockedSkinsArray.includes(key)) return true; 
@@ -432,10 +523,22 @@
             return false;
         }
 
+        function hasBothShards() { return localStorage.getItem("stickman_black_shard") === "true" && localStorage.getItem("stickman_white_shard") === "true"; }
+
+        // --- Changing Room Render & Gacha Button ---
         function renderChangingRoom() {
             skinsGrid.innerHTML = "";
             document.getElementById("blackShard").classList.toggle("owned", localStorage.getItem("stickman_black_shard") === "true");
             document.getElementById("whiteShard").classList.toggle("owned", localStorage.getItem("stickman_white_shard") === "true");
+
+            if (hasBothShards()) {
+                fuseBtn.style.display = "block";
+                if (checkUnlockStatus("yin_yang")) {
+                    fuseBtn.textContent = "ROLL GACHA (1⬛ + 1⬜)"; fuseBtn.style.background = "linear-gradient(90deg, #ff00ff 50%, #00ffff 50%)"; fuseBtn.style.color = "#1a1a2e";
+                } else {
+                    fuseBtn.textContent = "FUSE SHARDS?"; fuseBtn.style.background = "linear-gradient(90deg, #ffffff 50%, #000000 50%)"; fuseBtn.style.color = "#f9a826";
+                }
+            } else fuseBtn.style.display = "none";
 
             const hasAngelSubSkins = checkUnlockStatus("denied_angel") || checkUnlockStatus("accurate_angel") || checkUnlockStatus("exalted_angel");
             const hasDevilSubSkins = checkUnlockStatus("denied_devil") || checkUnlockStatus("accurate_devil") || checkUnlockStatus("exalted_devil");
@@ -452,26 +555,31 @@
                 if (skin.parent) btn.classList.add("sub-skin");
                 
                 const preview = document.createElement("span"); preview.className = "skin-preview";
-                if (skin.splitColor) preview.style.background = `linear-gradient(90deg, ${skin.color} 50%, ${skin.splitColor} 50%)`;
-                else preview.style.backgroundColor = skin.color;
+                
+                if (skin.splitColor) {
+                    preview.style.background = `linear-gradient(90deg, ${skin.color} 50%, ${skin.splitColor} 50%)`;
+                    if(key === "yin_yang") preview.style.boxShadow = "0 0 5px #fff, 0 0 5px #000";
+                } else if (key === "og_stickman") {
+                    preview.style.backgroundColor = skin.color; preview.style.boxShadow = "0 0 8px #ff00ff";
+                } else { preview.style.backgroundColor = skin.color; }
+                
+                if (key === "denied_angel" || key === "denied_devil") preview.style.borderColor = "red";
+                if (key === "exalted_angel" || key === "accurate_devil") preview.style.boxShadow = "0 0 5px #f9a826";
+                if (key === "exalted_devil") preview.style.boxShadow = "0 0 5px #ff0055";
+
                 btn.appendChild(preview);
                 
                 const nameLabel = document.createElement("span"); nameLabel.textContent = skin.name; btn.appendChild(nameLabel);
-                
                 const infoLabel = document.createElement("span"); infoLabel.style.fontSize = "9px"; infoLabel.style.color = "#666";
                 if (skin.score !== undefined) infoLabel.textContent = `Score: ${skin.score}`;
                 else if (skin.condition) infoLabel.textContent = skin.condition;
                 btn.appendChild(infoLabel);
 
-                if (skin.ability) {
-                    const abLabel = document.createElement("span"); abLabel.className = "ability-text";
-                    abLabel.textContent = skin.ability; btn.appendChild(abLabel);
-                }
-
                 if (key === "angelic" && isUnlocked && hasAngelSubSkins) {
                     const arrow = document.createElement("div"); arrow.className = "dropdown-arrow"; arrow.textContent = angelicDropdownOpen ? "▲" : "▼";
                     arrow.addEventListener("click", (e) => { e.stopPropagation(); angelicDropdownOpen = !angelicDropdownOpen; renderChangingRoom(); }); btn.appendChild(arrow);
                 }
+                
                 if (key === "devil" && isUnlocked && hasDevilSubSkins) {
                     const arrow = document.createElement("div"); arrow.className = "dropdown-arrow"; arrow.textContent = devilDropdownOpen ? "▲" : "▼";
                     arrow.addEventListener("click", (e) => { e.stopPropagation(); devilDropdownOpen = !devilDropdownOpen; renderChangingRoom(); }); btn.appendChild(arrow);
@@ -479,75 +587,24 @@
 
                 if (isUnlocked) {
                     btn.style.cursor = "pointer";
-                    btn.onclick = () => { equippedSkin = key; applySkinAbilities(); saveLocalData(); renderChangingRoom(); };
-                }
+                    btn.onclick = () => { equippedSkin = key; localStorage.setItem("stickman_equipped_skin", key); syncCloudSave(); renderChangingRoom(); };
+                } else { btn.style.cursor = "not-allowed"; btn.onclick = null; }
+
                 skinsGrid.appendChild(btn);
             });
 
             skinDisplay.textContent = SKINS_CONFIG[equippedSkin] ? SKINS_CONFIG[equippedSkin].name : "Default";
             skinDisplay.style.color = SKINS_CONFIG[equippedSkin] ? SKINS_CONFIG[equippedSkin].color : "#00adb5";
-            highScoreDisplay.textContent = highScore; coinDisplay.textContent = coins;
-            applySkinAbilities();
         }
+        highScoreDisplay.textContent = highScore;
+        renderChangingRoom();
 
-        // --- UPGRADE SHOP ---
-        const SHOP_CONFIG = {
-            hook: { name: "Grapple Cable+", baseCost: 50, desc: "Increases hook range." },
-            bounce: { name: "Bouncy Pads+", baseCost: 50, desc: "More height on pads." },
-            magnet: { name: "Coin Magnet+", baseCost: 100, desc: "Pulls coins to you." }
-        };
+        // --- Gacha / Fusion Trigger ---
+        fuseBtn.addEventListener("click", () => {
+            gameStatus = "fusion"; fusionAngle = 0; fusionSpeed = 0.05; fusionDistance = 150; fusionFlash = 0; fuseBtn.style.display = "none";
+        });
 
-        function renderShop() {
-            shopContent.innerHTML = "";
-            Object.keys(SHOP_CONFIG).forEach(key => {
-                const conf = SHOP_CONFIG[key]; const lvl = upgrades[key];
-                const cost = conf.baseCost * (lvl + 1);
-                const isMax = lvl >= MAX_UPGRADE_LEVEL;
-
-                const item = document.createElement("div"); item.className = "upgrade-item";
-                item.innerHTML = `
-                    <div class="upgrade-info">
-                        <span class="upgrade-name">${conf.name} <span class="upgrade-lvl">Lvl ${lvl}/${MAX_UPGRADE_LEVEL}</span></span>
-                        <span style="font-size: 9px; color: #888;">${conf.desc}</span>
-                    </div>
-                `;
-                const btn = document.createElement("button"); btn.className = "buy-btn";
-                if (isMax) { btn.textContent = "MAX"; btn.disabled = true; } 
-                else {
-                    btn.textContent = `🪙 ${cost}`;
-                    if (coins < cost) btn.disabled = true;
-                    btn.onclick = () => {
-                        coins -= cost; upgrades[key]++; saveLocalData(); renderShop(); renderChangingRoom(); applySkinAbilities();
-                    };
-                }
-                item.appendChild(btn); shopContent.appendChild(item);
-            });
-            coinDisplay.textContent = coins;
-        }
-
-        function applySkinAbilities() {
-            // Reset to base + upgrades
-            currentGravity = BASE_GRAVITY;
-            currentFriction = BASE_FRICTION;
-            maxHookRange = BASE_HOOK_RANGE + (upgrades.hook * 20);
-            currentBouncePower = (upgrades.bounce * 1.5);
-            currentCoinMult = 1;
-            magnetRadius = (upgrades.magnet * 35);
-
-            // Apply Skin Overrides
-            if (equippedSkin === "pink") currentGravity = 0.32;
-            if (equippedSkin === "red") currentGravity = 0.55; 
-            if (equippedSkin === "blue") currentFriction = 0.9995; 
-            if (equippedSkin === "brown") maxHookRange += 60;
-            if (equippedSkin === "green") currentBouncePower += 3;
-            if (equippedSkin === "orange") currentCoinMult = 2;
-            if (equippedSkin === "yellow") magnetRadius += 60;
-            if (equippedSkin === "gold") { currentCoinMult = 5; magnetRadius += 100; }
-        }
-
-        renderShop(); renderChangingRoom();
-
-        // --- Controls & Gameplay Loop ---
+        // --- Controls ---
         canvas.addEventListener("mousedown", handleActionStart); window.addEventListener("mouseup", handleActionEnd);
         canvas.addEventListener("touchstart", (e) => { e.preventDefault(); handleActionStart(); }, { passive: false });
         window.addEventListener("touchend", (e) => { e.preventDefault(); handleActionEnd(); }, { passive: false });
@@ -556,6 +613,8 @@
 
         function handleActionStart() {
             if (gameStatus === "lost") { resetGame(); return; }
+            if (gameStatus === "fusion") return; 
+
             if (targetHook && !player.isSwinging) {
                 let dx = targetHook.x - player.x; let dy = targetHook.y - player.y;
                 player.isSwinging = true; player.hookedTo = targetHook; player.ropeLength = Math.sqrt(dx * dx + dy * dy);
@@ -572,32 +631,26 @@
                 hooks.push({ x: nextX, y: nextY });
 
                 let rand = Math.random();
-                if (rand < 0.35) bouncers.push({ type: "horizontal", x: nextX - 50, y: 400, width: 65, height: 12 });
+                if (rand < 0.35) bouncers.push({ type: "horizontal", x: nextX - 50, y: 430, width: 65, height: 12 });
                 else if (rand < 0.55) bouncers.push({ type: "vertical", x: nextX - 110, y: nextY + 50, width: 14, height: 80 });
 
-                // Spawn Coins
-                if (Math.random() < 0.4) {
-                    let coinY = nextY + (Math.random() * 100 - 50);
-                    coinEntities.push({ x: nextX + 50, y: coinY, collected: false });
-                    // Sometimes spawn clusters
-                    if (Math.random() < 0.3) {
-                        coinEntities.push({ x: nextX + 75, y: coinY, collected: false });
-                        coinEntities.push({ x: nextX + 100, y: coinY, collected: false });
+                if (gameStatus === "playing" && Math.random() < 0.01) {
+                    if (equippedSkin.includes("devil") && localStorage.getItem("stickman_black_shard") !== "true") {
+                        portals.push({ type: "devil", x: nextX + 50, y: canvas.height - 20, radius: 30 });
+                    } else if (equippedSkin.includes("angel") && localStorage.getItem("stickman_white_shard") !== "true") {
+                        portals.push({ type: "angel", x: nextX + 50, y: canvas.height - 20, radius: 30 });
                     }
                 }
-
                 lastHook = hooks[hooks.length - 1];
             }
-            hooks = hooks.filter(h => h.x > cameraX - 100); 
-            bouncers = bouncers.filter(b => b.x > cameraX - 100); 
-            coinEntities = coinEntities.filter(c => c.x > cameraX - 100 && !c.collected);
+            hooks = hooks.filter(h => h.x > cameraX - 100); bouncers = bouncers.filter(b => b.x > cameraX - 100); portals = portals.filter(p => p.x > cameraX - 100);
         }
 
         function findClosestTarget() {
             let closestHook = null; let minDist = Infinity;
             hooks.forEach(hook => {
                 let dx = hook.x - player.x; let dy = hook.y - player.y; let dist = Math.sqrt(dx * dx + dy * dy);
-                if (dist < minDist && hook.x > player.x - 30 && dist < maxHookRange) { minDist = dist; closestHook = hook; }
+                if (dist < minDist && hook.x > player.x - 30 && dist < MAX_HOOK_RANGE) { minDist = dist; closestHook = hook; }
             });
             targetHook = closestHook;
         }
@@ -608,45 +661,39 @@
             return (dx * dx + dy * dy) < (circle.radius * circle.radius);
         }
 
+        function enterRealm(type) {
+            gameStatus = "realm"; currentRealm = type; realmStartScore = score;
+            player.x = 100; player.y = 200; player.vx = 8; player.vy = 0; player.isSwinging = false; player.hookedTo = null;
+            hooks = []; bouncers = []; portals = []; manageEnvironment();
+        }
+
         function resetGame() {
             player.x = 100; player.y = 200; player.vx = 6; player.vy = 0; player.isSwinging = false; player.hookedTo = null;
-            hooks = []; bouncers = []; coinEntities = []; score = 0; scoreDisplay.textContent = 0; manageEnvironment(); gameStatus = "playing";
+            hooks = []; bouncers = []; portals = []; score = 0; scoreDisplay.textContent = 0; manageEnvironment(); gameStatus = "playing"; currentRealm = null; fetchLeaderboard(); 
         }
 
         function update() {
-            if (gameStatus === "lost") return;
-            
-            // Physics
-            player.vy += currentGravity; player.vx *= currentFriction; player.vy *= currentFriction; 
-            player.x += player.vx; player.y += player.vy;
+            if (gameStatus === "fusion" || gameStatus === "lost") return;
+            player.vy += GRAVITY; player.vx *= FRICTION; player.vy *= FRICTION; player.x += player.vx; player.y += player.vy;
 
             manageEnvironment();
             if (!player.isSwinging) findClosestTarget();
-            flameOffset += 0.05;
+            flameOffset += 0.05; // Slightly slower rotation base
 
-            // Coin Logic
-            coinEntities.forEach(c => {
-                if (c.collected) return;
-                let dx = player.x - c.x; let dy = player.y - c.y; let dist = Math.sqrt(dx*dx + dy*dy);
-                
-                // Magnet
-                if (magnetRadius > 0 && dist < magnetRadius && dist > player.radius) {
-                    c.x += dx * 0.1; c.y += dy * 0.1; 
-                }
-                // Collision
-                if (dist < player.radius + 12) {
-                    c.collected = true; coins += 1 * currentCoinMult;
-                    coinDisplay.textContent = coins;
-                }
-            });
+            if (gameStatus === "playing") {
+                portals.forEach(p => {
+                    let dx = player.x - p.x; let dy = player.y - p.y;
+                    if (Math.sqrt(dx*dx + dy*dy) < p.radius + player.radius) enterRealm(p.type);
+                });
+            }
 
             bouncers.forEach(pad => {
                 if (checkCollision(player, pad)) {
                     if (pad.type === "horizontal") {
-                        player.y = pad.y - player.radius; player.vy = -Math.max(Math.abs(player.vy) * 1.35, 11 + currentBouncePower); player.vx *= 1.25;
+                        player.y = pad.y - player.radius; player.vy = -Math.max(Math.abs(player.vy) * 1.35, 11); player.vx *= 1.25;
                     } else if (pad.type === "vertical") {
-                        if (player.x < pad.x) { player.x = pad.x - player.radius; player.vx = -Math.max(Math.abs(player.vx) * 1.35, 8 + currentBouncePower); } 
-                        else { player.x = pad.x + pad.width + player.radius; player.vx = Math.max(Math.abs(player.vx) * 1.35, 8 + currentBouncePower); }
+                        if (player.x < pad.x) { player.x = pad.x - player.radius; player.vx = -Math.max(Math.abs(player.vx) * 1.35, 8); } 
+                        else { player.x = pad.x + pad.width + player.radius; player.vx = Math.max(Math.abs(player.vx) * 1.35, 8); }
                         player.vy = -Math.max(Math.abs(player.vy) * 0.9, 5);
                     }
                     player.isSwinging = false; player.hookedTo = null;
@@ -659,21 +706,92 @@
                     let angle = Math.atan2(dy, dx);
                     player.x = hook.x + Math.cos(angle) * player.ropeLength; player.y = hook.y + Math.sin(angle) * player.ropeLength;
                     let nx = dx / currentDist; let ny = dy / currentDist; let velAlongNormal = player.vx * nx + player.vy * ny;
-                    player.vx -= velAlongNormal * nx; player.vy -= velAlongNormal * ny; 
-                    
-                    let momentumBoost = (equippedSkin === "red") ? 0.2 : 0.14;
-                    player.vx += Math.sin(angle) * momentumBoost; 
+                    player.vx -= velAlongNormal * nx; player.vy -= velAlongNormal * ny; player.vx += Math.sin(angle) * 0.14; 
                 }
             }
 
             cameraX = player.x - 200;
-            score = Math.floor(player.x / 10) - 10; scoreDisplay.textContent = score;
+            
+            if (gameStatus === "realm") {
+                let realmScore = Math.floor((player.x - 100) / 10); scoreDisplay.textContent = `REALM: ${realmScore} / 1000`;
+                if (realmScore >= 1000) {
+                    if (currentRealm === "devil") { localStorage.setItem("stickman_black_shard", "true"); alert("⬛ COLLECTED THE BLACK SHARD"); } 
+                    else if (currentRealm === "angel") { localStorage.setItem("stickman_white_shard", "true"); alert("⬜ COLLECTED THE WHITE SHARD"); }
+                    syncCloudSave(); renderChangingRoom(); resetGame(); 
+                }
+            } else {
+                score = Math.floor(player.x / 10) - 10; scoreDisplay.textContent = score;
+                if (score >= 10000) {
+                    if (equippedSkin.includes("angel") && !unlockedSkinsArray.includes("exalted_angel")) { unlockSkin("exalted_angel"); alert("✨ UNLOCKED: EXALTED ANGEL!"); renderChangingRoom(); }
+                    if (equippedSkin.includes("devil") && !unlockedSkinsArray.includes("exalted_devil")) { unlockSkin("exalted_devil"); alert("🔥 UNLOCKED: EXALTED DEVIL!"); renderChangingRoom(); }
+                }
+            }
 
             if (player.y > canvas.height + 140) {
-                gameStatus = "lost"; 
-                if (score > highScore) { highScore = score; highScoreDisplay.textContent = highScore; }
-                saveLocalData(); syncCloudSave(); renderShop(); renderChangingRoom();
+                if (gameStatus === "realm") { alert("THE REALM HAS REJECTED YOU."); resetGame(); return; }
+
+                gameStatus = "lost"; let needsCloudSync = false;
+                if (score > highScore) { highScore = score; localStorage.setItem("stickman_high_score", highScore); highScoreDisplay.textContent = highScore; needsCloudSync = true; }
+                
+                if (score < 0 && !unlockedSkinsArray.includes("devil")) { unlockSkin("devil"); alert("👹 UNLOCKED: THE DEVIL SKIN!"); needsCloudSync = true; }
+                if (score < 0 && equippedSkin.includes("angel") && !unlockedSkinsArray.includes("denied_angel")) { unlockSkin("denied_angel"); alert("🥀 UNLOCKED: DENIED ANGEL"); needsCloudSync = true; }
+                if (equippedSkin.includes("angel")) {
+                    let angelDeaths = parseInt(localStorage.getItem("stickman_angelic_deaths") || "0") + 1; localStorage.setItem("stickman_angelic_deaths", angelDeaths);
+                    if (angelDeaths >= 20 && !unlockedSkinsArray.includes("accurate_angel")) { unlockSkin("accurate_angel"); alert("👁️ UNLOCKED: ACCURATE ANGEL"); needsCloudSync = true; }
+                }
+                if (equippedSkin.includes("devil")) {
+                    let devilDeaths = parseInt(localStorage.getItem("stickman_devil_deaths") || "0") + 1; localStorage.setItem("stickman_devil_deaths", devilDeaths);
+                    if (devilDeaths >= 20 && !unlockedSkinsArray.includes("accurate_devil")) { unlockSkin("accurate_devil"); alert("🎩 UNLOCKED: ACCURATE DEVIL"); needsCloudSync = true; }
+                }
+                if (needsCloudSync) syncCloudSave(); renderChangingRoom();
             }
+        }
+
+        // --- Visual Renderers ---
+        function drawDevilBackground() {
+            let baseGrad = ctx.createLinearGradient(0, 0, 0, canvas.height);
+            baseGrad.addColorStop(0, "#1a0000"); 
+            baseGrad.addColorStop(0.6, "#8b0000"); 
+            baseGrad.addColorStop(1, "#ff0000"); 
+            ctx.fillStyle = baseGrad; 
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            ctx.fillStyle = "rgba(255, 69, 0, 0.4)"; 
+            for (let i = 0; i < canvas.width + 100; i += 40) {
+                let flameHeight = 100 + Math.sin((i / 20) + (flameOffset * 3)) * 40;
+                ctx.beginPath(); 
+                ctx.moveTo(i, canvas.height); 
+                ctx.quadraticCurveTo(i + 20, canvas.height - flameHeight, i + 40, canvas.height); 
+                ctx.fill();
+            }
+        }
+
+        function drawAngelicBackground() {
+            let skyGrad = ctx.createLinearGradient(0, 0, 0, canvas.height);
+            skyGrad.addColorStop(0, "#00a8ff"); 
+            skyGrad.addColorStop(0.6, "#9c88ff"); 
+            skyGrad.addColorStop(1, "#f5f6fa"); 
+            ctx.fillStyle = skyGrad; 
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            let sunX = canvas.width / 2; let sunY = -50; 
+            ctx.fillStyle = "rgba(255, 255, 255, 0.15)"; 
+            for (let i = 0; i < Math.PI * 2; i += Math.PI / 8) { 
+                ctx.beginPath(); 
+                ctx.moveTo(sunX, sunY); 
+                ctx.arc(sunX, sunY, 1000, i - 0.1, i + 0.1); 
+                ctx.fill(); 
+            }
+        }
+
+        function drawRealmBackground() {
+            ctx.fillStyle = currentRealm === "devil" ? "#111" : "#eee"; ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.save(); ctx.translate(-cameraX, 0); ctx.strokeStyle = currentRealm === "devil" ? "#333" : "#ccc"; ctx.lineWidth = 2;
+            let startGridX = Math.floor(cameraX / 100) * 100;
+            for (let i = startGridX; i < startGridX + canvas.width + 200; i += 80) {
+                ctx.beginPath(); ctx.moveTo(i, 0); ctx.quadraticCurveTo(i + Math.sin((flameOffset*3) + i)*20, canvas.height/2, i, canvas.height); ctx.stroke();
+            }
+            ctx.restore();
         }
 
         function drawDefaultBackground() {
@@ -684,89 +802,252 @@
             ctx.restore();
         }
 
+        function drawFusionCutscene() {
+            ctx.fillStyle = "rgba(0,0,0,0.2)"; 
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            let cx = canvas.width / 2; 
+            let cy = canvas.height / 2;
+            
+            fusionAngle += fusionSpeed; 
+            fusionSpeed += 0.002; 
+            fusionDistance -= 0.6; 
+
+            if (fusionDistance <= 0) {
+                fusionFlash += 5; 
+                if (fusionFlash > 255) {
+                    
+                    localStorage.setItem("stickman_black_shard", "false"); 
+                    localStorage.setItem("stickman_white_shard", "false");
+                    
+                    let unlockedSkinKey = "yin_yang";
+                    let alertMsg = "☯️ PERFECT BALANCE ACHIEVED: YIN YANG UNLOCKED ☯️";
+
+                    if (checkUnlockStatus("yin_yang")) {
+                        const gachaPool = ["split_fire_ice", "split_toxic_bio", "split_solar_lunar", "split_neon_synth"];
+                        const available = gachaPool.filter(s => !checkUnlockStatus(s));
+                        
+                        if (available.length > 0) {
+                            unlockedSkinKey = available[Math.floor(Math.random() * available.length)];
+                            alertMsg = `🎉 GACHA ROLL SUCCESS! 🎉\nCost: 1⬛ + 1⬜\nUnlocked: ${SKINS_CONFIG[unlockedSkinKey].name.toUpperCase()}`;
+                        } else {
+                            highScore += 5000; 
+                            localStorage.setItem("stickman_high_score", highScore);
+                            alertMsg = "💎 GACHA MAXED OUT! 💎\nCost: 1⬛ + 1⬜\nYou received 5000 Bonus Points instead!";
+                            unlockedSkinKey = equippedSkin; 
+                        }
+                    }
+                    
+                    if (unlockedSkinKey !== equippedSkin) {
+                        equippedSkin = unlockedSkinKey; 
+                        localStorage.setItem("stickman_equipped_skin", unlockedSkinKey); 
+                        unlockSkin(unlockedSkinKey); 
+                    }
+                    
+                    alert(alertMsg); 
+                    renderChangingRoom(); 
+                    resetGame(); 
+                    return;
+                }
+            } else {
+                let bx = cx + Math.cos(fusionAngle) * fusionDistance; 
+                let by = cy + Math.sin(fusionAngle) * fusionDistance;
+                ctx.fillStyle = "#000"; ctx.strokeStyle = "#fff"; ctx.lineWidth = 2; 
+                ctx.beginPath(); ctx.arc(bx, by, 15, 0, Math.PI*2); ctx.fill(); ctx.stroke();
+                
+                let wx = cx + Math.cos(fusionAngle + Math.PI) * fusionDistance; 
+                let wy = cy + Math.sin(fusionAngle + Math.PI) * fusionDistance;
+                ctx.fillStyle = "#fff"; ctx.strokeStyle = "#000"; ctx.lineWidth = 2; 
+                ctx.beginPath(); ctx.arc(wx, wy, 15, 0, Math.PI*2); ctx.fill(); ctx.stroke();
+            }
+            
+            if (fusionFlash > 0) { 
+                ctx.fillStyle = `rgba(255, 255, 255, ${fusionFlash / 255})`; 
+                ctx.fillRect(0, 0, canvas.width, canvas.height); 
+            }
+        }
+
+        function drawHalo(x, y, color) { ctx.strokeStyle = color; ctx.lineWidth = 3; ctx.beginPath(); ctx.ellipse(x, y - 20, 14, 4, 0, 0, Math.PI * 2); ctx.stroke(); }
+
         function draw() {
+            // MAGIC ERASER - Prevents trailing bugs!
             ctx.clearRect(0, 0, canvas.width, canvas.height);
-            drawDefaultBackground();
+
+            if (gameStatus === "fusion") { drawFusionCutscene(); return; }
+
+            // Properly layered backgrounds based on skin
+            if (gameStatus === "realm") drawRealmBackground();
+            else if (equippedSkin.includes("devil")) drawDevilBackground();
+            else if (equippedSkin.includes("angel")) drawAngelicBackground();
+            else drawDefaultBackground();
 
             ctx.save();
             ctx.translate(-cameraX, 0);
 
-            // Draw Bouncers
+            portals.forEach(p => {
+                ctx.beginPath(); ctx.arc(p.x, p.y, p.radius, 0, Math.PI*2);
+                if (p.type === "devil") { ctx.fillStyle = "rgba(0, 191, 255, 0.6)"; ctx.shadowColor = "#00bfff"; ctx.shadowBlur = 20; } 
+                else { ctx.fillStyle = "rgba(255, 255, 255, 0.8)"; ctx.shadowColor = "#fff"; ctx.shadowBlur = 20; }
+                ctx.fill(); ctx.shadowBlur = 0;
+            });
+
             bouncers.forEach(pad => {
-                if (pad.type === "horizontal") {
-                    ctx.fillStyle = "#e94560"; ctx.fillRect(pad.x, pad.y, pad.width, pad.height);
-                    ctx.fillStyle = "#ffdd59"; ctx.fillRect(pad.x + 4, pad.y + 2, pad.width - 8, 3);
-                } else if (pad.type === "vertical") {
-                    ctx.fillStyle = "#00ffcc"; ctx.fillRect(pad.x, pad.y, pad.width, pad.height);
-                    ctx.fillStyle = "#ffffff"; ctx.fillRect(pad.x + 2, pad.y + 4, pad.width - 4, pad.height - 8);
+                if (gameStatus === "realm") { ctx.fillStyle = currentRealm === "devil" ? "#fff" : "#000"; ctx.fillRect(pad.x, pad.y, pad.width, pad.height); } 
+                else {
+                    if (pad.type === "horizontal") {
+                        ctx.fillStyle = "#e94560"; ctx.fillRect(pad.x, pad.y, pad.width, pad.height);
+                        ctx.fillStyle = "#ffdd59"; ctx.fillRect(pad.x + 4, pad.y + 2, pad.width - 8, 3);
+                    } else if (pad.type === "vertical") {
+                        ctx.fillStyle = "#00ffcc"; ctx.fillRect(pad.x, pad.y, pad.width, pad.height);
+                        ctx.fillStyle = "#ffffff"; ctx.fillRect(pad.x + 2, pad.y + 4, pad.width - 4, pad.height - 8);
+                    }
                 }
             });
 
-            // Draw Hooks
             hooks.forEach(hook => {
                 let isTargeted = (hook === targetHook && !player.isSwinging);
-                ctx.fillStyle = isTargeted ? "#4ecca3" : "#e94560";
+                if (gameStatus === "realm") { ctx.fillStyle = currentRealm === "devil" ? "#fff" : "#000"; } 
+                else {
+                    if (equippedSkin.includes("devil") || equippedSkin === "denied_angel") ctx.fillStyle = "#ff0055";
+                    else if (equippedSkin.includes("angel")) ctx.fillStyle = "#fab1a0";
+                    else if (SKINS_CONFIG[equippedSkin] && SKINS_CONFIG[equippedSkin].splitColor) ctx.fillStyle = "#ffffff";
+                    else ctx.fillStyle = isTargeted ? "#4ecca3" : "#e94560";
+                }
                 ctx.beginPath(); ctx.arc(hook.x, hook.y, 8, 0, Math.PI * 2); ctx.fill();
                 ctx.strokeStyle = isTargeted ? "rgba(255, 255, 255, 0.8)" : "rgba(100, 100, 100, 0.3)"; ctx.lineWidth = isTargeted ? 4 : 2;
                 ctx.beginPath(); ctx.arc(hook.x, hook.y, 16, 0, Math.PI * 2); ctx.stroke();
-                
-                // Max range visualization lightly around player
-                if (!player.isSwinging && isTargeted) {
-                    ctx.strokeStyle = "rgba(78, 204, 163, 0.1)"; ctx.lineWidth = 1;
-                    ctx.beginPath(); ctx.arc(player.x, player.y, maxHookRange, 0, Math.PI*2); ctx.stroke();
-                }
             });
 
-            // Draw Rope
             if (player.isSwinging && player.hookedTo) {
-                ctx.strokeStyle = "#ffffff"; ctx.lineWidth = 3; 
-                ctx.beginPath(); ctx.moveTo(player.hookedTo.x, player.hookedTo.y); ctx.lineTo(player.x, player.y); ctx.stroke();
+                if (gameStatus === "realm") ctx.strokeStyle = currentRealm === "devil" ? "#fff" : "#000";
+                else if (equippedSkin.includes("devil") || equippedSkin === "denied_angel") ctx.strokeStyle = "#ff0055";
+                else if (equippedSkin.includes("angel")) ctx.strokeStyle = "#ffeaa7";
+                else ctx.strokeStyle = "#ffffff";
+                ctx.lineWidth = 3; ctx.beginPath(); ctx.moveTo(player.hookedTo.x, player.hookedTo.y); ctx.lineTo(player.x, player.y); ctx.stroke();
             }
 
-            // Draw Coins
-            coinEntities.forEach(c => {
-                if (c.collected) return;
-                ctx.save(); ctx.translate(c.x, c.y); ctx.rotate(flameOffset);
-                ctx.fillStyle = "#ffd700"; ctx.beginPath(); ctx.arc(0, 0, 8, 0, Math.PI*2); ctx.fill();
-                ctx.fillStyle = "#ffb142"; ctx.beginPath(); ctx.arc(0, 0, 5, 0, Math.PI*2); ctx.fill();
-                ctx.fillStyle = "#fff"; ctx.font = "bold 10px sans-serif"; ctx.textAlign = "center"; ctx.textBaseline = "middle";
-                ctx.fillText("¢", 0, 1);
-                ctx.restore();
-            });
+            if (equippedSkin === "exalted_angel") {
+                ctx.fillStyle = "rgba(255, 255, 255, 0.9)";
+                ctx.beginPath(); ctx.moveTo(player.x - 6, player.y); ctx.quadraticCurveTo(player.x - 25, player.y - 18, player.x - 30, player.y - 5); ctx.quadraticCurveTo(player.x - 20, player.y + 12, player.x - 8, player.y + 4); ctx.fill();
+                ctx.beginPath(); ctx.moveTo(player.x + 6, player.y); ctx.quadraticCurveTo(player.x + 25, player.y - 18, player.x + 30, player.y - 5); ctx.quadraticCurveTo(player.x + 20, player.y + 12, player.x + 8, player.y + 4); ctx.fill();
+            }
 
-            // Draw Player & Skins
-            ctx.fillStyle = SKINS_CONFIG[equippedSkin] ? SKINS_CONFIG[equippedSkin].color : "#00adb5";
-            if (equippedSkin === "og_stickman") { ctx.shadowColor = "#ff00ff"; ctx.shadowBlur = 15; }
+            // GACHA SPLIT SKINS LOGIC (Redesigned)
+            if (SKINS_CONFIG[equippedSkin] && SKINS_CONFIG[equippedSkin].splitColor) {
+                let colorLeft = SKINS_CONFIG[equippedSkin].color || "#ffffff";
+                let colorRight = SKINS_CONFIG[equippedSkin].splitColor || "#000000";
+
+                ctx.save();
+                ctx.translate(player.x, player.y);
+                ctx.rotate(flameOffset * 2); // Rotate the whole player model for these skins
+
+                if (equippedSkin === "yin_yang") {
+                    // True Yin Yang Design
+                    ctx.fillStyle = colorLeft;
+                    ctx.beginPath(); ctx.arc(0, 0, player.radius, Math.PI / 2, Math.PI * 1.5); ctx.fill();
+                    
+                    ctx.fillStyle = colorRight;
+                    ctx.beginPath(); ctx.arc(0, 0, player.radius, Math.PI * 1.5, Math.PI / 2); ctx.fill();
+                    
+                    ctx.fillStyle = colorLeft;
+                    ctx.beginPath(); ctx.arc(0, -player.radius / 2, player.radius / 2, 0, Math.PI * 2); ctx.fill();
+                    
+                    ctx.fillStyle = colorRight;
+                    ctx.beginPath(); ctx.arc(0, player.radius / 2, player.radius / 2, 0, Math.PI * 2); ctx.fill();
+                    
+                    ctx.fillStyle = colorRight;
+                    ctx.beginPath(); ctx.arc(0, -player.radius / 2, 2.5, 0, Math.PI * 2); ctx.fill();
+                    
+                    ctx.fillStyle = colorLeft;
+                    ctx.beginPath(); ctx.arc(0, player.radius / 2, 2.5, 0, Math.PI * 2); ctx.fill();
+                } else {
+                    // Gacha Skins Design: Core + Orbital Rings
+                    ctx.fillStyle = colorLeft;
+                    ctx.beginPath(); ctx.arc(0, 0, player.radius, Math.PI / 2, Math.PI * 1.5); ctx.fill();
+                    
+                    ctx.fillStyle = colorRight;
+                    ctx.beginPath(); ctx.arc(0, 0, player.radius, Math.PI * 1.5, Math.PI / 2); ctx.fill();
+                    
+                    ctx.fillStyle = "#ffffff";
+                    ctx.beginPath(); ctx.arc(0, 0, player.radius * 0.4, 0, Math.PI * 2); ctx.fill();
+                    
+                    ctx.fillStyle = colorRight;
+                    ctx.beginPath(); ctx.arc(-player.radius - 4, 0, 3, 0, Math.PI * 2); ctx.fill();
+                    
+                    ctx.fillStyle = colorLeft;
+                    ctx.beginPath(); ctx.arc(player.radius + 4, 0, 3, 0, Math.PI * 2); ctx.fill();
+                }
+                ctx.restore();
+            } else {
+                // NORMAL SKINS
+                if (gameStatus === "realm") ctx.fillStyle = currentRealm === "devil" ? "#fff" : "#000";
+                else ctx.fillStyle = SKINS_CONFIG[equippedSkin] ? SKINS_CONFIG[equippedSkin].color : "#00adb5";
+                
+                if (equippedSkin === "og_stickman") { ctx.shadowColor = "#ff00ff"; ctx.shadowBlur = 15; }
+                ctx.beginPath(); ctx.arc(player.x, player.y, player.radius, 0, Math.PI * 2); ctx.fill();
+                ctx.shadowBlur = 0;
+                
+                if (gameStatus !== "realm") {
+                    if (equippedSkin === "angelic" || equippedSkin === "accurate_angel" || equippedSkin === "exalted_angel" || equippedSkin === "denied_devil") drawHalo(player.x, player.y, "#ffeaa7");
+                    if (equippedSkin === "denied_angel") drawHalo(player.x, player.y, "#ff0055");
+                    
+                    if (equippedSkin === "devil" || equippedSkin === "exalted_devil") {
+                        ctx.fillStyle = "#ff0055";
+                        ctx.beginPath(); ctx.moveTo(player.x - 8, player.y - 8); ctx.lineTo(player.x - 14, player.y - 18); ctx.lineTo(player.x - 2, player.y - 11); ctx.fill();
+                        ctx.beginPath(); ctx.moveTo(player.x + 8, player.y - 8); ctx.lineTo(player.x + 14, player.y - 18); ctx.lineTo(player.x + 2, player.y - 11); ctx.fill();
+                    }
+                    if (equippedSkin === "denied_devil") {
+                        ctx.fillStyle = "#cc0044";
+                        ctx.beginPath(); ctx.ellipse(player.x - 10, player.y + 2, 3, 9, Math.PI/4, 0, Math.PI*2); ctx.fill();
+                        ctx.beginPath(); ctx.ellipse(player.x + 10, player.y + 2, 3, 9, -Math.PI/4, 0, Math.PI*2); ctx.fill();
+                        ctx.fillStyle = "#ffffff"; ctx.beginPath(); ctx.arc(player.x - 4, player.y - 2, 2.5, 0, Math.PI*2); ctx.fill();
+                        ctx.beginPath(); ctx.arc(player.x + 4, player.y - 2, 2.5, 0, Math.PI*2); ctx.fill();
+                    }
+                    if (equippedSkin === "accurate_devil") {
+                        ctx.fillStyle = "#111111"; ctx.beginPath(); ctx.arc(player.x, player.y, player.radius, 0, Math.PI); ctx.fill();
+                        ctx.fillStyle = "#ffffff"; ctx.beginPath(); ctx.moveTo(player.x - 5, player.y - 3); ctx.lineTo(player.x + 5, player.y - 3); ctx.lineTo(player.x, player.y + 4); ctx.fill();
+                        ctx.fillStyle = "#ff0000";
+                        ctx.beginPath(); ctx.moveTo(player.x - 4, player.y - 2); ctx.lineTo(player.x, player.y); ctx.lineTo(player.x - 4, player.y + 2); ctx.fill();
+                        ctx.beginPath(); ctx.moveTo(player.x + 4, player.y - 2); ctx.lineTo(player.x, player.y); ctx.lineTo(player.x + 4, player.y + 2); ctx.fill();
+                        ctx.fillStyle = "#ff0000"; ctx.beginPath(); ctx.arc(player.x - 4, player.y - 5, 2, 0, Math.PI*2); ctx.fill();
+                        ctx.beginPath(); ctx.arc(player.x + 4, player.y - 5, 2, 0, Math.PI*2); ctx.fill();
+                    }
+                    if (equippedSkin === "exalted_devil") {
+                        ctx.strokeStyle = "#8b0000"; ctx.lineWidth = 1.5;
+                        ctx.beginPath(); ctx.moveTo(player.x + 8, player.y + 6); ctx.lineTo(player.x + 22, player.y - 12); ctx.stroke(); 
+                        ctx.beginPath(); ctx.moveTo(player.x + 16, player.y - 9); ctx.lineTo(player.x + 19, player.y - 16); ctx.lineTo(player.x + 26, player.y - 12); ctx.stroke(); 
+                        ctx.fillStyle = "#8b0000"; ctx.beginPath(); ctx.arc(player.x + 23, player.y - 13, 1.2, 0, Math.PI*2); ctx.fill(); 
+                        ctx.fillStyle = "#000000"; ctx.beginPath(); ctx.arc(player.x - 4, player.y - 2, 2.5, 0, Math.PI*2); ctx.fill();
+                        ctx.beginPath(); ctx.arc(player.x + 4, player.y - 2, 2.5, 0, Math.PI*2); ctx.fill();
+                    }
+                    if (equippedSkin === "denied_angel") {
+                        ctx.fillStyle = "#ff0055"; ctx.beginPath(); ctx.arc(player.x - 4, player.y - 2, 2.5, 0, Math.PI*2); ctx.fill();
+                        ctx.beginPath(); ctx.arc(player.x + 4, player.y - 2, 2.5, 0, Math.PI*2); ctx.fill();
+                    }
+                    if (equippedSkin === "accurate_angel") {
+                        ctx.fillStyle = "#000000";
+                        let eyePos = [[-5, -4], [0, -6], [5, -4], [-4, 3], [4, 3], [0, 6]];
+                        eyePos.forEach(p => { ctx.beginPath(); ctx.arc(player.x + p[0], player.y + p[1], 1.8, 0, Math.PI*2); ctx.fill(); });
+                    }
+                }
+            }
             
-            ctx.beginPath(); ctx.arc(player.x, player.y, player.radius, 0, Math.PI * 2); ctx.fill();
-            ctx.shadowBlur = 0;
-            
-            // The Exquisite OG details
-            if (equippedSkin === "og_stickman") {
-                // Monocle
-                ctx.strokeStyle = "#FFD700"; ctx.lineWidth = 1.5;
-                ctx.beginPath(); ctx.arc(player.x + 5, player.y - 3, 4, 0, Math.PI*2); ctx.stroke();
-                ctx.beginPath(); ctx.moveTo(player.x + 9, player.y - 3); ctx.lineTo(player.x + 14, player.y + 4); ctx.stroke();
-                // Bowtie
-                ctx.fillStyle = "#fff";
-                ctx.beginPath(); ctx.moveTo(player.x, player.y + 6); ctx.lineTo(player.x - 6, player.y + 3); ctx.lineTo(player.x - 6, player.y + 9); ctx.fill();
-                ctx.beginPath(); ctx.moveTo(player.x, player.y + 6); ctx.lineTo(player.x + 6, player.y + 3); ctx.lineTo(player.x + 6, player.y + 9); ctx.fill();
-                // Top Hat
-                ctx.fillStyle = "#111";
-                ctx.fillRect(player.x - 10, player.y - 12, 20, 2);
-                ctx.fillRect(player.x - 6, player.y - 24, 12, 12);
-                ctx.fillStyle = "#FFD700"; ctx.fillRect(player.x - 6, player.y - 15, 12, 3);
+            if (equippedSkin === "exalted_devil" && gameStatus !== "realm") {
+                ctx.strokeStyle = "#8b0000"; ctx.lineWidth = 2.5;
+                ctx.beginPath(); ctx.moveTo(player.x - 8, player.y + 5); ctx.quadraticCurveTo(player.x - 25, player.y + 15, player.x - 20, player.y - 8); ctx.stroke();
+                ctx.fillStyle = "#8b0000"; ctx.beginPath(); ctx.moveTo(player.x - 20, player.y - 10); ctx.lineTo(player.x - 25, player.y - 4); ctx.lineTo(player.x - 15, player.y - 4); ctx.fill();
             }
 
             ctx.restore();
 
             if (gameStatus === "lost") {
                 ctx.fillStyle = "rgba(15, 15, 26, 0.85)"; ctx.fillRect(0, 0, canvas.width, canvas.height);
-                ctx.fillStyle = "#e94560"; ctx.font = "bold 42px sans-serif"; ctx.textAlign = "center";
-                ctx.fillText("GAME OVER", canvas.width / 2, canvas.height / 2 - 20);
+                ctx.fillStyle = score < 0 ? "#ff0055" : "#e94560";
+                ctx.font = "bold 42px sans-serif"; ctx.textAlign = "center";
+                ctx.fillText(score < 0 ? "UNDERWORLD DESCENT" : "GAME OVER", canvas.width / 2, canvas.height / 2 - 20);
                 ctx.font = "20px sans-serif"; ctx.fillStyle = "#fff";
-                ctx.fillText(`Score: ${score} | Coins: ${coins}`, canvas.width / 2, canvas.height / 2 + 20);
-                ctx.fillStyle = "#888"; ctx.fillText("Press Space or Click to play again!", canvas.width / 2, canvas.height / 2 + 65);
+                ctx.fillText(`Final Score: ${score} points`, canvas.width / 2, canvas.height / 2 + 20);
+                ctx.fillStyle = "#888"; ctx.fillText("Press Space or Click the arena to snap back in!", canvas.width / 2, canvas.height / 2 + 65);
             }
         }
 
