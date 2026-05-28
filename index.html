@@ -598,13 +598,19 @@
         });
 
         function checkUnlockStatus(key) {
-            if (key === "default") return true;
-            if (unlockedSkinsArray.includes(key)) return true; // Online priority
-            if (SKINS_CONFIG[key].condition && SKINS_CONFIG[key].score === undefined) {
-                return localStorage.getItem(`stickman_skin_${key}`) === "true"; // Local fallback
-            }
-            return highScore >= SKINS_CONFIG[key].score;
-        }
+    if (key === "default") return true;
+    
+    // 1. Check if the backend worker added it to our live unlocked list
+    if (unlockedSkinsArray.includes(key)) return true; 
+    
+    // 2. Fallback check for special condition/secret code skins saved locally
+    if (SKINS_CONFIG[key].condition && SKINS_CONFIG[key].score === undefined) {
+        return localStorage.getItem(`stickman_skin_${key}`) === "true"; 
+    }
+    
+    // 3. Fallback check for regular score-based progression skins
+    return highScore >= SKINS_CONFIG[key].score;
+}
 
         function hasBothShards() {
             return localStorage.getItem("stickman_black_shard") === "true" && 
