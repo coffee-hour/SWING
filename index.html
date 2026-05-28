@@ -597,28 +597,19 @@
             }
         });
 
- function checkUnlockStatus(key) {
-    // 1. Default skin is always free
+        function checkUnlockStatus(key) {
     if (key === "default") return true;
     
-    // 2. SERVER-DRIVEN UNLOCKS (OG Skin, Secret Shard Skins, etc.)
-    // If the Cloudflare Worker sent this skin name in the account's unlocked array, it's 100% unlocked!
-    if (unlockedSkinsArray && unlockedSkinsArray.includes(key)) return true; 
+    // 1. Check if the backend worker added it to our live unlocked list
+    if (unlockedSkinsArray.includes(key)) return true; 
     
-    // 3. SPECIAL LOCAL CONDITION FALLBACKS
-    // For skins that rely on local storage achievements (like dying 20 times)
+    // 2. Fallback check for special condition/secret code skins saved locally
     if (SKINS_CONFIG[key].condition && SKINS_CONFIG[key].score === undefined) {
         return localStorage.getItem(`stickman_skin_${key}`) === "true"; 
     }
     
-    // 4. SCORE-BASED UNLOCKS
-    // Only unlock if they actually have a defined score requirement and beat it
-    if (SKINS_CONFIG[key].score !== undefined) {
-        return highScore >= SKINS_CONFIG[key].score;
-    }
-
-    // If it fails all the above, it stays locked!
-    return false;
+    // 3. Fallback check for regular score-based progression skins
+    return highScore >= SKINS_CONFIG[key].score;
 }
 
         function hasBothShards() {
@@ -640,31 +631,28 @@
             const hasDevilSubSkins = checkUnlockStatus("denied_devil") || checkUnlockStatus("accurate_devil") || checkUnlockStatus("exalted_devil");
 
             Object.keys(SKINS_CONFIG).forEach(key => {
-              const isUnlocked = checkUnlockStatus(key);
-const isEquipped = equippedSkin === key;
+                const skin = SKINS_CONFIG[key];
+                
+                if (skin.parent === "angelic" && !angelicDropdownOpen) return;
+                if (skin.parent === "devil" && !devilDropdownOpen) return;
 
-const btn = document.createElement("button");
-// CRITICAL: Only add the 'unlocked' class if isUnlocked is completely true!
-btn.className = `skin-btn ${isUnlocked ? 'unlocked' : ''} ${isEquipped ? 'equipped' : ''}`;
-if (skin.parent) btn.classList.add("sub-skin");
+                const isUnlocked = checkUnlockStatus(key);
+                const isEquipped = equippedSkin === key;
 
-// ... (keep your preview code here) ...
-
-// CRITICAL: Change how click behavior is handled based on unlock status
-if (isUnlocked) {
-    btn.style.cursor = "pointer";
-    // Clear any old disabled attributes if they exist
-    btn.removeAttribute("disabled"); 
-    btn.onclick = () => {
-        equippedSkin = key;
-        localStorage.setItem("stickman_equipped_skin", key);
-        syncCloudSave(); 
-        renderChangingRoom();
-    };
-} else {
-    btn.style.cursor = "not-allowed";
-    btn.onclick = null; // Block clicks completely
-}
+                const btn = document.createElement("button");
+                btn.className = `skin-btn ${isUnlocked ? 'unlocked' : ''} ${isEquipped ? 'equipped' : ''}`;
+                if (skin.parent) btn.classList.add("sub-skin");
+                
+                const preview = document.createElement("span");
+                preview.className = "skin-preview";
+                
+                if (key === "yin_yang") {
+                    preview.style.background = "linear-gradient(90deg, #fff 50%, #000 50%)";
+                    preview.style.boxShadow = "0 0 5px #fff, 0 0 5px #000";
+                } else {
+                    preview.style.backgroundColor = skin.color;
+                }
+                
                 if (key === "denied_angel" || key === "denied_devil") preview.style.borderColor = "red";
                 if (key === "exalted_angel" || key === "accurate_devil") preview.style.boxShadow = "0 0 5px #f9a826";
                 if (key === "exalted_devil") preview.style.boxShadow = "0 0 5px #ff0055";
