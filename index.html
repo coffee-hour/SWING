@@ -299,9 +299,43 @@
             50% { transform: scale(1.05); }
             100% { transform: scale(1); }
         }
+
+        /* --- Toast Notification System --- */
+        #toastContainer {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            z-index: 1000;
+            pointer-events: none;
+        }
+        .toast {
+            background: rgba(22, 36, 71, 0.95);
+            border: 2px solid #4ecca3;
+            color: #fff;
+            padding: 12px 25px;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 14px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+            animation: fadeInOut forwards;
+            text-align: center;
+            white-space: pre-wrap;
+        }
+        @keyframes fadeInOut {
+            0% { opacity: 0; transform: translateY(-20px); }
+            10% { opacity: 1; transform: translateY(0); }
+            90% { opacity: 1; transform: translateY(0); }
+            100% { opacity: 0; transform: translateY(-20px); }
+        }
     </style>
 </head>
 <body>
+
+    <div id="toastContainer"></div>
 
     <div id="main-layout">
         <div id="game-container">
@@ -344,6 +378,21 @@
     </div>
 
     <script>
+        // --- TOAST NOTIFICATION SYSTEM ---
+        function showToast(message, duration = 4000, borderColor = "#4ecca3") {
+            const container = document.getElementById("toastContainer");
+            if (!container) return;
+            const toast = document.createElement("div");
+            toast.className = "toast";
+            toast.style.borderColor = borderColor;
+            toast.style.animationDuration = (duration / 1000) + "s";
+            toast.innerText = message;
+            container.appendChild(toast);
+            setTimeout(() => {
+                if (toast.parentElement) toast.remove();
+            }, duration);
+        }
+
         // --- ONLINE CLOUDFLARE VARIABLES ---
         const API_URL = "https://swingworker.xaviersgames.workers.dev";
         let currentUser = null;
@@ -463,18 +512,19 @@
         // --- AUTHENTICATION LISTENERS ---
         document.getElementById("registerBtn").addEventListener("click", async () => {
             const u = document.getElementById("usernameInput").value.trim(); const p = document.getElementById("passwordInput").value;
-            if(!u || !p) return alert("Please fill in both username and password.");
-            if(u.length > 15) return alert("Usernames must be 15 characters or less.");
+            if(!u || !p) return showToast("Please fill in both username and password.", 3000, "#ff0055");
+            if(u.length > 15) return showToast("Usernames must be 15 characters or less.", 3000, "#ff0055");
             try {
                 const res = await fetch(`${API_URL}/api/register`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ username: u, password: p }) });
                 const data = await res.json();
-                alert(data.success ? "Registration successful! You can now log in." : "Error: " + data.error);
-            } catch (err) { alert("Failed to connect to API."); }
+                if(data.success) { showToast("Registration successful! You can now log in.", 4000); } 
+                else { showToast("Error: " + data.error, 4000, "#ff0055"); }
+            } catch (err) { showToast("Failed to connect to API.", 3000, "#ff0055"); }
         });
 
         document.getElementById("loginBtn").addEventListener("click", async () => {
             const u = document.getElementById("usernameInput").value.trim(); const p = document.getElementById("passwordInput").value;
-            if(!u || !p) return alert("Please fill in both username and password.");
+            if(!u || !p) return showToast("Please fill in both username and password.", 3000, "#ff0055");
             try {
                 const res = await fetch(`${API_URL}/api/login`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ username: u, password: p }) });
                 const data = await res.json();
@@ -489,28 +539,18 @@
                     const welcome = document.getElementById("welcomeMessage");
                     welcome.textContent = `👋 Welcome back, ${u}!`; welcome.style.display = "block";
                     renderChangingRoom(); fetchLeaderboard(); 
-                } else alert("Login failed: " + data.error);
-            } catch (err) { alert("Failed to connect to API."); }
+                    showToast("Login Successful!", 3000);
+                } else showToast("Login failed: " + data.error, 4000, "#ff0055");
+            } catch (err) { showToast("Failed to connect to API.", 3000, "#ff0055"); }
         });
 
         // --- Cheats & Codes ---
-        document.getElementById("highScoreClickable").addEventListener("click", () => {
-            let code = prompt("ENTER ACCESS CODE:");
-            if (code && code.toUpperCase() === "ANGEL") {
-                unlockSkin("angelic");
-                if (equippedSkin.includes("devil") && !unlockedSkinsArray.includes("denied_devil")) {
-                    unlockSkin("denied_devil"); alert("UNLOCKED: DENIED DEVIL");
-                } else alert("ANGELIC UNLOCKED");
-                renderChangingRoom();
-            }
-        });
-
         document.getElementById("equippedClickable").addEventListener("click", () => {
             let code = prompt("ENTER ACCESS CODE:");
             if (code && code.toUpperCase() === "PT") {
                 player.x = 1000100; player.y = 100; player.vx = 12; player.vy = 0;
                 player.isSwinging = false; player.hookedTo = null; hooks = []; bouncers = []; portals = [];
-                manageEnvironment(); alert("100,000 POINTS");
+                manageEnvironment(); showToast("⏩ WARP SPEED ENGAGED: 100,000 POINTS", 4000, "#00ffff");
             }
         });
 
@@ -585,10 +625,32 @@
                     arrow.addEventListener("click", (e) => { e.stopPropagation(); devilDropdownOpen = !devilDropdownOpen; renderChangingRoom(); }); btn.appendChild(arrow);
                 }
 
+                // Updated Click Logic for Password System
                 if (isUnlocked) {
                     btn.style.cursor = "pointer";
                     btn.onclick = () => { equippedSkin = key; localStorage.setItem("stickman_equipped_skin", key); syncCloudSave(); renderChangingRoom(); };
-                } else { btn.style.cursor = "not-allowed"; btn.onclick = null; }
+                } else { 
+                    if (key === "angelic") {
+                        btn.style.cursor = "pointer";
+                        btn.onclick = () => {
+                            let code = prompt("ENTER ACCESS CODE:");
+                            if (code && code.toUpperCase() === "ANGEL") {
+                                unlockSkin("angelic");
+                                if (equippedSkin.includes("devil") && !unlockedSkinsArray.includes("denied_devil")) {
+                                    unlockSkin("denied_devil"); showToast("UNLOCKED: DENIED DEVIL", 4000, "#ff0055");
+                                } else {
+                                    showToast("ANGELIC UNLOCKED", 4000, "#ffeaa7");
+                                }
+                                renderChangingRoom();
+                            } else if (code) {
+                                showToast("INCORRECT PASSWORD", 3000, "#ff0055");
+                            }
+                        };
+                    } else {
+                        btn.style.cursor = "not-allowed"; 
+                        btn.onclick = null; 
+                    }
+                }
 
                 skinsGrid.appendChild(btn);
             });
@@ -732,33 +794,45 @@
             if (gameStatus === "realm") {
                 let realmScore = Math.floor((player.x - 100) / 10); scoreDisplay.textContent = `REALM: ${realmScore} / 1000`;
                 if (realmScore >= 1000) {
-                    if (currentRealm === "devil") { localStorage.setItem("stickman_black_shard", "true"); alert("⬛ COLLECTED THE BLACK SHARD"); } 
-                    else if (currentRealm === "angel") { localStorage.setItem("stickman_white_shard", "true"); alert("⬜ COLLECTED THE WHITE SHARD"); }
+                    if (currentRealm === "devil") { localStorage.setItem("stickman_black_shard", "true"); showToast("⬛ COLLECTED THE BLACK SHARD", 4000, "#000"); } 
+                    else if (currentRealm === "angel") { localStorage.setItem("stickman_white_shard", "true"); showToast("⬜ COLLECTED THE WHITE SHARD", 4000, "#fff"); }
                     syncCloudSave(); renderChangingRoom(); resetGame(); 
                 }
             } else {
                 score = Math.floor(player.x / 10) - 10; scoreDisplay.textContent = score;
+                
+                // Password Hint Logic
+                if (highscore >= 5000 && !localStorage.getItem("stickman_hint_5000")) {
+                    showToast("Click on the Angelic skin to input the password", 5000, "#f9a826");
+                    localStorage.setItem("stickman_hint_5000", "true");
+                }
+                if (highscore >= 10000 && !localStorage.getItem("stickman_hint_10000")) {
+                    showToast("The secret password is: ANGEL", 6000, "#f9a826");
+                    localStorage.setItem("stickman_hint_10000", "true");
+                }
+                
+                // Score Unlocks (Exalted Skins)
                 if (score >= 10000) {
-                    if (equippedSkin.includes("angel") && !unlockedSkinsArray.includes("exalted_angel")) { unlockSkin("exalted_angel"); alert("✨ UNLOCKED: EXALTED ANGEL!"); renderChangingRoom(); }
-                    if (equippedSkin.includes("devil") && !unlockedSkinsArray.includes("exalted_devil")) { unlockSkin("exalted_devil"); alert("🔥 UNLOCKED: EXALTED DEVIL!"); renderChangingRoom(); }
+                    if (equippedSkin.includes("angel") && !unlockedSkinsArray.includes("exalted_angel")) { unlockSkin("exalted_angel"); showToast("✨ UNLOCKED: EXALTED ANGEL!", 5000, "#ffeaa7"); renderChangingRoom(); }
+                    if (equippedSkin.includes("devil") && !unlockedSkinsArray.includes("exalted_devil")) { unlockSkin("exalted_devil"); showToast("🔥 UNLOCKED: EXALTED DEVIL!", 5000, "#ff0055"); renderChangingRoom(); }
                 }
             }
 
             if (player.y > canvas.height + 140) {
-                if (gameStatus === "realm") { alert("THE REALM HAS REJECTED YOU."); resetGame(); return; }
+                if (gameStatus === "realm") { showToast("THE REALM HAS REJECTED YOU.", 4000, "#ff0055"); resetGame(); return; }
 
                 gameStatus = "lost"; let needsCloudSync = false;
                 if (score > highScore) { highScore = score; localStorage.setItem("stickman_high_score", highScore); highScoreDisplay.textContent = highScore; needsCloudSync = true; }
                 
-                if (score < 0 && !unlockedSkinsArray.includes("devil")) { unlockSkin("devil"); alert("👹 UNLOCKED: THE DEVIL SKIN!"); needsCloudSync = true; }
-                if (score < 0 && equippedSkin.includes("angel") && !unlockedSkinsArray.includes("denied_angel")) { unlockSkin("denied_angel"); alert("🥀 UNLOCKED: DENIED ANGEL"); needsCloudSync = true; }
+                if (score < 0 && !unlockedSkinsArray.includes("devil")) { unlockSkin("devil"); showToast("👹 UNLOCKED: THE DEVIL SKIN!", 5000, "#ff0055"); needsCloudSync = true; }
+                if (score < 0 && equippedSkin.includes("angel") && !unlockedSkinsArray.includes("denied_angel")) { unlockSkin("denied_angel"); showToast("🥀 UNLOCKED: DENIED ANGEL", 5000, "#ff0055"); needsCloudSync = true; }
                 if (equippedSkin.includes("angel")) {
                     let angelDeaths = parseInt(localStorage.getItem("stickman_angelic_deaths") || "0") + 1; localStorage.setItem("stickman_angelic_deaths", angelDeaths);
-                    if (angelDeaths >= 20 && !unlockedSkinsArray.includes("accurate_angel")) { unlockSkin("accurate_angel"); alert("👁️ UNLOCKED: ACCURATE ANGEL"); needsCloudSync = true; }
+                    if (angelDeaths >= 20 && !unlockedSkinsArray.includes("accurate_angel")) { unlockSkin("accurate_angel"); showToast("👁️ UNLOCKED: ACCURATE ANGEL", 5000, "#ffeaa7"); needsCloudSync = true; }
                 }
                 if (equippedSkin.includes("devil")) {
                     let devilDeaths = parseInt(localStorage.getItem("stickman_devil_deaths") || "0") + 1; localStorage.setItem("stickman_devil_deaths", devilDeaths);
-                    if (devilDeaths >= 20 && !unlockedSkinsArray.includes("accurate_devil")) { unlockSkin("accurate_devil"); alert("🎩 UNLOCKED: ACCURATE DEVIL"); needsCloudSync = true; }
+                    if (devilDeaths >= 20 && !unlockedSkinsArray.includes("accurate_devil")) { unlockSkin("accurate_devil"); showToast("🎩 UNLOCKED: ACCURATE DEVIL", 5000, "#d4af37"); needsCloudSync = true; }
                 }
                 if (needsCloudSync) syncCloudSave(); renderChangingRoom();
             }
@@ -838,7 +912,7 @@
                     localStorage.setItem("stickman_white_shard", "false");
                     
                     let unlockedSkinKey = "yin_yang";
-                    let alertMsg = "YIN YANG UNLOCKED";
+                    let alertMsg = "☯️ PERFECT BALANCE ACHIEVED: YIN YANG UNLOCKED ☯️";
 
                     if (checkUnlockStatus("yin_yang")) {
                         const gachaPool = ["split_fire_ice", "split_toxic_bio", "split_solar_lunar", "split_neon_synth"];
@@ -846,11 +920,11 @@
                         
                         if (available.length > 0) {
                             unlockedSkinKey = available[Math.floor(Math.random() * available.length)];
-                            alertMsg = `GACHA ROLL: \nCost: 1⬛ + 1⬜\nUnlocked: ${SKINS_CONFIG[unlockedSkinKey].name.toUpperCase()}`;
+                            alertMsg = `🎉 GACHA ROLL SUCCESS! 🎉\nCost: 1⬛ + 1⬜\nUnlocked: ${SKINS_CONFIG[unlockedSkinKey].name.toUpperCase()}`;
                         } else {
                             highScore += 5000; 
                             localStorage.setItem("stickman_high_score", highScore);
-                            alertMsg = "GACHA MAXED OUT!\nCost: 1⬛ + 1⬜\nYou received 5000 Bonus Points instead!";
+                            alertMsg = "💎 GACHA MAXED OUT! 💎\nCost: 1⬛ + 1⬜\nYou received 5000 Bonus Points instead!";
                             unlockedSkinKey = equippedSkin; 
                         }
                     }
@@ -861,7 +935,7 @@
                         unlockSkin(unlockedSkinKey); 
                     }
                     
-                    alert(alertMsg); 
+                    showToast(alertMsg, 5000, "#00ffff"); 
                     renderChangingRoom(); 
                     resetGame(); 
                     return;
