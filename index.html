@@ -367,7 +367,7 @@
             if(localStorage.getItem("ref_claimed")) return showToast("Already claimed!", 3000, "#ff0055");
             let ref = document.getElementById("referralInput").value;
             if(!ref) return;
-            localStorage.setItem("ref_claimed", "false");
+            localStorage.setItem("ref_claimed", "true");
             user.guild_coins += 500; updateUI(); syncSave(); showToast("Referral claimed! +500 GC", 4000, "#f9a826");
         };
 
