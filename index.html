@@ -23,7 +23,7 @@
             display: flex;
             gap: 20px;
             align-items: flex-start;
-            max-width: 1100px;
+            max-width: 1200px;
             width: 100%;
             padding: 20px;
             box-sizing: border-box;
@@ -110,7 +110,7 @@
             border-radius: 8px;
             cursor: crosshair;
             width: 100%;
-            max-width: 800px;
+            max-width: 850px;
             border: 2px solid #1f4068;
             transition: background 0.5s ease;
         }
@@ -162,6 +162,7 @@
         
         #changingRoom { flex: 1.2; }
         #pirateBazaar { flex: 1; }
+        #globalPanel { flex: 0.9; }
         
         .panel-box h3 {
             margin: 0 0 10px 0;
@@ -219,7 +220,7 @@
         .pirate-card {
             background: #1a1a2e; border: 1px solid #1f4068; padding: 6px;
             border-radius: 6px; display: flex; flex-direction: column; align-items: center;
-            gap: 4px; width: 110px; transition: all 0.2s;
+            gap: 4px; width: 100px; transition: all 0.2s;
         }
         .pirate-card.unlocked { border-color: #4ecca3; }
         .pirate-card.equipped { border-color: #f9a826; background: #232342; }
@@ -237,6 +238,16 @@
         .equip-btn {
             background: #4ecca3; color: #1a1a2e; border: none; padding: 4px;
             border-radius: 4px; font-weight: bold; cursor: pointer; font-size: 10px; width: 100%;
+        }
+
+        /* Global Quest UI */
+        .progress-bar {
+            width: 100%; height: 10px; background: #1a1a2e;
+            border-radius: 5px; overflow: hidden; margin: 5px 0; border: 1px solid #1f4068;
+        }
+        #dailyProgress {
+            height: 100%; background: #0be881; width: 0%; transition: width 0.5s ease-out;
+            box-shadow: 0 0 8px #0be881;
         }
 
         /* Toast Notification System */
@@ -292,7 +303,7 @@
                 </div>
             </div>
 
-            <canvas id="gameCanvas" width="800" height="420"></canvas>
+            <canvas id="gameCanvas" width="850" height="420"></canvas>
 
             <div id="bottom-panels">
                 <div id="changingRoom" class="panel-box">
@@ -304,6 +315,25 @@
                 <div id="pirateBazaar" class="panel-box">
                     <h3>🏴‍☠️ Pirate Bazaar</h3>
                     <div class="skins-grid" id="bazaarGrid"></div>
+                </div>
+
+                <div id="globalPanel" class="panel-box">
+                    <h3>🌍 Global Quest</h3>
+                    <div style="font-size: 11px; color: #aaa; margin-bottom: 5px;">Daily Goal: 100,000 pts</div>
+                    <div style="font-size: 14px; font-weight: bold; color: #4ecca3; margin-bottom: 2px;">
+                        <span id="dailyPointsDisplay">0</span> / 100k
+                    </div>
+                    <div class="progress-bar"><div id="dailyProgress" style="width:0%"></div></div>
+                    <div style="font-size: 11px; color: #ff9ff3; margin-top: 5px; margin-bottom: 10px;">
+                        Streak: <span id="streakDisplay">0</span> / 7 Days 🔥
+                    </div>
+                    
+                    <h3 style="margin-top: 5px;">🛡️ Guild</h3>
+                    <div style="display:flex; gap:5px;">
+                        <input type="text" id="guildInput" maxlength="4" placeholder="TAG" class="auth-input" style="width:60px; font-size: 11px; padding: 6px;">
+                        <button id="setGuildBtn" class="auth-btn" style="background:#f9a826; color:#1a1a2e; padding: 4px 10px; font-size:11px;">Set</button>
+                    </div>
+                    <div style="margin-top:5px; font-size:10px; color:#888;">Tag: <span id="currentGuildDisplay" style="color:#fff">None</span></div>
                 </div>
             </div>
         </div>
@@ -330,22 +360,23 @@
             setTimeout(() => { if (toast.parentElement) toast.remove(); }, duration);
         }
 
-        // --- CLOUDFLARE AUTH & SAVE SYSTEM ---
+        // --- CLOUDFLARE AUTH, GUILD & SAVE SYSTEM ---
         const API_URL = "https://swingworker.xaviersgames.workers.dev";
         let currentUser = null;
         let currentPassword = null;
-        let unlockedSkinsArray = [];
         
+        let unlockedSkinsArray = [];
         let highScore = parseInt(localStorage.getItem("stickman_high_score")) || 0;
         let whiteShards = parseInt(localStorage.getItem("stickman_white_shards")) || 0;
         let blackShards = parseInt(localStorage.getItem("stickman_black_shards")) || 0;
         let equippedSkin = localStorage.getItem("stickman_equipped_skin") || "default";
+        let currentGuild = localStorage.getItem("stickman_guild") || "";
+        let isGlobalRewardUnlocked = false;
 
-        // Convert old boolean shards to integers (legacy support)
-        if (localStorage.getItem("stickman_black_shard") === "true") { blackShards = Math.max(blackShards, 1); localStorage.removeItem("stickman_black_shard"); }
-        if (localStorage.getItem("stickman_white_shard") === "true") { whiteShards = Math.max(whiteShards, 1); localStorage.removeItem("stickman_white_shard"); }
+        document.getElementById("currentGuildDisplay").textContent = currentGuild || "None";
+        document.getElementById("highScoreDisplay").textContent = highScore;
 
-        // Populate offline unlocks array from localStorage on initial load
+        // Legacy localstorage check
         Object.keys(localStorage).forEach(key => {
             if (key.startsWith("stickman_skin_") && localStorage.getItem(key) === "true") {
                 let skinName = key.replace("stickman_skin_", "");
@@ -353,35 +384,69 @@
             }
         });
 
-        document.getElementById("highScoreDisplay").textContent = highScore;
+        // Set Guild Button
+        document.getElementById("setGuildBtn").addEventListener("click", () => {
+            const tag = document.getElementById("guildInput").value.trim().toUpperCase();
+            currentGuild = tag;
+            localStorage.setItem("stickman_guild", tag);
+            document.getElementById("guildInput").value = "";
+            document.getElementById("currentGuildDisplay").textContent = currentGuild || "None";
+            syncCloudSave();
+            showToast(`🛡️ Guild tag set to [${tag}]`, 3000, "#f9a826");
+        });
 
-        async function fetchLeaderboard() {
+        // Fetch Server Data (Replaces plain leaderboard fetch)
+        async function fetchServerData() {
             try {
-                const res = await fetch(`${API_URL}/api/leaderboard`);
+                const res = await fetch(`${API_URL}/api/server_data`);
                 const data = await res.json();
                 if (data.success) {
+                    // 1. Leaderboard
                     const leaderboardList = document.getElementById("leaderboardList");
                     leaderboardList.innerHTML = "";
-                    if (data.leaderboard.length === 0) return leaderboardList.innerHTML = '<div style="text-align: center; color: #666; margin-top: 20px;">No scores recorded yet!</div>';
-                    data.leaderboard.forEach((row, index) => {
-                        const item = document.createElement("div"); item.className = "leaderboard-item";
-                        if(currentUser && row.username === currentUser) { item.style.borderColor = "#4ecca3"; item.style.background = "#232342"; }
-                        item.innerHTML = `<div><span class="leaderboard-rank">#${index + 1}</span><span class="leaderboard-name">${row.username}</span></div><span class="leaderboard-score">${row.score}</span>`;
-                        leaderboardList.appendChild(item);
-                    });
-                }
-            } catch (e) { document.getElementById("leaderboardList").innerHTML = '<div style="text-align: center; color: #ff0055; margin-top: 20px;">Failed to load ranks.</div>'; }
-        }
-        fetchLeaderboard();
+                    if (data.leaderboard.length === 0) {
+                        leaderboardList.innerHTML = '<div style="text-align: center; color: #666; margin-top: 20px;">No scores recorded yet!</div>';
+                    } else {
+                        data.leaderboard.forEach((row, index) => {
+                            const item = document.createElement("div"); item.className = "leaderboard-item";
+                            if(currentUser && row.username === currentUser) { item.style.borderColor = "#4ecca3"; item.style.background = "#232342"; }
+                            let guildTag = row.guild ? `<span style="color:#f9a826">[${row.guild}]</span> ` : "";
+                            item.innerHTML = `<div><span class="leaderboard-rank">#${index + 1}</span><span class="leaderboard-name">${guildTag}${row.username}</span></div><span class="leaderboard-score">${row.score}</span>`;
+                            leaderboardList.appendChild(item);
+                        });
+                    }
 
-        async function syncCloudSave() {
+                    // 2. Global Quest Update
+                    document.getElementById("dailyPointsDisplay").textContent = data.global.daily_points.toLocaleString();
+                    document.getElementById("streakDisplay").textContent = data.global.streak;
+                    let progressPct = Math.min(100, (data.global.daily_points / 100000) * 100);
+                    document.getElementById("dailyProgress").style.width = progressPct + "%";
+
+                    // Check Global Reward Unlock
+                    isGlobalRewardUnlocked = data.global.reward_unlocked;
+                    if (isGlobalRewardUnlocked && !unlockedSkinsArray.includes("community_hero")) {
+                        unlockedSkinsArray.push("community_hero");
+                        localStorage.setItem("stickman_skin_community_hero", "true");
+                        showToast("🌍 7-DAY STREAK COMPLETE!\n'Community Hero' Skin Unlocked!", 6000, "#00ffff");
+                        renderChangingRoom();
+                    }
+                }
+            } catch (e) { 
+                document.getElementById("leaderboardList").innerHTML = '<div style="text-align: center; color: #ff0055; margin-top: 20px;">Backend Update Required for Online Features.</div>'; 
+            }
+        }
+        fetchServerData();
+
+        async function syncCloudSave(addedPoints = 0) {
             if (!currentUser) return; 
             const payload = {
                 username: currentUser, password: currentPassword, high_score: highScore, equipped_skin: equippedSkin,
                 white_shards: whiteShards, black_shards: blackShards,
-                unlocked_skins: unlockedSkinsArray
+                unlocked_skins: unlockedSkinsArray,
+                guild: currentGuild,
+                added_points: addedPoints
             };
-            try { await fetch(`${API_URL}/api/save`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload) }); fetchLeaderboard(); } catch (e) {}
+            try { await fetch(`${API_URL}/api/save`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload) }); fetchServerData(); } catch (e) {}
         }
 
         function unlockSkin(skinKey) {
@@ -411,37 +476,31 @@
                 if (data.success) {
                     currentUser = u; currentPassword = p;
                     highScore = data.userData.high_score; equippedSkin = data.userData.equipped_skin; unlockedSkinsArray = data.userData.unlocked_skins || [];
+                    currentGuild = data.userData.guild || "";
                     
                     whiteShards = data.userData.white_shards !== undefined ? data.userData.white_shards : (parseInt(localStorage.getItem("stickman_white_shards")) || 0);
                     blackShards = data.userData.black_shards !== undefined ? data.userData.black_shards : (parseInt(localStorage.getItem("stickman_black_shards")) || 0);
 
                     localStorage.setItem("stickman_high_score", highScore); localStorage.setItem("stickman_equipped_skin", equippedSkin);
                     localStorage.setItem("stickman_white_shards", whiteShards); localStorage.setItem("stickman_black_shards", blackShards);
+                    localStorage.setItem("stickman_guild", currentGuild);
                     
                     highScoreDisplay.textContent = highScore;
+                    document.getElementById("currentGuildDisplay").textContent = currentGuild || "None";
                     document.getElementById("authInputs").style.display = "none";
                     const welcome = document.getElementById("welcomeMessage");
                     welcome.textContent = `👋 Welcome back, ${u}!`; welcome.style.display = "block";
                     showToast("Login Successful!", 3000);
                     
-                    applySkinAbilities(); renderChangingRoom(); renderBazaar(); fetchLeaderboard(); 
+                    applySkinAbilities(); renderChangingRoom(); renderBazaar(); fetchServerData(); 
                 } else showToast("Login failed: " + data.error, 4000, "#ff0055");
             } catch (err) { showToast("Failed to connect to API.", 3000, "#ff0055"); }
-        });
-
-        // --- Cheats & Codes ---
-        document.getElementById("equippedClickable").addEventListener("click", () => {
-            let code = prompt("ENTER ACCESS CODE:");
-            if (code && code.toUpperCase() === "PT") {
-                player.x = 1000100; player.y = 100; player.vx = 12; player.vy = 0;
-                player.isSwinging = false; player.hookedTo = null; hooks = []; bouncers = []; portals = [];
-                manageEnvironment(); showToast("⏩ WARP SPEED ENGAGED: 100,000 POINTS", 4000, "#00ffff");
-            }
         });
 
         // --- SKINS DATABASES ---
         const SKINS_CONFIG = {
             og_stickman: { name: "Exquisite OG", color: "#ff00ff", condition: "First 10 Players", ability: "Looking Dapper" },
+            community_hero: { name: "Global Guardian", color: "#00ffff", splitColor: "#f9a826", condition: "7-Day Global Streak", ability: "Max Magnet + Low Gravity" },
             default: { name: "Default", color: "#00adb5" },
             brown: { name: "Brown", color: "#8b4513", score: 100, ability: "+ Hook Range" },
             green: { name: "Green", color: "#00ff00", score: 500, ability: "+ Bounce" },
@@ -499,6 +558,7 @@
 
         function checkUnlockStatus(key) {
             if (key === "default") return true;
+            if (key === "community_hero") return isGlobalRewardUnlocked || unlockedSkinsArray.includes(key);
             if (unlockedSkinsArray.includes(key)) return true; 
             if (SKINS_CONFIG[key] && SKINS_CONFIG[key].score !== undefined) return highScore >= SKINS_CONFIG[key].score;
             return false;
@@ -615,7 +675,8 @@
                 card.className = `pirate-card ${isUnlocked ? 'unlocked' : ''} ${isEquipped ? 'equipped' : ''}`;
                 
                 const preview = document.createElement("div"); preview.className = "skin-preview";
-                preview.style.backgroundColor = skin.color;
+                if (skin.splitColor) preview.style.background = `linear-gradient(90deg, ${skin.color} 50%, ${skin.splitColor} 50%)`;
+                else preview.style.backgroundColor = skin.color;
                 
                 card.innerHTML = `
                     <div class="pirate-name">${skin.name}</div>
@@ -670,12 +731,13 @@
         let currentFriction = BASE_FRICTION;
         let maxHookRange = BASE_HOOK_RANGE;
         let bounceMultiplier = 1;
-        let momentumBoost = 0.10;
+        let momentumBoost = 0.05;
+        let magnetRadius = 0;
 
         function applySkinAbilities() {
             currentGravity = BASE_GRAVITY; currentFriction = BASE_FRICTION;
             maxHookRange = BASE_HOOK_RANGE; bounceMultiplier = 1;
-            momentumBoost = 0.10;
+            momentumBoost = 0.05; magnetRadius = 0;
 
             let safeEquipped = equippedSkin || "";
             if (safeEquipped === "pink") currentGravity = 0.32;
@@ -683,6 +745,7 @@
             if (safeEquipped === "blue") currentFriction = 0.9995; 
             if (safeEquipped === "brown") maxHookRange += 60;
             if (safeEquipped === "green") bounceMultiplier = 1.3;
+            if (safeEquipped === "community_hero") { currentGravity = 0.3; magnetRadius = 200; }
 
             if (safeEquipped === "luffy") maxHookRange += 75;
             if (safeEquipped === "zoro") momentumBoost = 0.14; 
@@ -704,7 +767,7 @@
                 let nextY = Math.floor(Math.random() * 130) + 100; 
                 hooks.push({ x: nextX, y: nextY });
 
-                if (Math.random() < 0.35) bouncers.push({ type: "horizontal", x: nextX - 50, y: 400, width: 65, height: 12 });
+                if (Math.random() < 0.35) bouncers.push({ type: "horizontal", x: nextX - 50, y: 430, width: 65, height: 12 });
                 else if (Math.random() < 0.55) bouncers.push({ type: "vertical", x: nextX - 110, y: nextY + 50, width: 14, height: 80 });
 
                 // PORTAL SPAWNING (Requires Angel or Devil skin to see them)
@@ -744,7 +807,7 @@
             player.x = 100; player.y = 200; player.vx = 8; player.vy = 0; player.isSwinging = false; player.hookedTo = null;
             hooks = []; bouncers = []; portals = []; score = 0; 
             document.getElementById("scoreDisplay").textContent = 0; 
-            spawnEnvironment(); gameStatus = "playing"; currentRealm = null; fetchLeaderboard();
+            spawnEnvironment(); gameStatus = "playing"; currentRealm = null; fetchServerData();
         }
 
         // Controls
@@ -777,6 +840,12 @@
             if (gameStatus === "playing") {
                 portals.forEach(p => {
                     let dx = player.x - p.x; let dy = player.y - p.y;
+                    
+                    // Magnet Radius check for Community Hero
+                    if (magnetRadius > 0 && Math.sqrt(dx*dx + dy*dy) < magnetRadius) {
+                        p.x += dx * 0.05; p.y += dy * 0.05;
+                    }
+                    
                     if (Math.sqrt(dx*dx + dy*dy) < p.radius + player.radius) enterRealm(p.type);
                 });
             }
@@ -847,6 +916,8 @@
                 gameStatus = "lost"; let needsCloudSync = false;
                 if (score > highScore) { highScore = score; localStorage.setItem("stickman_high_score", highScore); highScoreDisplay.textContent = highScore; needsCloudSync = true; }
                 
+                let addedPoints = Math.max(0, score);
+                
                 let safeEquipped = equippedSkin || "";
                 if (score < 0 && !unlockedSkinsArray.includes("devil")) { unlockSkin("devil"); showToast("👹 UNLOCKED: THE DEVIL SKIN!", 5000, "#ff0055"); needsCloudSync = true; }
                 if (score < 0 && safeEquipped.includes("angel") && !unlockedSkinsArray.includes("denied_angel")) { unlockSkin("denied_angel"); showToast("🥀 UNLOCKED: DENIED ANGEL", 5000, "#ff0055"); needsCloudSync = true; }
@@ -860,7 +931,8 @@
                     if (devilDeaths >= 20 && !unlockedSkinsArray.includes("accurate_devil")) { unlockSkin("accurate_devil"); showToast("🎩 UNLOCKED: ACCURATE DEVIL", 5000, "#d4af37"); needsCloudSync = true; }
                 }
 
-                if (needsCloudSync) syncCloudSave(); renderChangingRoom();
+                if (needsCloudSync || addedPoints > 0) syncCloudSave(addedPoints); 
+                renderChangingRoom();
             }
         }
 
@@ -1073,6 +1145,16 @@
                     ctx.beginPath(); ctx.moveTo(-player.radius, player.radius/2); ctx.lineTo(player.radius, player.radius/2); ctx.stroke();
                     ctx.beginPath(); ctx.moveTo(0, -player.radius-2); ctx.lineTo(0, player.radius+2); ctx.stroke();
                     
+                } else if (safeEquipped === "community_hero") {
+                    ctx.fillStyle = colorLeft; ctx.beginPath(); ctx.arc(0, 0, player.radius, 0, Math.PI*2); ctx.fill();
+                    ctx.fillStyle = colorRight;
+                    for(let i=0; i<Math.PI*2; i+=Math.PI/2) {
+                        ctx.beginPath(); ctx.moveTo(0,0);
+                        ctx.lineTo(Math.cos(i-0.2)*player.radius, Math.sin(i-0.2)*player.radius);
+                        ctx.lineTo(Math.cos(i)*(player.radius+8), Math.sin(i)*(player.radius+8));
+                        ctx.lineTo(Math.cos(i+0.2)*player.radius, Math.sin(i+0.2)*player.radius);
+                        ctx.fill();
+                    }
                 } else {
                     ctx.fillStyle = colorLeft; ctx.beginPath(); ctx.arc(0, 0, player.radius, Math.PI / 2, Math.PI * 1.5); ctx.fill();
                     ctx.fillStyle = colorRight; ctx.beginPath(); ctx.arc(0, 0, player.radius, Math.PI * 1.5, Math.PI / 2); ctx.fill();
