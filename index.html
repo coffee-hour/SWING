@@ -11,12 +11,13 @@
             background: #1a1a2e;
             display: flex;
             justify-content: center;
-            align-items: center;
+            align-items: flex-start; /* Changed to allow scrolling */
             min-height: 100vh;
-            overflow: hidden;
+            overflow-y: auto; /* Replaced overflow: hidden */
             font-family: sans-serif;
             color: white;
             user-select: none;
+            padding: 20px 0; /* Adds breathing room at the top/bottom */
         }
         
         #main-layout {
@@ -395,7 +396,7 @@
             showToast(`🛡️ Guild tag set to [${tag}]`, 3000, "#f9a826");
         });
 
-        // Fetch Server Data (Replaces plain leaderboard fetch)
+        // Fetch Server Data
         async function fetchServerData() {
             try {
                 const res = await fetch(`${API_URL}/api/server_data`);
@@ -546,14 +547,29 @@
             document.getElementById("skinDisplay").style.color = currentConf.color;
             
             const fuseBtn = document.getElementById("fuseBtn");
+            const gachaPool = ["split_fire_ice", "split_toxic_bio", "split_solar_lunar", "split_neon_synth"];
+            const availableGacha = gachaPool.filter(s => !checkUnlockStatus(s));
+
             if (whiteShards >= 1 && blackShards >= 1) {
-                fuseBtn.style.display = "block";
                 if (checkUnlockStatus("yin_yang")) {
-                    fuseBtn.textContent = "ROLL GACHA (1⬛ + 1⬜)"; fuseBtn.style.background = "linear-gradient(90deg, #ff00ff 50%, #00ffff 50%)"; fuseBtn.style.color = "#1a1a2e";
+                    if (availableGacha.length > 0) {
+                        fuseBtn.style.display = "block";
+                        fuseBtn.textContent = "ROLL GACHA (1⬛ + 1⬜)"; 
+                        fuseBtn.style.background = "linear-gradient(90deg, #ff00ff 50%, #00ffff 50%)"; 
+                        fuseBtn.style.color = "#1a1a2e";
+                    } else {
+                        // Maxed out all gacha skins - hide the button completely
+                        fuseBtn.style.display = "none";
+                    }
                 } else {
-                    fuseBtn.textContent = "FUSE SHARDS?"; fuseBtn.style.background = "linear-gradient(90deg, #ffffff 50%, #000000 50%)"; fuseBtn.style.color = "#f9a826";
+                    fuseBtn.style.display = "block";
+                    fuseBtn.textContent = "FUSE SHARDS?"; 
+                    fuseBtn.style.background = "linear-gradient(90deg, #ffffff 50%, #000000 50%)"; 
+                    fuseBtn.style.color = "#f9a826";
                 }
-            } else { fuseBtn.style.display = "none"; }
+            } else { 
+                fuseBtn.style.display = "none"; 
+            }
         }
 
         function checkUnlockStatus(key) {
@@ -999,6 +1015,7 @@
                             unlockedSkinKey = available[Math.floor(Math.random() * available.length)];
                             alertMsg = `🎉 GACHA ROLL SUCCESS! 🎉\nCost: 1⬛ + 1⬜\nUnlocked: ${SKINS_CONFIG[unlockedSkinKey].name.toUpperCase()}`;
                         } else {
+                            // Fallback safety (shouldn't be reachable with the updated button logic)
                             highScore += 5000; localStorage.setItem("stickman_high_score", highScore);
                             alertMsg = "💎 GACHA MAXED OUT! 💎\nCost: 1⬛ + 1⬜\nYou received 5000 Bonus Points instead!";
                             unlockedSkinKey = equippedSkin; 
