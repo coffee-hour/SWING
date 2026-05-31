@@ -209,7 +209,7 @@
         document.getElementById("devTrigger").addEventListener("dblclick", () => {
             if (!devModeUnlocked) {
                 let p = prompt("Enter Dev Access Code:");
-                if (p === "RENROCVED") {
+                if (p === "*******") {
                     devModeUnlocked = true;
                     document.getElementById("devPanel").style.display = "block";
                     showToast("🛠️ Dev Tools Unlocked", 3000, "#ff4757");
