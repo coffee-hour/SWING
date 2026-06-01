@@ -204,48 +204,7 @@
             split_neon_synth: { name: "Neon Synth", color: "#ff00ff", splitColor: "#00ffff", condition: "Gacha Roll" }
         };
 
-        // DEV CORNER UNLOCK
-       let devSessionKey = ""; 
-
-document.getElementById("devTrigger").addEventListener("dblclick", () => {
-    let p = prompt("Enter Secret Dev Access Key:");
-    if (p) {
-        devSessionKey = p; // Hold in memory only
-        // Request authorization attempt from backend
-        sendDevCmd(null, null, true); 
-    }
-});
-
-async function sendDevCmd(msg, toggle, isAuthCheck = false) {
-    try {
-        const res = await fetch(`${API_URL}/api/dev`, { 
-            method: "POST", 
-            headers: {"Content-Type": "application/json"}, 
-            body: JSON.stringify({ 
-                password: devSessionKey, 
-                message: msg, 
-                event_toggle: toggle 
-            }) 
-        });
-        const data = await res.json();
-        
-        if (data.success) {
-            if (isAuthCheck) {
-                document.getElementById("devPanel").style.display = "block";
-                showToast("🛠️ Dev Tools Interface Authenticated", 3000, "#ff4757");
-            } else {
-                showToast("Command successfully processed by server.", 3000, "#ff4757");
-            }
-            fetchServerData(); 
-        } else {
-            showToast("❌ Access Denied: Invalid Security Token", 4000, "#ff0055");
-            if (isAuthCheck) devSessionKey = "";
-        }
-    } catch(e) {
-        showToast("Error connecting to dev gateway", 3000, "#ff0055");
-    }
-}
-
+    
         });
         
         async function sendDevCmd(msg, toggle) {
