@@ -69,8 +69,10 @@
                     <button id="leaderBtn" class="auth-btn" style="background:#8e44ad; display:none;" onclick="claimLeader()">Claim Leader</button>
                 </div>
                 <div style="font-size: 12px; margin-top: 5px;">Your Guild: <span id="currentGuildDisplay" class="tag">None</span></div>
-                <div style="font-size: 12px; color: #f1c40f;">Guild Coins: <span id="guildCoinDisplay">0</span> 🪙</div>
-                <div style="font-size: 11px; color: #4ecca3; margin-top: 5px;" id="guildMultiDisplay"></div>
+<div style="font-size: 12px; color: #f1c40f;">Guild Coins: <span id="guildCoinDisplay">0</span> 🪙</div>
+<div style="font-size: 12px; color: #ff4757; margin-top: 2px;">War Points: <span id="warPointsDisplay">0</span> ⚔️</div>
+<div style="font-size: 11px; color: #4ecca3; margin-top: 5px;" id="guildMultiDisplay"></div>
+
             </div>
             
             <h4 style="margin:10px 0 5px 0; font-size: 13px;">⚔️ Guild Wars (Top 5)</h4>
@@ -155,66 +157,101 @@
     <script>
         const API_URL = "https://swingworker.xaviersgames.workers.dev";
         
-        let user = {
-            username: null, password_hash: null, high_score: parseInt(localStorage.getItem("hc")) || 0,
-            equipped_skin: localStorage.getItem("eq") || "default", unlocked: ["default"],
-            w_shards: parseInt(localStorage.getItem("ws")) || 0, b_shards: parseInt(localStorage.getItem("bs")) || 0, 
-            guild: localStorage.getItem("gd") || "", guild_coins: 0, is_leader: false,
-            games_played: 0, highest_distance_today: 0, shards_collected_today: 0
-        };
+       const SKINS_CONFIG = {
+    og_stickman: { name: "Exquisite OG", color: "#ff00ff", condition: "First 10 Players", ability: "Your a Real One" },
+    community_hero: { name: "Global Guardian", color: "#00ffff", splitColor: "#f9a826", condition: "7-Day Global Streak", ability: "Max Magnet + Low Grav" },
+    default: { name: "Default", color: "#00adb5" },
+    
+    // --- NEW GUILD WAR SKINS ---
+    guild_warrior: { name: "Guild Warrior", color: "#bdc3c7", condition: "Costs 50 WP", cost_wp: 50, ability: "1.2x Score Multiplier" },
+    guild_champion: { name: "Guild Champion", color: "#e74c3c", condition: "Costs 100 WP", cost_wp: 100, ability: "1.5x Score Multiplier" },
+    guild_legend: { name: "Guild Legend", color: "#f39c12", condition: "Costs 1000 WP", cost_wp: 1000, ability: "3x Score Multiplier" },
+    
+    brown: { name: "Brown", color: "#8b4513", score: 100, ability: "+ Hook Range" },
+    green: { name: "Green", color: "#00ff00", score: 500, ability: "+ Bounce" },
+    pink: { name: "Pink", color: "#ffc0cb", score: 1000, ability: "Low Gravity" },
+    blue: { name: "Blue", color: "#0000ff", score: 5000, ability: "Slippery" },
+    red: { name: "Red", color: "#ff0000", score: 7000, ability: "Heavy Momentum" },
+    orange: { name: "Orange", color: "#ffa500", score: 10000, ability: "2x Multiplier!" }, 
+    yellow: { name: "Yellow", color: "#ffff00", score: 20000, ability: "5x Multiplier!" }, 
+    gold: { name: "Gold", color: "#ffd700", score: 100000, ability: "10x Multiplier!" },
+    guild_master: { name: "Guild Master", color: "#8e44ad", condition: "Costs 1000 GC", ability: "Guild Leader Status" },
+    angelic: { name: "Angelic", color: "#ffffff", condition: "Password" },
+    denied_angel: { name: "Denied Angel", color: "#ffffff", condition: "???", parent: "angelic" },
+    accurate_angel: { name: "Accurate Angel", color: "#ffffff", condition: "???", parent: "angelic" },
+    exalted_angel: { name: "Exalted Angel", color: "#ffffff", condition: "???", parent: "angelic" },
+    devil: { name: "Devil", color: "#ff0055", condition: "???" }, 
+    denied_devil: { name: "Denied Devil", color: "#ff0055", condition: "???", parent: "devil" },
+    accurate_devil: { name: "Accurate Devil", color: "#d4af37", condition: "???", parent: "devil" },
+    exalted_devil: { name: "Exalted Devil", color: "#ff0055", condition: "???", parent: "devil" },
+    yin_yang: { name: "Yin Yang", color: "#ffffff", splitColor: "#000000", condition: "FUSED" },
+    split_fire_ice: { name: "Fire & Ice", color: "#ff4500", splitColor: "#00ced1", condition: "Gacha Roll" },
+    split_toxic_bio: { name: "Toxic Bio", color: "#32cd32", splitColor: "#8a2be2", condition: "Gacha Roll" },
+    split_solar_lunar: { name: "Solar Lunar", color: "#ffd700", splitColor: "#191970", condition: "Gacha Roll" },
+    split_neon_synth: { name: "Neon Synth", color: "#ff00ff", splitColor: "#00ffff", condition: "Gacha Roll" }
+};
 
-        let isGlobalRewardUnlocked = false;
-        let serverEventMultiplier = 1;
-        let angelicDropdownOpen = false; let devilDropdownOpen = false;
-        let activeChallenges = []; 
-
-        let todayStr = new Date().toISOString().split('T')[0];
-        let dailyTasks = JSON.parse(localStorage.getItem("stickman_tasks")) || { date: todayStr, dist: 0, games: 0, shards: 0, c1: false, c2: false, c3: false };
-        if (dailyTasks.date !== todayStr) dailyTasks = { date: todayStr, dist: 0, games: 0, shards: 0, c1: false, c2: false, c3: false };
-
-        // --- SKINS DATABASE ---
-        const SKINS_CONFIG = {
-            og_stickman: { name: "Exquisite OG", color: "#ff00ff", condition: "First 10 Players", ability: "Your a Real One" },
-            community_hero: { name: "Global Guardian", color: "#00ffff", splitColor: "#f9a826", condition: "7-Day Global Streak", ability: "Max Magnet + Low Grav" },
-            default: { name: "Default", color: "#00adb5" },
-            brown: { name: "Brown", color: "#8b4513", score: 100, ability: "+ Hook Range" },
-            green: { name: "Green", color: "#00ff00", score: 500, ability: "+ Bounce" },
-            pink: { name: "Pink", color: "#ffc0cb", score: 1000, ability: "Low Gravity" },
-            blue: { name: "Blue", color: "#0000ff", score: 5000, ability: "Slippery" },
-            red: { name: "Red", color: "#ff0000", score: 7000, ability: "Heavy Momentum" },
-            orange: { name: "Orange", color: "#ffa500", score: 10000, ability: "2x Multiplier!" }, 
-            yellow: { name: "Yellow", color: "#ffff00", score: 20000, ability: "5x Multiplier!" }, 
-            gold: { name: "Gold", color: "#ffd700", score: 100000, ability: "10x Multiplier!" },
-            guild_master: { name: "Guild Master", color: "#8e44ad", condition: "Costs 1000 GC", ability: "Guild Leader Status" },
-            
-            angelic: { name: "Angelic", color: "#ffffff", condition: "Password" },
-            denied_angel: { name: "Denied Angel", color: "#ffffff", condition: "???", parent: "angelic" },
-            accurate_angel: { name: "Accurate Angel", color: "#ffffff", condition: "???", parent: "angelic" },
-            exalted_angel: { name: "Exalted Angel", color: "#ffffff", condition: "???", parent: "angelic" },
-            
-            devil: { name: "Devil", color: "#ff0055", condition: "???" }, 
-            denied_devil: { name: "Denied Devil", color: "#ff0055", condition: "???", parent: "devil" },
-            accurate_devil: { name: "Accurate Devil", color: "#d4af37", condition: "???", parent: "devil" },
-            exalted_devil: { name: "Exalted Devil", color: "#ff0055", condition: "???", parent: "devil" },
-
-            yin_yang: { name: "Yin Yang", color: "#ffffff", splitColor: "#000000", condition: "FUSED" },
-            split_fire_ice: { name: "Fire & Ice", color: "#ff4500", splitColor: "#00ced1", condition: "Gacha Roll" },
-            split_toxic_bio: { name: "Toxic Bio", color: "#32cd32", splitColor: "#8a2be2", condition: "Gacha Roll" },
-            split_solar_lunar: { name: "Solar Lunar", color: "#ffd700", splitColor: "#191970", condition: "Gacha Roll" },
-            split_neon_synth: { name: "Neon Synth", color: "#ff00ff", splitColor: "#00ffff", condition: "Gacha Roll" }
-        };
-
+function calculateMultiplier() {
+    let m = 1; let texts = [];
+    if (serverEventMultiplier > 1) { m *= serverEventMultiplier; texts.push(`🎉 GLOBAL ${serverEventMultiplier}X EVENT`); }
+    if (new Date().getDay() === 5) { m *= 2; texts.push("🔥 2X FRIDAY"); }
+    
+    // Skin Multipliers
+    if (user.equipped_skin === 'orange') m *= 2;
+    if (user.equipped_skin === 'yellow') m *= 5;
+    if (user.equipped_skin === 'gold') m *= 10;
+    if (user.equipped_skin === 'guild_warrior') m *= 1.2;
+    if (user.equipped_skin === 'guild_champion') m *= 1.5;
+    if (user.equipped_skin === 'guild_legend') m *= 3;
+    
+    if (user.is_leader) { m *= 1.5; texts.push("👑 LEADER (1.5x)"); }
+    
+    document.getElementById("multiDisplay").textContent = m.toFixed(1) + "x";
+    document.getElementById("guildMultiDisplay").textContent = texts.join(" | ");
+    return m;
+}
         // DEV CORNER UNLOCK
-        let devModeUnlocked = false;
-        document.getElementById("devTrigger").addEventListener("dblclick", () => {
-            if (!devModeUnlocked) {
-                let p = prompt("Enter Dev Access Code:");
-                if (p === "*******") {
-                    devModeUnlocked = true;
-                    document.getElementById("devPanel").style.display = "block";
-                    showToast("🛠️ Dev Tools Unlocked", 3000, "#ff4757");
-                }
+        let devSessionKey = ""; 
+
+document.getElementById("devTrigger").addEventListener("dblclick", () => {
+    let p = prompt("Enter Secret Dev Access Key:");
+    if (p) {
+        devSessionKey = p; // Hold in memory only
+        // Request authorization attempt from backend
+        sendDevCmd(null, null, true); 
+    }
+});
+
+async function sendDevCmd(msg, toggle, isAuthCheck = false) {
+    try {
+        const res = await fetch(`${API_URL}/api/dev`, { 
+            method: "POST", 
+            headers: {"Content-Type": "application/json"}, 
+            body: JSON.stringify({ 
+                password: devSessionKey, 
+                message: msg, 
+                event_toggle: toggle 
+            }) 
+        });
+        const data = await res.json();
+        
+        if (data.success) {
+            if (isAuthCheck) {
+                document.getElementById("devPanel").style.display = "block";
+                showToast("🛠️ Dev Tools Interface Authenticated", 3000, "#ff4757");
+            } else {
+                showToast("Command successfully processed by server.", 3000, "#ff4757");
             }
+            fetchServerData(); 
+        } else {
+            showToast("❌ Access Denied: Invalid Security Token", 4000, "#ff0055");
+            if (isAuthCheck) devSessionKey = "";
+        }
+    } catch(e) {
+        showToast("Error connecting to dev gateway", 3000, "#ff0055");
+    }
+}
+
         });
         
         async function sendDevCmd(msg, toggle) {
@@ -227,21 +264,6 @@
             const c = document.getElementById("toastContainer"); if (!c) return;
             const t = document.createElement("div"); t.className = "toast"; t.style.borderColor = color; t.style.animationDuration = (duration/1000)+"s"; t.innerText = msg;
             c.appendChild(t); setTimeout(() => { if (t.parentElement) t.remove(); }, duration);
-        }
-
-        function calculateMultiplier() {
-            let m = 1; let texts = [];
-            
-            if (serverEventMultiplier > 1) { m *= serverEventMultiplier; texts.push(`🎉 GLOBAL ${serverEventMultiplier}X EVENT`); }
-            if (new Date().getDay() === 5) { m *= 2; texts.push("🔥 2X FRIDAY"); }
-            if (user.equipped_skin === 'orange') m *= 2;
-            if (user.equipped_skin === 'yellow') m *= 5;
-            if (user.equipped_skin === 'gold') m *= 10;
-            if (user.is_leader) { m *= 1.5; texts.push("👑 LEADER (1.5x)"); }
-            
-            document.getElementById("multiDisplay").textContent = m + "x";
-            document.getElementById("guildMultiDisplay").textContent = texts.join(" | ");
-            return m;
         }
 
         function checkTaskCompletion() {
@@ -257,37 +279,88 @@
             if(changes && user.username) syncSave();
         }
 
-        function updateUI() {
-            document.getElementById("highScoreDisplay").textContent = user.high_score;
-            document.getElementById("whiteShardDisplay").textContent = user.w_shards;
-            document.getElementById("blackShardDisplay").textContent = user.b_shards;
-            document.getElementById("currentGuildDisplay").textContent = user.guild || "None";
-            document.getElementById("guildCoinDisplay").textContent = user.guild_coins;
-            
-            let conf = SKINS_CONFIG[user.equipped_skin] || SKINS_CONFIG.default;
-            document.getElementById("skinDisplay").textContent = conf.name;
-            document.getElementById("skinDisplay").style.color = conf.color || conf.splitColor;
-            document.getElementById("leaderBtn").style.display = user.guild && !user.is_leader ? "block" : "none";
+      function updateUI() {
+    document.getElementById("highScoreDisplay").textContent = user.high_score;
+    document.getElementById("whiteShardDisplay").textContent = user.w_shards;
+    document.getElementById("blackShardDisplay").textContent = user.b_shards;
+    document.getElementById("currentGuildDisplay").textContent = user.guild || "None";
+    document.getElementById("guildCoinDisplay").textContent = user.guild_coins;
+    
+    // Refresh War Points row
+    document.getElementById("warPointsDisplay").textContent = user.war_points;
+    localStorage.setItem("wp", user.war_points);
+    
+    let conf = SKINS_CONFIG[user.equipped_skin] || SKINS_CONFIG.default;
+    document.getElementById("skinDisplay").textContent = conf.name;
+    document.getElementById("skinDisplay").style.color = conf.color || conf.splitColor;
+    document.getElementById("leaderBtn").style.display = user.guild && !user.is_leader ? "block" : "none";
 
-            checkTaskCompletion();
+    checkTaskCompletion();
 
-            const fuseBtn = document.getElementById("fuseBtn");
-            const availableGacha = ["split_fire_ice", "split_toxic_bio", "split_solar_lunar", "split_neon_synth"].filter(s => !checkUnlockStatus(s));
+    // Re-render skins selection logic to handle War Point purchases
+    renderSkinsShop();
 
-            if (user.w_shards >= 1 && user.b_shards >= 1) {
-                if (checkUnlockStatus("yin_yang")) {
-                    if (availableGacha.length > 0) {
-                        fuseBtn.style.display = "block"; fuseBtn.textContent = "ROLL GACHA (1⬛ + 1⬜)"; 
-                        fuseBtn.style.background = "linear-gradient(90deg, #ff00ff 50%, #00ffff 50%)"; fuseBtn.style.color = "#1a1a2e";
-                    } else fuseBtn.style.display = "none";
-                } else {
-                    fuseBtn.style.display = "block"; fuseBtn.textContent = "FUSE SHARDS?"; 
-                    fuseBtn.style.background = "linear-gradient(90deg, #ffffff 50%, #000000 50%)"; fuseBtn.style.color = "#f9a826";
-                }
-            } else { fuseBtn.style.display = "none"; }
-            calculateMultiplier();
+    const fuseBtn = document.getElementById("fuseBtn");
+    const availableGacha = ["split_fire_ice", "split_toxic_bio", "split_solar_lunar", "split_neon_synth"].filter(s => !user.unlocked.includes(s));
+
+    if (user.w_shards >= 1 && user.b_shards >= 1) {
+        if (user.unlocked.includes("yin_yang")) {
+            if (availableGacha.length > 0) {
+                fuseBtn.style.display = "block"; fuseBtn.textContent = "ROLL GACHA (1⬛ + 1⬜)"; 
+                fuseBtn.style.background = "linear-gradient(90deg, #ff00ff 50%, #00ffff 50%)"; fuseBtn.style.color = "#1a1a2e";
+            } else fuseBtn.style.display = "none";
+        } else {
+            fuseBtn.style.display = "block"; fuseBtn.textContent = "FUSE SHARDS?"; 
+            fuseBtn.style.background = "linear-gradient(90deg, #ffffff 50%, #000000 50%)"; fuseBtn.style.color = "#f9a826";
         }
+    } else { fuseBtn.style.display = "none"; }
+    calculateMultiplier();
+}
 
+// Separate or update your existing skins container rendering method to support the new purchase mechanism:
+function renderSkinsShop() {
+    const grid = document.getElementById("skinsGrid");
+    if (!grid) return;
+    grid.innerHTML = "";
+    
+    Object.keys(SKINS_CONFIG).forEach(key => {
+        const skin = SKINS_CONFIG[key];
+        if (skin.parent) return; // Hide nested variants from main shop list
+        
+        const btn = document.createElement("button");
+        const isUnlocked = user.unlocked.includes(key);
+        btn.className = `skin-btn ${isUnlocked ? 'unlocked' : ''} ${user.equipped_skin === key ? 'equipped' : ''}`;
+        btn.innerHTML = `<div class="skin-preview" style="background:${skin.color || skin.splitColor}"></div><br>${skin.name}`;
+        
+        if (isUnlocked) {
+            btn.onclick = () => {
+                user.equipped_skin = key;
+                localStorage.setItem("eq", key);
+                updateUI();
+                if(user.username) syncSave();
+            };
+        } else if (skin.cost_wp) {
+            // Unlocked state for purchaseable skins if they have enough balance
+            btn.classList.add("unlocked");
+            btn.style.borderColor = "#ff4757";
+            btn.onclick = () => {
+                if (user.war_points >= skin.cost_wp) {
+                    if (confirm(`Unlock ${skin.name} for ${skin.cost_wp} War Points?`)) {
+                        user.war_points -= skin.cost_wp;
+                        user.unlocked.push(key);
+                        localStorage.setItem("unlocked_skins", JSON.stringify(user.unlocked));
+                        showToast(`⚔️ Purchased ${skin.name}!`, 4000, skin.color);
+                        updateUI();
+                        if(user.username) syncSave();
+                    }
+                } else {
+                    showToast(`Locked! Requires ${skin.cost_wp} War Points.`, 3000, "#ff0055");
+                }
+            };
+        }
+        grid.appendChild(btn);
+    });
+}
         // --- AUTH & NETWORK & POLLING ---
         async function fetchServerData() {
             try {
@@ -396,20 +469,29 @@
         }
 
         async function syncSave(added_points = 0) {
-            if(!user.username) return;
-            try {
-                await fetch(`${API_URL}/api/save`, {
-                    method: "POST", headers: {"Content-Type": "application/json"},
-                    body: JSON.stringify({
-                        username: user.username, password_hash: user.password_hash,
-                        high_score: user.high_score, equipped_skin: user.equipped_skin,
-                        white_shards: user.w_shards, black_shards: user.b_shards,
-                        unlocked_skins: user.unlocked, guild: user.guild, guild_coins: user.guild_coins, added_points: added_points
-                    })
-                });
-                fetchServerData();
-            } catch(e){}
-        }
+           async function syncSave(added_points = 0) {
+    if(!user.username) return;
+    try {
+        await fetch(`${API_URL}/api/save`, { 
+            method: "POST", 
+            headers: {"Content-Type": "application/json"}, 
+            body: JSON.stringify({ 
+                username: user.username, 
+                password_hash: user.password_hash, 
+                high_score: user.high_score, 
+                equipped_skin: user.equipped_skin, 
+                white_shards: user.w_shards, 
+                black_shards: user.b_shards, 
+                unlocked_skins: user.unlocked, 
+                guild: user.guild, 
+                guild_coins: user.guild_coins, 
+                war_points: user.war_points, // <-- Send to database
+                added_points: added_points 
+            }) 
+        });
+        fetchServerData();
+    } catch(e){}
+}
 
         document.getElementById("loginBtn").onclick = async () => {
             const u = document.getElementById("usernameInput").value.trim(); const p = document.getElementById("passwordInput").value;
@@ -553,7 +635,7 @@
             gameStatus = "fusion"; fusionAngle = 0; fusionSpeed = 0.05; fusionDistance = 150; fusionFlash = 0; document.getElementById("fuseBtn").style.display = "none";
         });
 
-        const BASE_GRAVITY = 1.00; const BASE_FRICTION = 0.995; const BASE_HOOK_RANGE = 350; 
+        const BASE_GRAVITY = 0.60; const BASE_FRICTION = 0.995; const BASE_HOOK_RANGE = 350; 
         let currentGravity = BASE_GRAVITY; let currentFriction = BASE_FRICTION; let maxHookRange = BASE_HOOK_RANGE;
         let bounceMultiplier = 1; let momentumBoost = 0.05; let magnetRadius = 0;
 
