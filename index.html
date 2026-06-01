@@ -129,12 +129,12 @@
                 </div>
                 
                 <div id="devPanel" class="panel-box" style="display:none; flex: 100%;">
-                    <h4 style="color:#ff4757">🛠️ Dev Corner</h4>
+                    <h4 style="color:#ff4757">Account Deletion</h4>
                     <input type="text" id="devMessageInput" class="auth-input" placeholder="Server Broadcast Message" style="width:200px;">
-                    <button class="auth-btn" style="background:#ff4757; color:#fff;" onclick="sendDevCmd(document.getElementById('devMessageInput').value, null)">Broadcast</button>
-                    <button class="auth-btn" style="background:#f9a826; color:#111; margin-left: 10px;" onclick="sendDevCmd(null, true)">Event 2x ON</button>
-                    <button class="auth-btn" style="background:#555; color:#fff;" onclick="sendDevCmd(null, false)">Event OFF</button>
-                    <button class="auth-btn" style="background:#111; color:#ff4757; border:1px solid #ff4757; margin-left:10px;" onclick="sendDevCmd('', null)">Clear Broadcast</button>
+                    <button class="auth-btn" style="background:#ff4757; color:#fff;" onclick="sendDevCmd(document.getElementById('devMessageInput').value, null)">type_username</button>
+                    <button class="auth-btn" style="background:#f9a826; color:#111; margin-left: 10px;" onclick="sendDevCmd(null, true)">delete</button>
+                    <button class="auth-btn" style="background:#555; color:#fff;" onclick="sendDevCmd(null, false)">reset</button>
+                    <button class="auth-btn" style="background:#111; color:#ff4757; border:1px solid #ff4757; margin-left:10px;" onclick="sendDevCmd('', null)">freeze_account</button>
                 </div>
             </div>
         </div>
