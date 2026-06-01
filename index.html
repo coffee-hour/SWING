@@ -152,7 +152,7 @@
         const API_URL = "https://swingworker.xaviersgames.workers.dev";
         
         let user = {
-            username: null, password: null, high_score: parseInt(localStorage.getItem("hc")) || 0,
+            username: null, password_hash: null, high_score: parseInt(localStorage.getItem("hc")) || 0,
             equipped_skin: localStorage.getItem("eq") || "default", unlocked: ["default"],
             w_shards: parseInt(localStorage.getItem("ws")) || 0, b_shards: parseInt(localStorage.getItem("bs")) || 0, 
             guild: localStorage.getItem("gd") || "", guild_coins: 0, is_leader: false,
@@ -397,7 +397,7 @@
                 await fetch(`${API_URL}/api/save`, {
                     method: "POST", headers: {"Content-Type": "application/json"},
                     body: JSON.stringify({
-                        username: user.username, password: user.password,
+                        username: user.username, password_hash: user.password_hash,
                         high_score: user.high_score, equipped_skin: user.equipped_skin,
                         white_shards: user.w_shards, black_shards: user.b_shards,
                         unlocked_skins: user.unlocked, guild: user.guild, guild_coins: user.guild_coins, added_points: added_points
@@ -411,10 +411,10 @@
             const u = document.getElementById("usernameInput").value.trim(); const p = document.getElementById("passwordInput").value;
             if(!u || !p) return showToast("Enter credentials", 3000, "#ff0055");
             try {
-                const res = await fetch(`${API_URL}/api/login`, { method:"POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify({username:u, password:p}) });
+                const res = await fetch(`${API_URL}/api/login`, { method:"POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify({username:u, password_hash:p}) });
                 const data = await res.json();
                 if(data.success) {
-                    user.username = u; user.password = p;
+                    user.username = u; user.password_hash = p;
                     user.high_score = data.userData.high_score; user.equipped_skin = data.userData.equipped_skin;
                     user.w_shards = data.userData.white_shards; user.b_shards = data.userData.black_shards;
                     user.unlocked = data.userData.unlocked_skins || ["default"];
@@ -436,7 +436,7 @@
             const u = document.getElementById("usernameInput").value.trim(); const p = document.getElementById("passwordInput").value;
             if(!u || !p) return;
             try {
-                const res = await fetch(`${API_URL}/api/register`, { method:"POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify({username:u, password:p}) });
+                const res = await fetch(`${API_URL}/api/register`, { method:"POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify({username:u, password_hash:p}) });
                 const data = await res.json();
                 if(data.success) showToast("Registered! Please login."); else showToast(data.error, 4000, "#ff0055");
             } catch(e) { showToast("Backend Connection Error", 3000, "#ff0055"); }
