@@ -120,7 +120,7 @@
 
                 <div class="panel-box" style="flex: 1;">
                     <h4 id="devTrigger" style="cursor:help;">🌍 Global Quest</h4>
-                    <div style="font-size: 11px; color: #aaa; margin-bottom: 5px;">Daily Goal: 1,000,000 pts</div>
+                    <div style="font-size: 11px; color: #aaa; margin-bottom: 5px;">Daily Goal: 100,000,000 pts</div>
                     <div style="font-size: 14px; font-weight: bold; color: #4ecca3; margin-bottom: 2px;">
                         <span id="dailyPointsDisplay">0</span> / 1,000,000
                     </div>
@@ -130,7 +130,6 @@
                 
                 <div id="devPanel" class="panel-box" style="display:none; flex: 100%;">
                     <h4 style="color:#ff4757">🛠️ Dev Corner</h4>
-                    <input type="text" id="devMessageInput" class="auth-input" placeholder="Server Broadcast Message" style="width:200px;">
                 </div>
             </div>
         </div>
@@ -170,7 +169,7 @@
 
         // --- SKINS DATABASE ---
         const SKINS_CONFIG = {
-            og_stickman: { name: "Exquisite OG", color: "#ff00ff", condition: "First 10 Players", ability: "Your a Real One" },
+            og_stickman: { name: "Exquisite OG", color: "#ff00ff", condition: "First 10 Players", ability: "Looking Dapper" },
             community_hero: { name: "Global Guardian", color: "#00ffff", splitColor: "#f9a826", condition: "7-Day Global Streak", ability: "Max Magnet + Low Grav" },
             default: { name: "Default", color: "#00adb5" },
             brown: { name: "Brown", color: "#8b4513", score: 100, ability: "+ Hook Range" },
@@ -216,6 +215,14 @@
         async function sendDevCmd(msg, toggle) {
             await fetch(`${API_URL}/api/dev`, { method: "POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify({ password: "RENROCVED", message: msg, event_toggle: toggle }) });
             fetchServerData(); showToast("Command sent to server.", 3000, "#ff4757");
+        }
+
+        // --- CRYPTOGRAPHY ---
+        async function hashPassword(password) {
+            const msgBuffer = new TextEncoder().encode(password);
+            const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
+            const hashArray = Array.from(new Uint8Array(hashBuffer));
+            return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
         }
 
         // --- UTILS ---
@@ -411,10 +418,11 @@
             const u = document.getElementById("usernameInput").value.trim(); const p = document.getElementById("passwordInput").value;
             if(!u || !p) return showToast("Enter credentials", 3000, "#ff0055");
             try {
-                const res = await fetch(`${API_URL}/api/login`, { method:"POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify({username:u, password_hash:p}) });
+                const hashedP = await hashPassword(p);
+                const res = await fetch(`${API_URL}/api/login`, { method:"POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify({username:u, password_hash:hashedP}) });
                 const data = await res.json();
                 if(data.success) {
-                    user.username = u; user.password_hash = p;
+                    user.username = u; user.password_hash = hashedP;
                     user.high_score = data.userData.high_score; user.equipped_skin = data.userData.equipped_skin;
                     user.w_shards = data.userData.white_shards; user.b_shards = data.userData.black_shards;
                     user.unlocked = data.userData.unlocked_skins || ["default"];
@@ -436,7 +444,8 @@
             const u = document.getElementById("usernameInput").value.trim(); const p = document.getElementById("passwordInput").value;
             if(!u || !p) return;
             try {
-                const res = await fetch(`${API_URL}/api/register`, { method:"POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify({username:u, password_hash:p}) });
+                const hashedP = await hashPassword(p);
+                const res = await fetch(`${API_URL}/api/register`, { method:"POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify({username:u, password_hash:hashedP}) });
                 const data = await res.json();
                 if(data.success) showToast("Registered! Please login."); else showToast(data.error, 4000, "#ff0055");
             } catch(e) { showToast("Backend Connection Error", 3000, "#ff0055"); }
@@ -549,6 +558,7 @@
             gameStatus = "fusion"; fusionAngle = 0; fusionSpeed = 0.05; fusionDistance = 150; fusionFlash = 0; document.getElementById("fuseBtn").style.display = "none";
         });
 
+        // Advanced Physics
         const BASE_GRAVITY = 0.45; const BASE_FRICTION = 0.995; const BASE_HOOK_RANGE = 350; 
         let currentGravity = BASE_GRAVITY; let currentFriction = BASE_FRICTION; let maxHookRange = BASE_HOOK_RANGE;
         let bounceMultiplier = 1; let momentumBoost = 0.05; let magnetRadius = 0;
@@ -577,7 +587,7 @@
                 let nextY = Math.floor(Math.random() * 130) + 100; 
                 hooks.push({ x: nextX, y: nextY });
 
-                if (Math.random() < 0.35) bouncers.push({ type: "horizontal", x: nextX - 50, y: 400, width: 65, height: 12 });
+                if (Math.random() < 0.35) bouncers.push({ type: "horizontal", x: nextX - 50, y: 430, width: 65, height: 12 });
                 else if (Math.random() < 0.55) bouncers.push({ type: "vertical", x: nextX - 110, y: nextY + 50, width: 14, height: 80 });
 
                 let eq = user.equipped_skin || "";
@@ -677,7 +687,6 @@
             });
 
             cameraX = player.x - 200;
-            // No Math.max(0) so negative scores are possible!
             rawDist = Math.floor(player.x / 10) - 10;
             
             if (gameStatus === "realm") {
@@ -966,8 +975,8 @@
             }
         }
 
-        applySkinAbilities(); spawnEnvironment();
-        function loop() { update(); draw(); requestAnimationFrame(loop); } loop();
+        function loop() { update(); draw(); requestAnimationFrame(loop); }
+        updateUI(); fetchServerData(); fetchSocialData(); loop();
     </script>
 </body>
 </html>
