@@ -413,10 +413,9 @@
                         let code = prompt("ENTER ACCESS CODE:");
                         if (code && code.toUpperCase() === "ANGEL") {
                             unlockSkin("angelic");
-                            if (user.equipped_skin.includes("devil") && !user.unlocked.includes("denied_devil")) { unlockSkin("denied_devil"); showToast("🔥 UNLOCKED: DENIED DEVIL", 4000, "#ff0055"); } 
-                            else showToast("😇 ANGELIC UNLOCKED 😇", 4000, "#ffeaa7");
+                            showToast("ANGELIC UNLOCKED", 4000, "#ffeaa7");
                             renderChangingRoom();
-                        } else if (code) showToast("❌ INCORRECT PASSWORD", 3000, "#ff4757");
+                        } else if (code) showToast("INCORRECT PASSWORD", 3000, "#ff4757");
                     };
                 } else if (key === "guild_master") {
                     btn.onclick = () => {
@@ -462,12 +461,6 @@
                     document.getElementById("streakDisplay").textContent = data.global.streak;
                     document.getElementById("dailyProgress").style.width = Math.min(100, (data.global.daily_points / 1000000) * 100) + "%";
                     serverEventMultiplier = data.global.event_multiplier || 1;
-
-                    const msgBanner = document.getElementById("serverMsgBanner");
-                    if (data.global.server_message && data.global.server_message.trim() !== "") {
-                        msgBanner.textContent = "📢 SERVER: " + data.global.server_message;
-                        msgBanner.style.display = "block";
-                    } else { msgBanner.style.display = "none"; }
                     
                     if (data.userGuildInfo) {
                         document.getElementById("guildSizeDisplay").textContent = `${data.userGuildInfo.members_count} / 10 Players`;
@@ -484,6 +477,7 @@
                         }
                     }
 
+                    // Process Leader Control Panels
                     if (user.is_leader && data.pendingRequests) {
                         const reqBox = document.getElementById("joinRequestsList");
                         reqBox.innerHTML = "";
@@ -527,12 +521,15 @@
                     method: "POST", headers:{"Content-Type":"application/json"},
                     body: JSON.stringify({ username: user.username, password_hash: user.password_hash, requestId: reqId, action: choice })
                 });
-                if (!res.ok) throw new Error("Server error");
+                if (!res.ok) {
+                    const errData = await res.json().catch(()=>({}));
+                    throw new Error(errData.error || "Missing SQL Tables! Please run the DB commands.");
+                }
                 const data = await res.json();
                 if (data.success) { showToast(choice === 'approve' ? "Member added! (Max 10)" : "Request denied"); fetchServerData(); } 
                 else { showToast(data.error, 4000, "#ff4757"); }
             } catch(e) {
-                showToast("Failed to connect to server.", 3000, "#ff4757");
+                showToast(e.message || "Failed to connect to server.", 3000, "#ff4757");
             }
         }
 
@@ -542,12 +539,15 @@
                     method: "POST", headers:{"Content-Type":"application/json"},
                     body: JSON.stringify({ username: user.username, password_hash: user.password_hash, titleId: titleId })
                 });
-                if (!res.ok) throw new Error("Server error");
+                if (!res.ok) {
+                    const errData = await res.json().catch(()=>({}));
+                    throw new Error(errData.error || "Missing SQL Tables! Please run the DB commands.");
+                }
                 const data = await res.json();
                 if (data.success) { showToast("Guild Alliance Title Upgraded!"); fetchServerData(); }
                 else { showToast(data.error, 4000, "#ff4757"); }
             } catch(e) {
-                showToast("Failed to connect to server.", 3000, "#ff4757");
+                showToast(e.message || "Failed to connect to server.", 3000, "#ff4757");
             }
         }
 
@@ -677,14 +677,17 @@
             try {
                 const res = await fetch(`${API_URL}/api/guild/request_join`, {
                     method: "POST", headers:{"Content-Type":"application/json"},
-                    body: JSON.stringify({ username: user.username, password_hash: user.password_hash, guild: tag })
+                    body: JSON.stringify({ username: user.username, password_hash: user.password_hash, guild_tag: tag })
                 });
-                if (!res.ok) throw new Error("Server error");
+                if (!res.ok) {
+                    const errData = await res.json().catch(()=>({}));
+                    throw new Error(errData.error || "Missing SQL Tables! Please run the DB commands.");
+                }
                 const data = await res.json();
                 if (data.success) showToast(`Alliance request sent to [${tag}]! Waiting for leader approval.`);
                 else showToast(data.error, 4000, "#ff4757");
             } catch(e) {
-                showToast("Failed to connect to server.", 3000, "#ff4757");
+                showToast(e.message || "Failed to connect to server.", 3000, "#ff4757");
             }
         };
 
@@ -694,9 +697,12 @@
             try {
                 const res = await fetch(`${API_URL}/api/guild/create`, {
                     method: "POST", headers:{"Content-Type":"application/json"},
-                    body: JSON.stringify({ username: user.username, password_hash: user.password_hash, guild: tag })
+                    body: JSON.stringify({ username: user.username, password_hash: user.password_hash, guild_tag: tag })
                 });
-                if (!res.ok) throw new Error("Server error");
+                if (!res.ok) {
+                    const errData = await res.json().catch(()=>({}));
+                    throw new Error(errData.error || "Missing SQL Tables! Please run the DB commands.");
+                }
                 const data = await res.json();
                 if (data.success) {
                     user.guild = tag; user.is_leader = true;
@@ -704,7 +710,7 @@
                     fetchServerData(); updateUI();
                 } else showToast(data.error, 4000, "#ff4757");
             } catch(e) {
-                showToast("Failed to connect to server.", 3000, "#ff4757");
+                showToast(e.message || "Failed to connect to server.", 3000, "#ff4757");
             }
         };
 
@@ -987,6 +993,7 @@
         // SPRITE: WORLD BOSS GENERATOR
         function drawBoss() {
             if (!currentBoss || currentBoss.level < 1) return;
+            // Float on the right side of the screen
             let bx = cameraX + canvas.width - 120;
             let by = 120 + Math.sin(Date.now() / 400) * 15;
 
@@ -996,14 +1003,17 @@
             ctx.save();
             ctx.translate(bx, by);
 
+            // Boss Aura
             ctx.shadowBlur = 20;
             ctx.shadowColor = `hsl(${hue}, 100%, 50%)`;
             
+            // Core Body
             ctx.fillStyle = `hsl(${hue}, 80%, 20%)`;
             ctx.beginPath();
             ctx.arc(0, 0, 35 + Math.min(lvl * 2, 40), 0, Math.PI * 2);
             ctx.fill();
 
+            // Dynamic Spikes based on Level
             ctx.fillStyle = `hsl(${hue}, 100%, 50%)`;
             let numSpikes = 4 + (lvl % 6);
             let spikeLen = 50 + Math.min(lvl * 3, 50);
@@ -1016,17 +1026,28 @@
                 ctx.fill();
             }
 
+            // Ominous Eye
             ctx.fillStyle = "#fff";
-            ctx.beginPath(); ctx.ellipse(0, 0, 12, 20, 0, 0, Math.PI * 2); ctx.fill();
+            ctx.beginPath();
+            ctx.ellipse(0, 0, 12, 20, 0, 0, Math.PI * 2);
+            ctx.fill();
             ctx.fillStyle = "#111";
-            ctx.beginPath(); ctx.arc(0, 0, 6, 0, Math.PI * 2); ctx.fill();
+            ctx.beginPath();
+            ctx.arc(0, 0, 6, 0, Math.PI * 2);
+            ctx.fill();
             ctx.fillStyle = `hsl(${hue}, 100%, 50%)`;
-            ctx.beginPath(); ctx.arc(0, 0, 3, 0, Math.PI * 2); ctx.fill();
+            ctx.beginPath();
+            ctx.arc(0, 0, 3, 0, Math.PI * 2);
+            ctx.fill();
 
             ctx.shadowBlur = 0;
 
-            ctx.fillStyle = "rgba(0,0,0,0.5)"; ctx.fillRect(-30, 45 + Math.min(lvl*2, 40), 60, 6);
-            ctx.fillStyle = "#ff4757"; let hpPct = Math.max(0, currentBoss.current_hp / currentBoss.max_hp); ctx.fillRect(-30, 45 + Math.min(lvl*2, 40), 60 * hpPct, 6);
+            // Individual Boss HP Bar
+            ctx.fillStyle = "rgba(0,0,0,0.5)";
+            ctx.fillRect(-30, 45 + Math.min(lvl*2, 40), 60, 6);
+            ctx.fillStyle = "#ff4757";
+            let hpPct = Math.max(0, currentBoss.current_hp / currentBoss.max_hp);
+            ctx.fillRect(-30, 45 + Math.min(lvl*2, 40), 60 * hpPct, 6);
 
             ctx.restore();
         }
@@ -1134,7 +1155,10 @@
                 ctx.fillStyle = "#fff"; ctx.beginPath(); ctx.arc(pad.x, pad.y, pad.radius - 6, 0, Math.PI*2); ctx.fill();
             });
 
-            if (gameStatus === "playing") drawBoss();
+            // DRAW WORLD BOSS SPRITE IN BACKGROUND
+            if (gameStatus === "playing") {
+                drawBoss();
+            }
 
             if(player.isSwinging) {
                 ctx.strokeStyle="#fff"; ctx.lineWidth=3; ctx.beginPath(); ctx.moveTo(player.hookX, player.hookY); ctx.lineTo(player.x, player.y); ctx.stroke();
@@ -1251,7 +1275,7 @@
                 ctx.fillStyle = "#f9a826"; ctx.font = "bold 10px sans-serif"; ctx.textAlign = "center";
                 ctx.fillText(`[${user.guild}]`, player.x, player.y - 20);
             }
-            ctx.restore();
+            ctx.restore(); // Final camera restore
 
             // Overlay Screens
             if (gameStatus === "menu") {
