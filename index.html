@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>↺</text></svg>">
-    <title>Swing!</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>☯️</text></svg>">
+    <title>Infinite Swing - MMO Edition</title>
     <style>
         body { margin: 0; background: #0f0f1a; display: flex; justify-content: center; align-items: flex-start; min-height: 100vh; overflow-y: auto; font-family: system-ui, -apple-system, sans-serif; color: white; user-select: none; padding: 10px 0; touch-action: manipulation; }
         #main-layout { display: flex; gap: 15px; max-width: 1400px; width: 100%; padding: 15px; box-sizing: border-box; flex-wrap: wrap; }
@@ -82,7 +82,9 @@
                     <span id="guildSizeDisplay" style="color:#aaa;">0/10 Players</span>
                 </div>
                 <div style="font-size: 12px; color: #ffd700; margin-top: 4px;">Guild War Coins: <span id="warCoinDisplay">0</span> ⚔️</div>
+                <div style="font-size: 12px; color: #f1c40f; margin-top: 4px;">Guild Coins: <span id="guildCoinDisplay">0</span> 🪙</div>
                 <div style="font-size: 11px; color: #4ecca3; margin-top: 4px; font-weight: bold;" id="guildTitleDisplay">Active Title: None</div>
+                <div style="font-size: 11px; color: #4ecca3; margin-top: 4px;" id="guildMultiDisplay"></div>
             </div>
             
             <div id="leaderPanel" class="admin-section" style="display:none;">
@@ -140,6 +142,7 @@
                 <div style="color:#4ecca3;">Score: <span id="scoreDisplay">0</span></div>
                 <div style="color:#f9a826;">Personal Best: <span id="highScoreDisplay">0</span></div>
                 <div style="color:#ff9ff3;">Multiplier: <span id="multiDisplay">1x</span></div>
+                <div style="color:#00adb5;">Skin: <span id="skinDisplay">Default Vector</span></div>
                 <div>⬜ <span id="whiteShardDisplay">0</span> | ⬛ <span id="blackShardDisplay">0</span></div>
             </div>
 
@@ -264,10 +267,10 @@
 
             // 5 BRAND NEW Gacha
             gacha_void_stalker: { name: "Void Stalker", color: "#4a00e0", splitColor: "#000000", condition: "Gacha Roll", ability: "Abyss Save: Bounces from death lines once" },
-            gacha_nebula_drifter: { name: "Nebula Drifter", color: "#00c6ff", splitColor: "#0072ff", condition: "Gacha Roll", ability: "Stellar Vortex: 4x wider shard magnet" },
-            gacha_chrono_trigger: { name: "Chrono Trigger", color: "#f7b733", splitColor: "#fc4a1a", condition: "Gacha Roll", ability: "Time Dilation: Flat +2.0x Multiplier" },
+            gacha_nebula_drifter: { name: "Nebula Drifter", color: "#00c6ff", splitColor: "#0072ff", condition: "Gacha Roll", ability: "4x wider shard magnet absorption" },
+            gacha_chrono_trigger: { name: "Chrono Trigger", color: "#f7b733", splitColor: "#fc4a1a", condition: "Gacha Roll", ability: "Flat +2.0x run multiplier tier" },
             gacha_plasma_wraith: { name: "Plasma Wraith", color: "#e65c00", splitColor: "#f9d423", condition: "Gacha Roll", ability: "Supercharger: Massive bouncer launch" },
-            gacha_storm_bringer: { name: "Storm Bringer", color: "#11998e", splitColor: "#38ef7d", condition: "Gacha Roll", ability: "Overdrive: +500 baseline points per shard" }
+            gacha_storm_bringer: { name: "Storm Bringer", color: "#11998e", splitColor: "#38ef7d", condition: "Gacha Roll", ability: "+500 baseline points per shard" }
         };
 
         // Populate offline unlocks from previous sessions
@@ -611,7 +614,7 @@
                             sl.innerHTML += `<div class="list-item" style="border-color:#f9a826;"><span>🔥 vs ${other}: ${c.goal}pts</span></div>`;
                         }
                     });
-                    if(sl.innerHTML === "") sl.innerHTML = "<div style='text-align:center; color:#555; font-size:11px;'>No synced friends.</div>";
+                    if(sl.innerHTML === "") sl.innerHTML = "<div style='text-align:center; color:#555; font-size:11px; padding:10px;'>Add friends to duel!</div>";
                 }
             } catch(e){}
         }
@@ -642,7 +645,7 @@
                     
                     document.getElementById("authBar").style.display = "none";
                     document.getElementById("userProfileBar").style.display = "flex";
-                    document.getElementById("welcomeMessage").textContent = `👤 Player: ${u}`; // Updated Text
+                    document.getElementById("welcomeMessage").textContent = `👤 Player: ${u}`;
                     
                     applySkinAbilities(); updateUI(); renderChangingRoom(); fetchServerData(); fetchSocialData();
                     showToast("Profile Synced to Mainframe!");
