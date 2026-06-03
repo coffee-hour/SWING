@@ -63,10 +63,6 @@
 <body>
 
     <div id="toastContainer"></div>
-    
-    <audio id="bgMusic" loop>
-        <source src="Melted Vinyl Waltz.mp3" type="audio/mpeg">
-    </audio>
 
     <div id="main-layout">
         <div class="side-panel">
@@ -98,7 +94,7 @@
                 <div id="titleShop" class="title-shop-grid"></div>
             </div>
 
-            <h4 style="margin:12px 0 5px 0; font-size: 13px; color:#ff4757;">👹 Alliance Raid Rankings</h4>
+            <h4 style="margin:12px 0 5px 0; font-size: 13px; color:#ff4757;">⚔️ Alliance Raid Rankings</h4>
             <div id="guildWarList" class="list-container" style="flex: 0.5;">Loading Raid Rankings...</div>
 
             <h4 style="margin:12px 0 5px 0; font-size: 13px; color:#0be881;">📜 Daily Tasks (+20 GC)</h4>
@@ -122,16 +118,12 @@
             
             <div class="ui-bar" style="display:none; background: #17173a;" id="userProfileBar">
                 <span id="welcomeMessage" style="color: #4ecca3;"></span>
-                <div style="display:flex; align-items:center; gap:8px;">
-                    <span style="font-size:11px; color:#aaa;">🎵 BGM:</span>
-                    <button id="playMusicBtn" class="auth-btn blue" style="padding:4px 8px; font-size:11px;" onclick="toggleMusic()">Play Music</button>
-                </div>
             </div>
 
             <div class="ui-bar" style="background: linear-gradient(180deg, #2c1111 0%, #170707 100%); border-color: #5e1d1d;">
                 <div style="display:flex; flex-direction:column; width:100%;">
                     <div style="display:flex; justify-content:space-between; align-items:center;">
-                        <span style="color:#ff4757; font-weight:bold;" id="bossNameDisplay">💥 World Raid: Loading...</span>
+                        <span style="color:#ff4757; font-weight:bold;" id="bossNameDisplay">Level 1 Boss: Loading...</span>
                         <span style="color:#ffb8b8; font-size:12px;" id="bossHpText">0 / 0 HP</span>
                     </div>
                     <div class="progress-bar" style="border-color:#5e1d1d;"><div id="bossHpFill" class="progress-fill" style="background:#ff4757; width:0%;"></div></div>
@@ -190,7 +182,7 @@
     </div>
 
     <script>
-        const API_URL = "https://swingworker.xaviersgames.workers.dev";
+        const API_URL = "https://swingworker.xaviersgames.workers.dev"; // Your Backend URL
         
         let user = {
             username: null, password_hash: null, high_score: parseInt(localStorage.getItem("hc")) || 0,
@@ -200,6 +192,7 @@
         };
 
         let serverEventMultiplier = 1;
+        let currentBoss = null;
         let todayStr = new Date().toISOString().split('T')[0];
         let dailyTasks = JSON.parse(localStorage.getItem("mmo_swing_tasks")) || { date: todayStr, dist: 0, games: 0, shards: 0, c1: false, c2: false, c3: false };
         if (dailyTasks.date !== todayStr) dailyTasks = { date: todayStr, dist: 0, games: 0, shards: 0, c1: false, c2: false, c3: false };
@@ -287,21 +280,6 @@
             const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
             const hashArray = Array.from(new Uint8Array(hashBuffer));
             return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
-        }
-
-        // --- AUDIO CONTROLS ---
-        function toggleMusic() {
-            const bgm = document.getElementById("bgMusic");
-            const btn = document.getElementById("playMusicBtn");
-            if (bgm.paused) { 
-                bgm.play(); 
-                btn.textContent = "Pause Music"; 
-                btn.style.background = "#ff4757"; 
-            } else { 
-                bgm.pause(); 
-                btn.textContent = "Play Music"; 
-                btn.style.background = "#1e90ff"; 
-            }
         }
 
         // --- UTILITIES ---
@@ -448,7 +426,7 @@
                         let code = prompt("ENTER ACCESS CODE:");
                         if (code && code.toUpperCase() === "ANGEL") {
                             unlockSkin("angelic");
-                            if (user.equipped_skin.includes("devil") && !user.unlocked.includes("denied_devil")) { unlockSkin("denied_devil"); showToast("😈 UNLOCKED: DENIED DEVIL", 4000, "#ff0055"); } 
+                            if (user.equipped_skin.includes("devil") && !user.unlocked.includes("denied_devil")) { unlockSkin("denied_devil"); showToast("🔥 UNLOCKED: DENIED DEVIL", 4000, "#ff0055"); } 
                             else showToast("😇 ANGELIC UNLOCKED 😇", 4000, "#ffeaa7");
                             renderChangingRoom();
                         } else if (code) showToast("❌ INCORRECT PASSWORD", 3000, "#ff4757");
@@ -472,7 +450,6 @@
                 const res = await fetch(url);
                 const data = await res.json();
                 if (data.success) {
-                    // Global Individual Leaderboard
                     const lb = document.getElementById("leaderboardList"); lb.innerHTML = "";
                     data.leaderboard.forEach((r, i) => {
                         let tag = r.guild ? `<span class="tag">[${r.guild}]</span> ` : "";
@@ -480,7 +457,6 @@
                         lb.innerHTML += `<div class="list-item" style="${style}"><span>#${i+1} ${tag}${r.username}</span> <span style="color:#4ecca3">${r.score}</span></div>`;
                     });
 
-                    // Guild War/Raid Boss Standings
                     const gw = document.getElementById("guildWarList"); gw.innerHTML = "";
                     data.guildWars.forEach((r, i) => { 
                         gw.innerHTML += `<div class="list-item"><span>#${i+1} [${r.tag}]</span> <span style="color:#ff4757; font-weight:bold;">${r.damage.toLocaleString()} DMG</span></div>`; 
@@ -488,7 +464,8 @@
 
                     // World Boss Engine Update
                     if (data.boss) {
-                        document.getElementById("bossNameDisplay").textContent = `👹 Level ${data.boss.level} Boss: ${data.boss.name}`;
+                        currentBoss = data.boss;
+                        document.getElementById("bossNameDisplay").textContent = `Level ${data.boss.level} Boss: ${data.boss.name}`;
                         document.getElementById("bossHpText").textContent = `${data.boss.current_hp.toLocaleString()} / ${data.boss.max_hp.toLocaleString()} HP`;
                         let pct = Math.max(0, (data.boss.current_hp / data.boss.max_hp) * 100);
                         document.getElementById("bossHpFill").style.width = pct + "%";
@@ -499,7 +476,12 @@
                     document.getElementById("dailyProgress").style.width = Math.min(100, (data.global.daily_points / 1000000) * 100) + "%";
                     serverEventMultiplier = data.global.event_multiplier || 1;
 
-                    // Parse Target Guild Properties
+                    const msgBanner = document.getElementById("serverMsgBanner");
+                    if (data.global.server_message && data.global.server_message.trim() !== "") {
+                        msgBanner.textContent = "📢 SERVER: " + data.global.server_message;
+                        msgBanner.style.display = "block";
+                    } else { msgBanner.style.display = "none"; }
+                    
                     if (data.userGuildInfo) {
                         document.getElementById("guildSizeDisplay").textContent = `${data.userGuildInfo.members_count} / 10 Players`;
                         document.getElementById("warCoinDisplay").textContent = data.userGuildInfo.war_coins;
@@ -515,7 +497,6 @@
                         }
                     }
 
-                    // Process Leader Control Panels
                     if (user.is_leader && data.pendingRequests) {
                         const reqBox = document.getElementById("joinRequestsList");
                         reqBox.innerHTML = "";
@@ -619,7 +600,6 @@
             } catch(e){}
         }
 
-        // Auto Poll
         setInterval(() => { fetchServerData(); if(user.username) fetchSocialData(); }, 12000);
 
         // --- AUTH & LOGIN SYSTEM ---
@@ -644,7 +624,6 @@
                     localStorage.setItem("gd", user.guild);
                     
                     document.getElementById("authBar").style.display = "none";
-                    document.getElementById("userProfileBar").style.display = "flex";
                     document.getElementById("welcomeMessage").textContent = `👤 Player: ${u}`; 
                     
                     applySkinAbilities(); updateUI(); renderChangingRoom(); fetchServerData(); fetchSocialData();
@@ -917,7 +896,7 @@
                 let dx = player.x - px; let dy = player.y - py;
                 if ((dx * dx + dy * dy) < (player.radius * player.radius)) {
                     let bMulti = bounceMultiplier;
-                    if (user.equipped_skin === 'gacha_plasma_wraith') bMulti = 2.0; // massive upward multiplier via plasma
+                    if (user.equipped_skin === 'gacha_plasma_wraith') bMulti = 2.0; 
                     player.y = pad.y - player.radius; 
                     player.vy = -Math.max(Math.abs(player.vy) * 1.2, 12) * bMulti; 
                     player.vx *= 1.1;
@@ -976,7 +955,7 @@
                     if (added > 0) user.guild_coins += Math.floor(added / 5000); 
 
                     let eq = user.equipped_skin || "";
-                    if (rawDist < 0 && !user.unlocked.includes("devil")) { unlockSkin("devil"); showToast("👹 UNLOCKED: THE DEVIL SKIN!", 5000, "#ff4757"); }
+                    if (rawDist < 0 && !user.unlocked.includes("devil")) { unlockSkin("devil"); showToast("🔥 UNLOCKED: THE DEVIL SKIN!", 5000, "#ff4757"); }
                     if (rawDist < 0 && eq.includes("angel") && !user.unlocked.includes("denied_angel")) { unlockSkin("denied_angel"); showToast("🥀 UNLOCKED: DENIED ANGEL", 5000, "#ff4757"); }
                     
                     if (eq.includes("angel")) {
@@ -994,12 +973,75 @@
         }
 
         // --- RENDER PIPELINE ---
+        
+        // SPRITE: WORLD BOSS GENERATOR
+        function drawBoss() {
+            if (!currentBoss || currentBoss.level < 1) return;
+            // Float on the right side of the screen
+            let bx = cameraX + canvas.width - 120;
+            let by = 120 + Math.sin(Date.now() / 400) * 15;
+
+            let lvl = currentBoss.level;
+            let hue = (lvl * 45) % 360; 
+
+            ctx.save();
+            ctx.translate(bx, by);
+
+            // Boss Aura
+            ctx.shadowBlur = 20;
+            ctx.shadowColor = `hsl(${hue}, 100%, 50%)`;
+            
+            // Core Body
+            ctx.fillStyle = `hsl(${hue}, 80%, 20%)`;
+            ctx.beginPath();
+            ctx.arc(0, 0, 35 + Math.min(lvl * 2, 40), 0, Math.PI * 2);
+            ctx.fill();
+
+            // Dynamic Spikes based on Level
+            ctx.fillStyle = `hsl(${hue}, 100%, 50%)`;
+            let numSpikes = 4 + (lvl % 6);
+            let spikeLen = 50 + Math.min(lvl * 3, 50);
+            for (let i = 0; i < numSpikes; i++) {
+                let angle = (i / numSpikes) * Math.PI * 2 + (Date.now() / 1500);
+                ctx.beginPath();
+                ctx.moveTo(Math.cos(angle - 0.2) * 25, Math.sin(angle - 0.2) * 25);
+                ctx.lineTo(Math.cos(angle) * spikeLen, Math.sin(angle) * spikeLen);
+                ctx.lineTo(Math.cos(angle + 0.2) * 25, Math.sin(angle + 0.2) * 25);
+                ctx.fill();
+            }
+
+            // Ominous Eye
+            ctx.fillStyle = "#fff";
+            ctx.beginPath();
+            ctx.ellipse(0, 0, 12, 20, 0, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.fillStyle = "#111";
+            ctx.beginPath();
+            ctx.arc(0, 0, 6, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.fillStyle = `hsl(${hue}, 100%, 50%)`;
+            ctx.beginPath();
+            ctx.arc(0, 0, 3, 0, Math.PI * 2);
+            ctx.fill();
+
+            ctx.shadowBlur = 0;
+
+            // Individual Boss HP Bar
+            ctx.fillStyle = "rgba(0,0,0,0.5)";
+            ctx.fillRect(-30, 45 + Math.min(lvl*2, 40), 60, 6);
+            ctx.fillStyle = "#ff4757";
+            let hpPct = Math.max(0, currentBoss.current_hp / currentBoss.max_hp);
+            ctx.fillRect(-30, 45 + Math.min(lvl*2, 40), 60 * hpPct, 6);
+
+            ctx.restore();
+        }
+
         function drawDevilBackground() {
             let baseGrad = ctx.createLinearGradient(0, 0, 0, canvas.height);
             baseGrad.addColorStop(0, "#1a0000"); baseGrad.addColorStop(0.6, "#8b0000"); baseGrad.addColorStop(1, "#ff0000"); 
-            ctx.fillStyle = baseGrad; ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = baseGrad; ctx.fillRect(cameraX, 0, canvas.width, canvas.height);
             ctx.fillStyle = "rgba(255, 69, 0, 0.4)"; 
-            for (let i = 0; i < canvas.width + 100; i += 40) {
+            for (let i = cameraX; i < cameraX + canvas.width + 100; i += 40) {
                 let flameHeight = 100 + Math.sin((i / 20) + (flameOffset * 3)) * 40;
                 ctx.beginPath(); ctx.moveTo(i, canvas.height); ctx.quadraticCurveTo(i + 20, canvas.height - flameHeight, i + 40, canvas.height); ctx.fill();
             }
@@ -1008,25 +1050,23 @@
         function drawAngelicBackground() {
             let skyGrad = ctx.createLinearGradient(0, 0, 0, canvas.height);
             skyGrad.addColorStop(0, "#00a8ff"); skyGrad.addColorStop(0.6, "#9c88ff"); skyGrad.addColorStop(1, "#f5f6fa"); 
-            ctx.fillStyle = skyGrad; ctx.fillRect(0, 0, canvas.width, canvas.height);
-            let sunX = canvas.width / 2; let sunY = -50; ctx.fillStyle = "rgba(255, 255, 255, 0.15)"; 
+            ctx.fillStyle = skyGrad; ctx.fillRect(cameraX, 0, canvas.width, canvas.height);
+            let sunX = cameraX + canvas.width / 2; let sunY = -50; ctx.fillStyle = "rgba(255, 255, 255, 0.15)"; 
             for (let i = 0; i < Math.PI * 2; i += Math.PI / 8) { ctx.beginPath(); ctx.moveTo(sunX, sunY); ctx.arc(sunX, sunY, 1000, i - 0.1, i + 0.1); ctx.fill();  }
         }
 
         function drawRealmBackground() {
-            ctx.fillStyle = currentRealm === "devil" ? "#111" : "#eee"; ctx.fillRect(0, 0, canvas.width, canvas.height);
-            ctx.save(); ctx.translate(-cameraX, 0); ctx.strokeStyle = currentRealm === "devil" ? "#333" : "#ccc"; ctx.lineWidth = 2;
+            ctx.fillStyle = currentRealm === "devil" ? "#111" : "#eee"; ctx.fillRect(cameraX, 0, canvas.width, canvas.height);
+            ctx.strokeStyle = currentRealm === "devil" ? "#333" : "#ccc"; ctx.lineWidth = 2;
             let startGridX = Math.floor(cameraX / 100) * 100;
             for (let i = startGridX; i < startGridX + canvas.width + 200; i += 80) { ctx.beginPath(); ctx.moveTo(i, 0); ctx.quadraticCurveTo(i + Math.sin((flameOffset*3) + i)*20, canvas.height/2, i, canvas.height); ctx.stroke(); }
-            ctx.restore();
         }
 
         function drawDefaultBackground() {
-            ctx.fillStyle = "#162447"; ctx.fillRect(0, 0, canvas.width, canvas.height);
-            ctx.save(); ctx.translate(-cameraX, 0); ctx.strokeStyle = "#1f1f3a"; ctx.lineWidth = 1;
-            let startGridX = Math.floor(cameraX / 100) * 100;
-            for (let i = startGridX; i < startGridX + canvas.width + 200; i += 100) { ctx.beginPath(); ctx.moveTo(i, 0); ctx.lineTo(i, canvas.height); ctx.stroke(); }
-            ctx.restore();
+            ctx.fillStyle = "#162447"; ctx.fillRect(cameraX, 0, canvas.width, canvas.height);
+            ctx.strokeStyle = "#1f1f3a"; ctx.lineWidth = 1;
+            let startGridX = Math.floor(cameraX / 40) * 40;
+            for (let x = startGridX; x < startGridX + canvas.width + 40; x += 40) { ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, canvas.height); ctx.stroke(); }
         }
 
         function drawFusionCutscene() {
@@ -1072,18 +1112,23 @@
             let eq = user.equipped_skin;
             let skinInfo = SKINS_CONFIG[eq] || SKINS_CONFIG.default;
 
+            ctx.save(); ctx.translate(-cameraX, 0);
+
             if (gameStatus === "realm") drawRealmBackground();
             else if (eq && eq.includes("devil")) drawDevilBackground();
             else if (eq && eq.includes("angel")) drawAngelicBackground();
             else drawDefaultBackground();
             
-            ctx.save(); ctx.translate(-cameraX, 0);
-
             portals.forEach(p => {
                 ctx.beginPath(); ctx.arc(p.x, p.y, p.radius, 0, Math.PI*2);
                 if (p.type === "devil") { ctx.fillStyle = "rgba(0, 191, 255, 0.6)"; ctx.shadowColor = "#00bfff"; ctx.shadowBlur = 20; } 
                 else { ctx.fillStyle = "rgba(255, 255, 255, 0.8)"; ctx.shadowColor = "#fff"; ctx.shadowBlur = 20; }
                 ctx.fill(); ctx.shadowBlur = 0;
+            });
+
+            bouncers.forEach(pad => {
+                ctx.fillStyle = "#ff4757"; ctx.beginPath(); ctx.arc(pad.x, pad.y, pad.radius, 0, Math.PI*2); ctx.fill(); 
+                ctx.fillStyle = "#fff"; ctx.beginPath(); ctx.arc(pad.x, pad.y, pad.radius - 6, 0, Math.PI*2); ctx.fill();
             });
 
             hooks.forEach(h => {
@@ -1094,10 +1139,10 @@
                 ctx.beginPath(); ctx.arc(h.x, h.y, 16, 0, Math.PI * 2); ctx.stroke();
             });
 
-            bouncers.forEach(pad => {
-                if (pad.type === "horizontal") { ctx.fillStyle = "#e94560"; ctx.fillRect(pad.x, pad.y, pad.width, pad.height); ctx.fillStyle = "#ffdd59"; ctx.fillRect(pad.x + 4, pad.y + 2, pad.width - 8, 3); }
-                else { ctx.fillStyle = "#00ffcc"; ctx.fillRect(pad.x, pad.y, pad.width, pad.height); ctx.fillStyle = "#ffffff"; ctx.fillRect(pad.x + 2, pad.y + 4, pad.width - 4, pad.height - 8); }
-            });
+            // DRAW WORLD BOSS SPRITE IN BACKGROUND
+            if (gameStatus === "playing") {
+                drawBoss();
+            }
 
             if(player.isSwinging) {
                 ctx.strokeStyle="#fff"; ctx.lineWidth=3; ctx.beginPath(); ctx.moveTo(player.hookX, player.hookY); ctx.lineTo(player.x, player.y); ctx.stroke();
@@ -1214,7 +1259,7 @@
                 ctx.fillStyle = "#f9a826"; ctx.font = "bold 10px sans-serif"; ctx.textAlign = "center";
                 ctx.fillText(`[${user.guild}]`, player.x, player.y - 20);
             }
-            ctx.restore();
+            ctx.restore(); // Final camera restore
 
             // Overlay Screens
             if (gameStatus === "menu") {
