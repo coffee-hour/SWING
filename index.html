@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>↺</text></svg>">
-    <title>Swing!</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>☯️</text></svg>">
+    <title>Infinite Swing - MMO Edition</title>
     <style>
         body { margin: 0; background: #0f0f1a; display: flex; justify-content: center; align-items: flex-start; min-height: 100vh; overflow-y: auto; font-family: system-ui, -apple-system, sans-serif; color: white; user-select: none; padding: 10px 0; touch-action: manipulation; }
         #main-layout { display: flex; gap: 15px; max-width: 1400px; width: 100%; padding: 15px; box-sizing: border-box; flex-wrap: wrap; }
@@ -94,7 +94,7 @@
                 <div id="titleShop" class="title-shop-grid"></div>
             </div>
 
-            <h4 style="margin:12px 0 5px 0; font-size: 13px; color:#ff4757;">⚔️ Alliance Raid Rankings</h4>
+            <h4 style="margin:12px 0 5px 0; font-size: 13px; color:#ff4757;">Alliance Raid Rankings</h4>
             <div id="guildWarList" class="list-container" style="flex: 0.5;">Loading Raid Rankings...</div>
 
             <h4 style="margin:12px 0 5px 0; font-size: 13px; color:#0be881;">📜 Daily Tasks (+20 GC)</h4>
@@ -148,22 +148,13 @@
                 </div>
 
                 <div class="panel-box" style="flex: 1;">
-                    <h4 id="devTrigger" style="cursor:help;">🌍 Global Quest</h4>
+                    <h4>🌍 Global Quest</h4>
                     <div style="font-size: 11px; color: #aaa; margin-bottom: 5px;">Daily Goal: 1,000,000 Global Pts</div>
                     <div style="font-size: 14px; font-weight: bold; color: #4ecca3; margin-bottom: 2px;">
                         <span id="dailyPointsDisplay">0</span> / 1,000,000
                     </div>
                     <div class="progress-bar"><div id="dailyProgress" class="progress-fill" style="background:#0be881; width:0%"></div></div>
                     <div style="font-size: 11px; color: #ff9ff3; margin-top: 5px;">Server Lock-in: <span id="streakDisplay">0</span> / 7 Days 🔥</div>
-                </div>
-                
-                <div id="devPanel" class="panel-box" style="display:none; flex: 100%;">
-                    <h4 style="color:#ff4757">🛠️ Dev Corner</h4>
-                    <input type="text" id="devMessageInput" class="auth-input" placeholder="Server Broadcast Message" style="width:200px;">
-                    <button class="auth-btn" style="background:#ff4757; color:#fff;" onclick="sendDevCmd(document.getElementById('devMessageInput').value, null)">Broadcast</button>
-                    <button class="auth-btn" style="background:#f9a826; color:#111; margin-left: 10px;" onclick="sendDevCmd(null, true)">Event 2x ON</button>
-                    <button class="auth-btn" style="background:#555; color:#fff;" onclick="sendDevCmd(null, false)">Event OFF</button>
-                    <button class="auth-btn" style="background:#111; color:#ff4757; border:1px solid #ff4757; margin-left:10px;" onclick="sendDevCmd('', null)">Clear Broadcast</button>
                 </div>
             </div>
         </div>
@@ -182,7 +173,7 @@
     </div>
 
     <script>
-        const API_URL = "https://swingworker.xaviersgames.workers.dev"; // Your Backend URL
+        const API_URL = "https://swingworker.xaviersgames.workers.dev";
         
         let user = {
             username: null, password_hash: null, high_score: parseInt(localStorage.getItem("hc")) || 0,
@@ -225,7 +216,7 @@
             { id: 20, name: "Multiverse Apex", cost: 7000, desc: "+50% Ultimate Multi", multi: 1.50 }
         ];
 
-        // --- SKINS CONFIG (Classic Restored) ---
+        // --- SKINS CONFIG ---
         const SKINS_CONFIG = {
             og_stickman: { name: "Exquisite OG", color: "#ff00ff", condition: "First 10 Players", ability: "Looking Dapper" },
             community_hero: { name: "Global Guardian", color: "#00ffff", splitColor: "#f9a826", condition: "7-Day Streak", ability: "Max Magnet + Low Grav" },
@@ -240,7 +231,6 @@
             gold: { name: "Gold", color: "#ffd700", score: 100000, ability: "Permanent +10.0x Multiplier" },
             guild_master: { name: "Guild Master", color: "#8e44ad", condition: "Costs 1000 GC", ability: "Guild Leader Status" },
             
-            // Realms
             angelic: { name: "Angelic", color: "#ffffff", condition: "Password", ability: "Sky Island Portal Access" },
             denied_angel: { name: "Denied Angel", color: "#ffffff", condition: "???", parent: "angelic" },
             accurate_angel: { name: "Accurate Angel", color: "#ffffff", condition: "???", parent: "angelic" },
@@ -251,14 +241,12 @@
             accurate_devil: { name: "Accurate Devil", color: "#d4af37", condition: "???", parent: "devil" },
             exalted_devil: { name: "Exalted Devil", color: "#ff0055", condition: "???", parent: "devil" },
 
-            // Old Gacha
             yin_yang: { name: "Yin Yang", color: "#ffffff", splitColor: "#000000", condition: "FUSED" },
             split_fire_ice: { name: "Fire & Ice", color: "#ff4500", splitColor: "#00ced1", condition: "Gacha Roll", ability: "+25% Momentum Traversal" },
             split_toxic_bio: { name: "Toxic Bio", color: "#32cd32", splitColor: "#8a2be2", condition: "Gacha Roll", ability: "+30% Safe Hook Length" },
             split_solar_lunar: { name: "Solar Lunar", color: "#ffd700", splitColor: "#191970", condition: "Gacha Roll", ability: "-35% Gravity Physics" },
             split_neon_synth: { name: "Neon Synth", color: "#ff00ff", splitColor: "#00ffff", condition: "Gacha Roll", ability: "Double tap/Space to Dash" },
 
-            // 5 BRAND NEW Gacha
             gacha_void_stalker: { name: "Void Stalker", color: "#4a00e0", splitColor: "#000000", condition: "Gacha Roll", ability: "Abyss Save: Bounces from death lines once" },
             gacha_nebula_drifter: { name: "Nebula Drifter", color: "#00c6ff", splitColor: "#0072ff", condition: "Gacha Roll", ability: "Stellar Vortex: 4x wider shard magnet" },
             gacha_chrono_trigger: { name: "Chrono Trigger", color: "#f7b733", splitColor: "#fc4a1a", condition: "Gacha Roll", ability: "Time Dilation: Flat +2.0x Multiplier" },
@@ -266,7 +254,6 @@
             gacha_storm_bringer: { name: "Storm Bringer", color: "#11998e", splitColor: "#38ef7d", condition: "Gacha Roll", ability: "Overdrive: +500 baseline points per shard" }
         };
 
-        // Populate offline unlocks from previous sessions
         Object.keys(localStorage).forEach(key => {
             if (key.startsWith("stickman_skin_") && localStorage.getItem(key) === "true") {
                 let skinName = key.replace("stickman_skin_", "");
@@ -535,23 +522,33 @@
         }
 
         async function handleJoinRequest(reqId, choice) {
-            const res = await fetch(`${API_URL}/api/guild/handle_request`, {
-                method: "POST", headers:{"Content-Type":"application/json"},
-                body: JSON.stringify({ username: user.username, password_hash: user.password_hash, requestId: reqId, action: choice })
-            });
-            const data = await res.json();
-            if (data.success) { showToast(choice === 'approve' ? "Member added! (Max 10)" : "Request denied"); fetchServerData(); } 
-            else { showToast(data.error, 4000, "#ff4757"); }
+            try {
+                const res = await fetch(`${API_URL}/api/guild/handle_request`, {
+                    method: "POST", headers:{"Content-Type":"application/json"},
+                    body: JSON.stringify({ username: user.username, password_hash: user.password_hash, requestId: reqId, action: choice })
+                });
+                if (!res.ok) throw new Error("Server error");
+                const data = await res.json();
+                if (data.success) { showToast(choice === 'approve' ? "Member added! (Max 10)" : "Request denied"); fetchServerData(); } 
+                else { showToast(data.error, 4000, "#ff4757"); }
+            } catch(e) {
+                showToast("Failed to connect to server.", 3000, "#ff4757");
+            }
         }
 
         async function buyGuildTitle(titleId) {
-            const res = await fetch(`${API_URL}/api/guild/buy_title`, {
-                method: "POST", headers:{"Content-Type":"application/json"},
-                body: JSON.stringify({ username: user.username, password_hash: user.password_hash, titleId: titleId })
-            });
-            const data = await res.json();
-            if (data.success) { showToast("Guild Alliance Title Upgraded!"); fetchServerData(); }
-            else { showToast(data.error, 4000, "#ff4757"); }
+            try {
+                const res = await fetch(`${API_URL}/api/guild/buy_title`, {
+                    method: "POST", headers:{"Content-Type":"application/json"},
+                    body: JSON.stringify({ username: user.username, password_hash: user.password_hash, titleId: titleId })
+                });
+                if (!res.ok) throw new Error("Server error");
+                const data = await res.json();
+                if (data.success) { showToast("Guild Alliance Title Upgraded!"); fetchServerData(); }
+                else { showToast(data.error, 4000, "#ff4757"); }
+            } catch(e) {
+                showToast("Failed to connect to server.", 3000, "#ff4757");
+            }
         }
 
         async function fetchSocialData() {
@@ -625,6 +622,7 @@
                     
                     document.getElementById("authBar").style.display = "none";
                     document.getElementById("welcomeMessage").textContent = `👤 Player: ${u}`; 
+                    document.getElementById("userProfileBar").style.display = "flex";
                     
                     applySkinAbilities(); updateUI(); renderChangingRoom(); fetchServerData(); fetchSocialData();
                     showToast("Profile Synced to Mainframe!");
@@ -658,7 +656,15 @@
                 });
                 const data = await res.json();
                 if (data.bossDefeatedNotification) {
-                    showToast(`⚔️ WORLD BOSS DOWN!\nWar Coins distributed to active Alliances!`, 6000, "#ffd700");
+                    // Massive Visual popup for Boss defeat
+                    const winMsg = document.createElement("div");
+                    winMsg.style.position = "absolute"; winMsg.style.top = "30%"; winMsg.style.left = "50%";
+                    winMsg.style.transform = "translate(-50%, -50%)"; winMsg.style.background = "rgba(0,0,0,0.9)";
+                    winMsg.style.padding = "40px"; winMsg.style.border = "4px solid #ffd700"; winMsg.style.borderRadius = "12px";
+                    winMsg.style.textAlign = "center"; winMsg.style.zIndex = "9999"; winMsg.style.boxShadow = "0 0 50px #ffd700";
+                    winMsg.innerHTML = `<h1 style="color:#ff4757; font-size:40px; margin:0;">WORLD BOSS DESTROYED!</h1><p style="color:#fff; font-size:20px;">War Coins distributed to top Alliances!</p>`;
+                    document.getElementById("game-container").appendChild(winMsg);
+                    setTimeout(() => { if (winMsg.parentNode) winMsg.remove(); }, 6000);
                 }
                 fetchServerData();
             } catch(e){}
@@ -668,47 +674,39 @@
         document.getElementById("reqGuildBtn").onclick = async () => {
             let tag = document.getElementById("guildInput").value.trim().toUpperCase();
             if(!tag || !user.username) return showToast("Login & input 4-letter tag", 3000, "#ff4757");
-            const res = await fetch(`${API_URL}/api/guild/request_join`, {
-                method: "POST", headers:{"Content-Type":"application/json"},
-                body: JSON.stringify({ username: user.username, password_hash: user.password_hash, guild_tag: tag })
-            });
-            const data = await res.json();
-            if (data.success) showToast(`Alliance request sent to [${tag}]! Waiting for leader approval.`);
-            else showToast(data.error, 4000, "#ff4757");
+            try {
+                const res = await fetch(`${API_URL}/api/guild/request_join`, {
+                    method: "POST", headers:{"Content-Type":"application/json"},
+                    body: JSON.stringify({ username: user.username, password_hash: user.password_hash, guild_tag: tag })
+                });
+                if (!res.ok) throw new Error("Server error");
+                const data = await res.json();
+                if (data.success) showToast(`Alliance request sent to [${tag}]! Waiting for leader approval.`);
+                else showToast(data.error, 4000, "#ff4757");
+            } catch(e) {
+                showToast("Failed to connect to server.", 3000, "#ff4757");
+            }
         };
 
         document.getElementById("createGuildBtn").onclick = async () => {
             let tag = document.getElementById("guildInput").value.trim().toUpperCase();
             if(!tag || tag.length < 2) return showToast("Tag must be 2-4 characters", 3000, "#ff4757");
-            const res = await fetch(`${API_URL}/api/guild/create`, {
-                method: "POST", headers:{"Content-Type":"application/json"},
-                body: JSON.stringify({ username: user.username, password_hash: user.password_hash, guild_tag: tag })
-            });
-            const data = await res.json();
-            if (data.success) {
-                user.guild = tag; user.is_leader = true;
-                showToast(`Alliance Guild [${tag}] established! You are the Leader.`, 4000, "#00adb5");
-                fetchServerData(); updateUI();
-            } else showToast(data.error, 4000, "#ff4757");
-        };
-
-        // --- DEV CORNER UNLOCK ---
-        let devModeUnlocked = false;
-        document.getElementById("devTrigger").addEventListener("dblclick", () => {
-            if (!devModeUnlocked) {
-                let p = prompt("Enter Dev Access Code:");
-                if (p === "RENROCVED") {
-                    devModeUnlocked = true;
-                    document.getElementById("devPanel").style.display = "block";
-                    showToast("🛠️ Dev Tools Unlocked", 3000, "#ff4757");
-                }
+            try {
+                const res = await fetch(`${API_URL}/api/guild/create`, {
+                    method: "POST", headers:{"Content-Type":"application/json"},
+                    body: JSON.stringify({ username: user.username, password_hash: user.password_hash, guild_tag: tag })
+                });
+                if (!res.ok) throw new Error("Server error");
+                const data = await res.json();
+                if (data.success) {
+                    user.guild = tag; user.is_leader = true;
+                    showToast(`Alliance Guild [${tag}] established! You are the Leader.`, 4000, "#00adb5");
+                    fetchServerData(); updateUI();
+                } else showToast(data.error, 4000, "#ff4757");
+            } catch(e) {
+                showToast("Failed to connect to server.", 3000, "#ff4757");
             }
-        });
-        
-        async function sendDevCmd(msg, toggle) {
-            await fetch(`${API_URL}/api/dev`, { method: "POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify({ password: "RENROCVED", message: msg, event_toggle: toggle }) });
-            fetchServerData(); showToast("Command sent to server.", 3000, "#ff4757");
-        }
+        };
 
         // --- CORE GAME ENGINE & PHYSICS INTERFACE ---
         const canvas = document.getElementById("gameCanvas");
@@ -722,6 +720,9 @@
         let currentRealm = null;
         let flameOffset = 0;
         let rawDist = 0;
+        
+        // Input Locking Mechanism
+        let canGrapple = true; 
 
         function spawnEnvironment() {
             if (hooks.length === 0) hooks.push({ x: player.x + 200, y: 150 });
@@ -732,8 +733,10 @@
                 let nextY = Math.floor(Math.random() * 130) + 100; 
                 hooks.push({ x: nextX, y: nextY });
 
-                if (Math.random() < 0.35) bouncers.push({ type: "horizontal", x: nextX - 50, y: 430, width: 65, height: 12 });
-                else if (Math.random() < 0.55) bouncers.push({ type: "vertical", x: nextX - 110, y: nextY + 50, width: 14, height: 80 });
+                // Bumpers are back using circles
+                if (Math.random() < 0.3) {
+                    bouncers.push({ x: nextX + (Math.random() * 80 - 40), y: 350 + Math.random() * 50, radius: 18 });
+                }
 
                 let eq = user.equipped_skin || "";
                 if (gameStatus === "playing" && Math.random() < 0.01) {
@@ -753,7 +756,7 @@
             gameStatus = realmType ? "realm" : "playing"; currentRealm = realmType;
             score = 0; cameraX = 0; voidStalkerSaveUsed = false; rawDist = 0;
             player.x = 100; player.y = 200; player.vx = 8; player.vy = 0; player.isSwinging = false;
-            hooks = []; bouncers = []; portals = [];
+            hooks = []; bouncers = []; portals = []; canGrapple = true;
             spawnEnvironment();
             updateUI();
         }
@@ -784,11 +787,13 @@
             if (eq === "split_solar_lunar") currentGravity = 0.29; // -35% gravity pull
         }
 
-        // INPUT SYSTEM WITH SKIN ABILITY OVERRIDES
+        // INPUT SYSTEM WITH INPUT LOCK (CANGRAPPLE)
         function pointerDown(e) {
             if (e && e.target && e.target.tagName !== "CANVAS") return; 
             if (gameStatus === "menu" || gameStatus === "lost") { initGame(); return; }
             if (gameStatus !== "playing" && gameStatus !== "realm") return;
+            
+            if (!canGrapple) return; // Block holding down spacebar forever
 
             let now = Date.now();
             if (user.equipped_skin === 'split_neon_synth' && (now - lastTapTime < 250)) {
@@ -805,10 +810,14 @@
 
             if (best) {
                 player.isSwinging = true; player.hookX = best.x; player.hookY = best.y; player.ropeLength = minDist;
+                canGrapple = false; // Lock the grapple until release
             }
         }
 
-        function pointerUp(e) { player.isSwinging = false; }
+        function pointerUp(e) { 
+            player.isSwinging = false; 
+            canGrapple = true; // Unlock the grapple
+        }
 
         canvas.addEventListener("mousedown", pointerDown); 
         window.addEventListener("mouseup", pointerUp);
@@ -890,17 +899,18 @@
                 }
             }
 
+            // Bouncers Restored Check
             bouncers.forEach(pad => {
-                let px = Math.max(pad.x, Math.min(player.x, pad.x + pad.width)); 
-                let py = Math.max(pad.y, Math.min(player.y, pad.y + pad.height));
-                let dx = player.x - px; let dy = player.y - py;
-                if ((dx * dx + dy * dy) < (player.radius * player.radius)) {
+                let dx = player.x - pad.x; 
+                let dy = player.y - pad.y;
+                if (Math.hypot(dx, dy) < player.radius + pad.radius) {
                     let bMulti = bounceMultiplier;
-                    if (user.equipped_skin === 'gacha_plasma_wraith') bMulti = 2.0; 
-                    player.y = pad.y - player.radius; 
-                    player.vy = -Math.max(Math.abs(player.vy) * 1.2, 12) * bMulti; 
-                    player.vx *= 1.1;
+                    if (user.equipped_skin === 'gacha_plasma_wraith') bMulti = 2.0; // massive upward multiplier via plasma
+                    player.y = pad.y - player.radius - 5; 
+                    player.vy = -Math.max(Math.abs(player.vy) * 1.2, 14) * bMulti; 
+                    player.vx += dx * 0.1; // Add lateral bounce
                     player.isSwinging = false;
+                    canGrapple = true; // Auto-unlock grapple when bouncing
                 }
             });
 
@@ -977,7 +987,6 @@
         // SPRITE: WORLD BOSS GENERATOR
         function drawBoss() {
             if (!currentBoss || currentBoss.level < 1) return;
-            // Float on the right side of the screen
             let bx = cameraX + canvas.width - 120;
             let by = 120 + Math.sin(Date.now() / 400) * 15;
 
@@ -987,17 +996,14 @@
             ctx.save();
             ctx.translate(bx, by);
 
-            // Boss Aura
             ctx.shadowBlur = 20;
             ctx.shadowColor = `hsl(${hue}, 100%, 50%)`;
             
-            // Core Body
             ctx.fillStyle = `hsl(${hue}, 80%, 20%)`;
             ctx.beginPath();
             ctx.arc(0, 0, 35 + Math.min(lvl * 2, 40), 0, Math.PI * 2);
             ctx.fill();
 
-            // Dynamic Spikes based on Level
             ctx.fillStyle = `hsl(${hue}, 100%, 50%)`;
             let numSpikes = 4 + (lvl % 6);
             let spikeLen = 50 + Math.min(lvl * 3, 50);
@@ -1010,28 +1016,17 @@
                 ctx.fill();
             }
 
-            // Ominous Eye
             ctx.fillStyle = "#fff";
-            ctx.beginPath();
-            ctx.ellipse(0, 0, 12, 20, 0, 0, Math.PI * 2);
-            ctx.fill();
+            ctx.beginPath(); ctx.ellipse(0, 0, 12, 20, 0, 0, Math.PI * 2); ctx.fill();
             ctx.fillStyle = "#111";
-            ctx.beginPath();
-            ctx.arc(0, 0, 6, 0, Math.PI * 2);
-            ctx.fill();
+            ctx.beginPath(); ctx.arc(0, 0, 6, 0, Math.PI * 2); ctx.fill();
             ctx.fillStyle = `hsl(${hue}, 100%, 50%)`;
-            ctx.beginPath();
-            ctx.arc(0, 0, 3, 0, Math.PI * 2);
-            ctx.fill();
+            ctx.beginPath(); ctx.arc(0, 0, 3, 0, Math.PI * 2); ctx.fill();
 
             ctx.shadowBlur = 0;
 
-            // Individual Boss HP Bar
-            ctx.fillStyle = "rgba(0,0,0,0.5)";
-            ctx.fillRect(-30, 45 + Math.min(lvl*2, 40), 60, 6);
-            ctx.fillStyle = "#ff4757";
-            let hpPct = Math.max(0, currentBoss.current_hp / currentBoss.max_hp);
-            ctx.fillRect(-30, 45 + Math.min(lvl*2, 40), 60 * hpPct, 6);
+            ctx.fillStyle = "rgba(0,0,0,0.5)"; ctx.fillRect(-30, 45 + Math.min(lvl*2, 40), 60, 6);
+            ctx.fillStyle = "#ff4757"; let hpPct = Math.max(0, currentBoss.current_hp / currentBoss.max_hp); ctx.fillRect(-30, 45 + Math.min(lvl*2, 40), 60 * hpPct, 6);
 
             ctx.restore();
         }
@@ -1126,11 +1121,6 @@
                 ctx.fill(); ctx.shadowBlur = 0;
             });
 
-            bouncers.forEach(pad => {
-                ctx.fillStyle = "#ff4757"; ctx.beginPath(); ctx.arc(pad.x, pad.y, pad.radius, 0, Math.PI*2); ctx.fill(); 
-                ctx.fillStyle = "#fff"; ctx.beginPath(); ctx.arc(pad.x, pad.y, pad.radius - 6, 0, Math.PI*2); ctx.fill();
-            });
-
             hooks.forEach(h => {
                 let isTargeted = (h.x === player.hookX && h.y === player.hookY && player.isSwinging);
                 ctx.fillStyle = isTargeted ? "#4ecca3" : "#e94560";
@@ -1139,10 +1129,12 @@
                 ctx.beginPath(); ctx.arc(h.x, h.y, 16, 0, Math.PI * 2); ctx.stroke();
             });
 
-            // DRAW WORLD BOSS SPRITE IN BACKGROUND
-            if (gameStatus === "playing") {
-                drawBoss();
-            }
+            bouncers.forEach(pad => {
+                ctx.fillStyle = "#ff4757"; ctx.beginPath(); ctx.arc(pad.x, pad.y, pad.radius, 0, Math.PI*2); ctx.fill(); 
+                ctx.fillStyle = "#fff"; ctx.beginPath(); ctx.arc(pad.x, pad.y, pad.radius - 6, 0, Math.PI*2); ctx.fill();
+            });
+
+            if (gameStatus === "playing") drawBoss();
 
             if(player.isSwinging) {
                 ctx.strokeStyle="#fff"; ctx.lineWidth=3; ctx.beginPath(); ctx.moveTo(player.hookX, player.hookY); ctx.lineTo(player.x, player.y); ctx.stroke();
@@ -1259,7 +1251,7 @@
                 ctx.fillStyle = "#f9a826"; ctx.font = "bold 10px sans-serif"; ctx.textAlign = "center";
                 ctx.fillText(`[${user.guild}]`, player.x, player.y - 20);
             }
-            ctx.restore(); // Final camera restore
+            ctx.restore();
 
             // Overlay Screens
             if (gameStatus === "menu") {
