@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>☯️</text></svg>">
-    <title>Infinite Swing - MMO Edition</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>↺</text></svg>">
+    <title>Swing!</title>
     <style>
         body { margin: 0; background: #0f0f1a; display: flex; justify-content: center; align-items: flex-start; min-height: 100vh; overflow-y: auto; font-family: system-ui, -apple-system, sans-serif; color: white; user-select: none; padding: 10px 0; touch-action: manipulation; }
         #main-layout { display: flex; gap: 15px; max-width: 1400px; width: 100%; padding: 15px; box-sizing: border-box; flex-wrap: wrap; }
@@ -113,7 +113,7 @@
             <div id="serverMsgBanner"></div>
             
             <div class="ui-bar" id="authBar">
-                <span>☁️ MMO Sync Status</span>
+                <span>☁️ Cloud Save</span>
                 <input type="text" id="usernameInput" class="auth-input" placeholder="Account Name" style="width:110px;">
                 <input type="password" id="passwordInput" class="auth-input" placeholder="Password" style="width:110px;">
                 <button id="loginBtn" class="auth-btn" style="background:#4ecca3; color:#111;">Login</button>
@@ -142,7 +142,7 @@
                 <div style="color:#4ecca3;">Score: <span id="scoreDisplay">0</span></div>
                 <div style="color:#f9a826;">Personal Best: <span id="highScoreDisplay">0</span></div>
                 <div style="color:#ff9ff3;">Multiplier: <span id="multiDisplay">1x</span></div>
-                <div style="color:#00adb5;">Skin: <span id="skinDisplay">Default Vector</span></div>
+                <div style="color:#00adb5;">Skin: <span id="skinDisplay">Default</span></div>
                 <div>⬜ <span id="whiteShardDisplay">0</span> | ⬛ <span id="blackShardDisplay">0</span></div>
             </div>
 
@@ -190,7 +190,7 @@
     </div>
 
     <script>
-        const API_URL = "https://swingworker.xaviersgames.workers.dev"; // Your Backend URL
+        const API_URL = "https://swingworker.xaviersgames.workers.dev";
         
         let user = {
             username: null, password_hash: null, high_score: parseInt(localStorage.getItem("hc")) || 0,
@@ -232,19 +232,19 @@
             { id: 20, name: "Multiverse Apex", cost: 7000, desc: "+50% Ultimate Multi", multi: 1.50 }
         ];
 
-        // --- SKINS CONFIG (Original + MMO + New Gacha) ---
+        // --- SKINS CONFIG (Classic Restored) ---
         const SKINS_CONFIG = {
             og_stickman: { name: "Exquisite OG", color: "#ff00ff", condition: "First 10 Players", ability: "Looking Dapper" },
             community_hero: { name: "Global Guardian", color: "#00ffff", splitColor: "#f9a826", condition: "7-Day Streak", ability: "Max Magnet + Low Grav" },
-            default: { name: "Default Vector", color: "#00adb5", ability: "Standard Physics" },
-            brown: { name: "Woodland Rover", color: "#8b4513", score: 100, ability: "+15% Hook Range Input Limit" },
-            green: { name: "Bouncy Frog", color: "#00ff00", score: 500, ability: "+25% Extra Velocity off Launchers" },
-            pink: { name: "Anti-Grav Pixie", color: "#ffc0cb", score: 1000, ability: "-20% Gravity Vector Effect" },
-            blue: { name: "Blue Slider", color: "#0000ff", score: 5000, ability: "Frictionless Slider" },
-            red: { name: "Red Meteor", color: "#ff0000", score: 7000, ability: "Heavy Momentum" },
-            orange: { name: "Score Catalyst", color: "#ffa500", score: 10000, ability: "Permanent +2.0x Multiplier" }, 
-            yellow: { name: "Sun Burst", color: "#ffff00", score: 20000, ability: "Permanent +5.0x Multiplier" }, 
-            gold: { name: "Midas Singularity", color: "#ffd700", score: 100000, ability: "Permanent +10.0x Multiplier" },
+            default: { name: "Default", color: "#00adb5", ability: "Standard Physics" },
+            brown: { name: "Brown", color: "#8b4513", score: 100, ability: "+15% Hook Range" },
+            green: { name: "Green", color: "#00ff00", score: 500, ability: "+ Bounce" },
+            pink: { name: "Pink", color: "#ffc0cb", score: 1000, ability: "Low Gravity" },
+            blue: { name: "Blue", color: "#0000ff", score: 5000, ability: "Slippery" },
+            red: { name: "Red", color: "#ff0000", score: 7000, ability: "Heavy Momentum" },
+            orange: { name: "Orange", color: "#ffa500", score: 10000, ability: "Permanent +2.0x Multiplier" }, 
+            yellow: { name: "Yellow", color: "#ffff00", score: 20000, ability: "Permanent +5.0x Multiplier" }, 
+            gold: { name: "Gold", color: "#ffd700", score: 100000, ability: "Permanent +10.0x Multiplier" },
             guild_master: { name: "Guild Master", color: "#8e44ad", condition: "Costs 1000 GC", ability: "Guild Leader Status" },
             
             // Realms
@@ -260,17 +260,17 @@
 
             // Old Gacha
             yin_yang: { name: "Yin Yang", color: "#ffffff", splitColor: "#000000", condition: "FUSED" },
-            split_fire_ice: { name: "Fire & Ice", color: "#ff4500", splitColor: "#00ced1", condition: "Gacha Roll", ability: "+25% Momentum Accumulation" },
+            split_fire_ice: { name: "Fire & Ice", color: "#ff4500", splitColor: "#00ced1", condition: "Gacha Roll", ability: "+25% Momentum Traversal" },
             split_toxic_bio: { name: "Toxic Bio", color: "#32cd32", splitColor: "#8a2be2", condition: "Gacha Roll", ability: "+30% Safe Hook Length" },
-            split_solar_lunar: { name: "Solar Lunar", color: "#ffd700", splitColor: "#191970", condition: "Gacha Roll", ability: "-35% Gravity Pull" },
+            split_solar_lunar: { name: "Solar Lunar", color: "#ffd700", splitColor: "#191970", condition: "Gacha Roll", ability: "-35% Gravity Physics" },
             split_neon_synth: { name: "Neon Synth", color: "#ff00ff", splitColor: "#00ffff", condition: "Gacha Roll", ability: "Double tap/Space to Dash" },
 
             // 5 BRAND NEW Gacha
             gacha_void_stalker: { name: "Void Stalker", color: "#4a00e0", splitColor: "#000000", condition: "Gacha Roll", ability: "Abyss Save: Bounces from death lines once" },
-            gacha_nebula_drifter: { name: "Nebula Drifter", color: "#00c6ff", splitColor: "#0072ff", condition: "Gacha Roll", ability: "4x wider shard magnet absorption" },
-            gacha_chrono_trigger: { name: "Chrono Trigger", color: "#f7b733", splitColor: "#fc4a1a", condition: "Gacha Roll", ability: "Flat +2.0x run multiplier tier" },
+            gacha_nebula_drifter: { name: "Nebula Drifter", color: "#00c6ff", splitColor: "#0072ff", condition: "Gacha Roll", ability: "Stellar Vortex: 4x wider shard magnet" },
+            gacha_chrono_trigger: { name: "Chrono Trigger", color: "#f7b733", splitColor: "#fc4a1a", condition: "Gacha Roll", ability: "Time Dilation: Flat +2.0x Multiplier" },
             gacha_plasma_wraith: { name: "Plasma Wraith", color: "#e65c00", splitColor: "#f9d423", condition: "Gacha Roll", ability: "Supercharger: Massive bouncer launch" },
-            gacha_storm_bringer: { name: "Storm Bringer", color: "#11998e", splitColor: "#38ef7d", condition: "Gacha Roll", ability: "+500 baseline points per shard" }
+            gacha_storm_bringer: { name: "Storm Bringer", color: "#11998e", splitColor: "#38ef7d", condition: "Gacha Roll", ability: "Overdrive: +500 baseline points per shard" }
         };
 
         // Populate offline unlocks from previous sessions
@@ -645,7 +645,7 @@
                     
                     document.getElementById("authBar").style.display = "none";
                     document.getElementById("userProfileBar").style.display = "flex";
-                    document.getElementById("welcomeMessage").textContent = `👤 Player: ${u}`;
+                    document.getElementById("welcomeMessage").textContent = `👤 Player: ${u}`; 
                     
                     applySkinAbilities(); updateUI(); renderChangingRoom(); fetchServerData(); fetchSocialData();
                     showToast("Profile Synced to Mainframe!");
@@ -736,65 +736,92 @@
         const ctx = canvas.getContext("2d");
 
         let gameStatus = "menu", score = 0, cameraX = 0;
-        let player = { x: 100, y: 200, vx: 5, vy: 0, radius: 10, isSwinging: false, hookX: 0, hookY: 0, ropeLength: 0 };
-        let hooks = [], bouncers = [], shards = [], portals = [];
+        let player = { x: 100, y: 200, vx: 8, vy: 0, radius: 12, isSwinging: false, hookX: 0, hookY: 0, ropeLength: 0 };
+        let hooks = [], bouncers = [], portals = [];
         let voidStalkerSaveUsed = false;
         let lastTapTime = 0;
         let currentRealm = null;
         let flameOffset = 0;
+        let rawDist = 0;
 
-        function spawnEntities(startIdx, count) {
-            for(let i=startIdx; i<startIdx+count; i++) {
-                let hx = i * 220 + Math.random() * 60;
-                let hy = 40 + Math.random() * 80;
-                hooks.push({ x: hx, y: hy });
+        function spawnEnvironment() {
+            if (hooks.length === 0) hooks.push({ x: player.x + 200, y: 150 });
+            let lastHook = hooks[hooks.length - 1];
+            
+            while (lastHook.x < player.x + 1200) {
+                let nextX = lastHook.x + Math.floor(Math.random() * 100) + 190; 
+                let nextY = Math.floor(Math.random() * 130) + 100; 
+                hooks.push({ x: nextX, y: nextY });
 
-                if (i > 1 && Math.random() < 0.35) {
-                    bouncers.push({ x: hx + 80 + Math.random()*40, y: 360, radius: 16 });
-                }
-                if (Math.random() < 0.5) {
-                    shards.push({ x: hx + 40, y: hy + 80 + Math.random()*120, type: Math.random() > 0.4 ? 'white' : 'black', taken: false });
-                }
+                if (Math.random() < 0.35) bouncers.push({ type: "horizontal", x: nextX - 50, y: 430, width: 65, height: 12 });
+                else if (Math.random() < 0.55) bouncers.push({ type: "vertical", x: nextX - 110, y: nextY + 50, width: 14, height: 80 });
 
                 let eq = user.equipped_skin || "";
                 if (gameStatus === "playing" && Math.random() < 0.01) {
-                    if (eq.includes("devil")) portals.push({ type: "devil", x: hx + 50, y: canvas.height - 20, radius: 30 });
-                    else if (eq.includes("angel")) portals.push({ type: "angel", x: hx + 50, y: canvas.height - 20, radius: 30 });
+                    if (eq.includes("devil")) portals.push({ type: "devil", x: nextX + 50, y: canvas.height - 20, radius: 30 });
+                    else if (eq.includes("angel")) portals.push({ type: "angel", x: nextX + 50, y: canvas.height - 20, radius: 30 });
                 }
+                
+                lastHook = hooks[hooks.length - 1];
             }
+
+            hooks = hooks.filter(h => h.x > cameraX - 100); 
+            bouncers = bouncers.filter(b => b.x > cameraX - 100); 
+            portals = portals.filter(p => p.x > cameraX - 100);
         }
 
         function initGame(realmType = null) {
             gameStatus = realmType ? "realm" : "playing"; currentRealm = realmType;
-            score = 0; cameraX = 0; voidStalkerSaveUsed = false;
-            player.x = 100; player.y = 180; player.vx = 4.5; player.vy = 0; player.isSwinging = false;
-            hooks = []; bouncers = []; shards = []; portals = [];
-            spawnEntities(1, 15);
+            score = 0; cameraX = 0; voidStalkerSaveUsed = false; rawDist = 0;
+            player.x = 100; player.y = 200; player.vx = 8; player.vy = 0; player.isSwinging = false;
+            hooks = []; bouncers = []; portals = [];
+            spawnEnvironment();
             updateUI();
+        }
+
+        // --- ORIGINAL TANGENT PHYSICS OVERRIDES ---
+        const BASE_GRAVITY = 0.45; 
+        const BASE_FRICTION = 0.995; 
+        const BASE_HOOK_RANGE = 350; 
+        let currentGravity = BASE_GRAVITY; 
+        let currentFriction = BASE_FRICTION; 
+        let maxHookRange = BASE_HOOK_RANGE;
+        let bounceMultiplier = 1; 
+        let momentumBoost = 0.05; 
+        let magnetRadius = 0;
+
+        function applySkinAbilities() {
+            currentGravity = BASE_GRAVITY; currentFriction = BASE_FRICTION; maxHookRange = BASE_HOOK_RANGE;
+            bounceMultiplier = 1; momentumBoost = 0.05; magnetRadius = 0;
+
+            let eq = user.equipped_skin || "";
+            if (eq === "pink") currentGravity = 0.32;
+            if (eq === "red") momentumBoost = 0.12; 
+            if (eq === "blue") currentFriction = 0.9995; 
+            if (eq === "green") bounceMultiplier = 1.3;
+            if (eq === "community_hero") { currentGravity = 0.3; magnetRadius = 200; }
+            if (eq === "brown") maxHookRange += 60;
+            if (eq === "split_toxic_bio") maxHookRange += 105; // +30%
+            if (eq === "split_solar_lunar") currentGravity = 0.29; // -35% gravity pull
         }
 
         // INPUT SYSTEM WITH SKIN ABILITY OVERRIDES
         function pointerDown(e) {
-            if (e && e.target && e.target.tagName !== "CANVAS") return; // Only swing if clicking on the canvas
+            if (e && e.target && e.target.tagName !== "CANVAS") return; 
             if (gameStatus === "menu" || gameStatus === "lost") { initGame(); return; }
             if (gameStatus !== "playing" && gameStatus !== "realm") return;
 
             let now = Date.now();
             if (user.equipped_skin === 'split_neon_synth' && (now - lastTapTime < 250)) {
-                player.vx += 4;
+                player.vx += 10;
                 showToast("⚡ Synth Thrust Triggered!", 1000, "#ff00ff");
             }
             lastTapTime = now;
 
-            // Compute Hook attachment limits
-            let maxRange = 250;
-            if (user.equipped_skin === "brown") maxRange = 290;
-            if (user.equipped_skin === "split_toxic_bio") maxRange = 325;
-
-            let best = null, minDist = maxRange;
+            let best = null, minDist = Infinity;
             hooks.forEach(h => {
                 let d = Math.hypot(player.x - h.x, player.y - h.y);
-                if (d < minDist && h.x > player.x - 20) { minDist = d; best = h; }
+                if (d < minDist && h.x > player.x - 20 && d < maxHookRange) { minDist = d; best = h; }
             });
 
             if (best) {
@@ -812,7 +839,7 @@
         window.addEventListener("keydown", e => {
             if(e.code === "Space" && document.activeElement.tagName !== "INPUT") {
                 if(gameStatus === "playing" && user.equipped_skin === 'split_neon_synth') {
-                    player.vx += 4; showToast("⚡ Synth Thrust Triggered!", 1000, "#ff00ff");
+                    player.vx += 10; showToast("⚡ Synth Thrust Triggered!", 1000, "#ff00ff");
                 } else { pointerDown(); }
             }
         });
@@ -829,99 +856,79 @@
             }
         }
 
-        const BASE_GRAVITY = 0.45; 
-        const BASE_FRICTION = 0.995; 
-        let currentGravity = BASE_GRAVITY; 
-        let currentFriction = BASE_FRICTION; 
-        let bounceMultiplier = 1; 
-        let momentumBoost = 0.05; 
-        let magnetRadius = 0;
-
-        function applySkinAbilities() {
-            currentGravity = BASE_GRAVITY; currentFriction = BASE_FRICTION;
-            bounceMultiplier = 1; momentumBoost = 0.05; magnetRadius = 0;
-
-            let eq = user.equipped_skin || "";
-            if (eq === "pink") currentGravity = 0.32;
-            if (eq === "red") momentumBoost = 0.12; 
-            if (eq === "blue") currentFriction = 0.9995; 
-            if (eq === "green") bounceMultiplier = 1.3;
-            if (eq === "community_hero") { currentGravity = 0.3; magnetRadius = 200; }
-        }
-
-        function update() {
+        function tick() {
             if (gameStatus === "fusion" || gameStatus === "menu" || gameStatus === "lost") return;
             checkGamepad();
             
             flameOffset += 0.05;
             
-            let gravity = 0.22;
-            if (user.equipped_skin === 'pink') gravity = 0.17;
-            if (user.equipped_skin === 'split_solar_lunar') gravity = 0.14;
-
-            if (player.isSwinging) {
-                let dx = player.x - player.hookX;
-                let dy = player.y - player.hookY;
-                let angle = Math.atan2(dy, dx);
-                
-                let accelFactor = user.equipped_skin === 'split_fire_ice' ? 0.04 : 0.025;
-                player.vx -= Math.sin(angle) * accelFactor;
-                player.vy += Math.cos(angle) * accelFactor;
-                
-                player.x = player.hookX + Math.cos(angle) * player.ropeLength;
-                player.y = player.hookY + Math.sin(angle) * player.ropeLength;
-            } else {
-                player.vy += gravity;
-            }
-
-            player.x += player.vx;
+            // Physics Core
+            player.vy += currentGravity; 
+            player.vx *= currentFriction; 
+            player.vy *= currentFriction; 
+            
+            player.x += player.vx; 
             player.y += player.vy;
-            player.vx *= 0.995; 
 
-            if (player.x > cameraX + 300) cameraX = player.x - 300;
-
-            let currentChunkIdx = Math.floor(player.x / 220);
-            if (currentChunkIdx + 10 > hooks.length) spawnEntities(hooks.length, 10);
+            spawnEnvironment(); 
+            if (!player.isSwinging) {
+                let best = null, minDist = Infinity;
+                hooks.forEach(h => {
+                    let d = Math.hypot(player.x - h.x, player.y - h.y);
+                    if (d < minDist && h.x > player.x - 20 && d < maxHookRange) { minDist = d; best = h; }
+                });
+            }
 
             if (gameStatus === "playing") {
                 portals.forEach(p => {
                     let dx = player.x - p.x; let dy = player.y - p.y;
-                    if (user.equipped_skin === "community_hero" && Math.hypot(dx, dy) < 200) { p.x += dx * 0.05; p.y += dy * 0.05; }
+                    if (magnetRadius > 0 && Math.hypot(dx, dy) < magnetRadius) { p.x += dx * 0.05; p.y += dy * 0.05; }
                     if (Math.hypot(dx, dy) < p.radius + player.radius) initGame(p.type);
                 });
             }
 
-            bouncers.forEach(b => {
-                if (Math.hypot(player.x - b.x, player.y - b.y) < player.radius + b.radius) {
-                    let bMulti = 6.5;
-                    if (user.equipped_skin === 'green') bMulti = 8.0;
-                    if (user.equipped_skin === 'gacha_plasma_wraith') bMulti = 12.0;
+            // TANGENT MOMENTUM PHYSICS RESTORED
+            if (player.isSwinging) {
+                let dx = player.x - player.hookX; 
+                let dy = player.y - player.hookY; 
+                let dist = Math.hypot(dx, dy);
+                if (dist > player.ropeLength) {
+                    player.x = player.hookX + (dx / dist) * player.ropeLength; 
+                    player.y = player.hookY + (dy / dist) * player.ropeLength;
+                    let nx = dx / dist; 
+                    let ny = dy / dist; 
+                    let vDotN = player.vx * nx + player.vy * ny;
+                    if (vDotN > 0) { player.vx -= vDotN * nx; player.vy -= vDotN * ny; }
                     
-                    player.vy = -bMulti;
-                    player.vx += 1.5;
+                    let tangentX = -ny; let tangentY = nx; 
+                    let speedTangent = player.vx * tangentX + player.vy * tangentY;
+                    
+                    // Extra momentum logic for Fire & Ice
+                    let localMomentum = momentumBoost;
+                    if (user.equipped_skin === "split_fire_ice") localMomentum += 0.0125;
+                    
+                    player.vx += tangentX * localMomentum * Math.sign(speedTangent);
+                }
+            }
+
+            bouncers.forEach(pad => {
+                let px = Math.max(pad.x, Math.min(player.x, pad.x + pad.width)); 
+                let py = Math.max(pad.y, Math.min(player.y, pad.y + pad.height));
+                let dx = player.x - px; let dy = player.y - py;
+                if ((dx * dx + dy * dy) < (player.radius * player.radius)) {
+                    let bMulti = bounceMultiplier;
+                    if (user.equipped_skin === 'gacha_plasma_wraith') bMulti = 2.0; // massive upward multiplier via plasma
+                    player.y = pad.y - player.radius; 
+                    player.vy = -Math.max(Math.abs(player.vy) * 1.2, 12) * bMulti; 
+                    player.vx *= 1.1;
                     player.isSwinging = false;
                 }
             });
 
-            let mRadius = 45;
-            if (user.equipped_skin === 'gacha_nebula_drifter') mRadius = 180;
-
-            shards.forEach(s => {
-                if (s.taken) return;
-                let dist = Math.hypot(player.x - s.x, player.y - s.y);
-                if (dist < mRadius) { s.x += (player.x - s.x) * 0.15; s.y += (player.y - s.y) * 0.15; }
-                
-                if (dist < player.radius + 8) {
-                    s.taken = true;
-                    if (s.type === 'white') user.w_shards++; else user.b_shards++;
-                    dailyTasks.shards++;
-                    if (user.equipped_skin === 'gacha_storm_bringer') score += 500;
-                    updateUI();
-                }
-            });
-
-            let rawDist = Math.floor(player.x / 10) - 10;
+            cameraX = player.x - 200;
+            rawDist = Math.floor(player.x / 10) - 10;
             
+            // CLASSIC SHARD REWARD SYSTEM RESTORED
             if (gameStatus === "realm") {
                 document.getElementById("scoreDisplay").textContent = `REALM: ${Math.max(0, rawDist)} / 1000`;
                 if (rawDist >= 1000) {
@@ -953,12 +960,12 @@
                 if (rawDist > dailyTasks.dist) dailyTasks.dist = rawDist;
             }
 
-            if (player.y > 450 || player.y < -150) {
+            if (player.y > canvas.height + 140 || player.y < -150) {
                 if (gameStatus === "realm") { showToast("THE REALM HAS REJECTED YOU.", 4000, "#ff4757"); initGame(); return; }
 
-                if (user.equipped_skin === 'gacha_void_stalker' && !voidStalkerSaveUsed) {
+                if (user.equipped_skin === 'gacha_void_stalker' && !voidStalkerSaveUsed && player.y > canvas.height) {
                     voidStalkerSaveUsed = true;
-                    player.vy = -9; player.y = 350; player.vx += 2;
+                    player.vy = -18; player.y = canvas.height - 50; player.vx += 5;
                     showToast("🌌 Abyss Save Triggered!", 2000, "#4a00e0");
                 } else {
                     gameStatus = "lost";
@@ -990,9 +997,9 @@
         function drawDevilBackground() {
             let baseGrad = ctx.createLinearGradient(0, 0, 0, canvas.height);
             baseGrad.addColorStop(0, "#1a0000"); baseGrad.addColorStop(0.6, "#8b0000"); baseGrad.addColorStop(1, "#ff0000"); 
-            ctx.fillStyle = baseGrad; ctx.fillRect(cameraX, 0, canvas.width, canvas.height);
+            ctx.fillStyle = baseGrad; ctx.fillRect(0, 0, canvas.width, canvas.height);
             ctx.fillStyle = "rgba(255, 69, 0, 0.4)"; 
-            for (let i = cameraX; i < cameraX + canvas.width + 100; i += 40) {
+            for (let i = 0; i < canvas.width + 100; i += 40) {
                 let flameHeight = 100 + Math.sin((i / 20) + (flameOffset * 3)) * 40;
                 ctx.beginPath(); ctx.moveTo(i, canvas.height); ctx.quadraticCurveTo(i + 20, canvas.height - flameHeight, i + 40, canvas.height); ctx.fill();
             }
@@ -1001,23 +1008,25 @@
         function drawAngelicBackground() {
             let skyGrad = ctx.createLinearGradient(0, 0, 0, canvas.height);
             skyGrad.addColorStop(0, "#00a8ff"); skyGrad.addColorStop(0.6, "#9c88ff"); skyGrad.addColorStop(1, "#f5f6fa"); 
-            ctx.fillStyle = skyGrad; ctx.fillRect(cameraX, 0, canvas.width, canvas.height);
-            let sunX = cameraX + canvas.width / 2; let sunY = -50; ctx.fillStyle = "rgba(255, 255, 255, 0.15)"; 
+            ctx.fillStyle = skyGrad; ctx.fillRect(0, 0, canvas.width, canvas.height);
+            let sunX = canvas.width / 2; let sunY = -50; ctx.fillStyle = "rgba(255, 255, 255, 0.15)"; 
             for (let i = 0; i < Math.PI * 2; i += Math.PI / 8) { ctx.beginPath(); ctx.moveTo(sunX, sunY); ctx.arc(sunX, sunY, 1000, i - 0.1, i + 0.1); ctx.fill();  }
         }
 
         function drawRealmBackground() {
-            ctx.fillStyle = currentRealm === "devil" ? "#111" : "#eee"; ctx.fillRect(cameraX, 0, canvas.width, canvas.height);
-            ctx.strokeStyle = currentRealm === "devil" ? "#333" : "#ccc"; ctx.lineWidth = 2;
+            ctx.fillStyle = currentRealm === "devil" ? "#111" : "#eee"; ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.save(); ctx.translate(-cameraX, 0); ctx.strokeStyle = currentRealm === "devil" ? "#333" : "#ccc"; ctx.lineWidth = 2;
             let startGridX = Math.floor(cameraX / 100) * 100;
             for (let i = startGridX; i < startGridX + canvas.width + 200; i += 80) { ctx.beginPath(); ctx.moveTo(i, 0); ctx.quadraticCurveTo(i + Math.sin((flameOffset*3) + i)*20, canvas.height/2, i, canvas.height); ctx.stroke(); }
+            ctx.restore();
         }
 
         function drawDefaultBackground() {
-            ctx.fillStyle = "#162447"; ctx.fillRect(cameraX, 0, canvas.width, canvas.height);
-            ctx.strokeStyle = "#1f1f3a"; ctx.lineWidth = 1;
-            let startGridX = Math.floor(cameraX / 40) * 40;
-            for (let x = startGridX; x < startGridX + canvas.width + 40; x += 40) { ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, canvas.height); ctx.stroke(); }
+            ctx.fillStyle = "#162447"; ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.save(); ctx.translate(-cameraX, 0); ctx.strokeStyle = "#1f1f3a"; ctx.lineWidth = 1;
+            let startGridX = Math.floor(cameraX / 100) * 100;
+            for (let i = startGridX; i < startGridX + canvas.width + 200; i += 100) { ctx.beginPath(); ctx.moveTo(i, 0); ctx.lineTo(i, canvas.height); ctx.stroke(); }
+            ctx.restore();
         }
 
         function drawFusionCutscene() {
@@ -1060,8 +1069,6 @@
         function draw() {
             ctx.clearRect(0,0,canvas.width,canvas.height);
 
-            ctx.save(); ctx.translate(-cameraX, 0);
-
             let eq = user.equipped_skin;
             let skinInfo = SKINS_CONFIG[eq] || SKINS_CONFIG.default;
 
@@ -1070,6 +1077,8 @@
             else if (eq && eq.includes("angel")) drawAngelicBackground();
             else drawDefaultBackground();
             
+            ctx.save(); ctx.translate(-cameraX, 0);
+
             portals.forEach(p => {
                 ctx.beginPath(); ctx.arc(p.x, p.y, p.radius, 0, Math.PI*2);
                 if (p.type === "devil") { ctx.fillStyle = "rgba(0, 191, 255, 0.6)"; ctx.shadowColor = "#00bfff"; ctx.shadowBlur = 20; } 
@@ -1078,19 +1087,16 @@
             });
 
             hooks.forEach(h => {
-                ctx.fillStyle = (h.x === player.hookX && h.y === player.hookY && player.isSwinging) ? "#4ecca3" : "#e94560";
+                let isTargeted = (h.x === player.hookX && h.y === player.hookY && player.isSwinging);
+                ctx.fillStyle = isTargeted ? "#4ecca3" : "#e94560";
                 ctx.beginPath(); ctx.arc(h.x,h.y,8,0,Math.PI*2); ctx.fill();
+                ctx.strokeStyle = isTargeted ? "rgba(255, 255, 255, 0.8)" : "rgba(100, 100, 100, 0.3)"; ctx.lineWidth = isTargeted ? 4 : 2;
+                ctx.beginPath(); ctx.arc(h.x, h.y, 16, 0, Math.PI * 2); ctx.stroke();
             });
 
             bouncers.forEach(pad => {
-                ctx.fillStyle = "#ff4757"; ctx.beginPath(); ctx.arc(pad.x, pad.y, pad.radius, 0, Math.PI*2); ctx.fill(); 
-                ctx.fillStyle = "#fff"; ctx.beginPath(); ctx.arc(pad.x, pad.y, pad.radius - 6, 0, Math.PI*2); ctx.fill();
-            });
-
-            shards.forEach(s => {
-                if (s.taken) return;
-                ctx.fillStyle = s.type === 'white' ? '#ffffff' : '#000000'; ctx.strokeStyle = '#ff9ff3'; ctx.lineWidth = 1.5;
-                ctx.beginPath(); ctx.arc(s.x, s.y, 6, 0, Math.PI*2); ctx.fill(); ctx.stroke();
+                if (pad.type === "horizontal") { ctx.fillStyle = "#e94560"; ctx.fillRect(pad.x, pad.y, pad.width, pad.height); ctx.fillStyle = "#ffdd59"; ctx.fillRect(pad.x + 4, pad.y + 2, pad.width - 8, 3); }
+                else { ctx.fillStyle = "#00ffcc"; ctx.fillRect(pad.x, pad.y, pad.width, pad.height); ctx.fillStyle = "#ffffff"; ctx.fillRect(pad.x + 2, pad.y + 4, pad.width - 4, pad.height - 8); }
             });
 
             if(player.isSwinging) {
@@ -1214,17 +1220,17 @@
             if (gameStatus === "menu") {
                 ctx.fillStyle = "rgba(15, 15, 26, 0.85)"; ctx.fillRect(0, 0, canvas.width, canvas.height);
                 ctx.fillStyle = "#fff"; ctx.font = "bold 32px system-ui"; ctx.textAlign = "center";
-                ctx.fillText("SWING! MMO ALLIANCE RAID", canvas.width/2, canvas.height/2 - 20);
+                ctx.fillText("SWING! MMO EDITION", canvas.width/2, canvas.height/2 - 20);
                 ctx.font = "16px system-ui"; ctx.fillStyle = "#4ecca3";
                 ctx.fillText("Click anywhere or hit Space to launch", canvas.width/2, canvas.height/2 + 20);
             } else if (gameStatus === "lost") {
-                ctx.fillStyle = "rgba(15, 15, 26, 0.9)"; ctx.fillRect(0, 0, canvas.width, canvas.height);
-                ctx.fillStyle = score < 0 ? "#ff0055" : "#ff4757"; ctx.font = "bold 42px system-ui"; ctx.textAlign = "center";
-                ctx.fillText(score < 0 ? "UNDERWORLD DESCENT" : "RUN TERMINATED", canvas.width/2, canvas.height/2 - 20);
-                ctx.fillStyle = "#fff"; ctx.font = "20px system-ui";
-                ctx.fillText(`Score Yielded: ${Math.floor(score)} points`, canvas.width/2, canvas.height/2 + 20);
-                ctx.font = "14px system-ui"; ctx.fillStyle = "#aaa";
-                ctx.fillText("Click anywhere to rerun trajectory", canvas.width/2, canvas.height/2 + 55);
+                ctx.fillStyle = "rgba(15, 15, 26, 0.85)"; ctx.fillRect(0, 0, canvas.width, canvas.height);
+                ctx.fillStyle = score < 0 ? "#ff0055" : "#e94560"; ctx.font = "bold 42px sans-serif"; ctx.textAlign = "center";
+                ctx.fillText(score < 0 ? "UNDERWORLD DESCENT" : "GAME OVER", canvas.width / 2, canvas.height / 2 - 20);
+                ctx.font = "20px sans-serif"; ctx.fillStyle = "#fff";
+                ctx.fillText(`Final Score: ${Math.floor(score)} points`, canvas.width / 2, canvas.height / 2 + 20);
+                ctx.fillStyle = "#888"; ctx.font = "16px sans-serif";
+                ctx.fillText("Press Space or Click to try again", canvas.width / 2, canvas.height / 2 + 65);
             }
         }
 
@@ -1232,7 +1238,7 @@
             if (gameStatus === "fusion") {
                 drawFusionCutscene();
             } else {
-                update();
+                tick();
                 draw();
             }
             requestAnimationFrame(loop);
