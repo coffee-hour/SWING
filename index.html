@@ -677,7 +677,7 @@
             try {
                 const res = await fetch(`${API_URL}/api/guild/request_join`, {
                     method: "POST", headers:{"Content-Type":"application/json"},
-                    body: JSON.stringify({ username: user.username, password_hash: user.password_hash, guild_tag: tag })
+                    body: JSON.stringify({ username: user.username, password_hash: user.password_hash, guild: tag })
                 });
                 if (!res.ok) throw new Error("Server error");
                 const data = await res.json();
@@ -694,7 +694,7 @@
             try {
                 const res = await fetch(`${API_URL}/api/guild/create`, {
                     method: "POST", headers:{"Content-Type":"application/json"},
-                    body: JSON.stringify({ username: user.username, password_hash: user.password_hash, guild_tag: tag })
+                    body: JSON.stringify({ username: user.username, password_hash: user.password_hash, guild: tag })
                 });
                 if (!res.ok) throw new Error("Server error");
                 const data = await res.json();
