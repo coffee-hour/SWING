@@ -598,7 +598,56 @@
         }
 
         setInterval(() => { fetchServerData(); if(user.username) fetchSocialData(); }, 12000);
+// --- SOCIAL CONTROLS ---
+        document.getElementById("addFriendBtn").onclick = async () => {
+            if(!user.username) return showToast("You must be logged in to add friends!", 3000, "#ff4757");
+            
+            const target = document.getElementById("friendInput").value.trim();
+            if(!target || target === user.username) return showToast("Invalid target username", 3000, "#ff4757");
+            
+            try {
+                const res = await fetch(`${API_URL}/api/social`, { 
+                    method: "POST", headers: {"Content-Type": "application/json"}, 
+                    body: JSON.stringify({username: user.username, action: "add_friend", payload: {target}}) 
+                });
+                const data = await res.json();
+                
+                if(data.success) { 
+                    showToast(`Friend request sent to ${target}!`); 
+                    document.getElementById("friendInput").value = ""; 
+                    fetchSocialData(); 
+                } else {
+                    showToast(data.error, 3000, "#ff4757");
+                }
+            } catch(e) {
+                showToast("Failed to connect to server.", 3000, "#ff4757");
+            }
+        };
 
+        async function respondFriend(id, response) { 
+            try {
+                await fetch(`${API_URL}/api/social`, { method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify({username: user.username, action: "respond_friend", payload: {id, response}}) }); 
+                fetchSocialData(); 
+            } catch(e) { showToast("Connection failed", 3000, "#ff4757"); }
+        }
+
+        async function sendChallenge(target) {
+            let goal = parseInt(prompt(`Enter score goal to challenge ${target}:`, "50000")); 
+            if (!goal || isNaN(goal) || goal <= 0) return;
+            
+            try {
+                await fetch(`${API_URL}/api/social`, { method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify({username: user.username, action: "send_challenge", payload: {target, goal}}) });
+                showToast(`Challenge sent to ${target} for ${goal} pts!`, 3000, "#f9a826"); 
+                fetchSocialData();
+            } catch(e) { showToast("Connection failed", 3000, "#ff4757"); }
+        }
+
+        async function respondChallenge(id, response) { 
+            try {
+                await fetch(`${API_URL}/api/social`, { method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify({username: user.username, action: "respond_challenge", payload: {id, response}}) }); 
+                fetchSocialData(); 
+            } catch(e) { showToast("Connection failed", 3000, "#ff4757"); }
+        }
         // --- AUTH & LOGIN SYSTEM ---
         document.getElementById("loginBtn").onclick = async () => {
             const u = document.getElementById("usernameInput").value.trim();
