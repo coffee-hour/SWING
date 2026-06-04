@@ -541,9 +541,6 @@
             } catch(e) {}
         }
 
-    async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2224540154034114"
-     crossorigin="anonymous">
-
         async function fetchServerData() {
             try {
                 const res = await fetch(`${API_URL}/api/server_data` + (user.username ? `?username=${user.username}` : ""));
