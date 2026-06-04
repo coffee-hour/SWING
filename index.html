@@ -58,7 +58,60 @@
         .title-shop-grid { display: flex; flex-direction: column; gap: 4px; max-height: 180px; overflow-y: auto; margin-top: 5px; }
 
         @media (max-width: 900px) { #main-layout { flex-direction: column; } .side-panel { min-height: auto; width: 100%; } }
+
+        /* ==========================================================================
+           📖 INTERACTIVE TUTORIAL SYSTEM STYLES
+           ========================================================================== */
+        .tutorial-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(10, 10, 18, 0.85); backdrop-filter: blur(8px);
+            display: flex; justify-content: center; align-items: center;
+            z-index: 2000; opacity: 0; pointer-events: none; transition: opacity 0.3s ease;
+        }
+        .tutorial-overlay.active { opacity: 1; pointer-events: auto; }
+        .tutorial-modal {
+            background: #17172e; border: 2px solid #2e2e54; border-radius: 16px;
+            width: 92%; max-width: 620px; max-height: 85vh;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.6), 0 0 25px rgba(0, 173, 181, 0.25);
+            display: flex; flex-direction: column; overflow: hidden;
+            animation: modalSlide 0.4s cubic-bezier(0.18, 0.89, 0.32, 1.28);
+        }
+        @keyframes modalSlide { from { transform: translateY(30px) scale(0.95); } to { transform: translateY(0) scale(1); } }
+        .tutorial-header { background: #111122; padding: 16px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #2e2e54; }
+        .tutorial-header h2 { margin: 0; font-size: 18px; color: #f9a826; letter-spacing: 0.5px; }
+        .tutorial-close { background: none; border: none; color: #888; font-size: 24px; cursor: pointer; transition: color 0.2s; }
+        .tutorial-close:hover { color: #ff4757; }
+        .tutorial-tabs { display: flex; background: #131326; border-bottom: 1px solid #2e2e54; overflow-x: auto; }
+        .tutorial-tab-btn {
+            flex: 1; padding: 12px 8px; background: none; border: none; color: #aaa;
+            font-size: 12px; font-weight: bold; cursor: pointer; text-align: center;
+            white-space: nowrap; border-bottom: 3px solid transparent; transition: all 0.2s;
+        }
+        .tutorial-tab-btn:hover { color: #fff; background: rgba(255,255,255,0.02); }
+        .tutorial-tab-btn.active { color: #00adb5; border-bottom-color: #00adb5; background: rgba(0, 173, 181, 0.08); }
+        .tutorial-body { padding: 20px; overflow-y: auto; flex: 1; font-size: 13px; line-height: 1.6; color: #e2e2ec; }
+        .tutorial-pane { display: none; }
+        .tutorial-pane.active { display: block; }
+        .tutorial-pane h4 { margin: 0 0 10px 0; color: #4ecca3; font-size: 15px; text-transform: uppercase; border-bottom: 1px dashed #2e2e54; padding-bottom: 4px;}
+        .tutorial-pane ul { margin: 0 0 15px 0; padding-left: 20px; }
+        .tutorial-pane li { margin-bottom: 8px; }
+        .tutorial-highlight { font-weight: bold; color: #ffd700; background: rgba(255,255,255,0.06); padding: 2px 6px; border-radius: 4px; }
         
+        .tutorial-footer { padding: 15px 20px; background: #111122; border-top: 1px solid #2e2e54; display: flex; justify-content: space-between; align-items: center; }
+        .tutorial-btn { padding: 9px 18px; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; transition: all 0.2s; font-size: 12px; }
+        .tutorial-btn.sec { background: #2e2e54; color: #ccc; }
+        .tutorial-btn.sec:hover { background: #3e3e6e; color: #fff; }
+        .tutorial-btn.pri { background: #00adb5; color: #fff; box-shadow: 0 0 8px rgba(0,173,181,0.3); }
+        .tutorial-btn.pri:hover { filter: brightness(1.1); transform: translateY(-1px); }
+
+        .help-fab {
+            position: fixed; bottom: 20px; right: 20px; width: 44px; height: 44px;
+            background: #f9a826; color: #111; border: none; border-radius: 50%;
+            font-size: 20px; font-weight: bold; display: flex; justify-content: center; align-items: center;
+            cursor: pointer; box-shadow: 0 4px 15px rgba(249,168,38,0.4); z-index: 1500;
+            transition: all 0.2s ease;
+        }
+        .help-fab:hover { transform: scale(1.1); box-shadow: 0 6px 20px rgba(249,168,38,0.6); }
     </style>
 </head>
 <body>
@@ -172,11 +225,76 @@
             <div id="socialList" class="list-container" style="flex: 1;">Login to sync friends.</div>
         </div>
     </div>
+
+    <button class="help-fab" id="openTutorialBtn" title="How to Play & Guide">❓</button>
+
+    <div class="tutorial-overlay" id="tutorialOverlay">
+        <div class="tutorial-modal">
+            <div class="tutorial-header">
+                <h2>📖 Swing! MMO Academy Guide</h2>
+                <button class="tutorial-close" id="closeTutorialTopBtn">&times;</button>
+            </div>
+            
+            <div class="tutorial-tabs">
+                <button class="tutorial-tab-btn active" onclick="switchTutorialTab(0)">🕹️ Controls</button>
+                <button class="tutorial-tab-btn" onclick="switchTutorialTab(1)">💎 Vault & Gacha</button>
+                <button class="tutorial-tab-btn" onclick="switchTutorialTab(2)">🛡️ Guilds Base</button>
+                <button class="tutorial-tab-btn" onclick="switchTutorialTab(3)">⚔️ Boss & Secrets</button>
+            </div>
+
+            <div class="tutorial-body">
+                <div class="tutorial-pane active">
+                    <h4>🕹️ Core Mechanics & Physics</h4>
+                    <p>Welcome to <strong>Swing! MMO Edition</strong>. Your objective is simple: navigate safely using gravity and ropes while accumulating massive scores!</p>
+                    <ul>
+                        <li><span class="tutorial-highlight">Grapple Hook:</span> Click anywhere on the map or tap the <span class="tutorial-highlight">Spacebar</span> to shoot out a line and swing. Release or tap again to fly forward!</li>
+                        <li><span class="tutorial-highlight">Keep Moving:</span> Avoid dropping down past the floor limits or touching death hazard vectors.</li>
+                        <li><span class="tutorial-highlight">Score Scaling:</span> The further you traverse, the higher your score climbs. Multipliers apply directly to everything you do!</li>
+                    </ul>
+                </div>
+                <div class="tutorial-pane">
+                    <h4>💎 Changing Room & Shard Vault</h4>
+                    <p>During runs, you'll encounter colored resource gems scattered across the grid. Collecting them unlocks high-tier gear:</p>
+                    <ul>
+                        <li><span class="tutorial-highlight">Resource Gathering:</span> Gather <span style="color:#fff;">White Shards ⬜</span> and <span style="color:#aaa;">Black Shards ⬛</span> during loops.</li>
+                        <li><span class="tutorial-highlight">The Vault Fuse:</span> Combine 1 White Shard + 1 Black Shard to build your baseline collection or activate the <span class="tutorial-highlight" style="color:#ff00ff;">Gacha Roll machine</span>!</li>
+                        <li><span class="tutorial-highlight">Skin Abilities:</span> Skins aren't cosmetic! They manipulate baseline physics. For instance, <span style="color:#ffc0cb;">Pink</span> triggers low gravity, <span style="color:#8b4513;">Brown</span> expands hook distance, and rare Gacha drops like <span style="color:#4a00e0;">Void Stalker</span> grant a death protection shield bounce!</li>
+                    </ul>
+                </div>
+                <div class="tutorial-pane">
+                    <h4>🛡️ Guild Base & Daily Commissions</h4>
+                    <p>Cooperation increases your multiplier exponentially. Team up with other swingers to establish safehouses:</p>
+                    <ul>
+                        <li><span class="tutorial-highlight">Join or Create:</span> Input a unique 4-character <span class="tutorial-highlight">TAG</span> to coordinate an alliance.</li>
+                        <li><span class="tutorial-highlight">Daily Tasks:</span> Complete the 3 daily tasks (Distance milestones, Games played, Shards found) to earn <span style="color:#f1c40f;">+20 Guild Coins (GC)</span> each.</li>
+                        <li><span class="tutorial-highlight">Prestige Titles:</span> Guild Leaders spend pooled funds to acquire globally scaling multi-buffs across <span class="tutorial-highlight">21 standard tiers</span> (up to a massive permanent multiplier!)</li>
+                    </ul>
+                </div>
+                <div class="tutorial-pane">
+                    <h4>⚔️ Alliance Raid & Alternate Realms</h4>
+                    <p>Your actions echo across the global live grid, affecting full-server progression:</p>
+                    <ul>
+                        <li><span class="tutorial-highlight">World Boss Raid:</span> Every game score registers direct damage against the server's massive <span style="color:#ff4757;">Abyssal Leviathan</span>. Earn War Coins upon subduing it!</li>
+                        <li><span class="tutorial-highlight">Level 20 - The Eternal:</span> Defeating Level 20 sends the boss looping through spacetime, mutating it into its final, ultimate elite variant: <span style="color:#00ffff; font-weight:bold;">[The Eternal]</span>.</li>
+                        <li><span class="tutorial-highlight">Secret Portals:</span> Equipping certain high-tier items unlocks secret dimension paths. Key codes allow the <span style="color:#4ecca3;">Angelic</span> skin to construct portals to Sky Island, while the dark variants drag you into <span style="color:#ff0055;">Underworld Descent</span>!</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="tutorial-footer">
+                <button class="tutorial-btn sec" id="tutorialPrevBtn" style="visibility:hidden;">Back</button>
+                <div style="font-size:11px; color:#666;" id="tutorialStepText">Step 1 of 4</div>
+                <button class="tutorial-btn pri" id="tutorialNextBtn">Next</button>
+            </div>
+        </div>
+    </div>
+
     <script>
         const API_URL = "https://swingworker.xaviersgames.workers.dev";
         
         let user = {
-            username: null, password_hash: null, high_score: parseInt(localStorage.getItem("hc")) || 0,
+            username: null, session_token: localStorage.getItem("session_token") || null, 
+            high_score: parseInt(localStorage.getItem("hc")) || 0,
             equipped_skin: localStorage.getItem("eq") || "default", unlocked: ["default"],
             w_shards: parseInt(localStorage.getItem("ws")) || 0, b_shards: parseInt(localStorage.getItem("bs")) || 0, 
             guild: localStorage.getItem("gd") || "", is_leader: false, guild_coins: 0, war_coins: 0, guild_title_bonus: 1
@@ -192,7 +310,7 @@
         let angelicDropdownOpen = false; 
         let devilDropdownOpen = false;
 
-        // --- 20 GUILD TITLES ---
+        // --- 21 GUILD TITLES ---
         const GUILD_TITLES = [
             { id: 1, name: "Novice Swingers", cost: 10, desc: "+2% Multiplier", multi: 1.02 },
             { id: 2, name: "Rope Apprentices", cost: 25, desc: "+5% Multiplier", multi: 1.05 },
@@ -206,14 +324,15 @@
             { id: 10, name: "Shadow Assassins", cost: 800, desc: "+25% Multiplier", multi: 1.25 },
             { id: 11, name: "Abyss Walkers", cost: 1000, desc: "+28% Multiplier", multi: 1.28 },
             { id: 12, name: "Celestial Orbiters", cost: 1300, desc: "+30% Multiplier", multi: 1.30 },
-            { id: 13, name: "Apex Beings", cost: 1600, desc: "+32% Multiplier", multi: 1.32 },
+            { id: 13, name: "Apex Predators", cost: 1600, desc: "+32% Multiplier", multi: 1.32 },
             { id: 14, name: "Titanium Titans", cost: 2000, desc: "+35% Multiplier", multi: 1.35 },
             { id: 15, name: "Mythic Masters", cost: 2500, desc: "+38% Multiplier", multi: 1.38 },
             { id: 16, name: "Immortal Legendaries", cost: 3100, desc: "+40% Multiplier", multi: 1.40 },
             { id: 17, name: "Cosmic Overlords", cost: 3800, desc: "+42% Multiplier", multi: 1.42 },
             { id: 18, name: "Eternal Gods", cost: 4600, desc: "+45% Multiplier", multi: 1.45 },
-            { id: 19, name: "Singularity Sovereigns", cost: 5500, desc: "+50% Multiplier", multi: 1.50 },
-            { id: 20, name: "Eternal Hunters", cost: 50000, desc: "+100% Max Multiplier", multi: 2 }
+            { id: 19, name: "Singularity Sovereigns", cost: 5500, desc: "+48% Multiplier", multi: 1.48 },
+            { id: 20, name: "Multiverse Apex", cost: 7000, desc: "+50% Multiplier", multi: 1.50 },
+            { id: 21, name: "The Eternal", cost: 10000, desc: "+100% Ultimate Multi", multi: 2.00 }
         ];
 
         // --- SKINS CONFIG ---
@@ -261,7 +380,6 @@
             }
         });
 
-        // --- PASSWORD HASHING ---
         async function hashPassword(password) {
             const msgBuffer = new TextEncoder().encode(password);
             const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
@@ -269,7 +387,6 @@
             return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
         }
 
-        // --- UTILITIES ---
         function showToast(msg, duration=4000, color="#4ecca3") {
             const c = document.getElementById("toastContainer"); if (!c) return;
             const t = document.createElement("div"); t.className = "toast"; t.style.borderColor = color; t.style.animationDuration = (duration/1000)+"s"; t.innerText = msg;
@@ -304,7 +421,7 @@
             document.getElementById("task1").textContent = dailyTasks.c1 ? "Done!" : Math.min(100, Math.floor((dailyTasks.dist / 10000)*100)) + "%";
             document.getElementById("task2").textContent = dailyTasks.c2 ? "Done!" : Math.min(5, dailyTasks.games) + "/5";
             document.getElementById("task3").textContent = dailyTasks.c3 ? "Done!" : Math.min(5, dailyTasks.shards) + "/5";
-            if(changed && user.username) syncSave(0);
+            if(changed && user.session_token) syncSave(0);
         }
 
         let isGlobalRewardUnlocked = false;
@@ -413,9 +530,10 @@
                         let code = prompt("ENTER ACCESS CODE:");
                         if (code && code.toUpperCase() === "ANGEL") {
                             unlockSkin("angelic");
-                            showToast("ANGELIC UNLOCKED", 4000, "#ffeaa7");
+                            if (user.equipped_skin.includes("devil") && !user.unlocked.includes("denied_devil")) { unlockSkin("denied_devil"); showToast("🔥 UNLOCKED: DENIED DEVIL", 4000, "#ff0055"); } 
+                            else showToast("😇 ANGELIC UNLOCKED 😇", 4000, "#ffeaa7");
                             renderChangingRoom();
-                        } else if (code) showToast("INCORRECT PASSWORD", 3000, "#ff4757");
+                        } else if (code) showToast("❌ INCORRECT PASSWORD", 3000, "#ff4757");
                     };
                 } else if (key === "guild_master") {
                     btn.onclick = () => {
@@ -477,7 +595,6 @@
                         }
                     }
 
-                    // Process Leader Control Panels
                     if (user.is_leader && data.pendingRequests) {
                         const reqBox = document.getElementById("joinRequestsList");
                         reqBox.innerHTML = "";
@@ -508,8 +625,11 @@
                 let isOwned = unlockedIds.includes(t.id);
                 let btnHtml = isOwned ? `<span style="color:#2ed573; font-weight:bold;">Unlocked</span>` : 
                     `<button class="action-btn blue" onclick="buyGuildTitle(${t.id})">${t.cost} ⚔️</button>`;
+                
+                let glowStyle = t.id === 21 ? 'text-shadow: 0 0 10px #00ffff;' : '';
+                
                 shop.innerHTML += `<div style="display:flex; justify-content:space-between; background:#0f0f1a; padding:4px; border-radius:4px; margin-bottom:2px; border:1px solid #2e2e54;">
-                    <span>${t.name} <i style="color:#aaa; font-size:9px;">(${t.desc})</i></span>
+                    <span style="${glowStyle}">${t.name} <i style="color:#aaa; font-size:9px;">(${t.desc})</i></span>
                     ${btnHtml}
                 </div>`;
             });
@@ -519,42 +639,32 @@
             try {
                 const res = await fetch(`${API_URL}/api/guild/handle_request`, {
                     method: "POST", headers:{"Content-Type":"application/json"},
-                    body: JSON.stringify({ username: user.username, password_hash: user.password_hash, requestId: reqId, action: choice })
+                    body: JSON.stringify({ username: user.username, session_token: user.session_token, requestId: reqId, action: choice })
                 });
-                if (!res.ok) {
-                    const errData = await res.json().catch(()=>({}));
-                    throw new Error(errData.error || "Missing SQL Tables! Please run the DB commands.");
-                }
+                if (!res.ok) throw new Error((await res.json().catch(()=>({}))).error || "Session validation failed.");
                 const data = await res.json();
                 if (data.success) { showToast(choice === 'approve' ? "Member added! (Max 10)" : "Request denied"); fetchServerData(); } 
                 else { showToast(data.error, 4000, "#ff4757"); }
-            } catch(e) {
-                showToast(e.message || "Failed to connect to server.", 3000, "#ff4757");
-            }
+            } catch(e) { showToast(e.message, 3000, "#ff4757"); }
         }
 
         async function buyGuildTitle(titleId) {
             try {
                 const res = await fetch(`${API_URL}/api/guild/buy_title`, {
                     method: "POST", headers:{"Content-Type":"application/json"},
-                    body: JSON.stringify({ username: user.username, password_hash: user.password_hash, titleId: titleId })
+                    body: JSON.stringify({ username: user.username, session_token: user.session_token, titleId: titleId })
                 });
-                if (!res.ok) {
-                    const errData = await res.json().catch(()=>({}));
-                    throw new Error(errData.error || "Missing SQL Tables! Please run the DB commands.");
-                }
+                if (!res.ok) throw new Error((await res.json().catch(()=>({}))).error || "Session validation failed.");
                 const data = await res.json();
                 if (data.success) { showToast("Guild Alliance Title Upgraded!"); fetchServerData(); }
                 else { showToast(data.error, 4000, "#ff4757"); }
-            } catch(e) {
-                showToast(e.message || "Failed to connect to server.", 3000, "#ff4757");
-            }
+            } catch(e) { showToast(e.message, 3000, "#ff4757"); }
         }
 
         async function fetchSocialData() {
-            if(!user.username) return;
+            if(!user.username || !user.session_token) return;
             try {
-                const res = await fetch(`${API_URL}/api/social`, { method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify({username: user.username, action: "get"}) });
+                const res = await fetch(`${API_URL}/api/social`, { method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify({username: user.username, session_token: user.session_token, action: "get"}) });
                 const data = await res.json();
                 if(data.success) {
                     const sl = document.getElementById("socialList"); sl.innerHTML = "";
@@ -597,36 +707,27 @@
             } catch(e){}
         }
 
-        setInterval(() => { fetchServerData(); if(user.username) fetchSocialData(); }, 12000);
-// --- SOCIAL CONTROLS ---
+        setInterval(() => { fetchServerData(); if(user.session_token) fetchSocialData(); }, 12000);
+
+        // --- SOCIAL CONTROLS ---
         document.getElementById("addFriendBtn").onclick = async () => {
-            if(!user.username) return showToast("You must be logged in to add friends!", 3000, "#ff4757");
-            
+            if(!user.session_token) return showToast("You must be logged in to add friends!", 3000, "#ff4757");
             const target = document.getElementById("friendInput").value.trim();
             if(!target || target === user.username) return showToast("Invalid target username", 3000, "#ff4757");
-            
             try {
                 const res = await fetch(`${API_URL}/api/social`, { 
                     method: "POST", headers: {"Content-Type": "application/json"}, 
-                    body: JSON.stringify({username: user.username, action: "add_friend", payload: {target}}) 
+                    body: JSON.stringify({username: user.username, session_token: user.session_token, action: "add_friend", payload: {target}}) 
                 });
                 const data = await res.json();
-                
-                if(data.success) { 
-                    showToast(`Friend request sent to ${target}!`); 
-                    document.getElementById("friendInput").value = ""; 
-                    fetchSocialData(); 
-                } else {
-                    showToast(data.error, 3000, "#ff4757");
-                }
-            } catch(e) {
-                showToast("Failed to connect to server.", 3000, "#ff4757");
-            }
+                if(data.success) { showToast(`Friend request sent to ${target}!`); document.getElementById("friendInput").value = ""; fetchSocialData(); } 
+                else { showToast(data.error, 3000, "#ff4757"); }
+            } catch(e) { showToast("Failed to connect to server.", 3000, "#ff4757"); }
         };
 
         async function respondFriend(id, response) { 
             try {
-                await fetch(`${API_URL}/api/social`, { method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify({username: user.username, action: "respond_friend", payload: {id, response}}) }); 
+                await fetch(`${API_URL}/api/social`, { method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify({username: user.username, session_token: user.session_token, action: "respond_friend", payload: {id, response}}) }); 
                 fetchSocialData(); 
             } catch(e) { showToast("Connection failed", 3000, "#ff4757"); }
         }
@@ -634,20 +735,19 @@
         async function sendChallenge(target) {
             let goal = parseInt(prompt(`Enter score goal to challenge ${target}:`, "50000")); 
             if (!goal || isNaN(goal) || goal <= 0) return;
-            
             try {
-                await fetch(`${API_URL}/api/social`, { method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify({username: user.username, action: "send_challenge", payload: {target, goal}}) });
-                showToast(`Challenge sent to ${target} for ${goal} pts!`, 3000, "#f9a826"); 
-                fetchSocialData();
+                await fetch(`${API_URL}/api/social`, { method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify({username: user.username, session_token: user.session_token, action: "send_challenge", payload: {target, goal}}) });
+                showToast(`Challenge sent to ${target} for ${goal} pts!`, 3000, "#f9a826"); fetchSocialData();
             } catch(e) { showToast("Connection failed", 3000, "#ff4757"); }
         }
 
         async function respondChallenge(id, response) { 
             try {
-                await fetch(`${API_URL}/api/social`, { method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify({username: user.username, action: "respond_challenge", payload: {id, response}}) }); 
+                await fetch(`${API_URL}/api/social`, { method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify({username: user.username, session_token: user.session_token, action: "respond_challenge", payload: {id, response}}) }); 
                 fetchSocialData(); 
             } catch(e) { showToast("Connection failed", 3000, "#ff4757"); }
         }
+
         // --- AUTH & LOGIN SYSTEM ---
         document.getElementById("loginBtn").onclick = async () => {
             const u = document.getElementById("usernameInput").value.trim();
@@ -658,13 +758,15 @@
                 const res = await fetch(`${API_URL}/api/login`, { method:"POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify({username:u, password_hash:hashedP}) });
                 const data = await res.json();
                 if(data.success) {
-                    user.username = u; user.password_hash = hashedP;
+                    user.username = u; 
+                    user.session_token = data.userData.session_token; // Received secure session token!
                     user.high_score = data.userData.high_score; user.equipped_skin = data.userData.equipped_skin;
                     user.w_shards = data.userData.white_shards; user.b_shards = data.userData.black_shards;
                     user.unlocked = data.userData.unlocked_skins || ["default"]; user.guild = data.userData.guild || "";
                     user.guild_coins = data.userData.guild_coins || 0;
                     user.is_leader = data.userData.is_guild_leader === 1 || data.userData.is_guild_leader === true;
                     
+                    localStorage.setItem("session_token", user.session_token); // Store token, not password
                     localStorage.setItem("hc", user.high_score); localStorage.setItem("eq", user.equipped_skin);
                     localStorage.setItem("ws", user.w_shards); localStorage.setItem("bs", user.b_shards);
                     localStorage.setItem("gd", user.guild);
@@ -693,19 +795,25 @@
         };
 
         async function syncSave(added_points = 0) {
-            if(!user.username) return;
+            if(!user.session_token) return;
             try {
                 const res = await fetch(`${API_URL}/api/save`, {
                     method: "POST", headers: {"Content-Type": "application/json"},
                     body: JSON.stringify({ 
-                        username: user.username, password_hash: user.password_hash, high_score: user.high_score, 
-                        equipped_skin: user.equipped_skin, white_shards: user.w_shards, black_shards: user.b_shards, 
+                        username: user.username, session_token: user.session_token, // Authentic token auth
+                        high_score: user.high_score, equipped_skin: user.equipped_skin, 
+                        white_shards: user.w_shards, black_shards: user.b_shards, 
                         unlocked_skins: user.unlocked, guild_coins: user.guild_coins, added_points: added_points 
                     })
                 });
+                
+                if (!res.ok) {
+                    if (res.status === 403) showToast("⚠️ Server rejected save: Anomalous data limits exceeded.", 5000, "#ff4757");
+                    return;
+                }
+                
                 const data = await res.json();
                 if (data.bossDefeatedNotification) {
-                    // Massive Visual popup for Boss defeat
                     const winMsg = document.createElement("div");
                     winMsg.style.position = "absolute"; winMsg.style.top = "30%"; winMsg.style.left = "50%";
                     winMsg.style.transform = "translate(-50%, -50%)"; winMsg.style.background = "rgba(0,0,0,0.9)";
@@ -722,22 +830,17 @@
         // --- GUILD BUTTONS ---
         document.getElementById("reqGuildBtn").onclick = async () => {
             let tag = document.getElementById("guildInput").value.trim().toUpperCase();
-            if(!tag || !user.username) return showToast("Login & input 4-letter tag", 3000, "#ff4757");
+            if(!tag || !user.session_token) return showToast("Login & input 4-letter tag", 3000, "#ff4757");
             try {
                 const res = await fetch(`${API_URL}/api/guild/request_join`, {
                     method: "POST", headers:{"Content-Type":"application/json"},
-                    body: JSON.stringify({ username: user.username, password_hash: user.password_hash, guild_tag: tag })
+                    body: JSON.stringify({ username: user.username, session_token: user.session_token, guild_tag: tag })
                 });
-                if (!res.ok) {
-                    const errData = await res.json().catch(()=>({}));
-                    throw new Error(errData.error || "Missing SQL Tables! Please run the DB commands.");
-                }
+                if (!res.ok) throw new Error((await res.json().catch(()=>({}))).error || "Session verification failed.");
                 const data = await res.json();
                 if (data.success) showToast(`Alliance request sent to [${tag}]! Waiting for leader approval.`);
                 else showToast(data.error, 4000, "#ff4757");
-            } catch(e) {
-                showToast(e.message || "Failed to connect to server.", 3000, "#ff4757");
-            }
+            } catch(e) { showToast(e.message, 3000, "#ff4757"); }
         };
 
         document.getElementById("createGuildBtn").onclick = async () => {
@@ -746,21 +849,16 @@
             try {
                 const res = await fetch(`${API_URL}/api/guild/create`, {
                     method: "POST", headers:{"Content-Type":"application/json"},
-                    body: JSON.stringify({ username: user.username, password_hash: user.password_hash, guild_tag: tag })
+                    body: JSON.stringify({ username: user.username, session_token: user.session_token, guild_tag: tag })
                 });
-                if (!res.ok) {
-                    const errData = await res.json().catch(()=>({}));
-                    throw new Error(errData.error || "Missing SQL Tables! Please run the DB commands.");
-                }
+                if (!res.ok) throw new Error((await res.json().catch(()=>({}))).error || "Session verification failed.");
                 const data = await res.json();
                 if (data.success) {
                     user.guild = tag; user.is_leader = true;
                     showToast(`Alliance Guild [${tag}] established! You are the Leader.`, 4000, "#00adb5");
                     fetchServerData(); updateUI();
                 } else showToast(data.error, 4000, "#ff4757");
-            } catch(e) {
-                showToast(e.message || "Failed to connect to server.", 3000, "#ff4757");
-            }
+            } catch(e) { showToast(e.message, 3000, "#ff4757"); }
         };
 
         // --- CORE GAME ENGINE & PHYSICS INTERFACE ---
@@ -776,7 +874,6 @@
         let flameOffset = 0;
         let rawDist = 0;
         
-        // Input Locking Mechanism
         let canGrapple = true; 
 
         function spawnEnvironment() {
@@ -788,7 +885,6 @@
                 let nextY = Math.floor(Math.random() * 130) + 100; 
                 hooks.push({ x: nextX, y: nextY });
 
-                // Bumpers are back using circles
                 if (Math.random() < 0.3) {
                     bouncers.push({ x: nextX + (Math.random() * 80 - 40), y: 350 + Math.random() * 50, radius: 18 });
                 }
@@ -816,8 +912,7 @@
             updateUI();
         }
 
-        // --- ORIGINAL TANGENT PHYSICS OVERRIDES ---
-        const BASE_GRAVITY = 0.65; 
+        const BASE_GRAVITY = 0.45; 
         const BASE_FRICTION = 0.995; 
         const BASE_HOOK_RANGE = 350; 
         let currentGravity = BASE_GRAVITY; 
@@ -838,17 +933,16 @@
             if (eq === "green") bounceMultiplier = 1.3;
             if (eq === "community_hero") { currentGravity = 0.3; magnetRadius = 200; }
             if (eq === "brown") maxHookRange += 60;
-            if (eq === "split_toxic_bio") maxHookRange += 105; // +30%
-            if (eq === "split_solar_lunar") currentGravity = 0.29; // -35% gravity pull
+            if (eq === "split_toxic_bio") maxHookRange += 105; 
+            if (eq === "split_solar_lunar") currentGravity = 0.29; 
         }
 
-        // INPUT SYSTEM WITH INPUT LOCK (CANGRAPPLE)
         function pointerDown(e) {
             if (e && e.target && e.target.tagName !== "CANVAS") return; 
             if (gameStatus === "menu" || gameStatus === "lost") { initGame(); return; }
             if (gameStatus !== "playing" && gameStatus !== "realm") return;
             
-            if (!canGrapple) return; // Block holding down spacebar forever
+            if (!canGrapple) return; 
 
             let now = Date.now();
             if (user.equipped_skin === 'split_neon_synth' && (now - lastTapTime < 250)) {
@@ -865,13 +959,13 @@
 
             if (best) {
                 player.isSwinging = true; player.hookX = best.x; player.hookY = best.y; player.ropeLength = minDist;
-                canGrapple = false; // Lock the grapple until release
+                canGrapple = false; 
             }
         }
 
         function pointerUp(e) { 
             player.isSwinging = false; 
-            canGrapple = true; // Unlock the grapple
+            canGrapple = true; 
         }
 
         canvas.addEventListener("mousedown", pointerDown); 
@@ -905,7 +999,6 @@
             
             flameOffset += 0.05;
             
-            // Physics Core
             player.vy += currentGravity; 
             player.vx *= currentFriction; 
             player.vy *= currentFriction; 
@@ -930,7 +1023,6 @@
                 });
             }
 
-            // TANGENT MOMENTUM PHYSICS RESTORED
             if (player.isSwinging) {
                 let dx = player.x - player.hookX; 
                 let dy = player.y - player.hookY; 
@@ -946,7 +1038,6 @@
                     let tangentX = -ny; let tangentY = nx; 
                     let speedTangent = player.vx * tangentX + player.vy * tangentY;
                     
-                    // Extra momentum logic for Fire & Ice
                     let localMomentum = momentumBoost;
                     if (user.equipped_skin === "split_fire_ice") localMomentum += 0.0125;
                     
@@ -954,25 +1045,23 @@
                 }
             }
 
-            // Bouncers Restored Check
             bouncers.forEach(pad => {
                 let dx = player.x - pad.x; 
                 let dy = player.y - pad.y;
                 if (Math.hypot(dx, dy) < player.radius + pad.radius) {
                     let bMulti = bounceMultiplier;
-                    if (user.equipped_skin === 'gacha_plasma_wraith') bMulti = 2.0; // massive upward multiplier via plasma
+                    if (user.equipped_skin === 'gacha_plasma_wraith') bMulti = 2.0; 
                     player.y = pad.y - player.radius - 5; 
                     player.vy = -Math.max(Math.abs(player.vy) * 1.2, 14) * bMulti; 
-                    player.vx += dx * 0.1; // Add lateral bounce
+                    player.vx += dx * 0.1; 
                     player.isSwinging = false;
-                    canGrapple = true; // Auto-unlock grapple when bouncing
+                    canGrapple = true; 
                 }
             });
 
             cameraX = player.x - 200;
             rawDist = Math.floor(player.x / 10) - 10;
             
-            // CLASSIC SHARD REWARD SYSTEM RESTORED
             if (gameStatus === "realm") {
                 document.getElementById("scoreDisplay").textContent = `REALM: ${Math.max(0, rawDist)} / 1000`;
                 if (rawDist >= 1000) {
@@ -1038,11 +1127,8 @@
         }
 
         // --- RENDER PIPELINE ---
-        
-        // SPRITE: WORLD BOSS GENERATOR
         function drawBoss() {
             if (!currentBoss || currentBoss.level < 1) return;
-            // Float on the right side of the screen
             let bx = cameraX + canvas.width - 120;
             let by = 120 + Math.sin(Date.now() / 400) * 15;
 
@@ -1052,17 +1138,14 @@
             ctx.save();
             ctx.translate(bx, by);
 
-            // Boss Aura
             ctx.shadowBlur = 20;
             ctx.shadowColor = `hsl(${hue}, 100%, 50%)`;
             
-            // Core Body
             ctx.fillStyle = `hsl(${hue}, 80%, 20%)`;
             ctx.beginPath();
             ctx.arc(0, 0, 35 + Math.min(lvl * 2, 40), 0, Math.PI * 2);
             ctx.fill();
 
-            // Dynamic Spikes based on Level
             ctx.fillStyle = `hsl(${hue}, 100%, 50%)`;
             let numSpikes = 4 + (lvl % 6);
             let spikeLen = 50 + Math.min(lvl * 3, 50);
@@ -1075,7 +1158,6 @@
                 ctx.fill();
             }
 
-            // Ominous Eye
             ctx.fillStyle = "#fff";
             ctx.beginPath();
             ctx.ellipse(0, 0, 12, 20, 0, 0, Math.PI * 2);
@@ -1091,7 +1173,6 @@
 
             ctx.shadowBlur = 0;
 
-            // Individual Boss HP Bar
             ctx.fillStyle = "rgba(0,0,0,0.5)";
             ctx.fillRect(-30, 45 + Math.min(lvl*2, 40), 60, 6);
             ctx.fillStyle = "#ff4757";
@@ -1204,7 +1285,6 @@
                 ctx.fillStyle = "#fff"; ctx.beginPath(); ctx.arc(pad.x, pad.y, pad.radius - 6, 0, Math.PI*2); ctx.fill();
             });
 
-            // DRAW WORLD BOSS SPRITE IN BACKGROUND
             if (gameStatus === "playing") {
                 drawBoss();
             }
@@ -1213,7 +1293,6 @@
                 ctx.strokeStyle="#fff"; ctx.lineWidth=3; ctx.beginPath(); ctx.moveTo(player.hookX, player.hookY); ctx.lineTo(player.x, player.y); ctx.stroke();
             }
 
-            // Player Draw
             ctx.save(); ctx.translate(player.x, player.y);
 
             if (eq === "exalted_angel") {
@@ -1324,9 +1403,8 @@
                 ctx.fillStyle = "#f9a826"; ctx.font = "bold 10px sans-serif"; ctx.textAlign = "center";
                 ctx.fillText(`[${user.guild}]`, player.x, player.y - 20);
             }
-            ctx.restore(); // Final camera restore
+            ctx.restore();
 
-            // Overlay Screens
             if (gameStatus === "menu") {
                 ctx.fillStyle = "rgba(15, 15, 26, 0.85)"; ctx.fillRect(0, 0, canvas.width, canvas.height);
                 ctx.fillStyle = "#fff"; ctx.font = "bold 32px system-ui"; ctx.textAlign = "center";
@@ -1353,6 +1431,64 @@
             }
             requestAnimationFrame(loop);
         }
+
+        // ==========================================================================
+        // 📖 INTERACTIVE TUTORIAL SYSTEM LOGIC
+        // ==========================================================================
+        let currentTutorialStep = 0;
+        const tutorialPanes = document.querySelectorAll('.tutorial-pane');
+        const tutorialTabs = document.querySelectorAll('.tutorial-tab-btn');
+        const overlay = document.getElementById('tutorialOverlay');
+        const nextBtn = document.getElementById('tutorialNextBtn');
+        const prevBtn = document.getElementById('tutorialPrevBtn');
+        const stepText = document.getElementById('tutorialStepText');
+
+        function openTutorial() {
+            currentTutorialStep = 0;
+            switchTutorialTab(0);
+            overlay.classList.add('active');
+        }
+
+        function closeTutorial() {
+            overlay.classList.remove('active');
+            localStorage.setItem("mmo_swing_tutorial_completed", "true");
+        }
+
+        function switchTutorialTab(step) {
+            currentTutorialStep = step;
+            
+            tutorialPanes.forEach((p, idx) => p.classList.toggle('active', idx === step));
+            tutorialTabs.forEach((t, idx) => t.classList.toggle('active', idx === step));
+            
+            prevBtn.style.visibility = step === 0 ? 'hidden' : 'visible';
+            nextBtn.textContent = step === tutorialPanes.length - 1 ? 'Got it!' : 'Next';
+            stepText.textContent = `Step ${step + 1} of ${tutorialPanes.length}`;
+        }
+
+        document.getElementById('openTutorialBtn').addEventListener('click', openTutorial);
+        document.getElementById('closeTutorialTopBtn').addEventListener('click', closeTutorial);
+
+        nextBtn.addEventListener('click', () => {
+            if (currentTutorialStep < tutorialPanes.length - 1) {
+                switchTutorialTab(currentTutorialStep + 1);
+            } else {
+                closeTutorial();
+            }
+        });
+
+        prevBtn.addEventListener('click', () => {
+            if (currentTutorialStep > 0) {
+                switchTutorialTab(currentTutorialStep - 1);
+            }
+        });
+
+        window.addEventListener('DOMContentLoaded', () => {
+            setTimeout(() => {
+                if (!localStorage.getItem("mmo_swing_tutorial_completed")) {
+                    openTutorial();
+                }
+            }, 800);
+        });
 
         // Initialize Core Functions
         applySkinAbilities(); renderChangingRoom(); updateUI(); fetchServerData(); fetchSocialData(); loop();
