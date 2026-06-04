@@ -24,13 +24,16 @@
         #bottom-panels { display: flex; gap: 15px; width: 100%; flex-wrap: wrap; }
         .panel-box { background: rgba(22, 22, 40, 0.95); border: 1px solid #2e2e54; border-radius: 12px; padding: 15px; flex: 1; min-width: 260px; position: relative; }
         .panel-box h4 { margin: 0 0 10px 0; color: #00adb5; font-size: 14px; text-transform: uppercase; border-bottom: 1px solid #2e2e54; padding-bottom: 4px; }
+        
+        /* CSS FIX: Added appearance:none to prevent iOS white box rendering */
         .skins-grid { display: flex; flex-wrap: wrap; gap: 8px; max-height: 180px; overflow-y: auto; padding: 4px 0; }
-        .skin-btn { background: #17172e; border: 2px solid #2e2e54; color: #666; padding: 8px; border-radius: 8px; cursor: not-allowed; font-size: 11px; font-weight: bold; text-align: left; display: flex; flex-direction: column; gap: 4px; width: calc(50% - 4px); box-sizing: border-box; }
+        .skin-btn { background: #17172e; border: 2px solid #2e2e54; color: #666; padding: 8px; border-radius: 8px; cursor: pointer; font-size: 11px; font-weight: bold; text-align: left; display: flex; flex-direction: column; gap: 4px; width: calc(50% - 4px); box-sizing: border-box; -webkit-appearance: none; appearance: none; }
         .skin-btn.unlocked { border-color: #4ecca3; color: #fff; cursor: pointer; }
         .skin-btn.equipped { border-color: #f9a826; background: #232342; box-shadow: 0 0 8px rgba(249,168,38,0.2); }
         .skin-preview { width: 12px; height: 12px; border-radius: 50%; display: inline-block; border: 1px solid rgba(255,255,255,0.3); }
         .skin-ability { font-size: 9px; color: #aaa; font-weight: normal; font-style: italic; }
         .dropdown-arrow { position: absolute; top: -8px; right: -8px; background: #f9a826; color: #1a1a2e; border-radius: 50%; width: 18px; height: 18px; font-size: 10px; display: flex; justify-content: center; align-items: center; cursor: pointer; z-index: 10; }
+        
         #fuseBtn { width: 100%; margin-bottom: 10px; color: #1a1a2e; border: 2px solid #f9a826; padding: 8px; font-size: 12px; border-radius: 6px; font-weight: bold; cursor: pointer; display: none; text-shadow: 0px 0px 4px #fff; box-shadow: 0 0 12px #f9a826; animation: pulse 1.5s infinite; }
         @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.02); } 100% { transform: scale(1); } }
         #toastContainer { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); display: flex; flex-direction: column; gap: 10px; z-index: 1000; pointer-events: none; }
@@ -38,10 +41,31 @@
         @keyframes fadeInOut { 0% { opacity: 0; transform: translateY(-20px); } 10% { opacity: 1; transform: translateY(0); } 90% { opacity: 1; transform: translateY(0); } 100% { opacity: 0; transform: translateY(-20px); } }
         .progress-bar { width: 100%; height: 12px; background: #0f0f1a; border-radius: 6px; overflow: hidden; margin: 6px 0; border: 1px solid #2e2e54; position: relative; }
         .progress-fill { height: 100%; width: 0%; transition: width 0.4s ease-out; }
-        .action-btn { border: none; padding: 4px 8px; border-radius: 4px; font-weight: bold; font-size: 10px; cursor: pointer; color: white; }
+        .action-btn { border: none; padding: 4px 8px; border-radius: 4px; font-weight: bold; font-size: 10px; cursor: pointer; color: white; -webkit-appearance: none; appearance: none; }
         .action-btn.red { background: #ff4757; } .action-btn.green { background: #2ed573; } .action-btn.blue { background: #1e90ff; }
         .title-shop-grid { display: flex; flex-direction: column; gap: 4px; max-height: 180px; overflow-y: auto; margin-top: 5px; }
         .help-fab { position: fixed; bottom: 20px; right: 20px; width: 44px; height: 44px; background: #f9a826; color: #111; border: none; border-radius: 50%; font-size: 20px; font-weight: bold; display: flex; justify-content: center; align-items: center; cursor: pointer; z-index: 1500; }
+        
+        .tutorial-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(10, 10, 18, 0.85); backdrop-filter: blur(8px); display: flex; justify-content: center; align-items: center; z-index: 2000; opacity: 0; pointer-events: none; transition: opacity 0.3s ease; }
+        .tutorial-overlay.active { opacity: 1; pointer-events: auto; }
+        .tutorial-modal { background: #17172e; border: 2px solid #2e2e54; border-radius: 16px; width: 92%; max-width: 620px; max-height: 85vh; display: flex; flex-direction: column; overflow: hidden; animation: modalSlide 0.4s; }
+        @keyframes modalSlide { from { transform: translateY(30px) scale(0.95); } to { transform: translateY(0) scale(1); } }
+        .tutorial-header { background: #111122; padding: 16px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #2e2e54; }
+        .tutorial-header h2 { margin: 0; font-size: 18px; color: #f9a826; letter-spacing: 0.5px; }
+        .tutorial-close { background: transparent; border: none; color: #888; font-size: 24px; cursor: pointer; }
+        .tutorial-tabs { display: flex; background: #131326; border-bottom: 1px solid #2e2e54; overflow-x: auto; }
+        
+        /* CSS FIX: Prevents tabs from becoming white boxes on mobile */
+        .tutorial-tab-btn { flex: 1; padding: 12px 8px; background: transparent; border: none; color: #aaa; font-size: 12px; font-weight: bold; cursor: pointer; text-align: center; border-bottom: 3px solid transparent; -webkit-appearance: none; appearance: none; }
+        .tutorial-tab-btn.active { color: #00adb5; border-bottom-color: #00adb5; background: rgba(0, 173, 181, 0.08); }
+        
+        .tutorial-body { padding: 20px; overflow-y: auto; flex: 1; font-size: 13px; line-height: 1.6; color: #e2e2ec; }
+        .tutorial-pane { display: none; } .tutorial-pane.active { display: block; }
+        .tutorial-highlight { font-weight: bold; color: #ffd700; background: rgba(255,255,255,0.06); padding: 2px 6px; border-radius: 4px; }
+        .tutorial-footer { padding: 15px 20px; background: #111122; border-top: 1px solid #2e2e54; display: flex; justify-content: space-between; align-items: center; }
+        .tutorial-btn { padding: 9px 18px; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 12px; -webkit-appearance: none; appearance: none; }
+        .tutorial-btn.sec { background: #2e2e54; color: #ccc; } .tutorial-btn.pri { background: #00adb5; color: #fff; }
+        
         @media (max-width: 900px) { #main-layout { flex-direction: column; } .side-panel { min-height: auto; width: 100%; } }
     </style>
 </head>
@@ -157,6 +181,50 @@
         </div>
     </div>
 
+    <button class="help-fab" id="openTutorialBtn" title="How to Play & Guide">❓</button>
+    <div class="tutorial-overlay" id="tutorialOverlay">
+        <div class="tutorial-modal">
+            <div class="tutorial-header">
+                <h2>📖 MMO Academy Guide</h2>
+                <button class="tutorial-close" id="closeTutorialTopBtn">&times;</button>
+            </div>
+            <div class="tutorial-tabs">
+                <button class="tutorial-tab-btn active" onclick="switchTutorialTab(0)">🕹️ Controls</button>
+                <button class="tutorial-tab-btn" onclick="switchTutorialTab(1)">⚔️ Optimized Builds</button>
+                <button class="tutorial-tab-btn" onclick="switchTutorialTab(2)">🛡️ Guilds</button>
+                <button class="tutorial-tab-btn" onclick="switchTutorialTab(3)">🐉 Boss Raids</button>
+            </div>
+            <div class="tutorial-body">
+                <div class="tutorial-pane active">
+                    <h4>🕹️ Core Mechanics & Physics</h4>
+                    <ul>
+                        <li><span class="tutorial-highlight">Grapple Hook:</span> Click anywhere or tap <span class="tutorial-highlight">Spacebar</span> to shoot a line and swing.</li>
+                        <li><span class="tutorial-highlight">Score Scaling:</span> Distance traversed applies your Total Multiplier!</li>
+                    </ul>
+                </div>
+                <div class="tutorial-pane">
+                    <h4>⚔️ The Optimized Build</h4>
+                    <ul>
+                        <li><span class="tutorial-highlight">Weapons & Coats:</span> Buy in the Black Market using Guild Coins. Weapons add massive Multipliers, while Coats manipulate gravity and hook range.</li>
+                    </ul>
+                </div>
+                <div class="tutorial-pane">
+                    <h4>🛡️ Guild Base</h4>
+                    <ul><li><span class="tutorial-highlight">Guild Leader Tools:</span> Leaders can spend War Coins on massive Title Buffs, select Crest Emojis, and set custom hex Colors!</li></ul>
+                </div>
+                <div class="tutorial-pane">
+                    <h4>🐉 Alliance Boss Raid</h4>
+                    <ul><li><span class="tutorial-highlight">World Boss Raid:</span> Every score registers damage against the massive <span style="color:#ff4757;">Abyssal Leviathan</span>. Earn War Coins when it dies!</li></ul>
+                </div>
+            </div>
+            <div class="tutorial-footer">
+                <button class="tutorial-btn sec" id="tutorialPrevBtn" style="visibility:hidden;">Back</button>
+                <div style="font-size:11px; color:#666;" id="tutorialStepText">Step 1 of 4</div>
+                <button class="tutorial-btn pri" id="tutorialNextBtn">Next</button>
+            </div>
+        </div>
+    </div>
+
     <script>
         const API_URL = "https://swingworker.xaviersgames.workers.dev";
         const currentMonth = new Date().getMonth(); // 0-11
@@ -246,7 +314,7 @@
             gacha_void_stalker: { name: "Void Stalker", color: "#4a00e0", splitColor: "#000000", condition: "Gacha", ability: "Abyss Save", curr: "gold" }
         };
 
-        // INJECT SEASONAL ITEMS
+        // INJECT SEASONAL ITEMS SAFELY
         if (eventCurrencyType === "jolly") {
             SKINS_CONFIG.jolly = { name: "Jolly Santa", color: "#ff0000", splitColor: "#ffffff", ability: "+25% Multi", curr: "jolly", cost: 10 };
             WEAPONS_CONFIG.candy_cane = { name: "Candy Cane", color: "#ff0000", multi: 3.0, desc: "Minty Slice (+300% Multi)", curr: "jolly", cost: 50 };
@@ -256,9 +324,12 @@
             WEAPONS_CONFIG.candy_bar = { name: "Candy Bar", color: "#8b4513", multi: 3.0, desc: "Sugar Rush (+300% Multi)", curr: "spooky", cost: 50 };
             COATS_CONFIG.spirit = { name: "Spirit Tail", color: "#ffffff", desc: "Ethereal: +25% Hook Range", curr: "spooky", cost: 50 };
         } else if (currentEvent) {
-            SKINS_CONFIG[currentEvent.s1.toLowerCase().replace(' ','_')] = { name: currentEvent.s1, color: currentEvent.c, ability: "Seasonal Power", curr: "gold", cost: 5000 };
-            WEAPONS_CONFIG[currentEvent.w1.toLowerCase().replace(' ','_')] = { name: currentEvent.w1, color: currentEvent.c, multi: 2.0, desc: `Event WPN (+200%)`, curr: "gold", cost: 15000 };
-            COATS_CONFIG[currentEvent.c1.toLowerCase().replace(' ','_')] = { name: currentEvent.c1, color: currentEvent.c, desc: "Event Physics Buff", curr: "gold", cost: 15000 };
+            let sId = currentEvent.s1.toLowerCase().replace(/ /g, '_'); let wId = currentEvent.w1.toLowerCase().replace(/ /g, '_'); let cId = currentEvent.c1.toLowerCase().replace(/ /g, '_');
+            let wMulti = 2.0, wDesc = `Event WPN (+200%)`, wCost = 15000;
+            if (currentEvent.id === 5) { wMulti = 25.0; wDesc = "Sun God's Wrath (+2500%)"; wCost = 500000; } // BUFFED SOLAR WEAPON!
+            SKINS_CONFIG[sId] = { name: currentEvent.s1, color: currentEvent.c, ability: "Seasonal Power", curr: "gold", cost: 5000 };
+            WEAPONS_CONFIG[wId] = { name: currentEvent.w1, color: currentEvent.c, multi: wMulti, desc: wDesc, curr: "gold", cost: wCost };
+            COATS_CONFIG[cId] = { name: currentEvent.c1, color: currentEvent.c, desc: "Event Physics Buff", curr: "gold", cost: 15000 };
         }
 
         const GUILD_TITLES = [ { id: 1, name: "Novice Swingers", cost: 10, desc: "+2% Multi", multi: 1.02 }, { id: 2, name: "Rope Apprentices", cost: 25, desc: "+5% Multi", multi: 1.05 }, { id: 5, name: "Steel Grapplers", cost: 150, desc: "+12% Multi", multi: 1.12 }, { id: 10, name: "Shadow Assassins", cost: 800, desc: "+25% Multi", multi: 1.25 }, { id: 15, name: "Mythic Masters", cost: 2500, desc: "+38% Multi", multi: 1.38 }, { id: 20, name: "Multiverse Apex", cost: 7000, desc: "+50% Multi", multi: 1.50 }, { id: 21, name: "The Eternal", cost: 10000, desc: "+100% Ultimate Multi", multi: 2.00 } ];
@@ -586,7 +657,7 @@
         canvas.addEventListener("mousedown", pointerDown); window.addEventListener("mouseup", pointerUp); canvas.addEventListener("touchstart", e => { e.preventDefault(); pointerDown(e); }, { passive: false }); window.addEventListener("touchend", pointerUp);
         
         // FIX SPACEBAR SCROLL
-        window.addEventListener("keydown", e => { if(e.code === "Space" && document.activeElement.tagName !== "INPUT") { e.preventDefault(); if(gameStatus === "playing" && user.equipped_skin === 'split_neon_synth') { player.vx += 10; showToast("⚡ Synth Dash!", 1000, "#ff00ff"); } else { pointerDown(); } } }); window.addEventListener("keyup", e => { if(e.code === "Space") pointerUp(); });
+        window.addEventListener("keydown", e => { if(e.code === "Space" && document.activeElement?.tagName !== "INPUT") { e.preventDefault(); if(gameStatus === "playing" && user.equipped_skin === 'split_neon_synth') { player.vx += 10; showToast("⚡ Synth Dash!", 1000, "#ff00ff"); } else { pointerDown(); } } }); window.addEventListener("keyup", e => { if(e.code === "Space") pointerUp(); });
 
         let lastGamepadState = false; function checkGamepad() { const pads = navigator.getGamepads ? navigator.getGamepads() : []; if(pads[0]) { const pressed = pads[0].buttons[0].pressed || pads[0].buttons[7].pressed; if(pressed && !lastGamepadState) pointerDown(); else if (!pressed && lastGamepadState) pointerUp(); lastGamepadState = pressed; } }
 
@@ -720,6 +791,7 @@
 
         function draw() {
             try {
+                if(!ctx) return;
                 ctx.clearRect(0,0,canvas.width,canvas.height);
                 let eq = user.equipped_skin || "default"; let skinInfo = SKINS_CONFIG[eq] || SKINS_CONFIG.default;
 
@@ -823,9 +895,18 @@
         function switchTutorialTab(step) { currentTutorialStep = step; tutorialPanes.forEach((p, idx) => p.classList.toggle('active', idx === step)); tutorialTabs.forEach((t, idx) => t.classList.toggle('active', idx === step)); prevBtn.style.visibility = step === 0 ? 'hidden' : 'visible'; nextBtn.textContent = step === tutorialPanes.length - 1 ? 'Got it!' : 'Next'; stepText.textContent = `Step ${step + 1} of ${tutorialPanes.length}`; }
         document.getElementById('openTutorialBtn').addEventListener('click', openTutorial); document.getElementById('closeTutorialTopBtn').addEventListener('click', closeTutorial);
         nextBtn.addEventListener('click', () => { if (currentTutorialStep < tutorialPanes.length - 1) switchTutorialTab(currentTutorialStep + 1); else closeTutorial(); }); prevBtn.addEventListener('click', () => { if (currentTutorialStep > 0) switchTutorialTab(currentTutorialStep - 1); });
-        window.addEventListener('DOMContentLoaded', () => { setTimeout(() => { if (!localStorage.getItem("mmo_swing_tutorial_completed")) openTutorial(); }, 800); });
-
-        applySkinAbilities(); renderChangingRoom(); renderGearShop(); updateUI(); fetchServerData(); fetchSocialData(); loop();
+        
+        // BULLETPROOF INITIALIZATION BOOTLOADER
+        window.addEventListener('DOMContentLoaded', () => { 
+            setTimeout(() => { if (!localStorage.getItem("mmo_swing_tutorial_completed")) openTutorial(); }, 800);
+            try { applySkinAbilities(); } catch(e) { console.error("Init Error:", e); }
+            try { renderChangingRoom(); } catch(e) { console.error("Init Error:", e); }
+            try { renderGearShop(); } catch(e) { console.error("Init Error:", e); }
+            try { updateUI(); } catch(e) { console.error("Init Error:", e); }
+            try { fetchServerData(); } catch(e) { console.error("Init Error:", e); }
+            try { fetchSocialData(); } catch(e) { console.error("Init Error:", e); }
+            loop();
+        });
     </script>
 </body>
 </html>
