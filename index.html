@@ -24,8 +24,6 @@
         #bottom-panels { display: flex; gap: 15px; width: 100%; flex-wrap: wrap; }
         .panel-box { background: rgba(22, 22, 40, 0.95); border: 1px solid #2e2e54; border-radius: 12px; padding: 15px; flex: 1; min-width: 260px; position: relative; }
         .panel-box h4 { margin: 0 0 10px 0; color: #00adb5; font-size: 14px; text-transform: uppercase; border-bottom: 1px solid #2e2e54; padding-bottom: 4px; }
-        
-        /* CSS FIX: Added appearance:none to prevent iOS white box rendering */
         .skins-grid { display: flex; flex-wrap: wrap; gap: 8px; max-height: 180px; overflow-y: auto; padding: 4px 0; }
         .skin-btn { background: #17172e; border: 2px solid #2e2e54; color: #666; padding: 8px; border-radius: 8px; cursor: pointer; font-size: 11px; font-weight: bold; text-align: left; display: flex; flex-direction: column; gap: 4px; width: calc(50% - 4px); box-sizing: border-box; -webkit-appearance: none; appearance: none; }
         .skin-btn.unlocked { border-color: #4ecca3; color: #fff; cursor: pointer; }
@@ -33,7 +31,6 @@
         .skin-preview { width: 12px; height: 12px; border-radius: 50%; display: inline-block; border: 1px solid rgba(255,255,255,0.3); }
         .skin-ability { font-size: 9px; color: #aaa; font-weight: normal; font-style: italic; }
         .dropdown-arrow { position: absolute; top: -8px; right: -8px; background: #f9a826; color: #1a1a2e; border-radius: 50%; width: 18px; height: 18px; font-size: 10px; display: flex; justify-content: center; align-items: center; cursor: pointer; z-index: 10; }
-        
         #fuseBtn { width: 100%; margin-bottom: 10px; color: #1a1a2e; border: 2px solid #f9a826; padding: 8px; font-size: 12px; border-radius: 6px; font-weight: bold; cursor: pointer; display: none; text-shadow: 0px 0px 4px #fff; box-shadow: 0 0 12px #f9a826; animation: pulse 1.5s infinite; }
         @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.02); } 100% { transform: scale(1); } }
         #toastContainer { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); display: flex; flex-direction: column; gap: 10px; z-index: 1000; pointer-events: none; }
@@ -55,7 +52,6 @@
         .tutorial-close { background: transparent; border: none; color: #888; font-size: 24px; cursor: pointer; }
         .tutorial-tabs { display: flex; background: #131326; border-bottom: 1px solid #2e2e54; overflow-x: auto; }
         
-        /* CSS FIX: Prevents tabs from becoming white boxes on mobile */
         .tutorial-tab-btn { flex: 1; padding: 12px 8px; background: transparent; border: none; color: #aaa; font-size: 12px; font-weight: bold; cursor: pointer; text-align: center; border-bottom: 3px solid transparent; -webkit-appearance: none; appearance: none; }
         .tutorial-tab-btn.active { color: #00adb5; border-bottom-color: #00adb5; background: rgba(0, 173, 181, 0.08); }
         
@@ -326,7 +322,8 @@
         } else if (currentEvent) {
             let sId = currentEvent.s1.toLowerCase().replace(/ /g, '_'); let wId = currentEvent.w1.toLowerCase().replace(/ /g, '_'); let cId = currentEvent.c1.toLowerCase().replace(/ /g, '_');
             let wMulti = 2.0, wDesc = `Event WPN (+200%)`, wCost = 15000;
-            if (currentEvent.id === 5) { wMulti = 25.0; wDesc = "Sun God's Wrath (+2500%)"; wCost = 500000; } // BUFFED SOLAR WEAPON!
+            // CHANGED SOLAR WEAPON PRICE HERE
+            if (currentEvent.id === 5) { wMulti = 25.0; wDesc = "Sun God's Wrath (+2500%)"; wCost = 250000; } 
             SKINS_CONFIG[sId] = { name: currentEvent.s1, color: currentEvent.c, ability: "Seasonal Power", curr: "gold", cost: 5000 };
             WEAPONS_CONFIG[wId] = { name: currentEvent.w1, color: currentEvent.c, multi: wMulti, desc: wDesc, curr: "gold", cost: wCost };
             COATS_CONFIG[cId] = { name: currentEvent.c1, color: currentEvent.c, desc: "Event Physics Buff", curr: "gold", cost: 15000 };
@@ -591,6 +588,15 @@
         async function respondFriend(id, response) { try { await fetch(`${API_URL}/api/social`, { method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify({username: user.username, session_token: user.session_token, action: "respond_friend", payload: {id, response}}) }); fetchSocialData(); } catch(e) {} }
         async function sendChallenge(target) { let goal = parseInt(prompt(`Enter score goal to challenge ${target}:`, "50000")); if (!goal || isNaN(goal) || goal <= 0) return; try { const res = await fetch(`${API_URL}/api/social`, { method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify({username: user.username, session_token: user.session_token, action: "send_challenge", payload: {target, goal}}) }); const data = await res.json(); if(data.success) { showToast(`Challenge sent to ${target} for ${goal} pts!`, 3000, "#f9a826"); fetchSocialData(); } else { showToast(data.error, 3000, "#ff4757"); } } catch(e) {} }
         async function respondChallenge(id, response) { try { await fetch(`${API_URL}/api/social`, { method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify({username: user.username, session_token: user.session_token, action: "respond_challenge", payload: {id, response}}) }); fetchSocialData(); } catch(e) {} }
+        
+        // --- NEW: THE MISSING WIN CHALLENGE FUNCTION ---
+        async function winChallenge(id) { 
+            try { 
+                const res = await fetch(`${API_URL}/api/social`, { method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify({username: user.username, session_token: user.session_token, action: "win_challenge", payload: {id}}) }); 
+                const data = await res.json(); 
+                if(data.success) { showToast(`🏆 Duel Won! +50 Gold`, 5000, "#f1c40f"); user.guild_coins += 50; updateUI(); fetchSocialData(); } 
+            } catch(e) {} 
+        }
 
         document.getElementById("loginBtn").onclick = async () => {
             const u = document.getElementById("usernameInput").value.trim(); const p = document.getElementById("passwordInput").value; if(!u || !p) return showToast("Enter profile credentials", 3000, "#ff4757");
@@ -814,25 +820,18 @@
                 if (gameStatus === "playing") drawBoss();
                 if(player.isSwinging) { ctx.strokeStyle="#fff"; ctx.lineWidth=3; ctx.beginPath(); ctx.moveTo(player.hookX, player.hookY); ctx.lineTo(player.x, player.y); ctx.stroke(); }
 
-                // --- NEW DYNAMIC PHYSICS COATS ---
+                // --- DYNAMIC PHYSICS COATS ---
                 if (user.equipped_coat && user.equipped_coat !== "none" && COATS_CONFIG[user.equipped_coat] && player.trail.length > 5) {
                     ctx.fillStyle = COATS_CONFIG[user.equipped_coat].color || "#fff";
-                    ctx.beginPath();
-                    ctx.moveTo(player.x, player.y);
-                    for(let i=player.trail.length-1; i>=0; i--) {
-                        let t = player.trail[i]; let width = (i / player.trail.length) * 15;
-                        ctx.lineTo(t.x, t.y - width);
-                    }
-                    for(let i=0; i<player.trail.length; i++) {
-                        let t = player.trail[i]; let width = (i / player.trail.length) * 15;
-                        ctx.lineTo(t.x, t.y + width);
-                    }
+                    ctx.beginPath(); ctx.moveTo(player.x, player.y);
+                    for(let i=player.trail.length-1; i>=0; i--) { let t = player.trail[i]; let width = (i / player.trail.length) * 15; ctx.lineTo(t.x, t.y - width); }
+                    for(let i=0; i<player.trail.length; i++) { let t = player.trail[i]; let width = (i / player.trail.length) * 15; ctx.lineTo(t.x, t.y + width); }
                     ctx.fill();
                 }
 
                 ctx.save(); ctx.translate(player.x, player.y);
 
-                // --- NEW DYNAMIC WEAPONS ---
+                // --- DYNAMIC WEAPONS ---
                 if (user.equipped_weapon && user.equipped_weapon !== "none" && WEAPONS_CONFIG[user.equipped_weapon]) {
                     ctx.save();
                     let angle = Math.atan2(player.vy, player.vx); ctx.rotate(angle);
@@ -899,12 +898,12 @@
         // BULLETPROOF INITIALIZATION BOOTLOADER
         window.addEventListener('DOMContentLoaded', () => { 
             setTimeout(() => { if (!localStorage.getItem("mmo_swing_tutorial_completed")) openTutorial(); }, 800);
-            try { applySkinAbilities(); } catch(e) { console.error("Init Error:", e); }
-            try { renderChangingRoom(); } catch(e) { console.error("Init Error:", e); }
-            try { renderGearShop(); } catch(e) { console.error("Init Error:", e); }
-            try { updateUI(); } catch(e) { console.error("Init Error:", e); }
-            try { fetchServerData(); } catch(e) { console.error("Init Error:", e); }
-            try { fetchSocialData(); } catch(e) { console.error("Init Error:", e); }
+            try { applySkinAbilities(); } catch(e) {}
+            try { renderChangingRoom(); } catch(e) {}
+            try { renderGearShop(); } catch(e) {}
+            try { updateUI(); } catch(e) {}
+            try { fetchServerData(); } catch(e) {}
+            try { fetchSocialData(); } catch(e) {}
             loop();
         });
     </script>
