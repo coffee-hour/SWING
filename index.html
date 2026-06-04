@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>↺</text></svg>">
-    <title>Swing!</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>☯️</text></svg>">
+    <title>Infinite Swing - MMO Edition</title>
     <style>
         body { margin: 0; background: #0f0f1a; display: flex; justify-content: center; align-items: flex-start; min-height: 100vh; overflow-y: auto; font-family: system-ui, -apple-system, sans-serif; color: white; user-select: none; padding: 10px 0; touch-action: manipulation; }
         #main-layout { display: flex; gap: 15px; max-width: 1400px; width: 100%; padding: 15px; box-sizing: border-box; flex-wrap: wrap; }
@@ -57,61 +57,28 @@
         .admin-section { background: rgba(30, 30, 55, 0.6); border: 1px dashed #4ecca3; padding: 8px; border-radius: 6px; margin-top: 10px; font-size: 11px; }
         .title-shop-grid { display: flex; flex-direction: column; gap: 4px; max-height: 180px; overflow-y: auto; margin-top: 5px; }
 
-        @media (max-width: 900px) { #main-layout { flex-direction: column; } .side-panel { min-height: auto; width: 100%; } }
-
-        /* ==========================================================================
-           📖 INTERACTIVE TUTORIAL SYSTEM STYLES
-           ========================================================================== */
-        .tutorial-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(10, 10, 18, 0.85); backdrop-filter: blur(8px);
-            display: flex; justify-content: center; align-items: center;
-            z-index: 2000; opacity: 0; pointer-events: none; transition: opacity 0.3s ease;
-        }
+        /* Tutorial System */
+        .tutorial-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(10, 10, 18, 0.85); backdrop-filter: blur(8px); display: flex; justify-content: center; align-items: center; z-index: 2000; opacity: 0; pointer-events: none; transition: opacity 0.3s ease; }
         .tutorial-overlay.active { opacity: 1; pointer-events: auto; }
-        .tutorial-modal {
-            background: #17172e; border: 2px solid #2e2e54; border-radius: 16px;
-            width: 92%; max-width: 620px; max-height: 85vh;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.6), 0 0 25px rgba(0, 173, 181, 0.25);
-            display: flex; flex-direction: column; overflow: hidden;
-            animation: modalSlide 0.4s cubic-bezier(0.18, 0.89, 0.32, 1.28);
-        }
+        .tutorial-modal { background: #17172e; border: 2px solid #2e2e54; border-radius: 16px; width: 92%; max-width: 620px; max-height: 85vh; box-shadow: 0 20px 50px rgba(0,0,0,0.6), 0 0 25px rgba(0, 173, 181, 0.25); display: flex; flex-direction: column; overflow: hidden; animation: modalSlide 0.4s cubic-bezier(0.18, 0.89, 0.32, 1.28); }
         @keyframes modalSlide { from { transform: translateY(30px) scale(0.95); } to { transform: translateY(0) scale(1); } }
         .tutorial-header { background: #111122; padding: 16px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #2e2e54; }
         .tutorial-header h2 { margin: 0; font-size: 18px; color: #f9a826; letter-spacing: 0.5px; }
         .tutorial-close { background: none; border: none; color: #888; font-size: 24px; cursor: pointer; transition: color 0.2s; }
-        .tutorial-close:hover { color: #ff4757; }
         .tutorial-tabs { display: flex; background: #131326; border-bottom: 1px solid #2e2e54; overflow-x: auto; }
-        .tutorial-tab-btn {
-            flex: 1; padding: 12px 8px; background: none; border: none; color: #aaa;
-            font-size: 12px; font-weight: bold; cursor: pointer; text-align: center;
-            white-space: nowrap; border-bottom: 3px solid transparent; transition: all 0.2s;
-        }
-        .tutorial-tab-btn:hover { color: #fff; background: rgba(255,255,255,0.02); }
+        .tutorial-tab-btn { flex: 1; padding: 12px 8px; background: none; border: none; color: #aaa; font-size: 12px; font-weight: bold; cursor: pointer; text-align: center; white-space: nowrap; border-bottom: 3px solid transparent; transition: all 0.2s; }
         .tutorial-tab-btn.active { color: #00adb5; border-bottom-color: #00adb5; background: rgba(0, 173, 181, 0.08); }
         .tutorial-body { padding: 20px; overflow-y: auto; flex: 1; font-size: 13px; line-height: 1.6; color: #e2e2ec; }
-        .tutorial-pane { display: none; }
-        .tutorial-pane.active { display: block; }
+        .tutorial-pane { display: none; } .tutorial-pane.active { display: block; }
         .tutorial-pane h4 { margin: 0 0 10px 0; color: #4ecca3; font-size: 15px; text-transform: uppercase; border-bottom: 1px dashed #2e2e54; padding-bottom: 4px;}
         .tutorial-pane ul { margin: 0 0 15px 0; padding-left: 20px; }
-        .tutorial-pane li { margin-bottom: 8px; }
         .tutorial-highlight { font-weight: bold; color: #ffd700; background: rgba(255,255,255,0.06); padding: 2px 6px; border-radius: 4px; }
-        
         .tutorial-footer { padding: 15px 20px; background: #111122; border-top: 1px solid #2e2e54; display: flex; justify-content: space-between; align-items: center; }
-        .tutorial-btn { padding: 9px 18px; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; transition: all 0.2s; font-size: 12px; }
-        .tutorial-btn.sec { background: #2e2e54; color: #ccc; }
-        .tutorial-btn.sec:hover { background: #3e3e6e; color: #fff; }
-        .tutorial-btn.pri { background: #00adb5; color: #fff; box-shadow: 0 0 8px rgba(0,173,181,0.3); }
-        .tutorial-btn.pri:hover { filter: brightness(1.1); transform: translateY(-1px); }
+        .tutorial-btn { padding: 9px 18px; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 12px; }
+        .tutorial-btn.sec { background: #2e2e54; color: #ccc; } .tutorial-btn.pri { background: #00adb5; color: #fff; }
+        .help-fab { position: fixed; bottom: 20px; right: 20px; width: 44px; height: 44px; background: #f9a826; color: #111; border: none; border-radius: 50%; font-size: 20px; font-weight: bold; display: flex; justify-content: center; align-items: center; cursor: pointer; box-shadow: 0 4px 15px rgba(249,168,38,0.4); z-index: 1500; transition: all 0.2s ease; }
 
-        .help-fab {
-            position: fixed; bottom: 20px; right: 20px; width: 44px; height: 44px;
-            background: #f9a826; color: #111; border: none; border-radius: 50%;
-            font-size: 20px; font-weight: bold; display: flex; justify-content: center; align-items: center;
-            cursor: pointer; box-shadow: 0 4px 15px rgba(249,168,38,0.4); z-index: 1500;
-            transition: all 0.2s ease;
-        }
-        .help-fab:hover { transform: scale(1.1); box-shadow: 0 6px 20px rgba(249,168,38,0.6); }
+        @media (max-width: 900px) { #main-layout { flex-direction: column; } .side-panel { min-height: auto; width: 100%; } }
     </style>
 </head>
 <body>
@@ -128,24 +95,31 @@
                     <button id="createGuildBtn" class="auth-btn" style="background:#00adb5; color:#fff;">Create</button>
                 </div>
                 <div style="font-size: 12px; margin-top: 8px; display:flex; justify-content:space-between;">
-                    <span>Guild: <span id="currentGuildDisplay" class="tag">None</span></span>
+                    <span>Guild: <span id="currentGuildDisplay" class="tag" style="font-size:14px;">None</span></span>
                     <span id="guildSizeDisplay" style="color:#aaa;">0/10 Players</span>
                 </div>
-                <div style="font-size: 12px; color: #ffd700; margin-top: 4px;">Guild War Coins: <span id="warCoinDisplay">0</span> ⚔️</div>
-                <div style="font-size: 12px; color: #f1c40f; margin-top: 4px;">Guild Coins: <span id="guildCoinDisplay">0</span> 🪙</div>
+                <div style="font-size: 12px; color: #ffd700; margin-top: 4px;">War Coins: <span id="warCoinDisplay">0</span> ⚔️ | Guild Coins: <span id="guildCoinDisplay">0</span> 🪙</div>
                 <div style="font-size: 11px; color: #4ecca3; margin-top: 4px; font-weight: bold;" id="guildTitleDisplay">Active Title: None</div>
                 <div style="font-size: 11px; color: #4ecca3; margin-top: 4px;" id="guildMultiDisplay"></div>
             </div>
             
             <div id="leaderPanel" class="admin-section" style="display:none;">
-                <span style="color:#4ecca3; font-weight:bold;">👑 Guild Leader Management</span>
-                <div style="margin-top:5px; font-weight:bold; color:#f9a826;">Join Requests:</div>
-                <div id="joinRequestsList" style="max-height:90px; overflow-y:auto; display:flex; flex-direction:column; gap:4px; margin-bottom:8px;">
-                    <div style="color:#666; font-style:italic; font-size:10px;">No pending requests</div>
-                </div>
+                <span style="color:#4ecca3; font-weight:bold;">👑 Guild Leader Options</span>
                 
-                <div style="font-weight:bold; color:#00adb5;">Unlock Guild Titles:</div>
+                <div style="margin-top:6px; display:flex; gap:5px; align-items:center;">
+                    <span style="font-size:10px; color:#aaa;">Tag Color:</span>
+                    <input type="color" id="guildColorPicker" value="#f9a826" style="width:30px; height:20px; border:none; background:none; cursor:pointer;">
+                    <button class="action-btn blue" onclick="setGuildColor()">Save</button>
+                </div>
+
+                <div style="margin-top:8px; font-weight:bold; color:#f9a826;">Join Requests:</div>
+                <div id="joinRequestsList" style="max-height:60px; overflow-y:auto; display:flex; flex-direction:column; gap:4px; margin-bottom:8px;"></div>
+                
+                <div style="font-weight:bold; color:#00adb5;">Buy Titles (War Coins):</div>
                 <div id="titleShop" class="title-shop-grid"></div>
+
+                <div style="font-weight:bold; color:#ff9ff3; margin-top:8px;">Buy Crests (War Coins):</div>
+                <div id="crestShop" class="title-shop-grid"></div>
             </div>
 
             <h4 style="margin:12px 0 5px 0; font-size: 13px; color:#ff4757;">Alliance Raid Rankings</h4>
@@ -187,28 +161,29 @@
             <div class="ui-bar">
                 <div style="color:#4ecca3;">Score: <span id="scoreDisplay">0</span></div>
                 <div style="color:#f9a826;">Personal Best: <span id="highScoreDisplay">0</span></div>
-                <div style="color:#ff9ff3;">Multiplier: <span id="multiDisplay">1x</span></div>
-                <div style="color:#00adb5;">Skin: <span id="skinDisplay">Default</span></div>
+                <div style="color:#ff9ff3;">Multi: <span id="multiDisplay">1x</span></div>
                 <div>⬜ <span id="whiteShardDisplay">0</span> | ⬛ <span id="blackShardDisplay">0</span></div>
             </div>
 
             <canvas id="gameCanvas" width="850" height="420"></canvas>
 
             <div id="bottom-panels">
-                <div class="panel-box" style="flex: 1.8;">
-                    <h4>👕 Changing Room & Vault</h4>
+                <div class="panel-box" style="flex: 1.2;">
+                    <h4>👕 Changing Room (Skins)</h4>
                     <button id="fuseBtn">FUSE SHARDS & ROLL GACHA</button>
                     <div class="skins-grid" id="skinsGrid"></div>
                 </div>
 
-                <div class="panel-box" style="flex: 1;">
-                    <h4>🌍 Global Quest</h4>
-                    <div style="font-size: 11px; color: #aaa; margin-bottom: 5px;">Daily Goal: 1,000,000 Global Pts</div>
-                    <div style="font-size: 14px; font-weight: bold; color: #4ecca3; margin-bottom: 2px;">
-                        <span id="dailyPointsDisplay">0</span> / 1,000,000
+                <div class="panel-box" style="flex: 1.2; border-color: #e056fd;">
+                    <h4 style="color: #e056fd;">⚔️ Black Market (Gear)</h4>
+                    <div style="font-size: 10px; color:#aaa; margin-bottom:5px;">Spend Guild Coins (🪙) to optimize your build.</div>
+                    
+                    <div style="display:flex; gap:10px; margin-bottom:5px;">
+                        <button class="tutorial-tab-btn active" id="tabWeapon" onclick="switchGearTab('weapon')" style="flex:1;">Weapons</button>
+                        <button class="tutorial-tab-btn" id="tabCoat" onclick="switchGearTab('coat')" style="flex:1;">Coats</button>
                     </div>
-                    <div class="progress-bar"><div id="dailyProgress" class="progress-fill" style="background:#0be881; width:0%"></div></div>
-                    <div style="font-size: 11px; color: #ff9ff3; margin-top: 5px;">Server Lock-in: <span id="streakDisplay">0</span> / 7 Days 🔥</div>
+                    
+                    <div class="skins-grid" id="gearShopGrid"></div>
                 </div>
             </div>
         </div>
@@ -234,53 +209,45 @@
                 <h2>📖 Swing! MMO Academy Guide</h2>
                 <button class="tutorial-close" id="closeTutorialTopBtn">&times;</button>
             </div>
-            
             <div class="tutorial-tabs">
                 <button class="tutorial-tab-btn active" onclick="switchTutorialTab(0)">🕹️ Controls</button>
-                <button class="tutorial-tab-btn" onclick="switchTutorialTab(1)">💎 Vault & Gacha</button>
+                <button class="tutorial-tab-btn" onclick="switchTutorialTab(1)">⚔️ Optimized Builds</button>
                 <button class="tutorial-tab-btn" onclick="switchTutorialTab(2)">🛡️ Guilds Base</button>
-                <button class="tutorial-tab-btn" onclick="switchTutorialTab(3)">⚔️ Boss & Secrets</button>
+                <button class="tutorial-tab-btn" onclick="switchTutorialTab(3)">🐉 Boss Raids</button>
             </div>
-
             <div class="tutorial-body">
                 <div class="tutorial-pane active">
                     <h4>🕹️ Core Mechanics & Physics</h4>
-                    <p>Welcome to <strong>Swing! MMO Edition</strong>. Your objective is simple: navigate safely using gravity and ropes while accumulating massive scores!</p>
                     <ul>
-                        <li><span class="tutorial-highlight">Grapple Hook:</span> Click anywhere on the map or tap the <span class="tutorial-highlight">Spacebar</span> to shoot out a line and swing. Release or tap again to fly forward!</li>
-                        <li><span class="tutorial-highlight">Keep Moving:</span> Avoid dropping down past the floor limits or touching death hazard vectors.</li>
-                        <li><span class="tutorial-highlight">Score Scaling:</span> The further you traverse, the higher your score climbs. Multipliers apply directly to everything you do!</li>
+                        <li><span class="tutorial-highlight">Grapple Hook:</span> Click anywhere or tap <span class="tutorial-highlight">Spacebar</span> to shoot a line and swing.</li>
+                        <li><span class="tutorial-highlight">Keep Moving:</span> Avoid dropping down past the floor limits.</li>
+                        <li><span class="tutorial-highlight">Score Scaling:</span> Distance traversed applies your Total Multiplier!</li>
                     </ul>
                 </div>
                 <div class="tutorial-pane">
-                    <h4>💎 Changing Room & Shard Vault</h4>
-                    <p>During runs, you'll encounter colored resource gems scattered across the grid. Collecting them unlocks high-tier gear:</p>
+                    <h4>⚔️ The Optimized Build</h4>
+                    <p>Stack modifiers to reach the highest scores in the game:</p>
                     <ul>
-                        <li><span class="tutorial-highlight">Resource Gathering:</span> Gather <span style="color:#fff;">White Shards ⬜</span> and <span style="color:#aaa;">Black Shards ⬛</span> during loops.</li>
-                        <li><span class="tutorial-highlight">The Vault Fuse:</span> Combine 1 White Shard + 1 Black Shard to build your baseline collection or activate the <span class="tutorial-highlight" style="color:#ff00ff;">Gacha Roll machine</span>!</li>
-                        <li><span class="tutorial-highlight">Skin Abilities:</span> Skins aren't cosmetic! They manipulate baseline physics. For instance, <span style="color:#ffc0cb;">Pink</span> triggers low gravity, <span style="color:#8b4513;">Brown</span> expands hook distance, and rare Gacha drops like <span style="color:#4a00e0;">Void Stalker</span> grant a death protection shield bounce!</li>
+                        <li><span class="tutorial-highlight">Skins:</span> Found via Shard Gacha. Affects baseline physics.</li>
+                        <li><span class="tutorial-highlight">Weapons & Coats:</span> Buy in the Black Market using Guild Coins. Weapons add massive Multiplier buffs, while Coats manipulate gravity and range.</li>
+                        <li><span class="tutorial-highlight">Crests & Titles:</span> Join an active guild. The Leader's Title and Crest buffs are applied to *every* member!</li>
                     </ul>
                 </div>
                 <div class="tutorial-pane">
-                    <h4>🛡️ Guild Base & Daily Commissions</h4>
-                    <p>Cooperation increases your multiplier exponentially. Team up with other swingers to establish safehouses:</p>
+                    <h4>🛡️ Guild Base & Customization</h4>
                     <ul>
-                        <li><span class="tutorial-highlight">Join or Create:</span> Input a unique 4-character <span class="tutorial-highlight">TAG</span> to coordinate an alliance.</li>
-                        <li><span class="tutorial-highlight">Daily Tasks:</span> Complete the 3 daily tasks (Distance milestones, Games played, Shards found) to earn <span style="color:#f1c40f;">+20 Guild Coins (GC)</span> each.</li>
-                        <li><span class="tutorial-highlight">Prestige Titles:</span> Guild Leaders spend pooled funds to acquire globally scaling multi-buffs across <span class="tutorial-highlight">21 standard tiers</span> (up to a massive permanent multiplier!)</li>
+                        <li><span class="tutorial-highlight">Join or Create:</span> Input a 4-character TAG.</li>
+                        <li><span class="tutorial-highlight">Guild Leader Tools:</span> Leaders can spend War Coins on massive Title Buffs, select Crest Emojis to represent the guild, and set custom hex Colors for the guild tag!</li>
                     </ul>
                 </div>
                 <div class="tutorial-pane">
-                    <h4>⚔️ Alliance Raid & Alternate Realms</h4>
-                    <p>Your actions echo across the global live grid, affecting full-server progression:</p>
+                    <h4>🐉 Alliance Boss Raid</h4>
                     <ul>
-                        <li><span class="tutorial-highlight">World Boss Raid:</span> Every game score registers direct damage against the server's massive <span style="color:#ff4757;">Abyssal Leviathan</span>. Earn War Coins upon subduing it!</li>
-                        <li><span class="tutorial-highlight">Level 20 - The Eternal:</span> Defeating Level 20 sends the boss looping through spacetime, mutating it into its final, ultimate elite variant: <span style="color:#00ffff; font-weight:bold;">[The Eternal]</span>.</li>
-                        <li><span class="tutorial-highlight">Secret Portals:</span> Equipping certain high-tier items unlocks secret dimension paths. Key codes allow the <span style="color:#4ecca3;">Angelic</span> skin to construct portals to Sky Island, while the dark variants drag you into <span style="color:#ff0055;">Underworld Descent</span>!</li>
+                        <li><span class="tutorial-highlight">World Boss Raid:</span> Every score registers damage against the server's massive <span style="color:#ff4757;">Abyssal Leviathan</span>. Earn War Coins when it dies!</li>
+                        <li><span class="tutorial-highlight">Level 20 - The Eternal:</span> Defeating Level 20 sends the boss looping through spacetime into its final variant: <span style="color:#00ffff;">[The Eternal]</span>.</li>
                     </ul>
                 </div>
             </div>
-
             <div class="tutorial-footer">
                 <button class="tutorial-btn sec" id="tutorialPrevBtn" style="visibility:hidden;">Back</button>
                 <div style="font-size:11px; color:#666;" id="tutorialStepText">Step 1 of 4</div>
@@ -296,10 +263,14 @@
             username: null, session_token: localStorage.getItem("session_token") || null, 
             high_score: parseInt(localStorage.getItem("hc")) || 0,
             equipped_skin: localStorage.getItem("eq") || "default", unlocked: ["default"],
+            equipped_weapon: "none", unlocked_weapons: ["none"],
+            equipped_coat: "none", unlocked_coats: ["none"],
             w_shards: parseInt(localStorage.getItem("ws")) || 0, b_shards: parseInt(localStorage.getItem("bs")) || 0, 
             guild: localStorage.getItem("gd") || "", is_leader: false, guild_coins: 0, war_coins: 0, guild_title_bonus: 1
         };
 
+        let activeGuildCrest = 0;
+        let activeGuildColor = "#f9a826";
         let serverEventMultiplier = 1;
         let currentBoss = null;
         let todayStr = new Date().toISOString().split('T')[0];
@@ -307,10 +278,38 @@
         if (dailyTasks.date !== todayStr) dailyTasks = { date: todayStr, dist: 0, games: 0, shards: 0, c1: false, c2: false, c3: false };
         
         let activeChallenges = [];
-        let angelicDropdownOpen = false; 
-        let devilDropdownOpen = false;
+        let angelicDropdownOpen = false; let devilDropdownOpen = false;
+        let currentGearTab = 'weapon';
 
-        // --- 21 GUILD TITLES ---
+        // --- NEW META: CRESTS (WAR COINS) ---
+        const CRESTS_CONFIG = {
+            0: { name: "None", emoji: "", cost: 0, desc: "No buff" },
+            1: { name: "Shield", emoji: "🛡️", cost: 1000, desc: "+10% Guild Multi" },
+            2: { name: "Wolf", emoji: "🐺", cost: 5000, desc: "+25% Guild Multi" },
+            3: { name: "Dragon", emoji: "🐉", cost: 15000, desc: "+50% Guild Multi" },
+            4: { name: "Crown", emoji: "👑", cost: 50000, desc: "+100% Guild Multi" },
+            5: { name: "Cosmic Eye", emoji: "👁️‍🗨️", cost: 150000, desc: "+300% Ultimate Multi" }
+        };
+
+        // --- NEW META: WEAPONS & COATS (GUILD COINS) ---
+        const WEAPONS_CONFIG = {
+            none: { name: "Bare Hands", cost: 0, multi: 0 },
+            dagger: { name: "Iron Dagger", cost: 200, multi: 0.1, desc: "+10% Flat Multi", color: "#aaa" },
+            broadsword: { name: "Broadsword", cost: 1000, multi: 0.5, desc: "+50% Flat Multi", color: "#silver" },
+            scythe: { name: "Reaper Scythe", cost: 5000, multi: 1.5, desc: "+150% Flat Multi", color: "#8a2be2" },
+            aether_blade: { name: "Aether Blade", cost: 25000, multi: 4.0, desc: "+400% Flat Multi", color: "#00ffff" },
+            singularity_edge: { name: "Singularity Edge", cost: 100000, multi: 10.0, desc: "+1000% Flat Multi (Super Rare)", color: "#ff0055" }
+        };
+
+        const COATS_CONFIG = {
+            none: { name: "No Coat", cost: 0 },
+            traveler_cloak: { name: "Traveler Cloak", cost: 200, desc: "+5% Hook Range", color: "#8b4513" },
+            feather_mantle: { name: "Feather Mantle", cost: 1000, desc: "-10% Gravity", color: "#fff" },
+            shadow_trench: { name: "Shadow Trench", cost: 5000, desc: "+20% Momentum Boost", color: "#333" },
+            celestial_wings: { name: "Celestial Wings", cost: 25000, desc: "-25% Gravity, Massive Shard Magnet", color: "#ffeaa7" },
+            void_carapace: { name: "Void Carapace", cost: 100000, desc: "Double Bouncer Power, +30% Hook (Super Rare)", color: "#4a00e0" }
+        };
+
         const GUILD_TITLES = [
             { id: 1, name: "Novice Swingers", cost: 10, desc: "+2% Multiplier", multi: 1.02 },
             { id: 2, name: "Rope Apprentices", cost: 25, desc: "+5% Multiplier", multi: 1.05 },
@@ -335,7 +334,6 @@
             { id: 21, name: "The Eternal", cost: 10000, desc: "+100% Ultimate Multi", multi: 2.00 }
         ];
 
-        // --- SKINS CONFIG ---
         const SKINS_CONFIG = {
             og_stickman: { name: "Exquisite OG", color: "#ff00ff", condition: "First 10 Players", ability: "Looking Dapper" },
             community_hero: { name: "Global Guardian", color: "#00ffff", splitColor: "#f9a826", condition: "7-Day Streak", ability: "Max Magnet + Low Grav" },
@@ -396,14 +394,27 @@
         function calculateMultiplier() {
             let m = 1; let texts = [];
             
-            if (serverEventMultiplier > 1) { m *= serverEventMultiplier; texts.push(`🎉 GLOBAL ${serverEventMultiplier}X`); }
+            if (serverEventMultiplier > 1) { m *= serverEventMultiplier; texts.push(`🎉 EVENT ${serverEventMultiplier}X`); }
             if (new Date().getDay() === 5) { m *= 2; texts.push("🔥 2X FRIDAY"); }
             if (user.equipped_skin === 'orange') m *= 2;
             if (user.equipped_skin === 'yellow') m *= 5;
             if (user.equipped_skin === 'gold') m *= 10;
             if (user.equipped_skin === 'gacha_chrono_trigger') m *= 2;
+            
+            // Gear Multiplier
+            if (user.equipped_weapon !== "none") {
+                let w = WEAPONS_CONFIG[user.equipped_weapon];
+                if(w && w.multi) { m += w.multi; texts.push(`⚔️ WPN (+${w.multi}x)`); }
+            }
+
             if (user.is_leader) { m *= 1.5; texts.push("👑 LEADER (1.5x)"); }
             if (user.guild_title_bonus > 1) { m *= user.guild_title_bonus; texts.push(`🛡️ TITLE (${user.guild_title_bonus}x)`); }
+            
+            // Crest Multiplier
+            if (activeGuildCrest > 0 && CRESTS_CONFIG[activeGuildCrest]) {
+                let cBonus = parseInt(CRESTS_CONFIG[activeGuildCrest].desc.match(/\d+/)[0]) / 100 + 1;
+                m *= cBonus; texts.push(`${CRESTS_CONFIG[activeGuildCrest].emoji} CREST (${cBonus}x)`);
+            }
             
             let finalM = parseFloat(m.toFixed(2));
             document.getElementById("multiDisplay").textContent = finalM + "x";
@@ -424,7 +435,6 @@
             if(changed && user.session_token) syncSave(0);
         }
 
-        let isGlobalRewardUnlocked = false;
         function checkUnlockStatus(key) {
             if (key === "default") return true;
             if (key === "community_hero") return isGlobalRewardUnlocked || user.unlocked.includes(key);
@@ -445,8 +455,10 @@
             document.getElementById("highScoreDisplay").textContent = user.high_score;
             document.getElementById("whiteShardDisplay").textContent = user.w_shards;
             document.getElementById("blackShardDisplay").textContent = user.b_shards;
-            document.getElementById("currentGuildDisplay").textContent = user.guild || "None";
             document.getElementById("guildCoinDisplay").textContent = user.guild_coins;
+            
+            let crestEmoji = activeGuildCrest > 0 ? CRESTS_CONFIG[activeGuildCrest].emoji : "";
+            document.getElementById("currentGuildDisplay").innerHTML = `<span style="color:${activeGuildColor};">${crestEmoji}[${user.guild || "None"}]</span>`;
             
             let conf = SKINS_CONFIG[user.equipped_skin] || SKINS_CONFIG.default;
             document.getElementById("skinDisplay").textContent = conf.name;
@@ -474,7 +486,6 @@
             calculateMultiplier();
         }
 
-        // --- SKINS RENDER LOGIC ---
         function renderChangingRoom() {
             const grid = document.getElementById("skinsGrid"); 
             grid.innerHTML = "";
@@ -495,24 +506,18 @@
                 
                 let title = document.createElement("div"); 
                 title.style.display = "flex"; title.style.alignItems = "center"; title.style.gap = "5px";
-                
                 let dot = document.createElement("span"); dot.className = "skin-preview";
-                if(skinConfig.splitColor) {
-                    dot.style.background = `linear-gradient(135deg, ${skinConfig.color} 50%, ${skinConfig.splitColor} 50%)`;
-                } else { dot.style.background = skinConfig.color; }
+                if(skinConfig.splitColor) dot.style.background = `linear-gradient(135deg, ${skinConfig.color} 50%, ${skinConfig.splitColor} 50%)`;
+                else dot.style.background = skinConfig.color;
                 
-                title.appendChild(dot); 
-                title.innerHTML += `<span>${skinConfig.name}</span>`; 
-                btn.appendChild(title);
+                title.appendChild(dot); title.innerHTML += `<span>${skinConfig.name}</span>`; btn.appendChild(title);
                 
                 let reqLabel = document.createElement("div"); reqLabel.style.fontSize = "9px"; reqLabel.style.color = "#888";
                 if (skinConfig.score !== undefined) reqLabel.innerText = `Req: ${skinConfig.score}`; 
                 else if (skinConfig.condition) reqLabel.innerText = skinConfig.condition;
                 btn.appendChild(reqLabel);
 
-                if (skinConfig.ability) { 
-                    let ab = document.createElement("div"); ab.className = "skin-ability"; ab.innerText = skinConfig.ability; btn.appendChild(ab); 
-                }
+                if (skinConfig.ability) { let ab = document.createElement("div"); ab.className = "skin-ability"; ab.innerText = skinConfig.ability; btn.appendChild(ab); }
                 
                 if (key === "angelic" && owned && hasAngelSubSkins) {
                     const arrow = document.createElement("div"); arrow.className = "dropdown-arrow"; arrow.textContent = angelicDropdownOpen ? "▲" : "▼";
@@ -547,6 +552,66 @@
             });
         }
 
+        // --- BLACK MARKET LOGIC ---
+        function switchGearTab(tab) {
+            currentGearTab = tab;
+            document.getElementById('tabWeapon').classList.toggle('active', tab === 'weapon');
+            document.getElementById('tabCoat').classList.toggle('active', tab === 'coat');
+            renderGearShop();
+        }
+
+        function renderGearShop() {
+            const grid = document.getElementById("gearShopGrid");
+            grid.innerHTML = "";
+            let config = currentGearTab === 'weapon' ? WEAPONS_CONFIG : COATS_CONFIG;
+            let userUnlocked = currentGearTab === 'weapon' ? user.unlocked_weapons : user.unlocked_coats;
+            let equipped = currentGearTab === 'weapon' ? user.equipped_weapon : user.equipped_coat;
+
+            Object.keys(config).forEach(key => {
+                let item = config[key];
+                let isOwned = userUnlocked.includes(key);
+                let isEquipped = equipped === key;
+
+                let btn = document.createElement("button");
+                btn.className = `skin-btn ${isOwned ? 'unlocked' : ''} ${isEquipped ? 'equipped' : ''}`;
+                
+                let title = document.createElement("div"); title.style.display = "flex"; title.style.alignItems = "center"; title.style.gap = "5px";
+                let dot = document.createElement("span"); dot.className = "skin-preview";
+                dot.style.background = item.color || "#000"; title.appendChild(dot); 
+                title.innerHTML += `<span>${item.name}</span>`; btn.appendChild(title);
+                
+                let reqLabel = document.createElement("div"); reqLabel.style.fontSize = "9px"; reqLabel.style.color = isOwned ? "#4ecca3" : "#ff9ff3";
+                reqLabel.innerText = isOwned ? (isEquipped ? "EQUIPPED" : "OWNED") : `Cost: ${item.cost} GC`;
+                btn.appendChild(reqLabel);
+
+                if (item.desc) { let ab = document.createElement("div"); ab.className = "skin-ability"; ab.innerText = item.desc; btn.appendChild(ab); }
+
+                btn.onclick = async () => {
+                    if (isOwned) {
+                        if (currentGearTab === 'weapon') user.equipped_weapon = key; else user.equipped_coat = key;
+                        applySkinAbilities(); renderGearShop(); updateUI(); syncSave(0);
+                    } else if (user.guild_coins >= item.cost) {
+                        try {
+                            const res = await fetch(`${API_URL}/api/shop/personal`, {
+                                method: "POST", headers:{"Content-Type":"application/json"},
+                                body: JSON.stringify({ username: user.username, session_token: user.session_token, type: currentGearTab, itemId: key, cost: item.cost })
+                            });
+                            if (!res.ok) throw new Error("Purchase failed");
+                            const data = await res.json();
+                            if (data.success) {
+                                user.guild_coins = data.newCoins;
+                                userUnlocked.push(key);
+                                if (currentGearTab === 'weapon') user.equipped_weapon = key; else user.equipped_coat = key;
+                                showToast(`Purchased ${item.name}!`, 4000, "#e056fd");
+                                applySkinAbilities(); renderGearShop(); updateUI(); syncSave(0);
+                            }
+                        } catch(e) { showToast("Error purchasing item.", 3000, "#ff4757"); }
+                    } else { showToast("Not enough Guild Coins!", 3000, "#ff4757"); }
+                };
+                grid.appendChild(btn);
+            });
+        }
+
         // --- BACKEND ENDPOINT CONSUMPTION ---
         async function fetchServerData() {
             try {
@@ -556,17 +621,20 @@
                 if (data.success) {
                     const lb = document.getElementById("leaderboardList"); lb.innerHTML = "";
                     data.leaderboard.forEach((r, i) => {
-                        let tag = r.guild ? `<span class="tag">[${r.guild}]</span> ` : "";
+                        let cObj = CRESTS_CONFIG[r.active_crest_id] || CRESTS_CONFIG[0];
+                        let gCol = r.name_color || "#f9a826";
+                        let tag = r.guild ? `<span style="color:${gCol}; font-weight:bold;">[${cObj.emoji}${r.guild}]</span> ` : "";
                         let style = (user.username && r.username === user.username) ? 'border-color:#4ecca3; background:#232342;' : '';
                         lb.innerHTML += `<div class="list-item" style="${style}"><span>#${i+1} ${tag}${r.username}</span> <span style="color:#4ecca3">${r.score}</span></div>`;
                     });
 
                     const gw = document.getElementById("guildWarList"); gw.innerHTML = "";
                     data.guildWars.forEach((r, i) => { 
-                        gw.innerHTML += `<div class="list-item"><span>#${i+1} [${r.tag}]</span> <span style="color:#ff4757; font-weight:bold;">${r.damage.toLocaleString()} DMG</span></div>`; 
+                        let cObj = CRESTS_CONFIG[r.active_crest_id] || CRESTS_CONFIG[0];
+                        let gCol = r.name_color || "#f9a826";
+                        gw.innerHTML += `<div class="list-item"><span>#${i+1} <span style="color:${gCol}; font-weight:bold;">[${cObj.emoji}${r.tag}]</span></span> <span style="color:#ff4757; font-weight:bold;">${r.damage.toLocaleString()} DMG</span></div>`; 
                     });
 
-                    // World Boss Engine Update
                     if (data.boss) {
                         currentBoss = data.boss;
                         document.getElementById("bossNameDisplay").textContent = `Level ${data.boss.level} Boss: ${data.boss.name}`;
@@ -585,6 +653,10 @@
                         document.getElementById("warCoinDisplay").textContent = data.userGuildInfo.war_coins;
                         user.war_coins = data.userGuildInfo.war_coins;
                         
+                        activeGuildColor = data.userGuildInfo.name_color || "#f9a826";
+                        activeGuildCrest = data.userGuildInfo.active_crest_id || 0;
+                        document.getElementById("guildColorPicker").value = activeGuildColor;
+                        
                         let currentTitle = GUILD_TITLES.find(t => t.id === data.userGuildInfo.active_title_id);
                         if (currentTitle) {
                             document.getElementById("guildTitleDisplay").textContent = `Active Title: ${currentTitle.name} (${currentTitle.desc})`;
@@ -598,41 +670,71 @@
                     if (user.is_leader && data.pendingRequests) {
                         const reqBox = document.getElementById("joinRequestsList");
                         reqBox.innerHTML = "";
-                        if (data.pendingRequests.length === 0) {
-                            reqBox.innerHTML = `<div style="color:#666; font-style:italic; font-size:10px;">No pending requests</div>`;
-                        }
+                        if (data.pendingRequests.length === 0) reqBox.innerHTML = `<div style="color:#666; font-style:italic; font-size:10px;">No pending requests</div>`;
                         data.pendingRequests.forEach(req => {
-                            reqBox.innerHTML += `<div class="list-item" style="padding:4px 6px;">
-                                <span>${req.username}</span>
-                                <div style="display:flex; gap:3px;">
-                                    <button class="action-btn green" onclick="handleJoinRequest(${req.id}, 'approve')">✓</button>
-                                    <button class="action-btn red" onclick="handleJoinRequest(${req.id}, 'deny')">X</button>
-                                </div>
-                            </div>`;
+                            reqBox.innerHTML += `<div class="list-item" style="padding:4px 6px;"><span>${req.username}</span><div style="display:flex; gap:3px;"><button class="action-btn green" onclick="handleJoinRequest(${req.id}, 'approve')">✓</button><button class="action-btn red" onclick="handleJoinRequest(${req.id}, 'deny')">X</button></div></div>`;
                         });
-                        renderTitleShop(data.userGuildInfo ? data.userGuildInfo.unlocked_titles : "[]");
+                        renderGuildShop(data.userGuildInfo ? data.userGuildInfo.unlocked_titles : "[]", data.userGuildInfo ? data.userGuildInfo.unlocked_crests : "[]");
                     }
                     calculateMultiplier();
+                    updateUI();
                 }
             } catch(e) {}
         }
 
-        function renderTitleShop(unlockedStr) {
-            let unlockedIds = JSON.parse(unlockedStr || "[]");
-            const shop = document.getElementById("titleShop");
-            shop.innerHTML = "";
+        function renderGuildShop(unlockedTitlesStr, unlockedCrestsStr) {
+            let unlockedTitles = JSON.parse(unlockedTitlesStr || "[]");
+            let unlockedCrests = JSON.parse(unlockedCrestsStr || "[0]");
+            
+            const shopT = document.getElementById("titleShop"); shopT.innerHTML = "";
             GUILD_TITLES.forEach(t => {
-                let isOwned = unlockedIds.includes(t.id);
-                let btnHtml = isOwned ? `<span style="color:#2ed573; font-weight:bold;">Unlocked</span>` : 
-                    `<button class="action-btn blue" onclick="buyGuildTitle(${t.id})">${t.cost} ⚔️</button>`;
-                
+                let isOwned = unlockedTitles.includes(t.id);
+                let btnHtml = isOwned ? `<span style="color:#2ed573; font-weight:bold;">Unlocked</span>` : `<button class="action-btn blue" onclick="buyGuildItem('title', ${t.id})">${t.cost} ⚔️</button>`;
                 let glowStyle = t.id === 21 ? 'text-shadow: 0 0 10px #00ffff;' : '';
-                
-                shop.innerHTML += `<div style="display:flex; justify-content:space-between; background:#0f0f1a; padding:4px; border-radius:4px; margin-bottom:2px; border:1px solid #2e2e54;">
-                    <span style="${glowStyle}">${t.name} <i style="color:#aaa; font-size:9px;">(${t.desc})</i></span>
-                    ${btnHtml}
-                </div>`;
+                shopT.innerHTML += `<div style="display:flex; justify-content:space-between; background:#0f0f1a; padding:4px; border-radius:4px; margin-bottom:2px; border:1px solid #2e2e54;"><span style="${glowStyle}">${t.name} <i style="color:#aaa; font-size:9px;">(${t.desc})</i></span>${btnHtml}</div>`;
             });
+
+            const shopC = document.getElementById("crestShop"); shopC.innerHTML = "";
+            Object.keys(CRESTS_CONFIG).forEach(key => {
+                if (key == 0) return;
+                let c = CRESTS_CONFIG[key];
+                let isOwned = unlockedCrests.includes(parseInt(key));
+                let isEquip = activeGuildCrest == key;
+                let btnHtml = isOwned ? (isEquip ? `<span style="color:#f9a826; font-weight:bold;">Active</span>` : `<button class="action-btn green" onclick="setGuildCrest(${key})">Equip</button>`) : `<button class="action-btn blue" onclick="buyGuildItem('crest', ${key})">${c.cost} ⚔️</button>`;
+                shopC.innerHTML += `<div style="display:flex; justify-content:space-between; background:#0f0f1a; padding:4px; border-radius:4px; margin-bottom:2px; border:1px solid #2e2e54;"><span>${c.emoji} ${c.name} <i style="color:#aaa; font-size:9px;">(${c.desc})</i></span>${btnHtml}</div>`;
+            });
+        }
+
+        async function buyGuildItem(type, id) {
+            try {
+                const action = type === 'title' ? "buy_title" : "buy_crest";
+                const payload = type === 'title' ? { titleId: id } : { action: "buy_crest", payload: { crestId: id, cost: CRESTS_CONFIG[id].cost } };
+                const endpoint = type === 'title' ? "buy_title" : "customize";
+
+                const res = await fetch(`${API_URL}/api/guild/${endpoint}`, {
+                    method: "POST", headers:{"Content-Type":"application/json"},
+                    body: JSON.stringify({ username: user.username, session_token: user.session_token, ...payload })
+                });
+                if (!res.ok) throw new Error((await res.json().catch(()=>({}))).error || "Failed.");
+                const data = await res.json();
+                if (data.success) { showToast(`Guild ${type} acquired!`); fetchServerData(); }
+                else { showToast(data.error, 4000, "#ff4757"); }
+            } catch(e) { showToast(e.message, 3000, "#ff4757"); }
+        }
+
+        async function setGuildColor() {
+            let color = document.getElementById("guildColorPicker").value;
+            try {
+                await fetch(`${API_URL}/api/guild/customize`, { method: "POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify({ username: user.username, session_token: user.session_token, action: "set_color", payload: { color } }) });
+                showToast("Guild Color updated!"); fetchServerData();
+            } catch(e) {}
+        }
+        
+        async function setGuildCrest(crestId) {
+            try {
+                await fetch(`${API_URL}/api/guild/customize`, { method: "POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify({ username: user.username, session_token: user.session_token, action: "buy_crest", payload: { crestId, cost: 0 } }) });
+                showToast("Crest Equipped!"); fetchServerData();
+            } catch(e) {}
         }
 
         async function handleJoinRequest(reqId, choice) {
@@ -644,19 +746,6 @@
                 if (!res.ok) throw new Error((await res.json().catch(()=>({}))).error || "Session validation failed.");
                 const data = await res.json();
                 if (data.success) { showToast(choice === 'approve' ? "Member added! (Max 10)" : "Request denied"); fetchServerData(); } 
-                else { showToast(data.error, 4000, "#ff4757"); }
-            } catch(e) { showToast(e.message, 3000, "#ff4757"); }
-        }
-
-        async function buyGuildTitle(titleId) {
-            try {
-                const res = await fetch(`${API_URL}/api/guild/buy_title`, {
-                    method: "POST", headers:{"Content-Type":"application/json"},
-                    body: JSON.stringify({ username: user.username, session_token: user.session_token, titleId: titleId })
-                });
-                if (!res.ok) throw new Error((await res.json().catch(()=>({}))).error || "Session validation failed.");
-                const data = await res.json();
-                if (data.success) { showToast("Guild Alliance Title Upgraded!"); fetchServerData(); }
                 else { showToast(data.error, 4000, "#ff4757"); }
             } catch(e) { showToast(e.message, 3000, "#ff4757"); }
         }
@@ -673,18 +762,16 @@
                     data.friends.forEach(f => {
                         let isSender = f.user1 === user.username;
                         let other = isSender ? f.user2 : f.user1;
-                        
                         let isOnline = false;
                         if (f.last_seen) {
                             let lsTime = new Date(f.last_seen + "Z").getTime();
-                            if (nowUTC - lsTime < 300000) isOnline = true; // 5 mins
+                            if (nowUTC - lsTime < 300000) isOnline = true;
                         }
                         let dot = isOnline ? "🟢" : "⚪";
 
                         if (f.status === 'pending') {
-                            if (!isSender) {
-                                sl.innerHTML += `<div class="list-item"><span>📥 ${other}</span> <div><button class="action-btn green" onclick="respondFriend(${f.id}, 'accepted')">✓</button> <button class="action-btn red" onclick="respondFriend(${f.id}, 'declined')">X</button></div></div>`;
-                            } else sl.innerHTML += `<div class="list-item"><span>⏳ ${other} (Sent)</span></div>`;
+                            if (!isSender) sl.innerHTML += `<div class="list-item"><span>📥 ${other}</span> <div><button class="action-btn green" onclick="respondFriend(${f.id}, 'accepted')">✓</button> <button class="action-btn red" onclick="respondFriend(${f.id}, 'declined')">X</button></div></div>`;
+                            else sl.innerHTML += `<div class="list-item"><span>⏳ ${other} (Sent)</span></div>`;
                         } else {
                             sl.innerHTML += `<div class="list-item"><span>${dot} ${other}</span> <button class="action-btn" onclick="sendChallenge('${other}')">Duel</button></div>`;
                         }
@@ -726,9 +813,7 @@
         };
 
         async function respondFriend(id, response) { 
-            try {
-                await fetch(`${API_URL}/api/social`, { method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify({username: user.username, session_token: user.session_token, action: "respond_friend", payload: {id, response}}) }); 
-                fetchSocialData(); 
+            try { await fetch(`${API_URL}/api/social`, { method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify({username: user.username, session_token: user.session_token, action: "respond_friend", payload: {id, response}}) }); fetchSocialData(); 
             } catch(e) { showToast("Connection failed", 3000, "#ff4757"); }
         }
 
@@ -742,9 +827,7 @@
         }
 
         async function respondChallenge(id, response) { 
-            try {
-                await fetch(`${API_URL}/api/social`, { method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify({username: user.username, session_token: user.session_token, action: "respond_challenge", payload: {id, response}}) }); 
-                fetchSocialData(); 
+            try { await fetch(`${API_URL}/api/social`, { method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify({username: user.username, session_token: user.session_token, action: "respond_challenge", payload: {id, response}}) }); fetchSocialData(); 
             } catch(e) { showToast("Connection failed", 3000, "#ff4757"); }
         }
 
@@ -759,14 +842,16 @@
                 const data = await res.json();
                 if(data.success) {
                     user.username = u; 
-                    user.session_token = data.userData.session_token; // Received secure session token!
+                    user.session_token = data.userData.session_token;
                     user.high_score = data.userData.high_score; user.equipped_skin = data.userData.equipped_skin;
+                    user.equipped_weapon = data.userData.equipped_weapon || "none"; user.equipped_coat = data.userData.equipped_coat || "none";
+                    user.unlocked_weapons = data.userData.unlocked_weapons || ["none"]; user.unlocked_coats = data.userData.unlocked_coats || ["none"];
                     user.w_shards = data.userData.white_shards; user.b_shards = data.userData.black_shards;
                     user.unlocked = data.userData.unlocked_skins || ["default"]; user.guild = data.userData.guild || "";
                     user.guild_coins = data.userData.guild_coins || 0;
                     user.is_leader = data.userData.is_guild_leader === 1 || data.userData.is_guild_leader === true;
                     
-                    localStorage.setItem("session_token", user.session_token); // Store token, not password
+                    localStorage.setItem("session_token", user.session_token); 
                     localStorage.setItem("hc", user.high_score); localStorage.setItem("eq", user.equipped_skin);
                     localStorage.setItem("ws", user.w_shards); localStorage.setItem("bs", user.b_shards);
                     localStorage.setItem("gd", user.guild);
@@ -775,7 +860,7 @@
                     document.getElementById("welcomeMessage").textContent = `👤 Player: ${u}`; 
                     document.getElementById("userProfileBar").style.display = "flex";
                     
-                    applySkinAbilities(); updateUI(); renderChangingRoom(); fetchServerData(); fetchSocialData();
+                    applySkinAbilities(); updateUI(); renderChangingRoom(); renderGearShop(); fetchServerData(); fetchSocialData();
                     showToast("Profile Synced to Mainframe!");
                 } else showToast(data.error, 4000, "#ff4757");
             } catch(e) { showToast("Server Offline", 3000, "#ff4757"); }
@@ -800,10 +885,12 @@
                 const res = await fetch(`${API_URL}/api/save`, {
                     method: "POST", headers: {"Content-Type": "application/json"},
                     body: JSON.stringify({ 
-                        username: user.username, session_token: user.session_token, // Authentic token auth
+                        username: user.username, session_token: user.session_token,
                         high_score: user.high_score, equipped_skin: user.equipped_skin, 
+                        equipped_weapon: user.equipped_weapon, equipped_coat: user.equipped_coat,
                         white_shards: user.w_shards, black_shards: user.b_shards, 
-                        unlocked_skins: user.unlocked, guild_coins: user.guild_coins, added_points: added_points 
+                        unlocked_skins: user.unlocked, unlocked_weapons: user.unlocked_weapons, unlocked_coats: user.unlocked_coats,
+                        guild_coins: user.guild_coins, added_points: added_points 
                     })
                 });
                 
@@ -832,11 +919,8 @@
             let tag = document.getElementById("guildInput").value.trim().toUpperCase();
             if(!tag || !user.session_token) return showToast("Login & input 4-letter tag", 3000, "#ff4757");
             try {
-                const res = await fetch(`${API_URL}/api/guild/request_join`, {
-                    method: "POST", headers:{"Content-Type":"application/json"},
-                    body: JSON.stringify({ username: user.username, session_token: user.session_token, guild_tag: tag })
-                });
-                if (!res.ok) throw new Error((await res.json().catch(()=>({}))).error || "Session verification failed.");
+                const res = await fetch(`${API_URL}/api/guild/request_join`, { method: "POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify({ username: user.username, session_token: user.session_token, guild_tag: tag }) });
+                if (!res.ok) throw new Error((await res.json().catch(()=>({}))).error || "Session validation failed.");
                 const data = await res.json();
                 if (data.success) showToast(`Alliance request sent to [${tag}]! Waiting for leader approval.`);
                 else showToast(data.error, 4000, "#ff4757");
@@ -847,17 +931,11 @@
             let tag = document.getElementById("guildInput").value.trim().toUpperCase();
             if(!tag || tag.length < 2) return showToast("Tag must be 2-4 characters", 3000, "#ff4757");
             try {
-                const res = await fetch(`${API_URL}/api/guild/create`, {
-                    method: "POST", headers:{"Content-Type":"application/json"},
-                    body: JSON.stringify({ username: user.username, session_token: user.session_token, guild_tag: tag })
-                });
-                if (!res.ok) throw new Error((await res.json().catch(()=>({}))).error || "Session verification failed.");
+                const res = await fetch(`${API_URL}/api/guild/create`, { method: "POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify({ username: user.username, session_token: user.session_token, guild_tag: tag }) });
+                if (!res.ok) throw new Error((await res.json().catch(()=>({}))).error || "Session validation failed.");
                 const data = await res.json();
-                if (data.success) {
-                    user.guild = tag; user.is_leader = true;
-                    showToast(`Alliance Guild [${tag}] established! You are the Leader.`, 4000, "#00adb5");
-                    fetchServerData(); updateUI();
-                } else showToast(data.error, 4000, "#ff4757");
+                if (data.success) { user.guild = tag; user.is_leader = true; showToast(`Alliance Guild [${tag}] established! You are the Leader.`, 4000, "#00adb5"); fetchServerData(); updateUI(); } 
+                else showToast(data.error, 4000, "#ff4757");
             } catch(e) { showToast(e.message, 3000, "#ff4757"); }
         };
 
@@ -869,35 +947,26 @@
         let player = { x: 100, y: 200, vx: 8, vy: 0, radius: 12, isSwinging: false, hookX: 0, hookY: 0, ropeLength: 0 };
         let hooks = [], bouncers = [], portals = [];
         let voidStalkerSaveUsed = false;
-        let lastTapTime = 0;
-        let currentRealm = null;
-        let flameOffset = 0;
-        let rawDist = 0;
-        
+        let lastTapTime = 0; let currentRealm = null; let flameOffset = 0; let rawDist = 0;
         let canGrapple = true; 
 
         function spawnEnvironment() {
             if (hooks.length === 0) hooks.push({ x: player.x + 200, y: 150 });
             let lastHook = hooks[hooks.length - 1];
-            
             while (lastHook.x < player.x + 1200) {
                 let nextX = lastHook.x + Math.floor(Math.random() * 100) + 190; 
                 let nextY = Math.floor(Math.random() * 130) + 100; 
                 hooks.push({ x: nextX, y: nextY });
 
-                if (Math.random() < 0.3) {
-                    bouncers.push({ x: nextX + (Math.random() * 80 - 40), y: 350 + Math.random() * 50, radius: 18 });
-                }
+                if (Math.random() < 0.3) bouncers.push({ x: nextX + (Math.random() * 80 - 40), y: 350 + Math.random() * 50, radius: 18 });
 
                 let eq = user.equipped_skin || "";
                 if (gameStatus === "playing" && Math.random() < 0.01) {
                     if (eq.includes("devil")) portals.push({ type: "devil", x: nextX + 50, y: canvas.height - 20, radius: 30 });
                     else if (eq.includes("angel")) portals.push({ type: "angel", x: nextX + 50, y: canvas.height - 20, radius: 30 });
                 }
-                
                 lastHook = hooks[hooks.length - 1];
             }
-
             hooks = hooks.filter(h => h.x > cameraX - 100); 
             bouncers = bouncers.filter(b => b.x > cameraX - 100); 
             portals = portals.filter(p => p.x > cameraX - 100);
@@ -908,24 +977,18 @@
             score = 0; cameraX = 0; voidStalkerSaveUsed = false; rawDist = 0;
             player.x = 100; player.y = 200; player.vx = 8; player.vy = 0; player.isSwinging = false;
             hooks = []; bouncers = []; portals = []; canGrapple = true;
-            spawnEnvironment();
-            updateUI();
+            spawnEnvironment(); updateUI();
         }
 
-        const BASE_GRAVITY = 0.45; 
-        const BASE_FRICTION = 0.995; 
-        const BASE_HOOK_RANGE = 350; 
-        let currentGravity = BASE_GRAVITY; 
-        let currentFriction = BASE_FRICTION; 
-        let maxHookRange = BASE_HOOK_RANGE;
-        let bounceMultiplier = 1; 
-        let momentumBoost = 0.05; 
-        let magnetRadius = 0;
+        const BASE_GRAVITY = 0.45; const BASE_FRICTION = 0.995; const BASE_HOOK_RANGE = 350; 
+        let currentGravity = BASE_GRAVITY; let currentFriction = BASE_FRICTION; let maxHookRange = BASE_HOOK_RANGE;
+        let bounceMultiplier = 1; let momentumBoost = 0.05; let magnetRadius = 0;
 
         function applySkinAbilities() {
             currentGravity = BASE_GRAVITY; currentFriction = BASE_FRICTION; maxHookRange = BASE_HOOK_RANGE;
             bounceMultiplier = 1; momentumBoost = 0.05; magnetRadius = 0;
 
+            // Base Skins
             let eq = user.equipped_skin || "";
             if (eq === "pink") currentGravity = 0.32;
             if (eq === "red") momentumBoost = 0.12; 
@@ -935,20 +998,25 @@
             if (eq === "brown") maxHookRange += 60;
             if (eq === "split_toxic_bio") maxHookRange += 105; 
             if (eq === "split_solar_lunar") currentGravity = 0.29; 
+
+            // Gear (Coats) Overrides
+            if (user.equipped_coat !== "none") {
+                if (user.equipped_coat === "traveler_cloak") maxHookRange += 20;
+                if (user.equipped_coat === "feather_mantle") currentGravity *= 0.9;
+                if (user.equipped_coat === "shadow_trench") momentumBoost += 0.02;
+                if (user.equipped_coat === "celestial_wings") { currentGravity *= 0.75; magnetRadius += 200; }
+                if (user.equipped_coat === "void_carapace") { bounceMultiplier *= 2.0; maxHookRange += 105; }
+            }
         }
 
         function pointerDown(e) {
             if (e && e.target && e.target.tagName !== "CANVAS") return; 
             if (gameStatus === "menu" || gameStatus === "lost") { initGame(); return; }
             if (gameStatus !== "playing" && gameStatus !== "realm") return;
-            
             if (!canGrapple) return; 
 
             let now = Date.now();
-            if (user.equipped_skin === 'split_neon_synth' && (now - lastTapTime < 250)) {
-                player.vx += 10;
-                showToast("⚡ Synth Thrust Triggered!", 1000, "#ff00ff");
-            }
+            if (user.equipped_skin === 'split_neon_synth' && (now - lastTapTime < 250)) { player.vx += 10; showToast("⚡ Synth Dash!", 1000, "#ff00ff"); }
             lastTapTime = now;
 
             let best = null, minDist = Infinity;
@@ -956,30 +1024,14 @@
                 let d = Math.hypot(player.x - h.x, player.y - h.y);
                 if (d < minDist && h.x > player.x - 20 && d < maxHookRange) { minDist = d; best = h; }
             });
-
-            if (best) {
-                player.isSwinging = true; player.hookX = best.x; player.hookY = best.y; player.ropeLength = minDist;
-                canGrapple = false; 
-            }
+            if (best) { player.isSwinging = true; player.hookX = best.x; player.hookY = best.y; player.ropeLength = minDist; canGrapple = false; }
         }
 
-        function pointerUp(e) { 
-            player.isSwinging = false; 
-            canGrapple = true; 
-        }
+        function pointerUp(e) { player.isSwinging = false; canGrapple = true; }
 
-        canvas.addEventListener("mousedown", pointerDown); 
-        window.addEventListener("mouseup", pointerUp);
-        canvas.addEventListener("touchstart", e => { e.preventDefault(); pointerDown(e); }, { passive: false }); 
-        window.addEventListener("touchend", pointerUp);
-        
-        window.addEventListener("keydown", e => {
-            if(e.code === "Space" && document.activeElement.tagName !== "INPUT") {
-                if(gameStatus === "playing" && user.equipped_skin === 'split_neon_synth') {
-                    player.vx += 10; showToast("⚡ Synth Thrust Triggered!", 1000, "#ff00ff");
-                } else { pointerDown(); }
-            }
-        });
+        canvas.addEventListener("mousedown", pointerDown); window.addEventListener("mouseup", pointerUp);
+        canvas.addEventListener("touchstart", e => { e.preventDefault(); pointerDown(e); }, { passive: false }); window.addEventListener("touchend", pointerUp);
+        window.addEventListener("keydown", e => { if(e.code === "Space" && document.activeElement.tagName !== "INPUT") { if(gameStatus === "playing" && user.equipped_skin === 'split_neon_synth') { player.vx += 10; showToast("⚡ Synth Dash!", 1000, "#ff00ff"); } else { pointerDown(); } } });
         window.addEventListener("keyup", e => { if(e.code === "Space") pointerUp(); });
 
         let lastGamepadState = false;
@@ -987,32 +1039,22 @@
             const pads = navigator.getGamepads ? navigator.getGamepads() : [];
             if(pads[0]) {
                 const pressed = pads[0].buttons[0].pressed || pads[0].buttons[7].pressed; 
-                if(pressed && !lastGamepadState) pointerDown();
-                else if (!pressed && lastGamepadState) pointerUp();
+                if(pressed && !lastGamepadState) pointerDown(); else if (!pressed && lastGamepadState) pointerUp();
                 lastGamepadState = pressed;
             }
         }
 
         function tick() {
             if (gameStatus === "fusion" || gameStatus === "menu" || gameStatus === "lost") return;
-            checkGamepad();
+            checkGamepad(); flameOffset += 0.05;
             
-            flameOffset += 0.05;
-            
-            player.vy += currentGravity; 
-            player.vx *= currentFriction; 
-            player.vy *= currentFriction; 
-            
-            player.x += player.vx; 
-            player.y += player.vy;
+            player.vy += currentGravity; player.vx *= currentFriction; player.vy *= currentFriction; 
+            player.x += player.vx; player.y += player.vy;
 
             spawnEnvironment(); 
             if (!player.isSwinging) {
                 let best = null, minDist = Infinity;
-                hooks.forEach(h => {
-                    let d = Math.hypot(player.x - h.x, player.y - h.y);
-                    if (d < minDist && h.x > player.x - 20 && d < maxHookRange) { minDist = d; best = h; }
-                });
+                hooks.forEach(h => { let d = Math.hypot(player.x - h.x, player.y - h.y); if (d < minDist && h.x > player.x - 20 && d < maxHookRange) { minDist = d; best = h; } });
             }
 
             if (gameStatus === "playing") {
@@ -1024,43 +1066,27 @@
             }
 
             if (player.isSwinging) {
-                let dx = player.x - player.hookX; 
-                let dy = player.y - player.hookY; 
-                let dist = Math.hypot(dx, dy);
+                let dx = player.x - player.hookX; let dy = player.y - player.hookY; let dist = Math.hypot(dx, dy);
                 if (dist > player.ropeLength) {
-                    player.x = player.hookX + (dx / dist) * player.ropeLength; 
-                    player.y = player.hookY + (dy / dist) * player.ropeLength;
-                    let nx = dx / dist; 
-                    let ny = dy / dist; 
-                    let vDotN = player.vx * nx + player.vy * ny;
+                    player.x = player.hookX + (dx / dist) * player.ropeLength; player.y = player.hookY + (dy / dist) * player.ropeLength;
+                    let nx = dx / dist; let ny = dy / dist; let vDotN = player.vx * nx + player.vy * ny;
                     if (vDotN > 0) { player.vx -= vDotN * nx; player.vy -= vDotN * ny; }
-                    
-                    let tangentX = -ny; let tangentY = nx; 
-                    let speedTangent = player.vx * tangentX + player.vy * tangentY;
-                    
-                    let localMomentum = momentumBoost;
-                    if (user.equipped_skin === "split_fire_ice") localMomentum += 0.0125;
-                    
+                    let tangentX = -ny; let tangentY = nx; let speedTangent = player.vx * tangentX + player.vy * tangentY;
+                    let localMomentum = momentumBoost; if (user.equipped_skin === "split_fire_ice") localMomentum += 0.0125;
                     player.vx += tangentX * localMomentum * Math.sign(speedTangent);
                 }
             }
 
             bouncers.forEach(pad => {
-                let dx = player.x - pad.x; 
-                let dy = player.y - pad.y;
+                let dx = player.x - pad.x; let dy = player.y - pad.y;
                 if (Math.hypot(dx, dy) < player.radius + pad.radius) {
-                    let bMulti = bounceMultiplier;
-                    if (user.equipped_skin === 'gacha_plasma_wraith') bMulti = 2.0; 
-                    player.y = pad.y - player.radius - 5; 
-                    player.vy = -Math.max(Math.abs(player.vy) * 1.2, 14) * bMulti; 
-                    player.vx += dx * 0.1; 
-                    player.isSwinging = false;
-                    canGrapple = true; 
+                    let bMulti = bounceMultiplier; if (user.equipped_skin === 'gacha_plasma_wraith') bMulti = 2.0; 
+                    player.y = pad.y - player.radius - 5; player.vy = -Math.max(Math.abs(player.vy) * 1.2, 14) * bMulti; 
+                    player.vx += dx * 0.1; player.isSwinging = false; canGrapple = true; 
                 }
             });
 
-            cameraX = player.x - 200;
-            rawDist = Math.floor(player.x / 10) - 10;
+            cameraX = player.x - 200; rawDist = Math.floor(player.x / 10) - 10;
             
             if (gameStatus === "realm") {
                 document.getElementById("scoreDisplay").textContent = `REALM: ${Math.max(0, rawDist)} / 1000`;
@@ -1089,7 +1115,6 @@
                     if (eq.includes("angel") && !user.unlocked.includes("exalted_angel")) { unlockSkin("exalted_angel"); showToast("✨ UNLOCKED: EXALTED ANGEL!", 5000, "#ffeaa7"); renderChangingRoom(); }
                     if (eq.includes("devil") && !user.unlocked.includes("exalted_devil")) { unlockSkin("exalted_devil"); showToast("🔥 UNLOCKED: EXALTED DEVIL!", 5000, "#ff0055"); renderChangingRoom(); }
                 }
-
                 if (rawDist > dailyTasks.dist) dailyTasks.dist = rawDist;
             }
 
@@ -1097,29 +1122,17 @@
                 if (gameStatus === "realm") { showToast("THE REALM HAS REJECTED YOU.", 4000, "#ff4757"); initGame(); return; }
 
                 if (user.equipped_skin === 'gacha_void_stalker' && !voidStalkerSaveUsed && player.y > canvas.height) {
-                    voidStalkerSaveUsed = true;
-                    player.vy = -18; player.y = canvas.height - 50; player.vx += 5;
-                    showToast("🌌 Abyss Save Triggered!", 2000, "#4a00e0");
+                    voidStalkerSaveUsed = true; player.vy = -18; player.y = canvas.height - 50; player.vx += 5; showToast("🌌 Abyss Save Triggered!", 2000, "#4a00e0");
                 } else {
-                    gameStatus = "lost";
-                    dailyTasks.games++;
-                    let added = Math.max(0, Math.floor(score));
-                    
+                    gameStatus = "lost"; dailyTasks.games++; let added = Math.max(0, Math.floor(score));
                     if (score > user.high_score) { user.high_score = Math.floor(score); localStorage.setItem("hc", user.high_score); document.getElementById("highScoreDisplay").textContent = user.high_score; }
                     if (added > 0) user.guild_coins += Math.floor(added / 5000); 
 
                     let eq = user.equipped_skin || "";
                     if (rawDist < 0 && !user.unlocked.includes("devil")) { unlockSkin("devil"); showToast("🔥 UNLOCKED: THE DEVIL SKIN!", 5000, "#ff4757"); }
                     if (rawDist < 0 && eq.includes("angel") && !user.unlocked.includes("denied_angel")) { unlockSkin("denied_angel"); showToast("🥀 UNLOCKED: DENIED ANGEL", 5000, "#ff4757"); }
-                    
-                    if (eq.includes("angel")) {
-                        let angelDeaths = parseInt(localStorage.getItem("stickman_angelic_deaths") || "0") + 1; localStorage.setItem("stickman_angelic_deaths", angelDeaths);
-                        if (angelDeaths >= 20 && !user.unlocked.includes("accurate_angel")) { unlockSkin("accurate_angel"); showToast("👁️ UNLOCKED: ACCURATE ANGEL", 5000, "#ffeaa7"); }
-                    }
-                    if (eq.includes("devil")) {
-                        let devilDeaths = parseInt(localStorage.getItem("stickman_devil_deaths") || "0") + 1; localStorage.setItem("stickman_devil_deaths", devilDeaths);
-                        if (devilDeaths >= 20 && !user.unlocked.includes("accurate_devil")) { unlockSkin("accurate_devil"); showToast("🎩 UNLOCKED: ACCURATE DEVIL", 5000, "#d4af37"); }
-                    }
+                    if (eq.includes("angel")) { let angelDeaths = parseInt(localStorage.getItem("stickman_angelic_deaths") || "0") + 1; localStorage.setItem("stickman_angelic_deaths", angelDeaths); if (angelDeaths >= 20 && !user.unlocked.includes("accurate_angel")) { unlockSkin("accurate_angel"); showToast("👁️ UNLOCKED: ACCURATE ANGEL", 5000, "#ffeaa7"); } }
+                    if (eq.includes("devil")) { let devilDeaths = parseInt(localStorage.getItem("stickman_devil_deaths") || "0") + 1; localStorage.setItem("stickman_devil_deaths", devilDeaths); if (devilDeaths >= 20 && !user.unlocked.includes("accurate_devil")) { unlockSkin("accurate_devil"); showToast("🎩 UNLOCKED: ACCURATE DEVIL", 5000, "#d4af37"); } }
 
                     updateUI(); syncSave(added); renderChangingRoom();
                 }
@@ -1129,56 +1142,26 @@
         // --- RENDER PIPELINE ---
         function drawBoss() {
             if (!currentBoss || currentBoss.level < 1) return;
-            let bx = cameraX + canvas.width - 120;
-            let by = 120 + Math.sin(Date.now() / 400) * 15;
+            let bx = cameraX + canvas.width - 120; let by = 120 + Math.sin(Date.now() / 400) * 15;
+            let lvl = currentBoss.level; let hue = (lvl * 45) % 360; 
 
-            let lvl = currentBoss.level;
-            let hue = (lvl * 45) % 360; 
+            ctx.save(); ctx.translate(bx, by);
+            ctx.shadowBlur = 20; ctx.shadowColor = `hsl(${hue}, 100%, 50%)`;
+            ctx.fillStyle = `hsl(${hue}, 80%, 20%)`; ctx.beginPath(); ctx.arc(0, 0, 35 + Math.min(lvl * 2, 40), 0, Math.PI * 2); ctx.fill();
 
-            ctx.save();
-            ctx.translate(bx, by);
-
-            ctx.shadowBlur = 20;
-            ctx.shadowColor = `hsl(${hue}, 100%, 50%)`;
-            
-            ctx.fillStyle = `hsl(${hue}, 80%, 20%)`;
-            ctx.beginPath();
-            ctx.arc(0, 0, 35 + Math.min(lvl * 2, 40), 0, Math.PI * 2);
-            ctx.fill();
-
-            ctx.fillStyle = `hsl(${hue}, 100%, 50%)`;
-            let numSpikes = 4 + (lvl % 6);
-            let spikeLen = 50 + Math.min(lvl * 3, 50);
+            ctx.fillStyle = `hsl(${hue}, 100%, 50%)`; let numSpikes = 4 + (lvl % 6); let spikeLen = 50 + Math.min(lvl * 3, 50);
             for (let i = 0; i < numSpikes; i++) {
                 let angle = (i / numSpikes) * Math.PI * 2 + (Date.now() / 1500);
-                ctx.beginPath();
-                ctx.moveTo(Math.cos(angle - 0.2) * 25, Math.sin(angle - 0.2) * 25);
-                ctx.lineTo(Math.cos(angle) * spikeLen, Math.sin(angle) * spikeLen);
-                ctx.lineTo(Math.cos(angle + 0.2) * 25, Math.sin(angle + 0.2) * 25);
-                ctx.fill();
+                ctx.beginPath(); ctx.moveTo(Math.cos(angle - 0.2) * 25, Math.sin(angle - 0.2) * 25); ctx.lineTo(Math.cos(angle) * spikeLen, Math.sin(angle) * spikeLen); ctx.lineTo(Math.cos(angle + 0.2) * 25, Math.sin(angle + 0.2) * 25); ctx.fill();
             }
 
-            ctx.fillStyle = "#fff";
-            ctx.beginPath();
-            ctx.ellipse(0, 0, 12, 20, 0, 0, Math.PI * 2);
-            ctx.fill();
-            ctx.fillStyle = "#111";
-            ctx.beginPath();
-            ctx.arc(0, 0, 6, 0, Math.PI * 2);
-            ctx.fill();
-            ctx.fillStyle = `hsl(${hue}, 100%, 50%)`;
-            ctx.beginPath();
-            ctx.arc(0, 0, 3, 0, Math.PI * 2);
-            ctx.fill();
+            ctx.fillStyle = "#fff"; ctx.beginPath(); ctx.ellipse(0, 0, 12, 20, 0, 0, Math.PI * 2); ctx.fill();
+            ctx.fillStyle = "#111"; ctx.beginPath(); ctx.arc(0, 0, 6, 0, Math.PI * 2); ctx.fill();
+            ctx.fillStyle = `hsl(${hue}, 100%, 50%)`; ctx.beginPath(); ctx.arc(0, 0, 3, 0, Math.PI * 2); ctx.fill();
 
             ctx.shadowBlur = 0;
-
-            ctx.fillStyle = "rgba(0,0,0,0.5)";
-            ctx.fillRect(-30, 45 + Math.min(lvl*2, 40), 60, 6);
-            ctx.fillStyle = "#ff4757";
-            let hpPct = Math.max(0, currentBoss.current_hp / currentBoss.max_hp);
-            ctx.fillRect(-30, 45 + Math.min(lvl*2, 40), 60 * hpPct, 6);
-
+            ctx.fillStyle = "rgba(0,0,0,0.5)"; ctx.fillRect(-30, 45 + Math.min(lvl*2, 40), 60, 6);
+            ctx.fillStyle = "#ff4757"; let hpPct = Math.max(0, currentBoss.current_hp / currentBoss.max_hp); ctx.fillRect(-30, 45 + Math.min(lvl*2, 40), 60 * hpPct, 6);
             ctx.restore();
         }
 
@@ -1274,10 +1257,8 @@
 
             hooks.forEach(h => {
                 let isTargeted = (h.x === player.hookX && h.y === player.hookY && player.isSwinging);
-                ctx.fillStyle = isTargeted ? "#4ecca3" : "#e94560";
-                ctx.beginPath(); ctx.arc(h.x,h.y,8,0,Math.PI*2); ctx.fill();
-                ctx.strokeStyle = isTargeted ? "rgba(255, 255, 255, 0.8)" : "rgba(100, 100, 100, 0.3)"; ctx.lineWidth = isTargeted ? 4 : 2;
-                ctx.beginPath(); ctx.arc(h.x, h.y, 16, 0, Math.PI * 2); ctx.stroke();
+                ctx.fillStyle = isTargeted ? "#4ecca3" : "#e94560"; ctx.beginPath(); ctx.arc(h.x,h.y,8,0,Math.PI*2); ctx.fill();
+                ctx.strokeStyle = isTargeted ? "rgba(255, 255, 255, 0.8)" : "rgba(100, 100, 100, 0.3)"; ctx.lineWidth = isTargeted ? 4 : 2; ctx.beginPath(); ctx.arc(h.x, h.y, 16, 0, Math.PI * 2); ctx.stroke();
             });
 
             bouncers.forEach(pad => {
@@ -1285,15 +1266,30 @@
                 ctx.fillStyle = "#fff"; ctx.beginPath(); ctx.arc(pad.x, pad.y, pad.radius - 6, 0, Math.PI*2); ctx.fill();
             });
 
-            if (gameStatus === "playing") {
-                drawBoss();
-            }
+            if (gameStatus === "playing") drawBoss();
 
-            if(player.isSwinging) {
-                ctx.strokeStyle="#fff"; ctx.lineWidth=3; ctx.beginPath(); ctx.moveTo(player.hookX, player.hookY); ctx.lineTo(player.x, player.y); ctx.stroke();
+            if(player.isSwinging) { ctx.strokeStyle="#fff"; ctx.lineWidth=3; ctx.beginPath(); ctx.moveTo(player.hookX, player.hookY); ctx.lineTo(player.x, player.y); ctx.stroke(); }
+
+            // DRAW COAT (Behind Player)
+            if (user.equipped_coat !== "none" && COATS_CONFIG[user.equipped_coat]) {
+                ctx.save(); ctx.translate(player.x, player.y);
+                ctx.fillStyle = COATS_CONFIG[user.equipped_coat].color;
+                let sway = Math.sin(Date.now() / 200) * 5;
+                ctx.beginPath(); ctx.moveTo(-player.radius, 0); ctx.lineTo(-player.radius - 15 - sway, -15); ctx.lineTo(-player.radius - 15 + sway, 15); ctx.fill();
+                ctx.restore();
             }
 
             ctx.save(); ctx.translate(player.x, player.y);
+
+            // DRAW WEAPON (In Front/Side of Player)
+            if (user.equipped_weapon !== "none" && WEAPONS_CONFIG[user.equipped_weapon]) {
+                ctx.fillStyle = WEAPONS_CONFIG[user.equipped_weapon].color;
+                if (user.equipped_weapon === "dagger") { ctx.fillRect(player.radius + 2, -2, 10, 4); }
+                else if (user.equipped_weapon === "broadsword") { ctx.fillRect(player.radius + 2, -3, 20, 6); ctx.fillStyle="#555"; ctx.fillRect(player.radius, -6, 4, 12); }
+                else if (user.equipped_weapon === "scythe") { ctx.fillRect(player.radius + 5, -15, 4, 30); ctx.beginPath(); ctx.moveTo(player.radius + 5, -15); ctx.quadraticCurveTo(player.radius + 20, -10, player.radius + 25, 5); ctx.lineTo(player.radius + 15, -5); ctx.fill(); }
+                else if (user.equipped_weapon === "aether_blade") { ctx.shadowColor = "#00ffff"; ctx.shadowBlur = 10; ctx.beginPath(); ctx.moveTo(player.radius + 2, 0); ctx.lineTo(player.radius + 30, -5); ctx.lineTo(player.radius + 30, 5); ctx.fill(); ctx.shadowBlur = 0; }
+                else if (user.equipped_weapon === "singularity_edge") { ctx.shadowColor = "#ff0055"; ctx.shadowBlur = 15; ctx.beginPath(); ctx.moveTo(player.radius + 5, -10); ctx.lineTo(player.radius + 40, 0); ctx.lineTo(player.radius + 5, 10); ctx.fill(); ctx.fillStyle="#000"; ctx.beginPath(); ctx.arc(player.radius + 15, 0, 3, 0, Math.PI*2); ctx.fill(); ctx.shadowBlur = 0; }
+            }
 
             if (eq === "exalted_angel") {
                 ctx.fillStyle = "rgba(255, 255, 255, 0.9)";
@@ -1305,193 +1301,97 @@
             }
 
             if (skinInfo.splitColor) {
-                let cL = skinInfo.color || "#ffffff"; let cR = skinInfo.splitColor || "#000000";
-                ctx.rotate(flameOffset * 2); 
-
+                let cL = skinInfo.color || "#ffffff"; let cR = skinInfo.splitColor || "#000000"; ctx.rotate(flameOffset * 2); 
                 if (eq === "yin_yang") {
-                    ctx.fillStyle = cL; ctx.beginPath(); ctx.arc(0, 0, player.radius, Math.PI / 2, Math.PI * 1.5); ctx.fill();
-                    ctx.fillStyle = cR; ctx.beginPath(); ctx.arc(0, 0, player.radius, Math.PI * 1.5, Math.PI / 2); ctx.fill();
-                    ctx.fillStyle = cL; ctx.beginPath(); ctx.arc(0, -player.radius / 2, player.radius / 2, 0, Math.PI * 2); ctx.fill();
-                    ctx.fillStyle = cR; ctx.beginPath(); ctx.arc(0, player.radius / 2, player.radius / 2, 0, Math.PI * 2); ctx.fill();
-                    ctx.fillStyle = cR; ctx.beginPath(); ctx.arc(0, -player.radius / 2, 2.5, 0, Math.PI * 2); ctx.fill();
-                    ctx.fillStyle = cL; ctx.beginPath(); ctx.arc(0, player.radius / 2, 2.5, 0, Math.PI * 2); ctx.fill();
+                    ctx.fillStyle = cL; ctx.beginPath(); ctx.arc(0, 0, player.radius, Math.PI / 2, Math.PI * 1.5); ctx.fill(); ctx.fillStyle = cR; ctx.beginPath(); ctx.arc(0, 0, player.radius, Math.PI * 1.5, Math.PI / 2); ctx.fill();
+                    ctx.fillStyle = cL; ctx.beginPath(); ctx.arc(0, -player.radius / 2, player.radius / 2, 0, Math.PI * 2); ctx.fill(); ctx.fillStyle = cR; ctx.beginPath(); ctx.arc(0, player.radius / 2, player.radius / 2, 0, Math.PI * 2); ctx.fill();
+                    ctx.fillStyle = cR; ctx.beginPath(); ctx.arc(0, -player.radius / 2, 2.5, 0, Math.PI * 2); ctx.fill(); ctx.fillStyle = cL; ctx.beginPath(); ctx.arc(0, player.radius / 2, 2.5, 0, Math.PI * 2); ctx.fill();
                 } else if (eq === "split_fire_ice") {
-                    ctx.fillStyle = cR; ctx.beginPath(); ctx.arc(0, 0, player.radius, Math.PI / 2, Math.PI * 1.5); ctx.fill();
-                    ctx.beginPath(); ctx.moveTo(0, -player.radius); ctx.lineTo(-player.radius-5, -5); ctx.lineTo(0, 0); ctx.fill();
-                    ctx.beginPath(); ctx.moveTo(0, 0); ctx.lineTo(-player.radius-8, 6); ctx.lineTo(0, player.radius); ctx.fill();
-                    ctx.fillStyle = cL; ctx.beginPath(); ctx.arc(0, 0, player.radius, -Math.PI / 2, Math.PI / 2); ctx.fill();
-                    ctx.beginPath(); ctx.moveTo(0, -player.radius); ctx.quadraticCurveTo(player.radius+8, -8, 0, 0); ctx.fill();
-                    ctx.beginPath(); ctx.moveTo(0, 0); ctx.quadraticCurveTo(player.radius+10, 8, 0, player.radius); ctx.fill();
+                    ctx.fillStyle = cR; ctx.beginPath(); ctx.arc(0, 0, player.radius, Math.PI / 2, Math.PI * 1.5); ctx.fill(); ctx.beginPath(); ctx.moveTo(0, -player.radius); ctx.lineTo(-player.radius-5, -5); ctx.lineTo(0, 0); ctx.fill(); ctx.beginPath(); ctx.moveTo(0, 0); ctx.lineTo(-player.radius-8, 6); ctx.lineTo(0, player.radius); ctx.fill();
+                    ctx.fillStyle = cL; ctx.beginPath(); ctx.arc(0, 0, player.radius, -Math.PI / 2, Math.PI / 2); ctx.fill(); ctx.beginPath(); ctx.moveTo(0, -player.radius); ctx.quadraticCurveTo(player.radius+8, -8, 0, 0); ctx.fill(); ctx.beginPath(); ctx.moveTo(0, 0); ctx.quadraticCurveTo(player.radius+10, 8, 0, player.radius); ctx.fill();
                 } else if (eq === "split_toxic_bio") {
-                    ctx.fillStyle = cL; ctx.beginPath(); ctx.arc(0, 0, player.radius, 0, Math.PI*2); ctx.fill();
-                    ctx.fillStyle = cR; ctx.beginPath(); ctx.arc(-4, -4, 4, 0, Math.PI*2); ctx.fill();
-                    ctx.beginPath(); ctx.arc(5, -2, 3, 0, Math.PI*2); ctx.fill(); ctx.beginPath(); ctx.arc(0, 6, 5, 0, Math.PI*2); ctx.fill();
-                    ctx.strokeStyle = cR; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(0, 0, player.radius + 3, 0, Math.PI*2); ctx.stroke();
+                    ctx.fillStyle = cL; ctx.beginPath(); ctx.arc(0, 0, player.radius, 0, Math.PI*2); ctx.fill(); ctx.fillStyle = cR; ctx.beginPath(); ctx.arc(-4, -4, 4, 0, Math.PI*2); ctx.fill(); ctx.beginPath(); ctx.arc(5, -2, 3, 0, Math.PI*2); ctx.fill(); ctx.beginPath(); ctx.arc(0, 6, 5, 0, Math.PI*2); ctx.fill(); ctx.strokeStyle = cR; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(0, 0, player.radius + 3, 0, Math.PI*2); ctx.stroke();
                 } else if (eq === "split_solar_lunar") {
-                    ctx.fillStyle = cR; ctx.beginPath(); ctx.arc(0, 0, player.radius, Math.PI/2, Math.PI*1.5); ctx.fill();
-                    ctx.fillStyle = "#1a1a2e"; ctx.beginPath(); ctx.arc(3, 0, player.radius-2, Math.PI/2, Math.PI*1.5); ctx.fill();
-                    ctx.fillStyle = cL; ctx.beginPath(); ctx.arc(0, 0, player.radius-2, -Math.PI/2, Math.PI/2); ctx.fill();
+                    ctx.fillStyle = cR; ctx.beginPath(); ctx.arc(0, 0, player.radius, Math.PI/2, Math.PI*1.5); ctx.fill(); ctx.fillStyle = "#1a1a2e"; ctx.beginPath(); ctx.arc(3, 0, player.radius-2, Math.PI/2, Math.PI*1.5); ctx.fill(); ctx.fillStyle = cL; ctx.beginPath(); ctx.arc(0, 0, player.radius-2, -Math.PI/2, Math.PI/2); ctx.fill();
                     for(let i=-Math.PI/2; i<=Math.PI/2; i+=Math.PI/4) { ctx.beginPath(); ctx.moveTo(0, 0); ctx.lineTo(Math.cos(i-0.2)*player.radius, Math.sin(i-0.2)*player.radius); ctx.lineTo(Math.cos(i)*(player.radius+6), Math.sin(i)*(player.radius+6)); ctx.lineTo(Math.cos(i+0.2)*player.radius, Math.sin(i+0.2)*player.radius); ctx.fill(); }
                 } else if (eq === "split_neon_synth") {
-                    ctx.fillStyle = cL; ctx.beginPath(); ctx.moveTo(0, -player.radius-2); ctx.lineTo(-player.radius-2, 0); ctx.lineTo(0, player.radius+2); ctx.fill();
-                    ctx.fillStyle = cR; ctx.beginPath(); ctx.moveTo(0, -player.radius-2); ctx.lineTo(player.radius+2, 0); ctx.lineTo(0, player.radius+2); ctx.fill();
-                    ctx.strokeStyle = "#1a1a2e"; ctx.lineWidth = 2;
-                    ctx.beginPath(); ctx.moveTo(-player.radius, -player.radius/2); ctx.lineTo(player.radius, -player.radius/2); ctx.stroke();
-                    ctx.beginPath(); ctx.moveTo(-player.radius, player.radius/2); ctx.lineTo(player.radius, player.radius/2); ctx.stroke();
-                    ctx.beginPath(); ctx.moveTo(0, -player.radius-2); ctx.lineTo(0, player.radius+2); ctx.stroke();
+                    ctx.fillStyle = cL; ctx.beginPath(); ctx.moveTo(0, -player.radius-2); ctx.lineTo(-player.radius-2, 0); ctx.lineTo(0, player.radius+2); ctx.fill(); ctx.fillStyle = cR; ctx.beginPath(); ctx.moveTo(0, -player.radius-2); ctx.lineTo(player.radius+2, 0); ctx.lineTo(0, player.radius+2); ctx.fill();
+                    ctx.strokeStyle = "#1a1a2e"; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(-player.radius, -player.radius/2); ctx.lineTo(player.radius, -player.radius/2); ctx.stroke(); ctx.beginPath(); ctx.moveTo(-player.radius, player.radius/2); ctx.lineTo(player.radius, player.radius/2); ctx.stroke(); ctx.beginPath(); ctx.moveTo(0, -player.radius-2); ctx.lineTo(0, player.radius+2); ctx.stroke();
                 } else if (eq === "community_hero") {
-                    ctx.fillStyle = cL; ctx.beginPath(); ctx.arc(0, 0, player.radius, 0, Math.PI*2); ctx.fill();
-                    ctx.fillStyle = cR;
+                    ctx.fillStyle = cL; ctx.beginPath(); ctx.arc(0, 0, player.radius, 0, Math.PI*2); ctx.fill(); ctx.fillStyle = cR;
                     for(let i=0; i<Math.PI*2; i+=Math.PI/2) { ctx.beginPath(); ctx.moveTo(0,0); ctx.lineTo(Math.cos(i-0.2)*player.radius, Math.sin(i-0.2)*player.radius); ctx.lineTo(Math.cos(i)*(player.radius+8), Math.sin(i)*(player.radius+8)); ctx.lineTo(Math.cos(i+0.2)*player.radius, Math.sin(i+0.2)*player.radius); ctx.fill(); }
                 } else {
-                    ctx.fillStyle = cL; ctx.beginPath(); ctx.arc(0, 0, player.radius, Math.PI / 2, Math.PI * 1.5); ctx.fill();
-                    ctx.fillStyle = cR; ctx.beginPath(); ctx.arc(0, 0, player.radius, Math.PI * 1.5, Math.PI / 2); ctx.fill();
+                    ctx.fillStyle = cL; ctx.beginPath(); ctx.arc(0, 0, player.radius, Math.PI / 2, Math.PI * 1.5); ctx.fill(); ctx.fillStyle = cR; ctx.beginPath(); ctx.arc(0, 0, player.radius, Math.PI * 1.5, Math.PI / 2); ctx.fill();
                 }
             } else {
                 ctx.fillStyle = skinInfo.color;
-                if (eq === "og_stickman") { ctx.shadowColor = "#ff00ff"; ctx.shadowBlur = 15; }
-                if (eq === "gold") { ctx.shadowColor = "#ffd700"; ctx.shadowBlur = 15; }
-                ctx.beginPath(); ctx.arc(0, 0, player.radius, 0, Math.PI * 2); ctx.fill();
-                ctx.shadowBlur = 0;
+                if (eq === "og_stickman") { ctx.shadowColor = "#ff00ff"; ctx.shadowBlur = 15; } if (eq === "gold") { ctx.shadowColor = "#ffd700"; ctx.shadowBlur = 15; }
+                ctx.beginPath(); ctx.arc(0, 0, player.radius, 0, Math.PI * 2); ctx.fill(); ctx.shadowBlur = 0;
                 
                 if (eq === "og_stickman") {
-                    ctx.strokeStyle = "#FFD700"; ctx.lineWidth = 1.5; ctx.beginPath(); ctx.arc(+5, -3, 4, 0, Math.PI*2); ctx.stroke();
-                    ctx.beginPath(); ctx.moveTo(+9, -3); ctx.lineTo(+14, +4); ctx.stroke();
-                    ctx.fillStyle = "#fff"; ctx.beginPath(); ctx.moveTo(0, +6); ctx.lineTo(-6, +3); ctx.lineTo(-6, +9); ctx.fill();
-                    ctx.beginPath(); ctx.moveTo(0, +6); ctx.lineTo(+6, +3); ctx.lineTo(+6, +9); ctx.fill();
-                    ctx.fillStyle = "#111"; ctx.fillRect(-10, -12, 20, 2); ctx.fillRect(-6, -24, 12, 12);
-                    ctx.fillStyle = "#FFD700"; ctx.fillRect(-6, -15, 12, 3);
+                    ctx.strokeStyle = "#FFD700"; ctx.lineWidth = 1.5; ctx.beginPath(); ctx.arc(+5, -3, 4, 0, Math.PI*2); ctx.stroke(); ctx.beginPath(); ctx.moveTo(+9, -3); ctx.lineTo(+14, +4); ctx.stroke();
+                    ctx.fillStyle = "#fff"; ctx.beginPath(); ctx.moveTo(0, +6); ctx.lineTo(-6, +3); ctx.lineTo(-6, +9); ctx.fill(); ctx.beginPath(); ctx.moveTo(0, +6); ctx.lineTo(+6, +3); ctx.lineTo(+6, +9); ctx.fill();
+                    ctx.fillStyle = "#111"; ctx.fillRect(-10, -12, 20, 2); ctx.fillRect(-6, -24, 12, 12); ctx.fillStyle = "#FFD700"; ctx.fillRect(-6, -15, 12, 3);
                 }
                 
                 if (gameStatus !== "realm") {
                     if (eq === "angelic" || eq === "accurate_angel" || eq === "exalted_angel" || eq === "denied_devil") { drawHalo(0, 0, "#ffeaa7"); }
                     if (eq === "denied_angel") { drawHalo(0, 0, "#ff0055"); }
-                    if (eq === "devil" || eq === "exalted_devil") {
-                        ctx.fillStyle = "#ff0055"; ctx.beginPath(); ctx.moveTo(-8, -8); ctx.lineTo(-14, -18); ctx.lineTo(-2, -11); ctx.fill();
-                        ctx.beginPath(); ctx.moveTo(+8, -8); ctx.lineTo(+14, -18); ctx.lineTo(+2, -11); ctx.fill();
-                    }
+                    if (eq === "devil" || eq === "exalted_devil") { ctx.fillStyle = "#ff0055"; ctx.beginPath(); ctx.moveTo(-8, -8); ctx.lineTo(-14, -18); ctx.lineTo(-2, -11); ctx.fill(); ctx.beginPath(); ctx.moveTo(+8, -8); ctx.lineTo(+14, -18); ctx.lineTo(+2, -11); ctx.fill(); }
                     if (eq === "denied_devil") {
-                        ctx.fillStyle = "#cc0044"; ctx.beginPath(); ctx.ellipse(-10, +2, 3, 9, Math.PI/4, 0, Math.PI*2); ctx.fill();
-                        ctx.beginPath(); ctx.ellipse(+10, +2, 3, 9, -Math.PI/4, 0, Math.PI*2); ctx.fill();
+                        ctx.fillStyle = "#cc0044"; ctx.beginPath(); ctx.ellipse(-10, +2, 3, 9, Math.PI/4, 0, Math.PI*2); ctx.fill(); ctx.beginPath(); ctx.ellipse(+10, +2, 3, 9, -Math.PI/4, 0, Math.PI*2); ctx.fill();
                         ctx.fillStyle = "#ffffff"; ctx.beginPath(); ctx.arc(-4, -2, 2.5, 0, Math.PI*2); ctx.fill(); ctx.beginPath(); ctx.arc(+4, -2, 2.5, 0, Math.PI*2); ctx.fill();
                     }
                     if (eq === "accurate_devil") {
                         ctx.fillStyle = "#111111"; ctx.beginPath(); ctx.arc(0, 0, player.radius, 0, Math.PI); ctx.fill();
                         ctx.fillStyle = "#ffffff"; ctx.beginPath(); ctx.moveTo(-5, -3); ctx.lineTo(+5, -3); ctx.lineTo(0, +4); ctx.fill();
-                        ctx.fillStyle = "#ff0000"; ctx.beginPath(); ctx.moveTo(-4, -2); ctx.lineTo(0, 0); ctx.lineTo(-4, +2); ctx.fill();
-                        ctx.beginPath(); ctx.moveTo(+4, -2); ctx.lineTo(0, 0); ctx.lineTo(+4, +2); ctx.fill();
+                        ctx.fillStyle = "#ff0000"; ctx.beginPath(); ctx.moveTo(-4, -2); ctx.lineTo(0, 0); ctx.lineTo(-4, +2); ctx.fill(); ctx.beginPath(); ctx.moveTo(+4, -2); ctx.lineTo(0, 0); ctx.lineTo(+4, +2); ctx.fill();
                         ctx.fillStyle = "#ff0000"; ctx.beginPath(); ctx.arc(-4, -5, 2, 0, Math.PI*2); ctx.fill(); ctx.beginPath(); ctx.arc(+4, -5, 2, 0, Math.PI*2); ctx.fill();
                     }
                     if (eq === "exalted_devil") {
-                        ctx.strokeStyle = "#8b0000"; ctx.lineWidth = 1.5; ctx.beginPath(); ctx.moveTo(+8, +6); ctx.lineTo(+22, -12); ctx.stroke(); 
-                        ctx.beginPath(); ctx.moveTo(+16, -9); ctx.lineTo(+19, -16); ctx.lineTo(+26, -12); ctx.stroke(); 
-                        ctx.fillStyle = "#8b0000"; ctx.beginPath(); ctx.arc(+23, -13, 1.2, 0, Math.PI*2); ctx.fill(); 
-                        ctx.fillStyle = "#000000"; ctx.beginPath(); ctx.arc(-4, -2, 2.5, 0, Math.PI*2); ctx.fill(); ctx.beginPath(); ctx.arc(+4, -2, 2.5, 0, Math.PI*2); ctx.fill();
+                        ctx.strokeStyle = "#8b0000"; ctx.lineWidth = 1.5; ctx.beginPath(); ctx.moveTo(+8, +6); ctx.lineTo(+22, -12); ctx.stroke(); ctx.beginPath(); ctx.moveTo(+16, -9); ctx.lineTo(+19, -16); ctx.lineTo(+26, -12); ctx.stroke(); 
+                        ctx.fillStyle = "#8b0000"; ctx.beginPath(); ctx.arc(+23, -13, 1.2, 0, Math.PI*2); ctx.fill(); ctx.fillStyle = "#000000"; ctx.beginPath(); ctx.arc(-4, -2, 2.5, 0, Math.PI*2); ctx.fill(); ctx.beginPath(); ctx.arc(+4, -2, 2.5, 0, Math.PI*2); ctx.fill();
                     }
-                    if (eq === "denied_angel") {
-                        ctx.fillStyle = "#ff0055"; ctx.beginPath(); ctx.arc(-4, -2, 2.5, 0, Math.PI*2); ctx.fill(); ctx.beginPath(); ctx.arc(+4, -2, 2.5, 0, Math.PI*2); ctx.fill();
-                    }
-                    if (eq === "accurate_angel") {
-                        ctx.fillStyle = "#000000"; let eyePos = [[-5, -4], [0, -6], [5, -4], [-4, 3], [4, 3], [0, 6]];
-                        eyePos.forEach(p => { ctx.beginPath(); ctx.arc(p[0], p[1], 1.8, 0, Math.PI*2); ctx.fill(); });
-                    }
+                    if (eq === "denied_angel") { ctx.fillStyle = "#ff0055"; ctx.beginPath(); ctx.arc(-4, -2, 2.5, 0, Math.PI*2); ctx.fill(); ctx.beginPath(); ctx.arc(+4, -2, 2.5, 0, Math.PI*2); ctx.fill(); }
+                    if (eq === "accurate_angel") { ctx.fillStyle = "#000000"; let eyePos = [[-5, -4], [0, -6], [5, -4], [-4, 3], [4, 3], [0, 6]]; eyePos.forEach(p => { ctx.beginPath(); ctx.arc(p[0], p[1], 1.8, 0, Math.PI*2); ctx.fill(); }); }
                 }
             }
             ctx.restore();
 
             if (user.guild && gameStatus !== "fusion") {
-                ctx.fillStyle = "#f9a826"; ctx.font = "bold 10px sans-serif"; ctx.textAlign = "center";
-                ctx.fillText(`[${user.guild}]`, player.x, player.y - 20);
+                let cObj = CRESTS_CONFIG[activeGuildCrest] || CRESTS_CONFIG[0];
+                ctx.fillStyle = activeGuildColor; ctx.font = "bold 10px sans-serif"; ctx.textAlign = "center";
+                ctx.fillText(`${cObj.emoji}[${user.guild}]`, player.x, player.y - 20);
             }
             ctx.restore();
 
             if (gameStatus === "menu") {
-                ctx.fillStyle = "rgba(15, 15, 26, 0.85)"; ctx.fillRect(0, 0, canvas.width, canvas.height);
-                ctx.fillStyle = "#fff"; ctx.font = "bold 32px system-ui"; ctx.textAlign = "center";
-                ctx.fillText("SWING! MMO EDITION", canvas.width/2, canvas.height/2 - 20);
-                ctx.font = "16px system-ui"; ctx.fillStyle = "#4ecca3";
-                ctx.fillText("Click anywhere or hit Space to launch", canvas.width/2, canvas.height/2 + 20);
+                ctx.fillStyle = "rgba(15, 15, 26, 0.85)"; ctx.fillRect(0, 0, canvas.width, canvas.height); ctx.fillStyle = "#fff"; ctx.font = "bold 32px system-ui"; ctx.textAlign = "center"; ctx.fillText("SWING! MMO EDITION", canvas.width/2, canvas.height/2 - 20); ctx.font = "16px system-ui"; ctx.fillStyle = "#4ecca3"; ctx.fillText("Click anywhere or hit Space to launch", canvas.width/2, canvas.height/2 + 20);
             } else if (gameStatus === "lost") {
-                ctx.fillStyle = "rgba(15, 15, 26, 0.85)"; ctx.fillRect(0, 0, canvas.width, canvas.height);
-                ctx.fillStyle = score < 0 ? "#ff0055" : "#e94560"; ctx.font = "bold 42px sans-serif"; ctx.textAlign = "center";
-                ctx.fillText(score < 0 ? "UNDERWORLD DESCENT" : "GAME OVER", canvas.width / 2, canvas.height / 2 - 20);
-                ctx.font = "20px sans-serif"; ctx.fillStyle = "#fff";
-                ctx.fillText(`Final Score: ${Math.floor(score)} points`, canvas.width / 2, canvas.height / 2 + 20);
-                ctx.fillStyle = "#888"; ctx.font = "16px sans-serif";
-                ctx.fillText("Press Space or Click to try again", canvas.width / 2, canvas.height / 2 + 65);
+                ctx.fillStyle = "rgba(15, 15, 26, 0.85)"; ctx.fillRect(0, 0, canvas.width, canvas.height); ctx.fillStyle = score < 0 ? "#ff0055" : "#e94560"; ctx.font = "bold 42px sans-serif"; ctx.textAlign = "center"; ctx.fillText(score < 0 ? "UNDERWORLD DESCENT" : "GAME OVER", canvas.width / 2, canvas.height / 2 - 20); ctx.font = "20px sans-serif"; ctx.fillStyle = "#fff"; ctx.fillText(`Final Score: ${Math.floor(score)} points`, canvas.width / 2, canvas.height / 2 + 20); ctx.fillStyle = "#888"; ctx.font = "16px sans-serif"; ctx.fillText("Press Space or Click to try again", canvas.width / 2, canvas.height / 2 + 65);
             }
         }
 
-        function loop() {
-            if (gameStatus === "fusion") {
-                drawFusionCutscene();
-            } else {
-                tick();
-                draw();
-            }
-            requestAnimationFrame(loop);
-        }
+        function loop() { if (gameStatus === "fusion") { drawFusionCutscene(); } else { tick(); draw(); } requestAnimationFrame(loop); }
 
-        // ==========================================================================
-        // 📖 INTERACTIVE TUTORIAL SYSTEM LOGIC
-        // ==========================================================================
-        let currentTutorialStep = 0;
-        const tutorialPanes = document.querySelectorAll('.tutorial-pane');
-        const tutorialTabs = document.querySelectorAll('.tutorial-tab-btn');
-        const overlay = document.getElementById('tutorialOverlay');
-        const nextBtn = document.getElementById('tutorialNextBtn');
-        const prevBtn = document.getElementById('tutorialPrevBtn');
-        const stepText = document.getElementById('tutorialStepText');
-
-        function openTutorial() {
-            currentTutorialStep = 0;
-            switchTutorialTab(0);
-            overlay.classList.add('active');
-        }
-
-        function closeTutorial() {
-            overlay.classList.remove('active');
-            localStorage.setItem("mmo_swing_tutorial_completed", "true");
-        }
-
+        // --- TUTORIAL LOGIC ---
+        let currentTutorialStep = 0; const tutorialPanes = document.querySelectorAll('.tutorial-pane'); const tutorialTabs = document.querySelectorAll('.tutorial-tab-btn'); const overlay = document.getElementById('tutorialOverlay'); const nextBtn = document.getElementById('tutorialNextBtn'); const prevBtn = document.getElementById('tutorialPrevBtn'); const stepText = document.getElementById('tutorialStepText');
+        function openTutorial() { currentTutorialStep = 0; switchTutorialTab(0); overlay.classList.add('active'); }
+        function closeTutorial() { overlay.classList.remove('active'); localStorage.setItem("mmo_swing_tutorial_completed", "true"); }
         function switchTutorialTab(step) {
             currentTutorialStep = step;
-            
             tutorialPanes.forEach((p, idx) => p.classList.toggle('active', idx === step));
-            tutorialTabs.forEach((t, idx) => t.classList.toggle('active', idx === step));
-            
-            prevBtn.style.visibility = step === 0 ? 'hidden' : 'visible';
-            nextBtn.textContent = step === tutorialPanes.length - 1 ? 'Got it!' : 'Next';
-            stepText.textContent = `Step ${step + 1} of ${tutorialPanes.length}`;
+            // Only toggle tabs inside the tutorial modal, not the gear shop tabs!
+            const modalTabs = document.querySelectorAll('.tutorial-modal .tutorial-tab-btn');
+            modalTabs.forEach((t, idx) => t.classList.toggle('active', idx === step));
+            prevBtn.style.visibility = step === 0 ? 'hidden' : 'visible'; nextBtn.textContent = step === tutorialPanes.length - 1 ? 'Got it!' : 'Next'; stepText.textContent = `Step ${step + 1} of ${tutorialPanes.length}`;
         }
+        document.getElementById('openTutorialBtn').addEventListener('click', openTutorial); document.getElementById('closeTutorialTopBtn').addEventListener('click', closeTutorial);
+        nextBtn.addEventListener('click', () => { if (currentTutorialStep < tutorialPanes.length - 1) { switchTutorialTab(currentTutorialStep + 1); } else { closeTutorial(); } });
+        prevBtn.addEventListener('click', () => { if (currentTutorialStep > 0) { switchTutorialTab(currentTutorialStep - 1); } });
+        window.addEventListener('DOMContentLoaded', () => { setTimeout(() => { if (!localStorage.getItem("mmo_swing_tutorial_completed")) { openTutorial(); } }, 800); });
 
-        document.getElementById('openTutorialBtn').addEventListener('click', openTutorial);
-        document.getElementById('closeTutorialTopBtn').addEventListener('click', closeTutorial);
-
-        nextBtn.addEventListener('click', () => {
-            if (currentTutorialStep < tutorialPanes.length - 1) {
-                switchTutorialTab(currentTutorialStep + 1);
-            } else {
-                closeTutorial();
-            }
-        });
-
-        prevBtn.addEventListener('click', () => {
-            if (currentTutorialStep > 0) {
-                switchTutorialTab(currentTutorialStep - 1);
-            }
-        });
-
-        window.addEventListener('DOMContentLoaded', () => {
-            setTimeout(() => {
-                if (!localStorage.getItem("mmo_swing_tutorial_completed")) {
-                    openTutorial();
-                }
-            }, 800);
-        });
-
-        // Initialize Core Functions
-        applySkinAbilities(); renderChangingRoom(); updateUI(); fetchServerData(); fetchSocialData(); loop();
+        applySkinAbilities(); renderChangingRoom(); renderGearShop(); updateUI(); fetchServerData(); fetchSocialData(); loop();
     </script>
 </body>
 </html>
