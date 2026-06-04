@@ -491,7 +491,6 @@
             calculateMultiplier();
         }
 
-        // --- BULLETPROOF DOM RENDERERS ---
         function renderChangingRoom() {
             try {
                 const grid = document.getElementById("skinsGrid"); 
@@ -654,6 +653,12 @@
                 const res = await fetch(url);
                 const data = await res.json();
                 if (data.success) {
+                    
+                    // --- AUTO-HEAL: Leader panel fixes itself ---
+                    if (data.is_leader_override !== undefined && data.is_leader_override === true) {
+                        user.is_leader = true;
+                    }
+
                     const lb = document.getElementById("leaderboardList"); lb.innerHTML = "";
                     data.leaderboard.forEach((r, i) => {
                         let cObj = CRESTS_CONFIG[r.active_crest_id] || CRESTS_CONFIG[0];
@@ -992,7 +997,6 @@
         let lastTapTime = 0; let currentRealm = null; let flameOffset = 0; let rawDist = 0;
         let canGrapple = true; 
         
-        // --- RESTORED FUSION PHYSICS ---
         let fusionAngle = 0, fusionSpeed = 0, fusionDistance = 0, fusionFlash = 0; 
         
         document.getElementById("fuseBtn").onclick = () => {
@@ -1040,7 +1044,6 @@
             currentGravity = BASE_GRAVITY; currentFriction = BASE_FRICTION; maxHookRange = BASE_HOOK_RANGE;
             bounceMultiplier = 1; momentumBoost = 0.05; magnetRadius = 0;
 
-            // Base Skins
             let eq = user.equipped_skin || "";
             if (eq === "pink") currentGravity = 0.32;
             if (eq === "red") momentumBoost = 0.12; 
@@ -1051,7 +1054,6 @@
             if (eq === "split_toxic_bio") maxHookRange += 105; 
             if (eq === "split_solar_lunar") currentGravity = 0.29; 
 
-            // Gear (Coats) Overrides
             if (user.equipped_coat && user.equipped_coat !== "none") {
                 if (user.equipped_coat === "traveler_cloak") maxHookRange += 20;
                 if (user.equipped_coat === "feather_mantle") currentGravity *= 0.9;
@@ -1191,7 +1193,6 @@
             }
         }
 
-        // --- RENDER PIPELINE ---
         function drawBoss() {
             if (!currentBoss || currentBoss.level < 1) return;
             let bx = cameraX + canvas.width - 120; let by = 120 + Math.sin(Date.now() / 400) * 15;
