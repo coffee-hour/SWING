@@ -259,7 +259,6 @@
     <script>
         const API_URL = "https://swingworker.xaviersgames.workers.dev";
         
-        // --- SAFE INITIALIZATION ---
         let user = {
             username: null, session_token: localStorage.getItem("session_token") || null, 
             high_score: parseInt(localStorage.getItem("hc")) || 0,
@@ -586,7 +585,6 @@
                 grid.innerHTML = "";
                 let config = currentGearTab === 'weapon' ? WEAPONS_CONFIG : COATS_CONFIG;
                 
-                // Safe array fallback
                 let userUnlocked = currentGearTab === 'weapon' ? (user.unlocked_weapons || []) : (user.unlocked_coats || []);
                 if(!Array.isArray(userUnlocked)) userUnlocked = ["none"];
                 
@@ -993,6 +991,16 @@
         let voidStalkerSaveUsed = false;
         let lastTapTime = 0; let currentRealm = null; let flameOffset = 0; let rawDist = 0;
         let canGrapple = true; 
+        
+        // --- RESTORED FUSION PHYSICS ---
+        let fusionAngle = 0, fusionSpeed = 0, fusionDistance = 0, fusionFlash = 0; 
+        
+        document.getElementById("fuseBtn").onclick = () => {
+            if (user.w_shards >= 1 && user.b_shards >= 1) {
+                gameStatus = "fusion";
+                fusionAngle = 0; fusionSpeed = 0.05; fusionDistance = 150; fusionFlash = 0;
+            }
+        };
 
         function spawnEnvironment() {
             if (hooks.length === 0) hooks.push({ x: player.x + 200, y: 150 });
@@ -1413,11 +1421,9 @@
                 if (gameStatus === "menu") {
                     ctx.fillStyle = "rgba(15, 15, 26, 0.85)"; ctx.fillRect(0, 0, canvas.width, canvas.height); ctx.fillStyle = "#fff"; ctx.font = "bold 32px system-ui"; ctx.textAlign = "center"; ctx.fillText("SWING! MMO EDITION", canvas.width/2, canvas.height/2 - 20); ctx.font = "16px system-ui"; ctx.fillStyle = "#4ecca3"; ctx.fillText("Click anywhere or hit Space to launch", canvas.width/2, canvas.height/2 + 20);
                 } else if (gameStatus === "lost") {
-                    ctx.fillStyle = "rgba(15, 15, 26,0.85)"; ctx.fillRect(0, 0, canvas.width, canvas.height); ctx.fillStyle = score < 0 ? "#ff0055" : "#e94560"; ctx.font = "bold 42px sans-serif"; ctx.textAlign = "center"; ctx.fillText(score < 0 ? "UNDERWORLD DESCENT" : "GAME OVER", canvas.width / 2, canvas.height / 2 - 20); ctx.font = "20px sans-serif"; ctx.fillStyle = "#fff"; ctx.fillText(`Final Score: ${Math.floor(score)} points`, canvas.width / 2, canvas.height / 2 + 20); ctx.fillStyle = "#888"; ctx.font = "16px sans-serif"; ctx.fillText("Press Space or Click to try again", canvas.width / 2, canvas.height / 2 + 65);
+                    ctx.fillStyle = "rgba(15, 15, 26, 0.85)"; ctx.fillRect(0, 0, canvas.width, canvas.height); ctx.fillStyle = score < 0 ? "#ff0055" : "#e94560"; ctx.font = "bold 42px sans-serif"; ctx.textAlign = "center"; ctx.fillText(score < 0 ? "UNDERWORLD DESCENT" : "GAME OVER", canvas.width / 2, canvas.height / 2 - 20); ctx.font = "20px sans-serif"; ctx.fillStyle = "#fff"; ctx.fillText(`Final Score: ${Math.floor(score)} points`, canvas.width / 2, canvas.height / 2 + 20); ctx.fillStyle = "#888"; ctx.font = "16px sans-serif"; ctx.fillText("Press Space or Click to try again", canvas.width / 2, canvas.height / 2 + 65);
                 }
-            } catch(e) {
-                console.error("Render loop error avoided:", e);
-            }
+            } catch(e) { console.error("Render error caught and suppressed: ", e); }
         }
 
         function loop() { if (gameStatus === "fusion") { drawFusionCutscene(); } else { tick(); draw(); } requestAnimationFrame(loop); }
@@ -1429,7 +1435,6 @@
         function switchTutorialTab(step) {
             currentTutorialStep = step;
             tutorialPanes.forEach((p, idx) => p.classList.toggle('active', idx === step));
-            // Only toggle tabs inside the tutorial modal, not the gear shop tabs!
             tutorialTabs.forEach((t, idx) => t.classList.toggle('active', idx === step));
             prevBtn.style.visibility = step === 0 ? 'hidden' : 'visible'; nextBtn.textContent = step === tutorialPanes.length - 1 ? 'Got it!' : 'Next'; stepText.textContent = `Step ${step + 1} of ${tutorialPanes.length}`;
         }
