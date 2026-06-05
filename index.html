@@ -626,16 +626,32 @@
             } catch(e) { }
         }
 
-        async function equipGuildTitle(titleId) { try { await fetch(`${API_URL}/api/guild/equip_title`, { method: "POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify({ username: user.username, session_token: user.session_token, titleId }) }); showToast("Title Equipped!"); fetchServerData(); } catch(e) {} }
+async function equipGuildTitle(titleId) { 
+            try { 
+                const res = await fetch(`${API_URL}/api/guild/equip_title`, { method: "POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify({ username: user.username, session_token: user.session_token, titleId }) }); 
+                const data = await res.json(); // <-- Added
+                if(data.success) { showToast("Title Equipped!"); fetchServerData(); } else { showToast(data.error || "Action failed", 3000, "#ff4757"); }
+            } catch(e) { console.error("Error equipping title:", e); } 
+        }
         
         async function setGuildColor() { 
             let color = document.getElementById("guildColorPicker").value.toUpperCase().trim(); 
             if(!color) return showToast("Enter a hex or secret code!", 3000, "#ff4757");
             if(!color.startsWith("#")) color = "#" + color; 
-            try { await fetch(`${API_URL}/api/guild/customize`, { method: "POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify({ username: user.username, session_token: user.session_token, action: "set_color", payload: { color } }) }); showToast("Guild Tag updated!"); fetchServerData(); } catch(e) {} 
+            try { 
+                const res = await fetch(`${API_URL}/api/guild/customize`, { method: "POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify({ username: user.username, session_token: user.session_token, action: "set_color", payload: { color } }) }); 
+                const data = await res.json(); // <-- Added
+                if(data.success) { showToast("Guild Tag updated!"); fetchServerData(); } else { showToast(data.error || "Action failed", 3000, "#ff4757"); }
+            } catch(e) { console.error("Error updating tag color:", e); } 
         }
         
-        async function setGuildCrest(crestId) { try { await fetch(`${API_URL}/api/guild/customize`, { method: "POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify({ username: user.username, session_token: user.session_token, action: "buy_crest", payload: { crestId, cost: 0 } }) }); showToast("Crest Equipped!"); fetchServerData(); } catch(e) {} }
+        async function setGuildCrest(crestId) { 
+            try { 
+                const res = await fetch(`${API_URL}/api/guild/customize`, { method: "POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify({ username: user.username, session_token: user.session_token, action: "buy_crest", payload: { crestId, cost: 0 } }) }); 
+                const data = await res.json(); // <-- Added
+                if(data.success) { showToast("Crest Equipped!"); fetchServerData(); } else { showToast(data.error || "Action failed", 3000, "#ff4757"); }
+            } catch(e) { console.error("Error equipping crest:", e); } 
+        }
         async function handleJoinRequest(reqId, choice) { try { const res = await fetch(`${API_URL}/api/guild/handle_request`, { method: "POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify({ username: user.username, session_token: user.session_token, requestId: reqId, action: choice }) }); const data = await res.json(); if (data.success) { showToast(choice === 'approve' ? "Member added!" : "Request denied"); fetchServerData(); } else { showToast(data.error, 4000, "#ff4757"); } } catch(e) {} }
         document.getElementById("leaveGuildBtn").onclick = async () => { if(confirm("Leave this Alliance? You will lose leader status if you created it.")) { try { await fetch(`${API_URL}/api/guild/leave`, { method:"POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify({username: user.username, session_token: user.session_token}) }); user.guild = ""; user.is_leader = false; localStorage.setItem("gd", ""); showToast("Left the Alliance.", 3000, "#ff4757"); fetchServerData(); updateUI(); } catch(e){} } };
 
