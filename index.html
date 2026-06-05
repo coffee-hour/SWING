@@ -4,64 +4,87 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>↺</text></svg>">
-    <title>Swing!</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <title>Swing</title>
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2224540154034114" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        body { margin: 0; background: #0f0f1a; display: flex; justify-content: center; align-items: flex-start; min-height: 100vh; overflow-y: auto; font-family: system-ui, sans-serif; color: white; user-select: none; padding: 10px 0; touch-action: manipulation; }
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;800;900&display=swap');
+
+        /* --- VISUAL REVAMP CSS --- */
+        body { margin: 0; background: radial-gradient(circle at top, #1a1a2e, #0b0b13); background-attachment: fixed; display: flex; justify-content: center; align-items: flex-start; min-height: 100vh; overflow-y: auto; font-family: 'Montserrat', sans-serif; color: white; user-select: none; padding: 10px 0; touch-action: manipulation; }
         #main-layout { display: flex; gap: 15px; max-width: 1400px; width: 100%; padding: 15px; box-sizing: border-box; flex-wrap: wrap; }
         #game-container { display: flex; flex-direction: column; align-items: center; gap: 15px; flex: 2; min-width: 320px; }
-        .side-panel { flex: 1; background: rgba(22, 22, 40, 0.95); border: 1px solid #2e2e54; border-radius: 12px; padding: 15px; min-height: 780px; display: flex; flex-direction: column; min-width: 290px; box-shadow: 0 8px 32px rgba(0,0,0,0.3); }
-        .side-panel h3 { margin: 0 0 12px 0; color: #f9a826; text-transform: uppercase; text-align: center; border-bottom: 2px solid #2e2e54; padding-bottom: 8px; font-size: 16px; }
-        canvas { background: #131326; box-shadow: 0 10px 30px rgba(0,0,0,0.6); border-radius: 12px; cursor: crosshair; width: 100%; max-width: 850px; border: 2px solid #2e2e54; touch-action: none; }
-        .ui-bar { display: flex; gap: 10px; font-size: 14px; font-weight: bold; background: rgba(18, 18, 32, 0.95); padding: 12px; border-radius: 8px; border: 1px solid #2e2e54; width: 100%; box-sizing: border-box; justify-content: space-between; flex-wrap: wrap; align-items: center; }
-        .auth-input { padding: 8px; border-radius: 6px; border: 1px solid #2e2e54; background: #0f0f1a; color: white; font-size: 12px; }
-        .auth-btn { padding: 8px 12px; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 12px; transition: all 0.2s; }
-        .auth-btn:hover { filter: brightness(1.2); transform: translateY(-1px); }
-        .list-container { flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; margin-bottom: 10px; max-height: 220px; padding-right: 2px; }
-        .list-container::-webkit-scrollbar { width: 4px; } .list-container::-webkit-scrollbar-thumb { background: #f9a826; border-radius: 4px; }
-        .list-item { background: #17172e; padding: 10px; border-radius: 6px; border: 1px solid #2e2e54; font-size: 12px; display: flex; justify-content: space-between; align-items: center; }
-        .tag { color: #f9a826; font-weight: bold; }
+        
+        .side-panel { flex: 1; background: rgba(20, 20, 35, 0.65); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); border: 1px solid rgba(255, 255, 255, 0.05); border-top: 1px solid rgba(255, 255, 255, 0.1); border-radius: 16px; padding: 15px; min-height: 780px; display: flex; flex-direction: column; min-width: 290px; box-shadow: 0 15px 35px rgba(0,0,0,0.5); }
+        .side-panel h3 { margin: 0 0 12px 0; color: #f9a826; text-transform: uppercase; text-align: center; border-bottom: 1px solid rgba(46, 46, 84, 0.5); padding-bottom: 8px; font-size: 16px; letter-spacing: 1px; font-weight: 900; }
+        
+        canvas { background: #0b0b13; box-shadow: 0 0 40px rgba(0, 173, 181, 0.1), inset 0 0 20px rgba(0,0,0,1); border-radius: 12px; cursor: crosshair; width: 100%; max-width: 850px; border: 2px solid rgba(78, 204, 163, 0.3); touch-action: none; }
+        
+        .ui-bar { display: flex; gap: 10px; font-size: 14px; font-weight: 800; background: rgba(0, 0, 0, 0.4); backdrop-filter: blur(10px); padding: 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.05); width: 100%; box-sizing: border-box; justify-content: space-between; flex-wrap: wrap; align-items: center; box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
+        .auth-input { padding: 8px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.1); background: rgba(0,0,0,0.5); color: white; font-size: 12px; font-family: 'Montserrat', sans-serif; font-weight: 600; outline: none; transition: border 0.3s; }
+        .auth-input:focus { border-color: #4ecca3; }
+        .auth-btn { padding: 8px 14px; border: none; border-radius: 6px; cursor: pointer; font-weight: 900; font-size: 11px; transition: all 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94); text-transform: uppercase; letter-spacing: 0.5px; }
+        .auth-btn:hover { filter: brightness(1.2); transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0,0,0,0.4); }
+        
+        .list-container { flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; margin-bottom: 10px; max-height: 220px; padding-right: 4px; }
+        .list-container::-webkit-scrollbar { width: 4px; } .list-container::-webkit-scrollbar-thumb { background: #4ecca3; border-radius: 4px; }
+        .list-item { background: rgba(0, 0, 0, 0.2); padding: 10px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.03); font-size: 12px; display: flex; justify-content: space-between; align-items: center; font-weight: 600; transition: transform 0.2s; }
+        .list-item:hover { transform: translateX(2px); background: rgba(255,255,255,0.02); }
+        
         #bottom-panels { display: flex; gap: 15px; width: 100%; flex-wrap: wrap; }
-        .panel-box { background: rgba(22, 22, 40, 0.95); border: 1px solid #2e2e54; border-radius: 12px; padding: 15px; flex: 1; min-width: 260px; position: relative; }
-        .panel-box h4 { margin: 0 0 10px 0; color: #00adb5; font-size: 14px; text-transform: uppercase; border-bottom: 1px solid #2e2e54; padding-bottom: 4px; }
+        .panel-box { background: rgba(0, 0, 0, 0.2); border: 1px solid rgba(255, 255, 255, 0.05); border-radius: 12px; padding: 15px; flex: 1; min-width: 260px; position: relative; }
+        .panel-box h4 { margin: 0 0 10px 0; color: #00adb5; font-size: 14px; text-transform: uppercase; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 4px; font-weight: 900; }
+        
         .skins-grid { display: flex; flex-wrap: wrap; gap: 8px; max-height: 180px; overflow-y: auto; padding: 4px 0; }
-        .skin-btn { background: #17172e; border: 2px solid #2e2e54; color: #666; padding: 8px; border-radius: 8px; cursor: pointer; font-size: 11px; font-weight: bold; text-align: left; display: flex; flex-direction: column; gap: 4px; width: calc(50% - 4px); box-sizing: border-box; -webkit-appearance: none; appearance: none; }
+        .skin-btn { background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.1); color: #888; padding: 8px; border-radius: 8px; cursor: pointer; font-size: 11px; font-weight: 800; text-align: left; display: flex; flex-direction: column; gap: 4px; width: calc(50% - 4px); box-sizing: border-box; -webkit-appearance: none; appearance: none; transition: all 0.2s; font-family: 'Montserrat', sans-serif;}
+        .skin-btn:hover { border-color: rgba(255,255,255,0.3); }
         .skin-btn.unlocked { border-color: #4ecca3; color: #fff; cursor: pointer; }
-        .skin-btn.equipped { border-color: #f9a826; background: #232342; box-shadow: 0 0 8px rgba(249,168,38,0.2); }
+        .skin-btn.equipped { border-color: #f9a826; background: rgba(249,168,38,0.1); box-shadow: 0 0 12px rgba(249,168,38,0.2); }
         .skin-preview { width: 12px; height: 12px; border-radius: 50%; display: inline-block; border: 1px solid rgba(255,255,255,0.3); }
-        .skin-ability { font-size: 9px; color: #aaa; font-weight: normal; font-style: italic; }
+        .skin-ability { font-size: 9px; color: #aaa; font-weight: 600; font-style: italic; }
         .dropdown-arrow { position: absolute; top: -8px; right: -8px; background: #f9a826; color: #1a1a2e; border-radius: 50%; width: 18px; height: 18px; font-size: 10px; display: flex; justify-content: center; align-items: center; cursor: pointer; z-index: 10; }
-        #fuseBtn { width: 100%; margin-bottom: 10px; color: #1a1a2e; border: 2px solid #f9a826; padding: 8px; font-size: 12px; border-radius: 6px; font-weight: bold; cursor: pointer; display: none; text-shadow: 0px 0px 4px #fff; box-shadow: 0 0 12px #f9a826; animation: pulse 1.5s infinite; }
+        
+        #fuseBtn { width: 100%; margin-bottom: 10px; color: #1a1a2e; border: none; padding: 10px; font-size: 12px; border-radius: 8px; font-weight: 900; cursor: pointer; display: none; text-shadow: 0px 0px 4px #fff; box-shadow: 0 0 15px rgba(249,168,38,0.6); animation: pulse 1.5s infinite; text-transform: uppercase; font-family: 'Montserrat', sans-serif;}
         @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.02); } 100% { transform: scale(1); } }
+        
         #toastContainer { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); display: flex; flex-direction: column; gap: 10px; z-index: 1000; pointer-events: none; }
-        .toast { background: rgba(15, 15, 26, 0.95); border: 2px solid #4ecca3; color: #fff; padding: 12px 25px; border-radius: 8px; font-weight: bold; animation: fadeInOut 4s forwards; text-align: center; box-shadow: 0 4px 20px rgba(0,0,0,0.5); font-size: 13px; }
-        @keyframes fadeInOut { 0% { opacity: 0; transform: translateY(-20px); } 10% { opacity: 1; transform: translateY(0); } 90% { opacity: 1; transform: translateY(0); } 100% { opacity: 0; transform: translateY(-20px); } }
-        .progress-bar { width: 100%; height: 12px; background: #0f0f1a; border-radius: 6px; overflow: hidden; margin: 6px 0; border: 1px solid #2e2e54; position: relative; }
-        .progress-fill { height: 100%; width: 0%; transition: width 0.4s ease-out; }
-        .action-btn { border: none; padding: 4px 8px; border-radius: 4px; font-weight: bold; font-size: 10px; cursor: pointer; color: white; -webkit-appearance: none; appearance: none; }
+        .toast { background: rgba(10, 10, 18, 0.95); border: 1px solid #4ecca3; color: #fff; padding: 12px 25px; border-radius: 8px; font-weight: 800; animation: fadeInOut 4s forwards; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.8); font-size: 13px; backdrop-filter: blur(5px); }
+        @keyframes fadeInOut { 0% { opacity: 0; transform: translateY(-20px) scale(0.9); } 10% { opacity: 1; transform: translateY(0) scale(1); } 90% { opacity: 1; transform: translateY(0) scale(1); } 100% { opacity: 0; transform: translateY(-20px) scale(0.9); } }
+        
+        .progress-bar { width: 100%; height: 10px; background: rgba(0,0,0,0.5); border-radius: 5px; overflow: hidden; margin: 6px 0; border: 1px solid rgba(255,255,255,0.05); position: relative; }
+        .progress-fill { height: 100%; width: 0%; transition: width 0.4s ease-out; box-shadow: inset 0 0 10px rgba(255,255,255,0.3); }
+        
+        .action-btn { border: none; padding: 4px 8px; border-radius: 4px; font-weight: 800; font-size: 10px; cursor: pointer; color: white; -webkit-appearance: none; appearance: none; font-family: 'Montserrat', sans-serif; text-transform: uppercase; }
         .action-btn.red { background: #ff4757; } .action-btn.green { background: #2ed573; } .action-btn.blue { background: #1e90ff; }
         .title-shop-grid { display: flex; flex-direction: column; gap: 4px; max-height: 180px; overflow-y: auto; margin-top: 5px; }
-        .help-fab { position: fixed; bottom: 20px; right: 20px; width: 44px; height: 44px; background: #f9a826; color: #111; border: none; border-radius: 50%; font-size: 20px; font-weight: bold; display: flex; justify-content: center; align-items: center; cursor: pointer; z-index: 1500; }
-        
-        .tutorial-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(10, 10, 18, 0.85); backdrop-filter: blur(8px); display: flex; justify-content: center; align-items: center; z-index: 2000; opacity: 0; pointer-events: none; transition: opacity 0.3s ease; }
+        .help-fab { position: fixed; bottom: 20px; right: 20px; width: 44px; height: 44px; background: #f9a826; color: #111; border: none; border-radius: 50%; font-size: 20px; font-weight: bold; display: flex; justify-content: center; align-items: center; cursor: pointer; z-index: 1500; box-shadow: 0 4px 15px rgba(0,0,0,0.5); transition: transform 0.2s;}
+        .help-fab:hover { transform: scale(1.1); }
+
+        /* --- SECRET HEX CSS EFFECTS --- */
+        .chroma-text { background: linear-gradient(90deg, #ff0000, #ffff00, #00ff00, #00ffff, #0000ff, #ff00ff, #ff0000); background-size: 200% 100%; color: transparent; -webkit-background-clip: text; background-clip: text; animation: chroma-slide 2s linear infinite; }
+        @keyframes chroma-slide { 0% { background-position: 0% center; } 100% { background-position: -200% center; } }
+        .blood-text { color: #cc0000; text-shadow: 0 0 8px #ff0000, 0 0 15px #aa0000; animation: blood-pulse 1.5s ease-in-out infinite alternate; }
+        @keyframes blood-pulse { 0% { text-shadow: 0 0 4px #ff0000; } 100% { text-shadow: 0 0 12px #ff0000, 0 0 20px #cc0000; } }
+        .ghost-text { color: rgba(255, 255, 255, 0.8); text-shadow: 0 0 10px rgba(255,255,255,0.5), 0 0 20px rgba(255,255,255,0.3); animation: ghost-float 3s ease-in-out infinite alternate; }
+        @keyframes ghost-float { 0% { opacity: 0.6; text-shadow: 0 0 5px #fff; } 100% { opacity: 1; text-shadow: 0 0 15px #fff, 0 0 25px #aaa; } }
+
+        /* --- TUTORIAL/DEVLOG MODALS --- */
+        .tutorial-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(5, 5, 10, 0.85); backdrop-filter: blur(8px); display: flex; justify-content: center; align-items: center; z-index: 2000; opacity: 0; pointer-events: none; transition: opacity 0.3s ease; }
         .tutorial-overlay.active { opacity: 1; pointer-events: auto; }
-        .tutorial-modal { background: #17172e; border: 2px solid #2e2e54; border-radius: 16px; width: 92%; max-width: 620px; max-height: 85vh; display: flex; flex-direction: column; overflow: hidden; animation: modalSlide 0.4s; }
-        @keyframes modalSlide { from { transform: translateY(30px) scale(0.95); } to { transform: translateY(0) scale(1); } }
-        .tutorial-header { background: #111122; padding: 16px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #2e2e54; }
-        .tutorial-header h2 { margin: 0; font-size: 18px; color: #f9a826; letter-spacing: 0.5px; }
-        .tutorial-close { background: transparent; border: none; color: #888; font-size: 24px; cursor: pointer; }
-        .tutorial-tabs { display: flex; background: #131326; border-bottom: 1px solid #2e2e54; overflow-x: auto; }
-        
-        .tutorial-tab-btn { flex: 1; padding: 12px 8px; background: transparent; border: none; color: #aaa; font-size: 12px; font-weight: bold; cursor: pointer; text-align: center; border-bottom: 3px solid transparent; -webkit-appearance: none; appearance: none; }
-        .tutorial-tab-btn.active { color: #00adb5; border-bottom-color: #00adb5; background: rgba(0, 173, 181, 0.08); }
-        
-        .tutorial-body { padding: 20px; overflow-y: auto; flex: 1; font-size: 13px; line-height: 1.6; color: #e2e2ec; }
+        .tutorial-modal { background: rgba(20, 20, 35, 0.95); border: 1px solid rgba(255,255,255,0.1); border-radius: 16px; width: 92%; max-width: 620px; max-height: 85vh; display: flex; flex-direction: column; overflow: hidden; animation: modalSlide 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); box-shadow: 0 20px 60px rgba(0,0,0,0.8); }
+        @keyframes modalSlide { from { transform: translateY(40px) scale(0.95); } to { transform: translateY(0) scale(1); } }
+        .tutorial-header { background: rgba(0,0,0,0.4); padding: 16px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.05); }
+        .tutorial-header h2 { margin: 0; font-size: 18px; color: #f9a826; font-weight: 900; }
+        .tutorial-close { background: transparent; border: none; color: #aaa; font-size: 24px; cursor: pointer; transition: color 0.2s; } .tutorial-close:hover{ color: #fff; }
+        .tutorial-tabs { display: flex; background: rgba(0,0,0,0.2); border-bottom: 1px solid rgba(255,255,255,0.05); overflow-x: auto; }
+        .tutorial-tab-btn { flex: 1; padding: 12px 8px; background: transparent; border: none; color: #888; font-size: 12px; font-weight: 800; cursor: pointer; text-align: center; border-bottom: 3px solid transparent; -webkit-appearance: none; appearance: none; font-family: 'Montserrat', sans-serif;}
+        .tutorial-tab-btn.active { color: #00adb5; border-bottom-color: #00adb5; background: rgba(0, 173, 181, 0.1); }
+        .tutorial-body { padding: 20px; overflow-y: auto; flex: 1; font-size: 13px; line-height: 1.6; color: #ddd; }
         .tutorial-pane { display: none; } .tutorial-pane.active { display: block; }
-        .tutorial-highlight { font-weight: bold; color: #ffd700; background: rgba(255,255,255,0.06); padding: 2px 6px; border-radius: 4px; }
-        .tutorial-footer { padding: 15px 20px; background: #111122; border-top: 1px solid #2e2e54; display: flex; justify-content: space-between; align-items: center; }
-        .tutorial-btn { padding: 9px 18px; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 12px; -webkit-appearance: none; appearance: none; }
-        .tutorial-btn.sec { background: #2e2e54; color: #ccc; } .tutorial-btn.pri { background: #00adb5; color: #fff; }
+        .tutorial-highlight { font-weight: 800; color: #f9a826; background: rgba(255,255,255,0.05); padding: 2px 6px; border-radius: 4px; }
+        .tutorial-footer { padding: 15px 20px; background: rgba(0,0,0,0.4); border-top: 1px solid rgba(255,255,255,0.05); display: flex; justify-content: space-between; align-items: center; }
+        .tutorial-btn { padding: 9px 18px; border: none; border-radius: 6px; font-weight: 900; cursor: pointer; font-size: 12px; -webkit-appearance: none; appearance: none; text-transform: uppercase; font-family: 'Montserrat', sans-serif;}
+        .tutorial-btn.sec { background: rgba(255,255,255,0.1); color: #fff; } .tutorial-btn.pri { background: #00adb5; color: #fff; }
         
         @media (max-width: 900px) { #main-layout { flex-direction: column; } .side-panel { min-height: auto; width: 100%; } }
     </style>
@@ -73,40 +96,39 @@
     <div id="main-layout">
         <div class="side-panel">
             <h3><i class="fa-solid fa-shield-halved"></i> Guild Base</h3>
-            <div style="margin-bottom: 12px; background: #17172e; padding: 10px; border-radius: 8px; border: 1px solid #2e2e54;">
+            <div style="margin-bottom: 12px; background: rgba(0,0,0,0.3); padding: 10px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.05);">
                 <div style="display:flex; gap:5px;">
                     <input type="text" id="guildInput" maxlength="4" placeholder="TAG" class="auth-input" style="width: 60px; text-transform: uppercase;">
                     <button id="reqGuildBtn" class="auth-btn" style="background:#f9a826; color: #111; flex:1;">Send Request</button>
                     <button id="createGuildBtn" class="auth-btn" style="background:#00adb5; color:#fff;">Create</button>
                     <button id="leaveGuildBtn" class="auth-btn" style="background:#ff4757; color:#fff; display:none;">Leave</button>
                 </div>
-                <div style="font-size: 12px; margin-top: 8px; display:flex; justify-content:space-between;">
+                <div style="font-size: 12px; margin-top: 12px; display:flex; justify-content:space-between;">
                     <span>Guild: <span id="currentGuildDisplay" class="tag" style="font-size:14px;">None</span></span>
                     <span id="guildSizeDisplay" style="color:#aaa;">0/10 Players</span>
                 </div>
-                <div style="font-size: 12px; color: #ffd700; margin-top: 4px;">War Coins: <span id="warCoinDisplay">0</span> <i class="fa-solid fa-khanda" style="color:#aaa;"></i> | Gold: <span id="guildCoinDisplay">0</span> <i class="fa-solid fa-coins" style="color:#ffd700;"></i></div>
-                <div style="font-size: 11px; color: #4ecca3; margin-top: 4px; font-weight: bold;" id="guildTitleDisplay">Active Title: None</div>
+                <div style="font-size: 12px; color: #ffd700; margin-top: 6px;">War Coins: <span id="warCoinDisplay">0</span> <i class="fa-solid fa-khanda" style="color:#aaa;"></i> | Gold: <span id="guildCoinDisplay">0</span> <i class="fa-solid fa-coins" style="color:#ffd700;"></i></div>
+                <div style="font-size: 11px; color: #4ecca3; margin-top: 6px; font-weight: bold;" id="guildTitleDisplay">Active Title: None</div>
             </div>
             
-            <div id="leaderPanel" style="display:none; background: rgba(30,30,55,0.6); padding:8px; border-radius:6px; border: 1px dashed #4ecca3; font-size:11px;">
-                <span style="color:#4ecca3; font-weight:bold;"><i class="fa-solid fa-crown"></i> Leader Controls</span>
-                <div style="margin-top:6px; display:flex; gap:5px; align-items:center;">
-                    <span style="font-size:10px; color:#aaa;">Tag Color:</span>
-                    <input type="color" id="guildColorPicker" value="#f9a826" style="width:30px; height:20px; border:none; background:none; cursor:pointer;">
-                    <button class="action-btn blue" onclick="setGuildColor()">Save</button>
+            <div id="leaderPanel" style="display:none; background: rgba(0,0,0,0.3); padding:10px; border-radius:8px; border: 1px dashed rgba(78, 204, 163, 0.4); font-size:11px;">
+                <span style="color:#4ecca3; font-weight:800;"><i class="fa-solid fa-crown"></i> Leader Controls</span>
+                <div style="margin-top:8px; display:flex; gap:5px; align-items:center;">
+                    <input type="text" id="guildColorPicker" placeholder="#HEX or Secret" class="auth-input" style="width:110px;">
+                    <button class="action-btn blue" onclick="setGuildColor()">Update Color</button>
                 </div>
-                <div style="margin-top:8px; font-weight:bold; color:#f9a826;">Join Requests:</div>
+                <div style="margin-top:10px; font-weight:800; color:#f9a826;"><i class="fa-solid fa-user-plus"></i> Join Requests:</div>
                 <div id="joinRequestsList" style="max-height:60px; overflow-y:auto; display:flex; flex-direction:column; gap:4px; margin-bottom:8px;"></div>
-                <div style="font-weight:bold; color:#00adb5;">Titles (War Coins):</div>
+                <div style="font-weight:800; color:#00adb5; margin-top:8px;"><i class="fa-solid fa-medal"></i> Titles (War Coins):</div>
                 <div id="titleShop" class="title-shop-grid"></div>
-                <div style="font-weight:bold; color:#ff9ff3; margin-top:8px;">Crests (War Coins):</div>
+                <div style="font-weight:800; color:#ff9ff3; margin-top:8px;"><i class="fa-solid fa-icons"></i> Crests (War Coins):</div>
                 <div id="crestShop" class="title-shop-grid"></div>
             </div>
 
-            <h4 style="margin:12px 0 5px 0; font-size: 13px; color:#ff4757;">Alliance Raid Damage</h4>
+            <h4 style="margin:15px 0 5px 0; font-size: 13px; color:#ff4757;"><i class="fa-solid fa-fire"></i> Alliance Raid Damage</h4>
             <div id="guildWarList" class="list-container" style="flex: 0.5;">Loading...</div>
             
-            <h4 style="margin:12px 0 5px 0; font-size: 13px; color:#f1c40f;">Top Alliances (Score)</h4>
+            <h4 style="margin:12px 0 5px 0; font-size: 13px; color:#f1c40f;"><i class="fa-solid fa-star"></i> Top Alliances (Score)</h4>
             <div id="guildScoreList" class="list-container" style="flex: 0.5;">Loading...</div>
 
             <h4 style="margin:12px 0 5px 0; font-size: 13px; color:#0be881;"><i class="fa-solid fa-scroll"></i> Daily Tasks (+20 Gold)</h4>
@@ -119,29 +141,34 @@
 
         <div id="game-container">
             <div class="ui-bar" id="authBar">
-                <span>☁️ Cloud Save</span>
+                <span><i class="fa-solid fa-cloud"></i> Cloud Save</span>
                 <input type="text" id="usernameInput" class="auth-input" placeholder="Account Name" style="width:110px;">
                 <input type="password" id="passwordInput" class="auth-input" placeholder="Password" style="width:110px;">
                 <button id="loginBtn" class="auth-btn" style="background:#4ecca3; color:#111;">Login</button>
                 <button id="registerBtn" class="auth-btn" style="background:#00adb5; color:#fff;">Register</button>
             </div>
-            <div class="ui-bar" style="display:none; background: #17173a;" id="userProfileBar"><span id="welcomeMessage" style="color: #4ecca3;"></span></div>
+            <div class="ui-bar" style="display:none; background: rgba(0,0,0,0.6);" id="userProfileBar"><span id="welcomeMessage" style="color: #4ecca3;"></span></div>
 
-            <div class="ui-bar" style="background: linear-gradient(180deg, #2c1111 0%, #170707 100%); border-color: #5e1d1d;">
+            <div style="width: 100%; max-width: 850px; text-align: center; border-radius: 8px; overflow:hidden;">
+                <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-2224540154034114" data-ad-slot="YOUR_AD_SLOT_ID" data-ad-format="auto" data-full-width-responsive="true"></ins>
+                <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+            </div>
+
+            <div class="ui-bar" style="background: linear-gradient(180deg, rgba(44,17,17,0.8) 0%, rgba(23,7,7,0.8) 100%); border-color: #5e1d1d;">
                 <div style="display:flex; flex-direction:column; width:100%;">
                     <div style="display:flex; justify-content:space-between; align-items:center;">
-                        <span style="color:#ff4757; font-weight:bold;" id="bossNameDisplay">Level 1 Boss: Loading...</span>
+                        <span style="color:#ff4757; font-weight:900;" id="bossNameDisplay">Level 1 Boss: Loading...</span>
                         <span style="color:#ffb8b8; font-size:12px;" id="bossHpText">0 / 0 HP</span>
                     </div>
                     <div class="progress-bar" style="border-color:#5e1d1d;"><div id="bossHpFill" class="progress-fill" style="background:#ff4757; width:0%;"></div></div>
                 </div>
             </div>
 
-            <div class="ui-bar" style="background:#131326;">
-                <div style="color:#4ecca3;">Score: <span id="scoreDisplay">0</span></div>
-                <div style="color:#f9a826;">Best: <span id="highScoreDisplay">0</span></div>
-                <div style="color:#ff9ff3;">Multi: <span id="multiDisplay">1x</span></div>
-                <div style="color:#00adb5;">Skin: <span id="skinDisplay">Default</span></div>
+            <div class="ui-bar">
+                <div style="color:#4ecca3;"><i class="fa-solid fa-crosshairs"></i> Score: <span id="scoreDisplay">0</span></div>
+                <div style="color:#f9a826;"><i class="fa-solid fa-bolt"></i> Best: <span id="highScoreDisplay">0</span></div>
+                <div style="color:#ff9ff3;"><i class="fa-solid fa-arrow-trend-up"></i> Multi: <span id="multiDisplay">1x</span></div>
+                <div style="color:#00adb5;"><i class="fa-solid fa-shirt"></i> Skin: <span id="skinDisplay">Default</span></div>
                 <div>⬜ <span id="whiteShardDisplay">0</span> | ⬛ <span id="blackShardDisplay">0</span></div>
                 <div id="sweetsDisplayContainer" style="display:none; color:#ff9ff3;">🍬 <span id="sweetsDisplay">0</span></div>
             </div>
@@ -154,8 +181,8 @@
                     <button id="fuseBtn">FUSE SHARDS & ROLL GACHA</button>
                     <div class="skins-grid" id="skinsGrid"></div>
                 </div>
-                <div class="panel-box" style="flex: 1.2; border-color: #e056fd;">
-                    <h4 style="color: #e056fd;">⚔️ Black Market (Gear)</h4>
+                <div class="panel-box" style="flex: 1.2; border-color: rgba(224, 86, 253, 0.5);">
+                    <h4 style="color: #e056fd;"><i class="fa-solid fa-store"></i> Black Market (Gear)</h4>
                     <div style="font-size: 10px; color:#aaa; margin-bottom:5px;">Optimize your build. Prices are in Gold (🪙) or Event Sweets (🍬).</div>
                     <div style="display:flex; gap:10px; margin-bottom:5px;">
                         <button class="tutorial-tab-btn active" id="tabWeapon" onclick="switchGearTab('weapon')" style="flex:1;">Weapons</button>
@@ -169,7 +196,7 @@
         <div class="side-panel">
             <h3><i class="fa-solid fa-trophy"></i> Leaderboard</h3>
             <div id="leaderboardList" class="list-container" style="flex: 1;">Loading ranks...</div>
-            <h3 style="margin-top: 15px;<i class="fa-solid fa-handshake"></i> Friends & Rivals</h3>
+            <h3 style="margin-top: 15px;"><i class="fa-solid fa-handshake"></i> Friends & Rivals</h3>
             <div style="display:flex; gap:5px; margin-bottom: 5px;">
                 <input type="text" id="friendInput" placeholder="Enter name..." class="auth-input" style="font-size:11px; flex:1;">
                 <button id="addFriendBtn" class="auth-btn" style="background:#00adb5; font-size:11px; padding:6px 10px;">Add</button>
@@ -178,7 +205,38 @@
         </div>
     </div>
 
-    <button class="help-fab" id="openDevlogBtn" title="Devlog & Patch Notes" style="right: 75px; background: #00adb5;">📰</button>     <button class="help-fab" id="openTutorialBtn" title="How to Play & Guide"><i class="fa-solid fa-circle-question"></i></button>
+    <button class="help-fab" id="openDevlogBtn" title="Devlog & Patch Notes" style="right: 75px; background: #00adb5;"><i class="fa-solid fa-newspaper"></i></button>
+    <button class="help-fab" id="openTutorialBtn" title="How to Play & Guide"><i class="fa-solid fa-circle-question"></i></button>
+    
+    <div class="tutorial-overlay" id="devlogOverlay">
+        <div class="tutorial-modal">
+            <div class="tutorial-header">
+                <h2>📰 Developer Log</h2>
+                <button class="tutorial-close" id="closeDevlogBtn">&times;</button>
+            </div>
+            <div class="tutorial-body" style="display: block;">
+                
+                <h4 style="color:#f9a826; border-bottom:1px dashed rgba(255,255,255,0.1); padding-bottom:4px; margin-top:0;">v1.2.0 - The Visuals & Secrets Update</h4>
+                <p style="font-size: 11px; color: #888; margin-top: -5px;">Released: Today</p>
+                <ul>
+                    <li><span class="tutorial-highlight">Visual Overhaul:</span> Completely redesigned interface with Cyberpunk glassmorphism, dynamic grids, formatting, and high-res vector icons.</li>
+                    <li><span class="tutorial-highlight">Secret Hex Codes:</span> Leaders can now type secret codes in the color box to unlock hidden visual effects for their guild tag! Try typing <span style="color:#00ffff;">#CHROMA</span>, <span style="color:#ff0000;">#BLOOD</span>, or <span style="color:#aaa;">#GHOST</span>.</li>
+                </ul>
+
+                <h4 style="color:#00adb5; border-bottom:1px dashed rgba(255,255,255,0.1); padding-bottom:4px; margin-top:20px;">v1.1.0 - The Seasonal MMO Update</h4>
+                <p style="font-size: 11px; color: #888; margin-top: -5px;">Released: Previous Update</p>
+                <ul>
+                    <li><span class="tutorial-highlight">Dynamic Gear:</span> Weapons and Coats now physically render on your character in real-time as you swing!</li>
+                    <li><span class="tutorial-highlight">The Black Market:</span> Spend your Guild Gold on powerful new modifiers like the Solar Flare and Void Carapace.</li>
+                    <li><span class="tutorial-highlight">Seasonal Events:</span> Real-time calendar events! Halloween and Christmas completely change the Boss and unlock limited-time Sweets and skins.</li>
+                </ul>
+            </div>
+            <div class="tutorial-footer" style="justify-content: center;">
+                <span style="font-size:11px; color:#666;">Thanks for playing Infinite Swing!</span>
+            </div>
+        </div>
+    </div>
+
     <div class="tutorial-overlay" id="tutorialOverlay">
         <div class="tutorial-modal">
             <div class="tutorial-header">
@@ -186,28 +244,28 @@
                 <button class="tutorial-close" id="closeTutorialTopBtn">&times;</button>
             </div>
             <div class="tutorial-tabs">
-                <button class="tutorial-tab-btn active" onclick="switchTutorialTab(0)">🕹️ Controls</button>
-                <button class="tutorial-tab-btn" onclick="switchTutorialTab(1)">⚔️ Optimized Builds</button>
-                <button class="tutorial-tab-btn" onclick="switchTutorialTab(2)">🛡️ Guilds</button>
-                <button class="tutorial-tab-btn" onclick="switchTutorialTab(3)">🐉 Boss Raids</button>
+                <button class="tutorial-tab-btn active" onclick="switchTutorialTab(0)"><i class="fa-solid fa-gamepad"></i> Controls</button>
+                <button class="tutorial-tab-btn" onclick="switchTutorialTab(1)"><i class="fa-solid fa-hammer"></i> Builds</button>
+                <button class="tutorial-tab-btn" onclick="switchTutorialTab(2)"><i class="fa-solid fa-shield-halved"></i> Guilds</button>
+                <button class="tutorial-tab-btn" onclick="switchTutorialTab(3)"><i class="fa-solid fa-dragon"></i> Raids</button>
             </div>
             <div class="tutorial-body">
                 <div class="tutorial-pane active">
                     <h4>🕹️ Core Mechanics & Physics</h4>
                     <ul>
                         <li><span class="tutorial-highlight">Grapple Hook:</span> Click anywhere or tap <span class="tutorial-highlight">Spacebar</span> to shoot a line and swing.</li>
-                        <li><span class="tutorial-highlight">Score Scaling:</span> Distance traversed applies your Total Multiplier!</li>
+                        <li><span class="tutorial-highlight">Score Scaling:</span> Distance traversed applies your Total Multiplier! Swing backwards to go to the Underworld.</li>
                     </ul>
                 </div>
                 <div class="tutorial-pane">
                     <h4>⚔️ The Optimized Build</h4>
                     <ul>
-                        <li><span class="tutorial-highlight">Weapons & Coats:</span> Buy in the Black Market using Guild Coins. Weapons add massive Multipliers, while Coats manipulate gravity and hook range.</li>
+                        <li><span class="tutorial-highlight">Weapons & Coats:</span> Buy in the Black Market using Gold. Weapons add massive Multipliers, while Coats manipulate gravity and hook range.</li>
                     </ul>
                 </div>
                 <div class="tutorial-pane">
                     <h4>🛡️ Guild Base</h4>
-                    <ul><li><span class="tutorial-highlight">Guild Leader Tools:</span> Leaders can spend War Coins on massive Title Buffs, select Crest Emojis, and set custom hex Colors!</li></ul>
+                    <ul><li><span class="tutorial-highlight">Guild Leader Tools:</span> Leaders can spend War Coins on massive Title Buffs, select Crest Emojis, and set custom hex Colors (or Secret Codes)!</li></ul>
                 </div>
                 <div class="tutorial-pane">
                     <h4>🐉 Alliance Boss Raid</h4>
@@ -216,59 +274,12 @@
             </div>
             <div class="tutorial-footer">
                 <button class="tutorial-btn sec" id="tutorialPrevBtn" style="visibility:hidden;">Back</button>
-                <div style="font-size:11px; color:#666;" id="tutorialStepText">Step 1 of 4</div>
+                <div style="font-size:11px; color:#888; font-weight:800;" id="tutorialStepText">Step 1 of 4</div>
                 <button class="tutorial-btn pri" id="tutorialNextBtn">Next</button>
             </div>
         </div>
     </div>
-<div class="tutorial-overlay" id="devlogOverlay">
-        <div class="tutorial-modal">
-            <div class="tutorial-header">
-                <h2><i class="fa-solid fa-newspaper"></i> Developer Log</h2>
-                <button class="tutorial-close" id="closeDevlogBtn">&times;</button>
-            </div>
-            <div class="tutorial-body" style="display: block;">
-                
-                <h4 style="color:#f9a826; border-bottom:1px dashed #2e2e54; padding-bottom:4px; margin-top:0;">v1.1.0 - The Seasonal MMO Update</h4>
-                <p style="font-size: 11px; color: #888; margin-top: -5px;">Released: Today</p>
-                <ul>
-                    <li><span class="tutorial-highlight">Dynamic Gear:</span> Weapons and Coats now physically render on your character in real-time as you swing!</li>
-                    <li><span class="tutorial-highlight">The Black Market:</span> Spend your Guild Gold on powerful new modifiers like the Solar Flare and Void Carapace.</li>
-                    <li><span class="tutorial-highlight">Seasonal Events:</span> Real-time calendar events! Halloween and Christmas completely change the Boss and unlock limited-time Sweets and skins.</li>
-                    <li><span class="tutorial-highlight">Guild Customization:</span> Leaders can now change their Alliance name color and purchase global Crests.</li>
-                </ul>
 
-                <h4 style="color:#00adb5; border-bottom:1px dashed #2e2e54; padding-bottom:4px; margin-top:20px;">v1.0.0 - Full Release (The Boss Raid Update)</h4>
-                <p style="font-size: 11px; color: #888; margin-top: -5px;">Released: Yesterday</p>
-                <ul>
-                    <li><span class="tutorial-highlight">World Boss Raids:</span> Added the Abyssal Leviathan. Every score registers damage against the massive server boss to earn War Coins!</li>
-                    <li><span class="tutorial-highlight">Exponential Scaling:</span> Boss HP and Alliance rewards now scale infinitely as the server levels up.</li>
-                    <li><span class="tutorial-highlight">Guild Expansion:</span> Added Guild Request system, War Coins, and Guild Titles for leaders to buff their alliance.</li>
-                    <li><span class="tutorial-highlight">Anti-Cheat Engine:</span> Implemented secure backend saving and rate limiting to protect the leaderboards.</li>
-                </ul>
-
-                <h4 style="color:#4ecca3; border-bottom:1px dashed #2e2e54; padding-bottom:4px; margin-top:20px;">v0.5.0 - Beta Release (The Alliance Update)</h4>
-                <p style="font-size: 11px; color: #888; margin-top: -5px;">Released: Earlier</p>
-                <ul>
-                    <li><span class="tutorial-highlight">Guild Base:</span> Players can now create or join 10-player Alliances using 4-character TAGs.</li>
-                    <li><span class="tutorial-highlight">Social Features:</span> Added the Friends and Rivals system. Send requests and challenge players to Score Duels.</li>
-                    <li><span class="tutorial-highlight">Daily Tasks:</span> Introduced daily quest objectives to earn extra currency.</li>
-                </ul>
-
-                <h4 style="color:#ff4757; border-bottom:1px dashed #2e2e54; padding-bottom:4px; margin-top:20px;">v0.1.0 - Alpha Release (Genesis)</h4>
-                <p style="font-size: 11px; color: #888; margin-top: -5px;">Released: The Beginning</p>
-                <ul>
-                    <li><span class="tutorial-highlight">Core Engine:</span> The Infinite Swing physics engine is born! Grapple, swing, and bounce to survive.</li>
-                    <li><span class="tutorial-highlight">Skin Vault:</span> Basic stickman physics, default skins, and the White/Black Shard Gacha fusion system implemented.</li>
-                    <li><span class="tutorial-highlight">Cloud Save:</span> The Mainframe goes online to track global scores.</li>
-                </ul>
-
-            </div>
-            <div class="tutorial-footer" style="justify-content: center;">
-                <span style="font-size:11px; color:#666;">Thanks for playing Infinite Swing!</span>
-            </div>
-        </div>
-    </div>
     <script>
         const API_URL = "https://swingworker.xaviersgames.workers.dev";
         const currentMonth = new Date().getMonth(); // 0-11
@@ -305,14 +316,11 @@
             { id: 10, name: "Turkey", cName: "Gobbler", s1: "Pilgrim", w1: "Gravy Boat", c1: "Feather Cape", c: "#8b4513" }
         ];
 
-        let eventCurrencyType = "gold"; 
-        let currentEvent = null;
-        if (currentMonth === 9) eventCurrencyType = "spooky";
-        else if (currentMonth === 11) eventCurrencyType = "jolly";
-        else currentEvent = EVENTS.find(e => e.id === currentMonth) || EVENTS[0];
+        let eventCurrencyType = "gold", currentEvent = null;
+        if (currentMonth === 9) eventCurrencyType = "spooky"; else if (currentMonth === 11) eventCurrencyType = "jolly"; else currentEvent = EVENTS.find(e => e.id === currentMonth) || EVENTS[0];
 
-        // --- GAME ASSETS & CONFIGS ---
-      const CRESTS_CONFIG = {
+        // --- GAME ASSETS & CONFIGS (WITH UNICODE FOR CANVAS) ---
+        const CRESTS_CONFIG = {
             0: { name: "None", emoji: "", unicode: "", cost: 0, desc: "No buff" },
             1: { name: "Shield", emoji: "<i class='fa-solid fa-shield'></i>", unicode: "\uf132", cost: 1000, desc: "+10% Multi" },
             2: { name: "Wolf", emoji: "<i class='fa-solid fa-paw'></i>", unicode: "\uf1b0", cost: 5000, desc: "+25% Multi" },
@@ -358,7 +366,6 @@
             gacha_void_stalker: { name: "Void Stalker", color: "#4a00e0", splitColor: "#000000", condition: "Gacha", ability: "Abyss Save", curr: "gold" }
         };
 
-        // INJECT SEASONAL ITEMS SAFELY
         if (eventCurrencyType === "jolly") {
             SKINS_CONFIG.jolly = { name: "Jolly Santa", color: "#ff0000", splitColor: "#ffffff", ability: "+25% Multi", curr: "jolly", cost: 10 };
             WEAPONS_CONFIG.candy_cane = { name: "Candy Cane", color: "#ff0000", multi: 3.0, desc: "Minty Slice (+300% Multi)", curr: "jolly", cost: 50 };
@@ -370,7 +377,6 @@
         } else if (currentEvent) {
             let sId = currentEvent.s1.toLowerCase().replace(/ /g, '_'); let wId = currentEvent.w1.toLowerCase().replace(/ /g, '_'); let cId = currentEvent.c1.toLowerCase().replace(/ /g, '_');
             let wMulti = 2.0, wDesc = `Event WPN (+200%)`, wCost = 15000;
-            // CHANGED SOLAR WEAPON PRICE HERE
             if (currentEvent.id === 5) { wMulti = 25.0; wDesc = "Sun God's Wrath (+2500%)"; wCost = 250000; } 
             SKINS_CONFIG[sId] = { name: currentEvent.s1, color: currentEvent.c, ability: "Seasonal Power", curr: "gold", cost: 5000 };
             WEAPONS_CONFIG[wId] = { name: currentEvent.w1, color: currentEvent.c, multi: wMulti, desc: wDesc, curr: "gold", cost: wCost };
@@ -383,6 +389,17 @@
 
         async function hashPassword(p) { const m = new TextEncoder().encode(p); const h = await crypto.subtle.digest('SHA-256', m); return Array.from(new Uint8Array(h)).map(b => b.toString(16).padStart(2, '0')).join(''); }
         function showToast(msg, duration=4000, color="#4ecca3") { const c = document.getElementById("toastContainer"); if (!c) return; const t = document.createElement("div"); t.className = "toast"; t.style.borderColor = color; t.style.animationDuration = (duration/1000)+"s"; t.innerText = msg; c.appendChild(t); setTimeout(() => { if (t.parentElement) t.remove(); }, duration); }
+
+        // FORMAT HTML TAG HELPER (SECRET CODES)
+        function formatGuildTag(gTag, gCol, crestId) {
+            if (!gTag) return "";
+            let cObj = CRESTS_CONFIG[crestId] || CRESTS_CONFIG[0];
+            let baseTag = `${cObj.emoji} [${gTag}]`;
+            if (gCol === "#CHROMA") return `<span class="chroma-text" style="font-weight:900; margin-right:4px;">${baseTag}</span>`;
+            if (gCol === "#BLOOD") return `<span class="blood-text" style="font-weight:900; margin-right:4px;">${baseTag}</span>`;
+            if (gCol === "#GHOST") return `<span class="ghost-text" style="font-weight:900; margin-right:4px;">${baseTag}</span>`;
+            return `<span style="color:${gCol || '#f9a826'}; font-weight:900; margin-right:4px;">${baseTag}</span>`;
+        }
 
         // --- PHYSICS & ENGINE ---
         const BASE_GRAVITY = 0.45, BASE_FRICTION = 0.995, BASE_HOOK_RANGE = 350; 
@@ -409,7 +426,7 @@
             if (user.guild_title_bonus > 1) { m *= user.guild_title_bonus; texts.push(`🛡️ TITLE (${user.guild_title_bonus}x)`); }
             if (activeGuildCrest > 0 && CRESTS_CONFIG[activeGuildCrest]) { let cBonus = parseInt(CRESTS_CONFIG[activeGuildCrest].desc.match(/\d+/)[0]) / 100 + 1; m *= cBonus; texts.push(`${CRESTS_CONFIG[activeGuildCrest].emoji} CREST (${cBonus}x)`); }
             let finalM = parseFloat(m.toFixed(2));
-          if(document.getElementById("guildMultiDisplay")) document.getElementById("guildMultiDisplay").innerHTML = texts.join(" | ");
+            if(document.getElementById("multiDisplay")) document.getElementById("multiDisplay").textContent = finalM + "x";
             return finalM;
         }
 
@@ -427,18 +444,16 @@
         function unlockSkin(key) { if (!user.unlocked) user.unlocked = ["default"]; if (!user.unlocked.includes(key)) { user.unlocked.push(key); localStorage.setItem(`stickman_skin_${key}`, "true"); syncSave(0); } }
 
         function updateUI() {
-            if(document.getElementById("highScoreDisplay")) document.getElementById("highScoreDisplay").textContent = user.high_score || 0;
+            if(document.getElementById("highScoreDisplay")) document.getElementById("highScoreDisplay").textContent = (user.high_score || 0).toLocaleString();
             if(document.getElementById("whiteShardDisplay")) document.getElementById("whiteShardDisplay").textContent = user.w_shards || 0;
             if(document.getElementById("blackShardDisplay")) document.getElementById("blackShardDisplay").textContent = user.b_shards || 0;
-            if(document.getElementById("guildCoinDisplay")) document.getElementById("guildCoinDisplay").textContent = user.guild_coins || 0;
+            if(document.getElementById("guildCoinDisplay")) document.getElementById("guildCoinDisplay").textContent = (user.guild_coins || 0).toLocaleString();
             
-            if(eventCurrencyType !== "gold") {
-                const sDisp = document.getElementById("sweetsDisplayContainer");
-                if (sDisp) { sDisp.style.display = "block"; document.getElementById("sweetsDisplay").textContent = (eventCurrencyType==="jolly"?user.jolly_sweets:user.spooky_sweets) || 0; }
-            }
+            if(eventCurrencyType !== "gold") { const sDisp = document.getElementById("sweetsDisplayContainer"); if (sDisp) { sDisp.style.display = "block"; document.getElementById("sweetsDisplay").textContent = (eventCurrencyType==="jolly"?user.jolly_sweets:user.spooky_sweets) || 0; } }
 
-            let crestEmoji = activeGuildCrest > 0 && CRESTS_CONFIG[activeGuildCrest] ? CRESTS_CONFIG[activeGuildCrest].emoji : "";
-            if(document.getElementById("currentGuildDisplay")) document.getElementById("currentGuildDisplay").innerHTML = `<span style="color:${activeGuildColor || '#f9a826'};">${crestEmoji}[${user.guild || "None"}]</span>`;
+            let gCol = activeGuildColor || "#f9a826";
+            if(document.getElementById("currentGuildDisplay")) document.getElementById("currentGuildDisplay").innerHTML = formatGuildTag(user.guild || "None", gCol, activeGuildCrest);
+            
             if (user.guild) { document.getElementById("leaveGuildBtn").style.display = "block"; document.getElementById("reqGuildBtn").style.display="none"; document.getElementById("createGuildBtn").style.display="none"; }
             else { document.getElementById("leaveGuildBtn").style.display = "none"; document.getElementById("reqGuildBtn").style.display="block"; document.getElementById("createGuildBtn").style.display="block"; }
 
@@ -464,7 +479,7 @@
                     let nameSpan = document.createElement("span"); nameSpan.textContent = skinConfig.name; title.appendChild(dot); title.appendChild(nameSpan); btn.appendChild(title);
                     
                     let reqLabel = document.createElement("div"); reqLabel.style.fontSize = "9px"; reqLabel.style.color = "#888";
-                    if (skinConfig.score !== undefined) reqLabel.innerText = `Req: ${skinConfig.score}`; else if (skinConfig.cost) reqLabel.innerText = `${skinConfig.cost} ${skinConfig.curr}`; else if (skinConfig.condition) reqLabel.innerText = skinConfig.condition;
+                    if (skinConfig.score !== undefined) reqLabel.innerText = `Req: ${skinConfig.score.toLocaleString()}`; else if (skinConfig.cost) reqLabel.innerText = `${skinConfig.cost.toLocaleString()} ${skinConfig.curr}`; else if (skinConfig.condition) reqLabel.innerText = skinConfig.condition;
                     btn.appendChild(reqLabel);
                     if (skinConfig.ability) { let ab = document.createElement("div"); ab.className = "skin-ability"; ab.innerText = skinConfig.ability; btn.appendChild(ab); }
                     if (key === "angelic" && owned) { const arrow = document.createElement("div"); arrow.className = "dropdown-arrow"; arrow.textContent = angelicDropdownOpen ? "▲" : "▼"; arrow.addEventListener("click", (e) => { e.stopPropagation(); angelicDropdownOpen = !angelicDropdownOpen; renderChangingRoom(); }); btn.appendChild(arrow); }
@@ -509,7 +524,7 @@
                     let nameSpan = document.createElement("span"); nameSpan.textContent = item.name;
                     title.appendChild(dot); title.appendChild(nameSpan); btn.appendChild(title);
                     
-                    let reqLabel = document.createElement("div"); reqLabel.style.fontSize = "9px"; reqLabel.style.color = isOwned ? "#4ecca3" : "#ff9ff3"; reqLabel.innerText = isOwned ? (isEquipped ? "EQUIPPED" : "OWNED") : `Cost: ${item.cost} ${item.curr}`; btn.appendChild(reqLabel);
+                    let reqLabel = document.createElement("div"); reqLabel.style.fontSize = "9px"; reqLabel.style.color = isOwned ? "#4ecca3" : "#ff9ff3"; reqLabel.innerText = isOwned ? (isEquipped ? "EQUIPPED" : "OWNED") : `Cost: ${item.cost.toLocaleString()} ${item.curr}`; btn.appendChild(reqLabel);
                     if (item.desc) { let ab = document.createElement("div"); ab.className = "skin-ability"; ab.innerText = item.desc; btn.appendChild(ab); }
 
                     btn.onclick = async () => {
@@ -545,15 +560,25 @@
                     if (data.is_leader_override) user.is_leader = true;
                     if(document.getElementById("leaderboardList")) {
                         const lb = document.getElementById("leaderboardList"); lb.innerHTML = "";
-                        data.leaderboard.forEach((r, i) => { let cObj = CRESTS_CONFIG[r.active_crest_id] || CRESTS_CONFIG[0]; let gCol = r.name_color || "#f9a826"; let tag = r.guild ? `<span style="color:${gCol}; font-weight:bold;">[${cObj.emoji}${r.guild}]</span> ` : ""; let style = (user.username && r.username === user.username) ? 'border-color:#4ecca3; background:#232342;' : ''; lb.innerHTML += `<div class="list-item" style="${style}"><span>#${i+1} ${tag}${r.username}</span> <span style="color:#4ecca3">${r.score}</span></div>`; });
+                        data.leaderboard.forEach((r, i) => { 
+                            let tagHtml = formatGuildTag(r.guild, r.name_color, r.active_crest_id); 
+                            let style = (user.username && r.username === user.username) ? 'border-color:rgba(78, 204, 163, 0.5); background:rgba(78, 204, 163, 0.1);' : ''; 
+                            lb.innerHTML += `<div class="list-item" style="${style}"><span><span style="color:#888;">#${i+1}</span> ${tagHtml}${r.username}</span> <span style="color:#4ecca3; font-weight:800;">${r.score.toLocaleString()}</span></div>`; 
+                        });
                     }
                     if(document.getElementById("guildWarList")) {
                         const gw = document.getElementById("guildWarList"); gw.innerHTML = "";
-                        data.guildWars.forEach((r, i) => { let cObj = CRESTS_CONFIG[r.active_crest_id] || CRESTS_CONFIG[0]; let gCol = r.name_color || "#f9a826"; gw.innerHTML += `<div class="list-item"><span>#${i+1} <span style="color:${gCol}; font-weight:bold;">[${cObj.emoji}${r.tag}]</span></span> <span style="color:#ff4757; font-weight:bold;">${r.damage.toLocaleString()} DMG</span></div>`; });
+                        data.guildWars.forEach((r, i) => { 
+                            let tagHtml = formatGuildTag(r.tag, r.name_color, r.active_crest_id); 
+                            gw.innerHTML += `<div class="list-item"><span><span style="color:#888;">#${i+1}</span> ${tagHtml}</span> <span style="color:#ff4757; font-weight:800;">${r.damage.toLocaleString()} DMG</span></div>`; 
+                        });
                     }
                     if(document.getElementById("guildScoreList") && data.guildScores) {
                         const gs = document.getElementById("guildScoreList"); gs.innerHTML = "";
-                        data.guildScores.forEach((r, i) => { let cObj = CRESTS_CONFIG[r.active_crest_id] || CRESTS_CONFIG[0]; let gCol = r.name_color || "#f9a826"; gs.innerHTML += `<div class="list-item"><span>#${i+1} <span style="color:${gCol}; font-weight:bold;">[${cObj.emoji}${r.tag}]</span></span> <span style="color:#f1c40f; font-weight:bold;">${r.total_score.toLocaleString()} PTS</span></div>`; });
+                        data.guildScores.forEach((r, i) => { 
+                            let tagHtml = formatGuildTag(r.tag, r.name_color, r.active_crest_id); 
+                            gs.innerHTML += `<div class="list-item"><span><span style="color:#888;">#${i+1}</span> ${tagHtml}</span> <span style="color:#f1c40f; font-weight:800;">${r.total_score.toLocaleString()} PTS</span></div>`; 
+                        });
                     }
 
                     if (data.boss) {
@@ -567,7 +592,7 @@
                     
                     if (data.userGuildInfo) {
                         if(document.getElementById("guildSizeDisplay")) document.getElementById("guildSizeDisplay").textContent = `${data.userGuildInfo.members_count} / 10 Players`;
-                        if(document.getElementById("warCoinDisplay")) document.getElementById("warCoinDisplay").textContent = data.userGuildInfo.war_coins;
+                        if(document.getElementById("warCoinDisplay")) document.getElementById("warCoinDisplay").textContent = data.userGuildInfo.war_coins.toLocaleString();
                         user.war_coins = data.userGuildInfo.war_coins; activeGuildColor = data.userGuildInfo.name_color || "#f9a826"; activeGuildCrest = data.userGuildInfo.active_crest_id || 0;
                         if(document.getElementById("guildColorPicker")) document.getElementById("guildColorPicker").value = activeGuildColor;
                         let currentTitle = GUILD_TITLES.find(t => t.id === data.userGuildInfo.active_title_id);
@@ -578,7 +603,7 @@
                         if(document.getElementById("joinRequestsList")) {
                             const reqBox = document.getElementById("joinRequestsList"); reqBox.innerHTML = "";
                             if (data.pendingRequests.length === 0) reqBox.innerHTML = `<div style="color:#666; font-style:italic; font-size:10px;">No pending requests</div>`;
-                            data.pendingRequests.forEach(req => { reqBox.innerHTML += `<div class="list-item" style="padding:4px 6px;"><span>${req.username}</span><div style="display:flex; gap:3px;"><button class="action-btn green" onclick="handleJoinRequest(${req.id}, 'approve')">✓</button><button class="action-btn red" onclick="handleJoinRequest(${req.id}, 'deny')">X</button></div></div>`; });
+                            data.pendingRequests.forEach(req => { reqBox.innerHTML += `<div class="list-item" style="padding:4px 6px;"><span>${req.username}</span><div style="display:flex; gap:3px;"><button class="action-btn green" onclick="handleJoinRequest(${req.id}, 'approve')"><i class="fa-solid fa-check"></i></button><button class="action-btn red" onclick="handleJoinRequest(${req.id}, 'deny')"><i class="fa-solid fa-xmark"></i></button></div></div>`; });
                         }
                         renderGuildShop(data.userGuildInfo ? data.userGuildInfo.unlocked_titles : "[]", data.userGuildInfo ? data.userGuildInfo.unlocked_crests : "[]");
                     }
@@ -589,8 +614,8 @@
 
         function renderGuildShop(unlockedTitlesStr, unlockedCrestsStr) {
             let unlockedTitles = JSON.parse(unlockedTitlesStr || "[]"); let unlockedCrests = JSON.parse(unlockedCrestsStr || "[0]");
-            const shopT = document.getElementById("titleShop"); if(shopT) { shopT.innerHTML = ""; GUILD_TITLES.forEach(t => { let isOwned = unlockedTitles.includes(t.id); let btnHtml = isOwned ? `<button class="action-btn green" onclick="equipGuildTitle(${t.id})">Equip</button>` : `<button class="action-btn blue" onclick="buyGuildItem('title', ${t.id})">${t.cost} ⚔️</button>`; let glowStyle = t.id === 21 ? 'text-shadow: 0 0 10px #00ffff;' : ''; shopT.innerHTML += `<div style="display:flex; justify-content:space-between; background:#0f0f1a; padding:4px; border-radius:4px; margin-bottom:2px; border:1px solid #2e2e54;"><span style="${glowStyle}">${t.name} <i style="color:#aaa; font-size:9px;">(${t.desc})</i></span>${btnHtml}</div>`; }); }
-            const shopC = document.getElementById("crestShop"); if(shopC) { shopC.innerHTML = ""; Object.keys(CRESTS_CONFIG).forEach(key => { if (key == 0) return; let c = CRESTS_CONFIG[key]; let isOwned = unlockedCrests.includes(parseInt(key)); let isEquip = activeGuildCrest == key; let btnHtml = isOwned ? (isEquip ? `<span style="color:#f9a826; font-weight:bold;">Active</span>` : `<button class="action-btn green" onclick="setGuildCrest(${key})">Equip</button>`) : `<button class="action-btn blue" onclick="buyGuildItem('crest', ${key})">${c.cost} ⚔️</button>`; shopC.innerHTML += `<div style="display:flex; justify-content:space-between; background:#0f0f1a; padding:4px; border-radius:4px; margin-bottom:2px; border:1px solid #2e2e54;"><span>${c.emoji} ${c.name} <i style="color:#aaa; font-size:9px;">(${c.desc})</i></span>${btnHtml}</div>`; }); }
+            const shopT = document.getElementById("titleShop"); if(shopT) { shopT.innerHTML = ""; GUILD_TITLES.forEach(t => { let isOwned = unlockedTitles.includes(t.id); let btnHtml = isOwned ? `<button class="action-btn green" onclick="equipGuildTitle(${t.id})">Equip</button>` : `<button class="action-btn blue" onclick="buyGuildItem('title', ${t.id})">${t.cost.toLocaleString()} <i class="fa-solid fa-khanda"></i></button>`; let glowStyle = t.id === 21 ? 'text-shadow: 0 0 10px #00ffff;' : ''; shopT.innerHTML += `<div style="display:flex; justify-content:space-between; background:rgba(0,0,0,0.3); padding:6px; border-radius:4px; margin-bottom:2px; border:1px solid rgba(255,255,255,0.05);"><span style="${glowStyle}">${t.name} <i style="color:#aaa; font-size:9px;">(${t.desc})</i></span>${btnHtml}</div>`; }); }
+            const shopC = document.getElementById("crestShop"); if(shopC) { shopC.innerHTML = ""; Object.keys(CRESTS_CONFIG).forEach(key => { if (key == 0) return; let c = CRESTS_CONFIG[key]; let isOwned = unlockedCrests.includes(parseInt(key)); let isEquip = activeGuildCrest == key; let btnHtml = isOwned ? (isEquip ? `<span style="color:#f9a826; font-weight:900;">Active</span>` : `<button class="action-btn green" onclick="setGuildCrest(${key})">Equip</button>`) : `<button class="action-btn blue" onclick="buyGuildItem('crest', ${key})">${c.cost.toLocaleString()} <i class="fa-solid fa-khanda"></i></button>`; shopC.innerHTML += `<div style="display:flex; justify-content:space-between; background:rgba(0,0,0,0.3); padding:6px; border-radius:4px; margin-bottom:2px; border:1px solid rgba(255,255,255,0.05);"><span>${c.emoji} ${c.name} <i style="color:#aaa; font-size:9px;">(${c.desc})</i></span>${btnHtml}</div>`; }); }
         }
 
         async function buyGuildItem(type, id) {
@@ -602,7 +627,14 @@
         }
 
         async function equipGuildTitle(titleId) { try { await fetch(`${API_URL}/api/guild/equip_title`, { method: "POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify({ username: user.username, session_token: user.session_token, titleId }) }); showToast("Title Equipped!"); fetchServerData(); } catch(e) {} }
-        async function setGuildColor() { let color = document.getElementById("guildColorPicker").value; try { await fetch(`${API_URL}/api/guild/customize`, { method: "POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify({ username: user.username, session_token: user.session_token, action: "set_color", payload: { color } }) }); showToast("Guild Color updated!"); fetchServerData(); } catch(e) {} }
+        
+        async function setGuildColor() { 
+            let color = document.getElementById("guildColorPicker").value.toUpperCase().trim(); 
+            if(!color) return showToast("Enter a hex or secret code!", 3000, "#ff4757");
+            if(!color.startsWith("#")) color = "#" + color; 
+            try { await fetch(`${API_URL}/api/guild/customize`, { method: "POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify({ username: user.username, session_token: user.session_token, action: "set_color", payload: { color } }) }); showToast("Guild Tag updated!"); fetchServerData(); } catch(e) {} 
+        }
+        
         async function setGuildCrest(crestId) { try { await fetch(`${API_URL}/api/guild/customize`, { method: "POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify({ username: user.username, session_token: user.session_token, action: "buy_crest", payload: { crestId, cost: 0 } }) }); showToast("Crest Equipped!"); fetchServerData(); } catch(e) {} }
         async function handleJoinRequest(reqId, choice) { try { const res = await fetch(`${API_URL}/api/guild/handle_request`, { method: "POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify({ username: user.username, session_token: user.session_token, requestId: reqId, action: choice }) }); const data = await res.json(); if (data.success) { showToast(choice === 'approve' ? "Member added!" : "Request denied"); fetchServerData(); } else { showToast(data.error, 4000, "#ff4757"); } } catch(e) {} }
         document.getElementById("leaveGuildBtn").onclick = async () => { if(confirm("Leave this Alliance? You will lose leader status if you created it.")) { try { await fetch(`${API_URL}/api/guild/leave`, { method:"POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify({username: user.username, session_token: user.session_token}) }); user.guild = ""; user.is_leader = false; localStorage.setItem("gd", ""); showToast("Left the Alliance.", 3000, "#ff4757"); fetchServerData(); updateUI(); } catch(e){} } };
@@ -618,12 +650,12 @@
                         let isSender = f.user1 === user.username; let other = isSender ? f.user2 : f.user1; let isOnline = false;
                         if (f.last_seen) { let lsTime = new Date(f.last_seen + "Z").getTime(); if (nowUTC - lsTime < 300000) isOnline = true; }
                         let dot = isOnline ? "🟢" : "⚪";
-                        if (f.status === 'pending') { if (!isSender) sl.innerHTML += `<div class="list-item"><span>📥 ${other}</span> <div><button class="action-btn green" onclick="respondFriend(${f.id}, 'accepted')">✓</button> <button class="action-btn red" onclick="respondFriend(${f.id}, 'declined')">X</button></div></div>`; else sl.innerHTML += `<div class="list-item"><span>⏳ ${other} (Sent)</span></div>`; } else { sl.innerHTML += `<div class="list-item"><span>${dot} ${other}</span> <button class="action-btn" onclick="sendChallenge('${other}')">Duel</button></div>`; }
+                        if (f.status === 'pending') { if (!isSender) sl.innerHTML += `<div class="list-item"><span>📥 ${other}</span> <div><button class="action-btn green" onclick="respondFriend(${f.id}, 'accepted')"><i class="fa-solid fa-check"></i></button> <button class="action-btn red" onclick="respondFriend(${f.id}, 'declined')"><i class="fa-solid fa-xmark"></i></button></div></div>`; else sl.innerHTML += `<div class="list-item"><span>⏳ ${other} (Sent)</span></div>`; } else { sl.innerHTML += `<div class="list-item"><span>${dot} ${other}</span> <button class="action-btn blue" onclick="sendChallenge('${other}')">Duel</button></div>`; }
                     });
                     activeChallenges = [];
                     data.challenges.forEach(c => {
                         let isSender = c.challenger === user.username; let other = isSender ? c.challenged : c.challenger;
-                        if (c.status === 'pending') { if (!isSender) sl.innerHTML += `<div class="list-item"><span>⚔️ ${other}: ${c.goal}pts</span> <div><button class="action-btn green" onclick="respondChallenge(${c.id}, 'accepted')">✓</button> <button class="action-btn red" onclick="respondChallenge(${c.id}, 'declined')">X</button></div></div>`; else sl.innerHTML += `<div class="list-item"><span>⏳ Duel ${other}: ${c.goal}pts</span></div>`; } else if (c.status === 'accepted') { activeChallenges.push(c); sl.innerHTML += `<div class="list-item" style="border-color:#f9a826;"><span>🔥 vs ${other}: ${c.goal}pts</span></div>`; }
+                        if (c.status === 'pending') { if (!isSender) sl.innerHTML += `<div class="list-item"><span>⚔️ ${other}: ${c.goal.toLocaleString()}pts</span> <div><button class="action-btn green" onclick="respondChallenge(${c.id}, 'accepted')"><i class="fa-solid fa-check"></i></button> <button class="action-btn red" onclick="respondChallenge(${c.id}, 'declined')"><i class="fa-solid fa-xmark"></i></button></div></div>`; else sl.innerHTML += `<div class="list-item"><span>⏳ Duel ${other}: ${c.goal.toLocaleString()}pts</span></div>`; } else if (c.status === 'accepted') { activeChallenges.push(c); sl.innerHTML += `<div class="list-item" style="border-color:#f9a826;"><span>🔥 vs ${other}: ${c.goal.toLocaleString()}pts</span></div>`; }
                     });
                     if(sl.innerHTML === "") sl.innerHTML = "<div style='text-align:center; color:#555; font-size:11px; padding:10px;'>Add friends to duel!</div>";
                 }
@@ -637,14 +669,7 @@
         async function sendChallenge(target) { let goal = parseInt(prompt(`Enter score goal to challenge ${target}:`, "50000")); if (!goal || isNaN(goal) || goal <= 0) return; try { const res = await fetch(`${API_URL}/api/social`, { method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify({username: user.username, session_token: user.session_token, action: "send_challenge", payload: {target, goal}}) }); const data = await res.json(); if(data.success) { showToast(`Challenge sent to ${target} for ${goal} pts!`, 3000, "#f9a826"); fetchSocialData(); } else { showToast(data.error, 3000, "#ff4757"); } } catch(e) {} }
         async function respondChallenge(id, response) { try { await fetch(`${API_URL}/api/social`, { method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify({username: user.username, session_token: user.session_token, action: "respond_challenge", payload: {id, response}}) }); fetchSocialData(); } catch(e) {} }
         
-        // --- NEW: THE MISSING WIN CHALLENGE FUNCTION ---
-        async function winChallenge(id) { 
-            try { 
-                const res = await fetch(`${API_URL}/api/social`, { method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify({username: user.username, session_token: user.session_token, action: "win_challenge", payload: {id}}) }); 
-                const data = await res.json(); 
-                if(data.success) { showToast(`🏆 Duel Won! +50 Gold`, 5000, "#f1c40f"); user.guild_coins += 50; updateUI(); fetchSocialData(); } 
-            } catch(e) {} 
-        }
+        async function winChallenge(id) { try { const res = await fetch(`${API_URL}/api/social`, { method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify({username: user.username, session_token: user.session_token, action: "win_challenge", payload: {id}}) }); const data = await res.json(); if(data.success) { showToast(`🏆 Duel Won! +50 Gold`, 5000, "#f1c40f"); user.guild_coins += 50; updateUI(); fetchSocialData(); } } catch(e) {} }
 
         document.getElementById("loginBtn").onclick = async () => {
             const u = document.getElementById("usernameInput").value.trim(); const p = document.getElementById("passwordInput").value; if(!u || !p) return showToast("Enter profile credentials", 3000, "#ff4757");
@@ -667,7 +692,7 @@
                 const res = await fetch(`${API_URL}/api/save`, { method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify({ username: user.username, session_token: user.session_token, high_score: user.high_score, equipped_skin: user.equipped_skin, equipped_weapon: user.equipped_weapon, equipped_coat: user.equipped_coat, white_shards: user.w_shards, black_shards: user.b_shards, jolly_sweets: user.jolly_sweets, spooky_sweets: user.spooky_sweets, unlocked_skins: user.unlocked, unlocked_weapons: user.unlocked_weapons, unlocked_coats: user.unlocked_coats, guild_coins: user.guild_coins, added_points: added_points }) });
                 if (!res.ok) { if (res.status === 403) showToast("⚠️ Server rejected save: Anomalous data limits exceeded.", 5000, "#ff4757"); return; }
                 const data = await res.json();
-                if (data.bossDefeatedNotification) { const winMsg = document.createElement("div"); winMsg.style.position = "absolute"; winMsg.style.top = "30%"; winMsg.style.left = "50%"; winMsg.style.transform = "translate(-50%, -50%)"; winMsg.style.background = "rgba(0,0,0,0.9)"; winMsg.style.padding = "40px"; winMsg.style.border = "4px solid #ffd700"; winMsg.style.borderRadius = "12px"; winMsg.style.textAlign = "center"; winMsg.style.zIndex = "9999"; winMsg.style.boxShadow = "0 0 50px #ffd700"; winMsg.innerHTML = `<h1 style="color:#ff4757; font-size:40px; margin:0;">WORLD BOSS DESTROYED!</h1><p style="color:#fff; font-size:20px;">Massive War Coins distributed to top Alliances!</p>`; document.getElementById("game-container").appendChild(winMsg); setTimeout(() => { if (winMsg.parentNode) winMsg.remove(); }, 6000); }
+                if (data.bossDefeatedNotification) { const winMsg = document.createElement("div"); winMsg.style.position = "absolute"; winMsg.style.top = "30%"; winMsg.style.left = "50%"; winMsg.style.transform = "translate(-50%, -50%)"; winMsg.style.background = "rgba(0,0,0,0.9)"; winMsg.style.padding = "40px"; winMsg.style.border = "1px solid #4ecca3"; winMsg.style.borderRadius = "16px"; winMsg.style.textAlign = "center"; winMsg.style.zIndex = "9999"; winMsg.style.boxShadow = "0 0 50px rgba(0, 173, 181, 0.6)"; winMsg.innerHTML = `<h1 style="color:#ff4757; font-size:40px; margin:0; text-transform:uppercase;">Boss Destroyed!</h1><p style="color:#fff; font-size:20px; font-weight:bold;">Massive War Coins distributed to top Alliances!</p>`; document.getElementById("game-container").appendChild(winMsg); setTimeout(() => { if (winMsg.parentNode) winMsg.remove(); }, 6000); }
                 fetchServerData();
             } catch(e){}
         }
@@ -710,7 +735,6 @@
 
         canvas.addEventListener("mousedown", pointerDown); window.addEventListener("mouseup", pointerUp); canvas.addEventListener("touchstart", e => { e.preventDefault(); pointerDown(e); }, { passive: false }); window.addEventListener("touchend", pointerUp);
         
-        // FIX SPACEBAR SCROLL
         window.addEventListener("keydown", e => { if(e.code === "Space" && document.activeElement?.tagName !== "INPUT") { e.preventDefault(); if(gameStatus === "playing" && user.equipped_skin === 'split_neon_synth') { player.vx += 10; showToast("⚡ Synth Dash!", 1000, "#ff00ff"); } else { pointerDown(); } } }); window.addEventListener("keyup", e => { if(e.code === "Space") pointerUp(); });
 
         let lastGamepadState = false; function checkGamepad() { const pads = navigator.getGamepads ? navigator.getGamepads() : []; if(pads[0]) { const pressed = pads[0].buttons[0].pressed || pads[0].buttons[7].pressed; if(pressed && !lastGamepadState) pointerDown(); else if (!pressed && lastGamepadState) pointerUp(); lastGamepadState = pressed; } }
@@ -720,7 +744,6 @@
             checkGamepad(); flameOffset += 0.05;
             player.vy += currentGravity; player.vx *= currentFriction; player.vy *= currentFriction; player.x += player.vx; player.y += player.vy;
             
-            // COAT TRAIL PHYSICS
             player.trail.push({x: player.x, y: player.y}); if (player.trail.length > 15) player.trail.shift();
 
             spawnEnvironment(); 
@@ -743,7 +766,7 @@
                 if (rawDist >= 1000) { if (currentRealm === "devil") { user.b_shards++; localStorage.setItem("bs", user.b_shards); showToast("⬛ COLLECTED A BLACK SHARD", 4000, "#000"); } else if (currentRealm === "angel") { user.w_shards++; localStorage.setItem("ws", user.w_shards); showToast("⬜ COLLECTED A WHITE SHARD", 4000, "#fff"); } dailyTasks.shards++; updateUI(); syncSave(0); renderChangingRoom(); initGame(); }
             } else {
                 let currentScore = rawDist * calculateMultiplier(); if (Math.abs(currentScore) > Math.abs(score)) score = currentScore;
-                if(document.getElementById("scoreDisplay")) document.getElementById("scoreDisplay").textContent = Math.floor(score);
+                if(document.getElementById("scoreDisplay")) document.getElementById("scoreDisplay").textContent = Math.floor(score).toLocaleString();
                 if (activeChallenges.length > 0) { for(let i=0; i<activeChallenges.length; i++) { let c = activeChallenges[i]; if (score >= c.goal) { activeChallenges.splice(i, 1); i--; winChallenge(c.id); } } }
                 if (score >= 5000 && !localStorage.getItem("stickman_hint_5000")) { showToast("🔒 A secret skin requires a password...", 5000, "#f9a826"); localStorage.setItem("stickman_hint_5000", "true"); }
                 if (score >= 10000 && !localStorage.getItem("stickman_hint_10000")) { showToast("🗝️ The secret password is: ANGEL", 6000, "#f9a826"); localStorage.setItem("stickman_hint_10000", "true"); }
@@ -751,7 +774,6 @@
                 if (score >= 10000) { if (eq.includes("angel") && !user.unlocked.includes("exalted_angel")) { unlockSkin("exalted_angel"); showToast("✨ UNLOCKED: EXALTED ANGEL!", 5000, "#ffeaa7"); renderChangingRoom(); } if (eq.includes("devil") && !user.unlocked.includes("exalted_devil")) { unlockSkin("exalted_devil"); showToast("🔥 UNLOCKED: EXALTED DEVIL!", 5000, "#ff0055"); renderChangingRoom(); } }
                 if (rawDist > dailyTasks.dist) dailyTasks.dist = rawDist;
                 
-                // MONTHLY SWEETS DROPS
                 if (currentMonth === 9 && Math.random() < 0.0005) { user.spooky_sweets++; showToast("🎃 Found a Spooky Sweet!", 2000, "#ff8c00"); updateUI(); syncSave(0); }
                 if (currentMonth === 11 && Math.random() < 0.0005) { user.jolly_sweets++; showToast("🎄 Found a Jolly Sweet!", 2000, "#ff0000"); updateUI(); syncSave(0); }
             }
@@ -760,7 +782,7 @@
                 if (gameStatus === "realm") { showToast("THE REALM HAS REJECTED YOU.", 4000, "#ff4757"); initGame(); return; }
                 if (user.equipped_skin === 'gacha_void_stalker' && !voidStalkerSaveUsed && player.y > canvas.height) { voidStalkerSaveUsed = true; player.vy = -18; player.y = canvas.height - 50; player.vx += 5; showToast("🌌 Abyss Save Triggered!", 2000, "#4a00e0"); } else {
                     gameStatus = "lost"; dailyTasks.games++; let added = Math.max(0, Math.floor(score));
-                    if (score > user.high_score) { user.high_score = Math.floor(score); localStorage.setItem("hc", user.high_score); if(document.getElementById("highScoreDisplay")) document.getElementById("highScoreDisplay").textContent = user.high_score; }
+                    if (score > user.high_score) { user.high_score = Math.floor(score); localStorage.setItem("hc", user.high_score); if(document.getElementById("highScoreDisplay")) document.getElementById("highScoreDisplay").textContent = user.high_score.toLocaleString(); }
                     if (added > 0) user.guild_coins += Math.floor(added / 5000); 
                     let eq = user.equipped_skin || "";
                     if (rawDist < 0 && !user.unlocked.includes("devil")) { unlockSkin("devil"); showToast("🔥 UNLOCKED: THE DEVIL SKIN!", 5000, "#ff4757"); }
@@ -779,7 +801,6 @@
             let lvl = currentBoss.level; let hue = (lvl * 45) % 360; 
             ctx.save(); ctx.translate(bx, by);
             
-            // SEASONAL BOSS RESKINS
             if (currentMonth === 9) { // HALLOWEEN
                 ctx.shadowBlur = 20; ctx.shadowColor = "#ff8c00"; ctx.fillStyle = "#ff6a00"; ctx.beginPath(); ctx.arc(0, 0, 40 + Math.min(lvl * 2, 40), 0, Math.PI * 2); ctx.fill();
                 ctx.fillStyle = "#000"; ctx.beginPath(); ctx.moveTo(-15, -10); ctx.lineTo(-5, -20); ctx.lineTo(0, -10); ctx.fill(); ctx.beginPath(); ctx.moveTo(15, -10); ctx.lineTo(5, -20); ctx.lineTo(0, -10); ctx.fill(); // Eyes
@@ -790,7 +811,7 @@
                 ctx.fillStyle = "#111"; ctx.beginPath(); ctx.arc(-10, -5, 5, 0, Math.PI*2); ctx.fill(); ctx.beginPath(); ctx.arc(10, -5, 5, 0, Math.PI*2); ctx.fill(); // Eyes
             } else { // DEFAULT / EVENT
                 let evCol = currentEvent ? currentEvent.c : `hsl(${hue}, 100%, 50%)`;
-                ctx.shadowBlur = 20; ctx.shadowColor = evCol; ctx.fillStyle = `hsl(${hue}, 80%, 20%)`; ctx.beginPath(); ctx.arc(0, 0, 35 + Math.min(lvl * 2, 40), 0, Math.PI * 2); ctx.fill();
+                ctx.shadowBlur = 20 + Math.abs(Math.sin(Date.now() / 300)) * 15; ctx.shadowColor = evCol; ctx.fillStyle = `hsl(${hue}, 80%, 20%)`; ctx.beginPath(); ctx.arc(0, 0, 35 + Math.min(lvl * 2, 40), 0, Math.PI * 2); ctx.fill();
                 ctx.fillStyle = evCol; let numSpikes = 4 + (lvl % 6); let spikeLen = 50 + Math.min(lvl * 3, 50);
                 for (let i = 0; i < numSpikes; i++) { let angle = (i / numSpikes) * Math.PI * 2 + (Date.now() / 1500); ctx.beginPath(); ctx.moveTo(Math.cos(angle - 0.2) * 25, Math.sin(angle - 0.2) * 25); ctx.lineTo(Math.cos(angle) * spikeLen, Math.sin(angle) * spikeLen); ctx.lineTo(Math.cos(angle + 0.2) * 25, Math.sin(angle + 0.2) * 25); ctx.fill(); }
                 ctx.fillStyle = "#fff"; ctx.beginPath(); ctx.ellipse(0, 0, 12, 20, 0, 0, Math.PI * 2); ctx.fill(); ctx.fillStyle = "#111"; ctx.beginPath(); ctx.arc(0, 0, 6, 0, Math.PI * 2); ctx.fill(); ctx.fillStyle = evCol; ctx.beginPath(); ctx.arc(0, 0, 3, 0, Math.PI * 2); ctx.fill();
@@ -815,8 +836,10 @@
         }
 
         function drawDefaultBackground() {
-            ctx.fillStyle = "#162447"; ctx.fillRect(cameraX, 0, canvas.width, canvas.height); ctx.strokeStyle = "#1f1f3a"; ctx.lineWidth = 1;
+            let bgGrad = ctx.createLinearGradient(0, 0, 0, canvas.height); bgGrad.addColorStop(0, "#0b0b13"); bgGrad.addColorStop(1, "#16162a"); ctx.fillStyle = bgGrad; ctx.fillRect(cameraX, 0, canvas.width, canvas.height);
+            ctx.strokeStyle = "rgba(78, 204, 163, 0.05)"; ctx.lineWidth = 1;
             let startGridX = Math.floor(cameraX / 40) * 40; for (let x = startGridX; x < startGridX + canvas.width + 40; x += 40) { ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, canvas.height); ctx.stroke(); }
+            for (let y = 0; y < canvas.height; y += 40) { ctx.beginPath(); ctx.moveTo(cameraX, y); ctx.lineTo(cameraX + canvas.width, y); ctx.stroke(); }
         }
 
         function drawFusionCutscene() {
@@ -855,7 +878,7 @@
                 portals.forEach(p => { 
                     ctx.beginPath(); ctx.arc(p.x, p.y, p.radius, 0, Math.PI*2); 
                     if (p.type === "devil") { ctx.fillStyle = "rgba(0, 191, 255, 0.6)"; ctx.shadowColor = "#00bfff"; ctx.shadowBlur = 20; } 
-                    else { // VISIBLE ANGEL PORTAL
+                    else { 
                         ctx.fillStyle = "rgba(255, 255, 255, 0.9)"; ctx.shadowColor = "#ffd700"; ctx.shadowBlur = 30 + Math.sin(Date.now()/150)*15; 
                         ctx.beginPath(); ctx.arc(p.x, p.y, p.radius + Math.sin(Date.now()/200)*5, 0, Math.PI*2);
                     } 
@@ -866,9 +889,8 @@
                 bouncers.forEach(pad => { ctx.fillStyle = "#ff4757"; ctx.beginPath(); ctx.arc(pad.x, pad.y, pad.radius, 0, Math.PI*2); ctx.fill(); ctx.fillStyle = "#fff"; ctx.beginPath(); ctx.arc(pad.x, pad.y, pad.radius - 6, 0, Math.PI*2); ctx.fill(); });
 
                 if (gameStatus === "playing") drawBoss();
-                if(player.isSwinging) { ctx.strokeStyle="#fff"; ctx.lineWidth=3; ctx.beginPath(); ctx.moveTo(player.hookX, player.hookY); ctx.lineTo(player.x, player.y); ctx.stroke(); }
+                if(player.isSwinging) { ctx.strokeStyle="rgba(255,255,255,0.7)"; ctx.lineWidth=2; ctx.beginPath(); ctx.moveTo(player.hookX, player.hookY); ctx.lineTo(player.x, player.y); ctx.stroke(); }
 
-                // --- DYNAMIC PHYSICS COATS ---
                 if (user.equipped_coat && user.equipped_coat !== "none" && COATS_CONFIG[user.equipped_coat] && player.trail.length > 5) {
                     ctx.fillStyle = COATS_CONFIG[user.equipped_coat].color || "#fff";
                     ctx.beginPath(); ctx.moveTo(player.x, player.y);
@@ -879,7 +901,6 @@
 
                 ctx.save(); ctx.translate(player.x, player.y);
 
-                // --- DYNAMIC WEAPONS ---
                 if (user.equipped_weapon && user.equipped_weapon !== "none" && WEAPONS_CONFIG[user.equipped_weapon]) {
                     ctx.save();
                     let angle = Math.atan2(player.vy, player.vx); ctx.rotate(angle);
@@ -919,40 +940,47 @@
                 }
                 ctx.restore();
 
-if (user.guild && gameStatus !== "fusion") {
+                // --- SECRET HEX CODE EFFECTS ---
+                if (user.guild && gameStatus !== "fusion") {
                     let cObj = CRESTS_CONFIG[activeGuildCrest] || CRESTS_CONFIG[0];
-                    ctx.fillStyle = activeGuildColor || "#f9a826"; 
+                    let gCol = activeGuildColor || "#f9a826";
+                    ctx.save();
                     
-                    // If an icon is equipped, draw it using the Font Awesome font family
+                    if (gCol === "#CHROMA") {
+                        ctx.fillStyle = `hsl(${(Date.now() / 10) % 360}, 100%, 50%)`;
+                        ctx.shadowColor = ctx.fillStyle; ctx.shadowBlur = 10;
+                    } else if (gCol === "#BLOOD") {
+                        ctx.fillStyle = "#ff0000"; 
+                        ctx.shadowColor = "#8b0000"; ctx.shadowBlur = 5 + Math.abs(Math.sin(Date.now() / 200)) * 15;
+                    } else if (gCol === "#GHOST") {
+                        ctx.globalCompositeOperation = "lighter";
+                        ctx.fillStyle = `rgba(255, 255, 255, ${0.4 + Math.abs(Math.sin(Date.now() / 500)) * 0.5})`;
+                        ctx.shadowColor = "#ffffff"; ctx.shadowBlur = 10;
+                    } else { ctx.fillStyle = gCol; }
+
                     if (cObj.unicode) {
                         ctx.font = '900 10px "Font Awesome 6 Free"';
                         let iconWidth = ctx.measureText(cObj.unicode).width;
-                        ctx.font = "bold 10px sans-serif";
+                        ctx.font = "900 10px Montserrat, sans-serif";
                         let textWidth = ctx.measureText(` [${user.guild}]`).width;
-                        
                         let startX = player.x - ((iconWidth + textWidth) / 2);
                         
                         ctx.textAlign = "left";
-                        ctx.font = '900 10px "Font Awesome 6 Free"';
-                        ctx.fillText(cObj.unicode, startX, player.y - 20);
-                        
-                        ctx.font = "bold 10px sans-serif";
-                        ctx.fillText(` [${user.guild}]`, startX + iconWidth, player.y - 21);
+                        ctx.font = '900 10px "Font Awesome 6 Free"'; ctx.fillText(cObj.unicode, startX, player.y - 20);
+                        ctx.font = "900 10px Montserrat, sans-serif"; ctx.fillText(` [${user.guild}]`, startX + iconWidth, player.y - 21);
                     } else {
-                        // Standard text rendering if no icon is equipped
-                        ctx.font = "bold 10px sans-serif"; 
-                        ctx.textAlign = "center";
+                        ctx.font = "900 10px Montserrat, sans-serif"; ctx.textAlign = "center";
                         ctx.fillText(`[${user.guild}]`, player.x, player.y - 20);
                     }
+                    ctx.restore();
                 }
-                ctx.restore();
 
                 if (gameStatus === "menu") {
-                    ctx.fillStyle = "rgba(15, 15, 26, 0.85)"; ctx.fillRect(0, 0, canvas.width, canvas.height); ctx.fillStyle = "#fff"; ctx.font = "bold 32px system-ui"; ctx.textAlign = "center"; ctx.fillText("SWING! MMO EDITION", canvas.width/2, canvas.height/2 - 20); ctx.font = "16px system-ui"; ctx.fillStyle = "#4ecca3"; ctx.fillText("Click anywhere or hit Space to launch", canvas.width/2, canvas.height/2 + 20);
+                    ctx.fillStyle = "rgba(10, 10, 18, 0.85)"; ctx.fillRect(0, 0, canvas.width, canvas.height); ctx.fillStyle = "#fff"; ctx.font = "900 32px Montserrat, sans-serif"; ctx.textAlign = "center"; ctx.fillText("SWING! MMO EDITION", canvas.width/2, canvas.height/2 - 20); ctx.font = "600 16px Montserrat, sans-serif"; ctx.fillStyle = "#4ecca3"; ctx.fillText("Click anywhere or hit Space to launch", canvas.width/2, canvas.height/2 + 20);
                 } else if (gameStatus === "lost") {
-                    ctx.fillStyle = "rgba(15, 15, 26, 0.85)"; ctx.fillRect(0, 0, canvas.width, canvas.height); ctx.fillStyle = score < 0 ? "#ff0055" : "#e94560"; ctx.font = "bold 42px sans-serif"; ctx.textAlign = "center"; ctx.fillText(score < 0 ? "UNDERWORLD DESCENT" : "GAME OVER", canvas.width / 2, canvas.height / 2 - 20); ctx.font = "20px sans-serif"; ctx.fillStyle = "#fff"; ctx.fillText(`Final Score: ${Math.floor(score)} points`, canvas.width / 2, canvas.height / 2 + 20); ctx.fillStyle = "#888"; ctx.font = "16px sans-serif"; ctx.fillText("Press Space or Click to try again", canvas.width / 2, canvas.height / 2 + 65);
+                    ctx.fillStyle = "rgba(10, 10, 18, 0.85)"; ctx.fillRect(0, 0, canvas.width, canvas.height); ctx.fillStyle = score < 0 ? "#ff0055" : "#e94560"; ctx.font = "900 42px Montserrat, sans-serif"; ctx.textAlign = "center"; ctx.fillText(score < 0 ? "UNDERWORLD DESCENT" : "GAME OVER", canvas.width / 2, canvas.height / 2 - 20); ctx.font = "600 20px Montserrat, sans-serif"; ctx.fillStyle = "#fff"; ctx.fillText(`Final Score: ${Math.floor(score).toLocaleString()} points`, canvas.width / 2, canvas.height / 2 + 20); ctx.fillStyle = "#888"; ctx.font = "600 16px Montserrat, sans-serif"; ctx.fillText("Press Space or Click to try again", canvas.width / 2, canvas.height / 2 + 65);
                 }
-            } catch(e) { console.error("Render error caught and suppressed: ", e); }
+            } catch(e) {}
         }
 
         function loop() { if (gameStatus === "fusion") drawFusionCutscene(); else { tick(); draw(); } requestAnimationFrame(loop); }
@@ -964,12 +992,8 @@ if (user.guild && gameStatus !== "fusion") {
         document.getElementById('openTutorialBtn').addEventListener('click', openTutorial); document.getElementById('closeTutorialTopBtn').addEventListener('click', closeTutorial);
         nextBtn.addEventListener('click', () => { if (currentTutorialStep < tutorialPanes.length - 1) switchTutorialTab(currentTutorialStep + 1); else closeTutorial(); }); prevBtn.addEventListener('click', () => { if (currentTutorialStep > 0) switchTutorialTab(currentTutorialStep - 1); });
         
-        // --- DEVLOG LOGIC ---
-        const devlogOverlay = document.getElementById('devlogOverlay');
-        document.getElementById('openDevlogBtn').addEventListener('click', () => devlogOverlay.classList.add('active'));
-        document.getElementById('closeDevlogBtn').addEventListener('click', () => devlogOverlay.classList.remove('active'));
-        
-        // BULLETPROOF INITIALIZATION BOOTLOADER
+        const devlogOverlay = document.getElementById('devlogOverlay'); document.getElementById('openDevlogBtn').addEventListener('click', () => devlogOverlay.classList.add('active')); document.getElementById('closeDevlogBtn').addEventListener('click', () => devlogOverlay.classList.remove('active'));
+
         window.addEventListener('DOMContentLoaded', () => { 
             setTimeout(() => { if (!localStorage.getItem("mmo_swing_tutorial_completed")) openTutorial(); }, 800);
             try { applySkinAbilities(); } catch(e) {}
