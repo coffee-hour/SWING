@@ -967,15 +967,18 @@
                         
                         ctx.textAlign = "left";
                         ctx.font = '900 10px "Font Awesome 6 Free"'; ctx.fillText(cObj.unicode, startX, player.y - 20);
-                        ctx.font = "900 10px Montserrat, sans-serif"; ctx.fillText(` [${user.guild}]`, startX + iconWidth, player.y - 21);
-                    } else {
+                        ctx.font = "900 10px Montserrat, sans-serif"; ctx.fillText(` [${user.guild}]`, startX + iconWidth, player.y -                     } else {
                         ctx.font = "900 10px Montserrat, sans-serif"; ctx.textAlign = "center";
                         ctx.fillText(`[${user.guild}]`, player.x, player.y - 20);
                     }
                     ctx.restore();
                 }
 
+                ctx.restore(); // <--- ADD THIS ONE LINE HERE!
+
                 if (gameStatus === "menu") {
+
+
                     ctx.fillStyle = "rgba(10, 10, 18, 0.85)"; ctx.fillRect(0, 0, canvas.width, canvas.height); ctx.fillStyle = "#fff"; ctx.font = "900 32px Montserrat, sans-serif"; ctx.textAlign = "center"; ctx.fillText("SWING! MMO EDITION", canvas.width/2, canvas.height/2 - 20); ctx.font = "600 16px Montserrat, sans-serif"; ctx.fillStyle = "#4ecca3"; ctx.fillText("Click anywhere or hit Space to launch", canvas.width/2, canvas.height/2 + 20);
                 } else if (gameStatus === "lost") {
                     ctx.fillStyle = "rgba(10, 10, 18, 0.85)"; ctx.fillRect(0, 0, canvas.width, canvas.height); ctx.fillStyle = score < 0 ? "#ff0055" : "#e94560"; ctx.font = "900 42px Montserrat, sans-serif"; ctx.textAlign = "center"; ctx.fillText(score < 0 ? "UNDERWORLD DESCENT" : "GAME OVER", canvas.width / 2, canvas.height / 2 - 20); ctx.font = "600 20px Montserrat, sans-serif"; ctx.fillStyle = "#fff"; ctx.fillText(`Final Score: ${Math.floor(score).toLocaleString()} points`, canvas.width / 2, canvas.height / 2 + 20); ctx.fillStyle = "#888"; ctx.font = "600 16px Montserrat, sans-serif"; ctx.fillText("Press Space or Click to try again", canvas.width / 2, canvas.height / 2 + 65);
