@@ -177,7 +177,7 @@
         </div>
     </div>
 
-    <button class="help-fab" id="openTutorialBtn" title="How to Play & Guide">❓</button>
+    <button class="help-fab" id="openDevlogBtn" title="Devlog & Patch Notes" style="right: 75px; background: #00adb5;">📰</button>     <button class="help-fab" id="openTutorialBtn" title="How to Play & Guide">❓</button>
     <div class="tutorial-overlay" id="tutorialOverlay">
         <div class="tutorial-modal">
             <div class="tutorial-header">
@@ -220,7 +220,54 @@
             </div>
         </div>
     </div>
+<div class="tutorial-overlay" id="devlogOverlay">
+        <div class="tutorial-modal">
+            <div class="tutorial-header">
+                <h2>📰 Developer Log</h2>
+                <button class="tutorial-close" id="closeDevlogBtn">&times;</button>
+            </div>
+            <div class="tutorial-body" style="display: block;">
+                
+                <h4 style="color:#f9a826; border-bottom:1px dashed #2e2e54; padding-bottom:4px; margin-top:0;">v1.1.0 - The Seasonal MMO Update</h4>
+                <p style="font-size: 11px; color: #888; margin-top: -5px;">Released: Today</p>
+                <ul>
+                    <li><span class="tutorial-highlight">Dynamic Gear:</span> Weapons and Coats now physically render on your character in real-time as you swing!</li>
+                    <li><span class="tutorial-highlight">The Black Market:</span> Spend your Guild Gold on powerful new modifiers like the Solar Flare and Void Carapace.</li>
+                    <li><span class="tutorial-highlight">Seasonal Events:</span> Real-time calendar events! Halloween and Christmas completely change the Boss and unlock limited-time Sweets and skins.</li>
+                    <li><span class="tutorial-highlight">Guild Customization:</span> Leaders can now change their Alliance name color and purchase global Crests.</li>
+                </ul>
 
+                <h4 style="color:#00adb5; border-bottom:1px dashed #2e2e54; padding-bottom:4px; margin-top:20px;">v1.0.0 - Full Release (The Boss Raid Update)</h4>
+                <p style="font-size: 11px; color: #888; margin-top: -5px;">Released: Yesterday</p>
+                <ul>
+                    <li><span class="tutorial-highlight">World Boss Raids:</span> Added the Abyssal Leviathan. Every score registers damage against the massive server boss to earn War Coins!</li>
+                    <li><span class="tutorial-highlight">Exponential Scaling:</span> Boss HP and Alliance rewards now scale infinitely as the server levels up.</li>
+                    <li><span class="tutorial-highlight">Guild Expansion:</span> Added Guild Request system, War Coins, and Guild Titles for leaders to buff their alliance.</li>
+                    <li><span class="tutorial-highlight">Anti-Cheat Engine:</span> Implemented secure backend saving and rate limiting to protect the leaderboards.</li>
+                </ul>
+
+                <h4 style="color:#4ecca3; border-bottom:1px dashed #2e2e54; padding-bottom:4px; margin-top:20px;">v0.5.0 - Beta Release (The Alliance Update)</h4>
+                <p style="font-size: 11px; color: #888; margin-top: -5px;">Released: Earlier</p>
+                <ul>
+                    <li><span class="tutorial-highlight">Guild Base:</span> Players can now create or join 10-player Alliances using 4-character TAGs.</li>
+                    <li><span class="tutorial-highlight">Social Features:</span> Added the Friends and Rivals system. Send requests and challenge players to Score Duels.</li>
+                    <li><span class="tutorial-highlight">Daily Tasks:</span> Introduced daily quest objectives to earn extra currency.</li>
+                </ul>
+
+                <h4 style="color:#ff4757; border-bottom:1px dashed #2e2e54; padding-bottom:4px; margin-top:20px;">v0.1.0 - Alpha Release (Genesis)</h4>
+                <p style="font-size: 11px; color: #888; margin-top: -5px;">Released: The Beginning</p>
+                <ul>
+                    <li><span class="tutorial-highlight">Core Engine:</span> The Infinite Swing physics engine is born! Grapple, swing, and bounce to survive.</li>
+                    <li><span class="tutorial-highlight">Skin Vault:</span> Basic stickman physics, default skins, and the White/Black Shard Gacha fusion system implemented.</li>
+                    <li><span class="tutorial-highlight">Cloud Save:</span> The Mainframe goes online to track global scores.</li>
+                </ul>
+
+            </div>
+            <div class="tutorial-footer" style="justify-content: center;">
+                <span style="font-size:11px; color:#666;">Thanks for playing Infinite Swing!</span>
+            </div>
+        </div>
+    </div>
     <script>
         const API_URL = "https://swingworker.xaviersgames.workers.dev";
         const currentMonth = new Date().getMonth(); // 0-11
@@ -894,6 +941,11 @@
         function switchTutorialTab(step) { currentTutorialStep = step; tutorialPanes.forEach((p, idx) => p.classList.toggle('active', idx === step)); tutorialTabs.forEach((t, idx) => t.classList.toggle('active', idx === step)); prevBtn.style.visibility = step === 0 ? 'hidden' : 'visible'; nextBtn.textContent = step === tutorialPanes.length - 1 ? 'Got it!' : 'Next'; stepText.textContent = `Step ${step + 1} of ${tutorialPanes.length}`; }
         document.getElementById('openTutorialBtn').addEventListener('click', openTutorial); document.getElementById('closeTutorialTopBtn').addEventListener('click', closeTutorial);
         nextBtn.addEventListener('click', () => { if (currentTutorialStep < tutorialPanes.length - 1) switchTutorialTab(currentTutorialStep + 1); else closeTutorial(); }); prevBtn.addEventListener('click', () => { if (currentTutorialStep > 0) switchTutorialTab(currentTutorialStep - 1); });
+        
+        // --- DEVLOG LOGIC ---
+        const devlogOverlay = document.getElementById('devlogOverlay');
+        document.getElementById('openDevlogBtn').addEventListener('click', () => devlogOverlay.classList.add('active'));
+        document.getElementById('closeDevlogBtn').addEventListener('click', () => devlogOverlay.classList.remove('active'));
         
         // BULLETPROOF INITIALIZATION BOOTLOADER
         window.addEventListener('DOMContentLoaded', () => { 
