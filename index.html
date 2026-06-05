@@ -88,10 +88,13 @@
                 <div style="font-size: 11px; color: #4ecca3; margin-top: 4px; font-weight: bold;" id="guildTitleDisplay">Active Title: None</div>
                 
                 <div style="margin-top:10px; background:#111122; padding:8px; border-radius:6px; border:1px dashed #f9a826;">
-                    <div style="color:#ff9ff3; font-weight:bold; font-size:12px;"><i class="fa-solid fa-dragon"></i> Guild Pet</div>
-                    <div style="font-size:11px; color:#aaa; margin-bottom: 4px;">Level (Tokens): <span id="petTokenDisplay" style="color:#fff;">0</span> (Multi: <span id="petMultiDisplay" style="color:#4ecca3;">1.001x</span>)</div>
+                    <div style="display:flex; justify-content:space-between;">
+                        <span style="color:#ff9ff3; font-weight:bold; font-size:12px;"><i class="fa-solid fa-dragon"></i> Guild Pet</span>
+                        <span style="font-size:9px; color:#aaa; font-style:italic;">Cost doubles every 100 Tokens (1%)</span>
+                    </div>
+                    <div style="font-size:11px; color:#aaa; margin-bottom: 4px; margin-top: 4px;">Level (Tokens): <span id="petTokenDisplay" style="color:#fff;">0</span> (Multi: <span id="petMultiDisplay" style="color:#4ecca3;">1.001x</span>)</div>
                     
-                    <div style="font-size:10px; color:#f1c40f; margin-top:4px;">Boost with Gold (100 <i class="fa-solid fa-coins"></i> = 1 Token):</div>
+                    <div style="font-size:10px; color:#f1c40f; margin-top:4px;">Boost with Gold (<span id="goldPetCostDisplay">100</span> <i class="fa-solid fa-coins"></i> / Token):</div>
                     <div style="display:flex; gap:3px; margin-top:2px;">
                         <button class="action-btn blue" onclick="convertPetToken('gold', 1)" style="flex:1;">+1</button>
                         <button class="action-btn blue" onclick="convertPetToken('gold', 10)" style="flex:1;">+10</button>
@@ -101,7 +104,7 @@
                     </div>
 
                     <div id="warCoinPetDiv" style="display:none; margin-top:6px;">
-                        <div style="font-size:10px; color:#aaa;">Boost with War Coins (10 <i class="fa-solid fa-khanda"></i> = 1 Token):</div>
+                        <div style="font-size:10px; color:#aaa;">Boost with War Coins (<span id="warPetCostDisplay">10</span> <i class="fa-solid fa-khanda"></i> / Token):</div>
                         <div style="display:flex; gap:3px; margin-top:2px;">
                             <button class="action-btn red" onclick="convertPetToken('war', 1)" style="flex:1;">+1</button>
                             <button class="action-btn red" onclick="convertPetToken('war', 10)" style="flex:1;">+10</button>
@@ -218,7 +221,7 @@
                 <h4 style="color:#f9a826; border-bottom:1px dashed #2e2e54; padding-bottom:4px; margin-top:0;">v1.3.0 - The Prestige Guild Update</h4>
                 <p style="font-size: 11px; color: #888; margin-top: -5px;">Released: June 5, 2026</p>
                 <ul>
-                    <li><span class="tutorial-highlight">Guild Pets:</span> Introduced Guild Pets! Spend War Coins or Gold on Pet Tokens to permanently scale your infinite Multiplier. Backend server authoritative to apply to all alliance members!</li>
+                    <li><span class="tutorial-highlight">Exponential Pets:</span> Guild Pet exchange rates now double every 1% (100 tokens)! Backend securely calculates bulk purchases.</li>
                     <li><span class="tutorial-highlight">True Gold Skin:</span> Added a new ultra-tier skin that unlocks at 10M Score, boosting points by 15x and doubling Gold output.</li>
                     <li><span class="tutorial-highlight">Economy Balance:</span> Gold is now earned every 500 points instead of 5,000. Underworld (negative scores) restored!</li>
                     <li><span class="tutorial-highlight">Expanded Guild Ranks:</span> Added 10 new late-game Crests and 10 new Titles for the ultimate Alliances.</li>
@@ -282,7 +285,7 @@
                     <h4>🛡️ Guild Base</h4>
                     <ul>
                         <li><span class="tutorial-highlight">Guild Leader Tools:</span> Leaders can spend War Coins on massive Title Buffs, select Crests, and set custom hex Colors!</li>
-                        <li><span class="tutorial-highlight">Guild Pets:</span> All members can spend their Gold and War Coins to buy Pet Tokens, constantly increasing your Multiplier with no cap!</li>
+                        <li><span class="tutorial-highlight">Guild Pets:</span> All members can spend their Gold to buy Pet Tokens. Leaders can spend War Coins. Exchange rates double every 100 Tokens!</li>
                     </ul>
                 </div>
                 <div class="tutorial-pane">
@@ -311,7 +314,7 @@
             w_shards: parseInt(localStorage.getItem("ws")) || 0, b_shards: parseInt(localStorage.getItem("bs")) || 0, 
             jolly_sweets: 0, spooky_sweets: 0,
             guild: localStorage.getItem("gd") || "", is_leader: false, guild_coins: 0, war_coins: 0, guild_title_bonus: 1,
-            guild_pet_tokens: 0 // Tracked exclusively via backend now
+            guild_pet_tokens: 0
         };
 
         let activeGuildCrest = 0, activeGuildColor = "#f9a826", serverEventMultiplier = 1, currentBoss = null;
@@ -476,21 +479,37 @@
 
         async function convertPetToken(type, rawAmount) {
             if (!user.guild) return showToast("You must be in an Alliance!", 3000, "#ff4757");
-            
+            if (type === 'war' && !user.is_leader) return showToast("Only leaders can spend War Coins!", 3000, "#ff4757");
+
             let amount = 0;
-            if (type === 'gold') {
-                let maxTokens = Math.floor(user.guild_coins / 100);
-                if (rawAmount === 'max') amount = maxTokens;
-                else amount = Math.min(rawAmount, maxTokens);
-                
-                if (amount <= 0) return showToast("Not enough Gold! (100 = 1 Token)", 3000, "#ff4757");
-            } else if (type === 'war') {
-                if (!user.is_leader) return showToast("Only leaders can spend War Coins!", 3000, "#ff4757");
-                let maxTokens = Math.floor(user.war_coins / 10);
-                if (rawAmount === 'max') amount = maxTokens;
-                else amount = Math.min(rawAmount, maxTokens);
-                
-                if (amount <= 0) return showToast("Not enough War Coins! (10 = 1 Token)", 3000, "#ff4757");
+            let totalCost = 0;
+            let tempTokens = user.guild_pet_tokens || 0;
+            let baseCost = type === 'gold' ? 100 : 10;
+            let currencyAvailable = type === 'gold' ? user.guild_coins : user.war_coins;
+
+            if (rawAmount === 'max') {
+                while (true) {
+                    let tier = Math.floor(tempTokens / 100);
+                    let cost = baseCost * Math.pow(2, tier);
+                    if (currencyAvailable >= totalCost + cost) {
+                        totalCost += cost;
+                        tempTokens++;
+                        amount++;
+                    } else {
+                        break;
+                    }
+                }
+            } else {
+                amount = rawAmount;
+                for (let i = 0; i < amount; i++) {
+                    let tier = Math.floor(tempTokens / 100);
+                    totalCost += baseCost * Math.pow(2, tier);
+                    tempTokens++;
+                }
+            }
+
+            if (amount <= 0 || currencyAvailable < totalCost) {
+                return showToast(`Not enough ${type === 'gold' ? 'Gold' : 'War Coins'} for ${rawAmount === 'max' ? 'any tokens' : rawAmount + ' tokens'}!`, 3000, "#ff4757");
             }
 
             try {
@@ -500,8 +519,8 @@
                 });
                 const data = await res.json();
                 if (data.success) {
-                    showToast(`Added ${amount.toLocaleString()} Pet Tokens!`, 3000, "#4ecca3");
-                    if (type === 'gold') user.guild_coins -= (amount * 100);
+                    showToast(`Bought ${amount.toLocaleString()} Tokens for ${totalCost.toLocaleString()} ${type === 'gold' ? 'Gold' : 'War Coins'}!`, 3000, "#4ecca3");
+                    if (type === 'gold') user.guild_coins -= totalCost;
                     fetchServerData(); // Syncs pet tokens and war coins from backend
                 } else {
                     showToast(data.error || "Failed to upgrade pet", 3000, "#ff4757");
@@ -532,6 +551,13 @@
             if(document.getElementById("warCoinDisplay")) document.getElementById("warCoinDisplay").textContent = (user.war_coins || 0).toLocaleString();
             if(document.getElementById("petTokenDisplay")) document.getElementById("petTokenDisplay").textContent = (user.guild_pet_tokens || 0).toLocaleString();
             
+            // Exponential UI Updates
+            let currentTier = Math.floor((user.guild_pet_tokens || 0) / 100);
+            let goldCost = 100 * Math.pow(2, currentTier);
+            let warCost = 10 * Math.pow(2, currentTier);
+            if(document.getElementById("goldPetCostDisplay")) document.getElementById("goldPetCostDisplay").textContent = goldCost.toLocaleString();
+            if(document.getElementById("warPetCostDisplay")) document.getElementById("warPetCostDisplay").textContent = warCost.toLocaleString();
+
             let warPetDiv = document.getElementById("warCoinPetDiv");
             if(warPetDiv) warPetDiv.style.display = user.is_leader ? "block" : "none";
 
@@ -864,7 +890,7 @@
                 if (score > user.high_score) { user.high_score = Math.floor(score); localStorage.setItem("hc", user.high_score); if(document.getElementById("highScoreDisplay")) document.getElementById("highScoreDisplay").textContent = user.high_score.toLocaleString(); }
                 
                 if (added > 0) {
-                    let goldEarned = Math.floor(added / 500); // Changed from 5000 to 500
+                    let goldEarned = Math.floor(added / 500);
                     if (user.equipped_skin === 'true_gold') goldEarned *= 2;
                     user.guild_coins += goldEarned;
                 } 
@@ -1010,7 +1036,7 @@
                     if (eq === "yin_yang") { ctx.fillStyle = cL; ctx.beginPath(); ctx.arc(0, 0, player.radius, Math.PI / 2, Math.PI * 1.5); ctx.fill(); ctx.fillStyle = cR; ctx.beginPath(); ctx.arc(0, 0, player.radius, Math.PI * 1.5, Math.PI / 2); ctx.fill(); ctx.fillStyle = cL; ctx.beginPath(); ctx.arc(0, -player.radius / 2, player.radius / 2, 0, Math.PI * 2); ctx.fill(); ctx.fillStyle = cR; ctx.beginPath(); ctx.arc(0, player.radius / 2, player.radius / 2, 0, Math.PI * 2); ctx.fill(); ctx.fillStyle = cR; ctx.beginPath(); ctx.arc(0, -player.radius / 2, 2.5, 0, Math.PI * 2); ctx.fill(); ctx.fillStyle = cL; ctx.beginPath(); ctx.arc(0, player.radius / 2, 2.5, 0, Math.PI * 2); ctx.fill(); } else if (eq === "split_fire_ice") { ctx.fillStyle = cR; ctx.beginPath(); ctx.arc(0, 0, player.radius, Math.PI / 2, Math.PI * 1.5); ctx.fill(); ctx.beginPath(); ctx.moveTo(0, -player.radius); ctx.lineTo(-player.radius-5, -5); ctx.lineTo(0, 0); ctx.fill(); ctx.beginPath(); ctx.moveTo(0, 0); ctx.lineTo(-player.radius-8, 6); ctx.lineTo(0, player.radius); ctx.fill(); ctx.fillStyle = cL; ctx.beginPath(); ctx.arc(0, 0, player.radius, -Math.PI / 2, Math.PI / 2); ctx.fill(); ctx.beginPath(); ctx.moveTo(0, -player.radius); ctx.quadraticCurveTo(player.radius+8, -8, 0, 0); ctx.fill(); ctx.beginPath(); ctx.moveTo(0, 0); ctx.quadraticCurveTo(player.radius+10, 8, 0, player.radius); ctx.fill(); } else if (eq === "split_toxic_bio") { ctx.fillStyle = cL; ctx.beginPath(); ctx.arc(0, 0, player.radius, 0, Math.PI*2); ctx.fill(); ctx.fillStyle = cR; ctx.beginPath(); ctx.arc(-4, -4, 4, 0, Math.PI*2); ctx.fill(); ctx.beginPath(); ctx.arc(5, -2, 3, 0, Math.PI*2); ctx.fill(); ctx.beginPath(); ctx.arc(0, 6, 5, 0, Math.PI*2); ctx.fill(); ctx.strokeStyle = cR; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(0, 0, player.radius + 3, 0, Math.PI*2); ctx.stroke(); } else if (eq === "split_solar_lunar") { ctx.fillStyle = cR; ctx.beginPath(); ctx.arc(0, 0, player.radius, Math.PI/2, Math.PI*1.5); ctx.fill(); ctx.fillStyle = "#1a1a2e"; ctx.beginPath(); ctx.arc(3, 0, player.radius-2, Math.PI/2, Math.PI*1.5); ctx.fill(); ctx.fillStyle = cL; ctx.beginPath(); ctx.arc(0, 0, player.radius-2, -Math.PI/2, Math.PI/2); ctx.fill(); for(let i=-Math.PI/2; i<=Math.PI/2; i+=Math.PI/4) { ctx.beginPath(); ctx.moveTo(0, 0); ctx.lineTo(Math.cos(i-0.2)*player.radius, Math.sin(i-0.2)*player.radius); ctx.lineTo(Math.cos(i)*(player.radius+6), Math.sin(i)*(player.radius+6)); ctx.lineTo(Math.cos(i+0.2)*player.radius, Math.sin(i+0.2)*player.radius); ctx.fill(); } } else if (eq === "split_neon_synth") { ctx.fillStyle = cL; ctx.beginPath(); ctx.moveTo(0, -player.radius-2); ctx.lineTo(-player.radius-2, 0); ctx.lineTo(0, player.radius+2); ctx.fill(); ctx.fillStyle = cR; ctx.beginPath(); ctx.moveTo(0, -player.radius-2); ctx.lineTo(player.radius+2, 0); ctx.lineTo(0, player.radius+2); ctx.fill(); ctx.strokeStyle = "#1a1a2e"; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(-player.radius, -player.radius/2); ctx.lineTo(player.radius, -player.radius/2); ctx.stroke(); ctx.beginPath(); ctx.moveTo(-player.radius, player.radius/2); ctx.lineTo(player.radius, player.radius/2); ctx.stroke(); ctx.beginPath(); ctx.moveTo(0, -player.radius-2); ctx.lineTo(0, player.radius+2); ctx.stroke(); } else if (eq === "community_hero") { ctx.fillStyle = cL; ctx.beginPath(); ctx.arc(0, 0, player.radius, 0, Math.PI*2); ctx.fill(); ctx.fillStyle = cR; for(let i=0; i<Math.PI*2; i+=Math.PI/2) { ctx.beginPath(); ctx.moveTo(0,0); ctx.lineTo(Math.cos(i-0.2)*player.radius, Math.sin(i-0.2)*player.radius); ctx.lineTo(Math.cos(i)*(player.radius+8), Math.sin(i)*(player.radius+8)); ctx.lineTo(Math.cos(i+0.2)*player.radius, Math.sin(i+0.2)*player.radius); ctx.fill(); } } else { ctx.fillStyle = cL; ctx.beginPath(); ctx.arc(0, 0, player.radius, Math.PI / 2, Math.PI * 1.5); ctx.fill(); ctx.fillStyle = cR; ctx.beginPath(); ctx.arc(0, 0, player.radius, Math.PI * 1.5, Math.PI / 2); ctx.fill(); }
                 } else {
                     ctx.fillStyle = skinInfo.color || "#00adb5";
-                    if (eq === "og_stickman") { ctx.shadowColor = "#ff00ff"; ctx.shadowBlur = 15; } if (eq === "gold") { ctx.shadowColor = "#ffd700"; ctx.shadowBlur = 15; }
+                    if (eq === "og_stickman") { ctx.shadowColor = "#ff00ff"; ctx.shadowBlur = 15; } if (eq === "gold" || eq === "true_gold") { ctx.shadowColor = "#ffd700"; ctx.shadowBlur = 15; }
                     ctx.beginPath(); ctx.arc(0, 0, player.radius, 0, Math.PI * 2); ctx.fill(); ctx.shadowBlur = 0;
                     if (eq === "og_stickman") { ctx.strokeStyle = "#FFD700"; ctx.lineWidth = 1.5; ctx.beginPath(); ctx.arc(+5, -3, 4, 0, Math.PI*2); ctx.stroke(); ctx.beginPath(); ctx.moveTo(+9, -3); ctx.lineTo(+14, +4); ctx.stroke(); ctx.fillStyle = "#fff"; ctx.beginPath(); ctx.moveTo(0, +6); ctx.lineTo(-6, +3); ctx.lineTo(-6, +9); ctx.fill(); ctx.beginPath(); ctx.moveTo(0, +6); ctx.lineTo(+6, +3); ctx.lineTo(+6, +9); ctx.fill(); ctx.fillStyle = "#111"; ctx.fillRect(-10, -12, 20, 2); ctx.fillRect(-6, -24, 12, 12); ctx.fillStyle = "#FFD700"; ctx.fillRect(-6, -15, 12, 3); }
                     if (gameStatus !== "realm") {
