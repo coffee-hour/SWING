@@ -90,7 +90,7 @@
                 <div style="margin-top:10px; background:#111122; padding:8px; border-radius:6px; border:1px dashed #f9a826;">
                     <div style="display:flex; justify-content:space-between;">
                         <span style="color:#ff9ff3; font-weight:bold; font-size:12px;"><i class="fa-solid fa-dragon"></i> Guild Pet</span>
-                        <span style="font-size:9px; color:#aaa; font-style:italic;">Cost doubles every 100 Tokens (1%)</span>
+                        <span style="font-size:9px; color:#aaa; font-style:italic;">Cost doubles every 10,000 Tokens</span>
                     </div>
                     <div style="font-size:11px; color:#aaa; margin-bottom: 4px; margin-top: 4px;">Level (Tokens): <span id="petTokenDisplay" style="color:#fff;">0</span> (Multi: <span id="petMultiDisplay" style="color:#4ecca3;">1.001x</span>)</div>
                     
@@ -221,7 +221,7 @@
                 <h4 style="color:#f9a826; border-bottom:1px dashed #2e2e54; padding-bottom:4px; margin-top:0;">v1.3.0 - The Prestige Guild Update</h4>
                 <p style="font-size: 11px; color: #888; margin-top: -5px;">Released: June 5, 2026</p>
                 <ul>
-                    <li><span class="tutorial-highlight">Exponential Pets:</span> Guild Pet exchange rates now double every 1% (100 tokens)! Backend securely calculates bulk purchases.</li>
+                    <li><span class="tutorial-highlight">Exponential Pets:</span> Guild Pet exchange rates now double every 10000 tokens! Backend securely calculates bulk purchases.</li>
                     <li><span class="tutorial-highlight">True Gold Skin:</span> Added a new ultra-tier skin that unlocks at 10M Score, boosting points by 15x and doubling Gold output.</li>
                     <li><span class="tutorial-highlight">Economy Balance:</span> Gold is now earned every 500 points instead of 5,000. Underworld (negative scores) restored!</li>
                     <li><span class="tutorial-highlight">Expanded Guild Ranks:</span> Added 10 new late-game Crests and 10 new Titles for the ultimate Alliances.</li>
@@ -489,7 +489,7 @@
 
             if (rawAmount === 'max') {
                 while (true) {
-                    let tier = Math.floor(tempTokens / 100);
+                    let tier = Math.floor(tempTokens / 10000);
                     let cost = baseCost * Math.pow(2, tier);
                     if (currencyAvailable >= totalCost + cost) {
                         totalCost += cost;
@@ -502,7 +502,7 @@
             } else {
                 amount = rawAmount;
                 for (let i = 0; i < amount; i++) {
-                    let tier = Math.floor(tempTokens / 100);
+                    let tier = Math.floor(tempTokens / 10000);
                     totalCost += baseCost * Math.pow(2, tier);
                     tempTokens++;
                 }
@@ -552,7 +552,7 @@
             if(document.getElementById("petTokenDisplay")) document.getElementById("petTokenDisplay").textContent = (user.guild_pet_tokens || 0).toLocaleString();
             
             // Exponential UI Updates
-            let currentTier = Math.floor((user.guild_pet_tokens || 0) / 100);
+            let currentTier = Math.floor((user.guild_pet_tokens || 0) / 10000);
             let goldCost = 100 * Math.pow(2, currentTier);
             let warCost = 10 * Math.pow(2, currentTier);
             if(document.getElementById("goldPetCostDisplay")) document.getElementById("goldPetCostDisplay").textContent = goldCost.toLocaleString();
