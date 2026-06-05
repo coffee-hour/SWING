@@ -312,13 +312,13 @@
         else currentEvent = EVENTS.find(e => e.id === currentMonth) || EVENTS[0];
 
         // --- GAME ASSETS & CONFIGS ---
-        const CRESTS_CONFIG = {
-            0: { name: "None", emoji: "", cost: 0, desc: "No buff" },
-            1: { name: "Shield", emoji: "<i class='fa-solid fa-shield'></i>", cost: 1000, desc: "+10% Multi" },
-            2: { name: "Wolf", emoji: "<i class='fa-solid fa-paw'></i>", cost: 5000, desc: "+25% Multi" },
-            3: { name: "Dragon", emoji: "<i class='fa-solid fa-dragon'></i>", cost: 15000, desc: "+50% Multi" },
-            4: { name: "Crown", emoji: "<i class='fa-solid fa-crown'></i>", cost: 50000, desc: "+100% Multi" },
-            5: { name: "Cosmic Eye", emoji: "<i class='fa-solid fa-eye'></i>", cost: 150000, desc: "+300% Multi" }
+      const CRESTS_CONFIG = {
+            0: { name: "None", emoji: "", unicode: "", cost: 0, desc: "No buff" },
+            1: { name: "Shield", emoji: "<i class='fa-solid fa-shield'></i>", unicode: "\uf132", cost: 1000, desc: "+10% Multi" },
+            2: { name: "Wolf", emoji: "<i class='fa-solid fa-paw'></i>", unicode: "\uf1b0", cost: 5000, desc: "+25% Multi" },
+            3: { name: "Dragon", emoji: "<i class='fa-solid fa-dragon'></i>", unicode: "\uf6d5", cost: 15000, desc: "+50% Multi" },
+            4: { name: "Crown", emoji: "<i class='fa-solid fa-crown'></i>", unicode: "\uf521", cost: 50000, desc: "+100% Multi" },
+            5: { name: "Cosmic Eye", emoji: "<i class='fa-solid fa-eye'></i>", unicode: "\uf06e", cost: 150000, desc: "+300% Multi" }
         };
 
         const WEAPONS_CONFIG = {
@@ -409,7 +409,7 @@
             if (user.guild_title_bonus > 1) { m *= user.guild_title_bonus; texts.push(`🛡️ TITLE (${user.guild_title_bonus}x)`); }
             if (activeGuildCrest > 0 && CRESTS_CONFIG[activeGuildCrest]) { let cBonus = parseInt(CRESTS_CONFIG[activeGuildCrest].desc.match(/\d+/)[0]) / 100 + 1; m *= cBonus; texts.push(`${CRESTS_CONFIG[activeGuildCrest].emoji} CREST (${cBonus}x)`); }
             let finalM = parseFloat(m.toFixed(2));
-            if(document.getElementById("multiDisplay")) document.getElementById("multiDisplay").textContent = finalM + "x";
+          if(document.getElementById("guildMultiDisplay")) document.getElementById("guildMultiDisplay").innerHTML = texts.join(" | ");
             return finalM;
         }
 
@@ -919,10 +919,31 @@
                 }
                 ctx.restore();
 
-                if (user.guild && gameStatus !== "fusion") {
+if (user.guild && gameStatus !== "fusion") {
                     let cObj = CRESTS_CONFIG[activeGuildCrest] || CRESTS_CONFIG[0];
-                    ctx.fillStyle = activeGuildColor || "#f9a826"; ctx.font = "bold 10px sans-serif"; ctx.textAlign = "center";
-                    ctx.fillText(`${cObj.emoji}[${user.guild}]`, player.x, player.y - 20);
+                    ctx.fillStyle = activeGuildColor || "#f9a826"; 
+                    
+                    // If an icon is equipped, draw it using the Font Awesome font family
+                    if (cObj.unicode) {
+                        ctx.font = '900 10px "Font Awesome 6 Free"';
+                        let iconWidth = ctx.measureText(cObj.unicode).width;
+                        ctx.font = "bold 10px sans-serif";
+                        let textWidth = ctx.measureText(` [${user.guild}]`).width;
+                        
+                        let startX = player.x - ((iconWidth + textWidth) / 2);
+                        
+                        ctx.textAlign = "left";
+                        ctx.font = '900 10px "Font Awesome 6 Free"';
+                        ctx.fillText(cObj.unicode, startX, player.y - 20);
+                        
+                        ctx.font = "bold 10px sans-serif";
+                        ctx.fillText(` [${user.guild}]`, startX + iconWidth, player.y - 21);
+                    } else {
+                        // Standard text rendering if no icon is equipped
+                        ctx.font = "bold 10px sans-serif"; 
+                        ctx.textAlign = "center";
+                        ctx.fillText(`[${user.guild}]`, player.x, player.y - 20);
+                    }
                 }
                 ctx.restore();
 
