@@ -89,10 +89,26 @@
                 
                 <div style="margin-top:10px; background:#111122; padding:8px; border-radius:6px; border:1px dashed #f9a826;">
                     <div style="color:#ff9ff3; font-weight:bold; font-size:12px;"><i class="fa-solid fa-dragon"></i> Guild Pet</div>
-                    <div style="font-size:11px; color:#aaa; margin-bottom: 4px;">Tokens: <span id="petTokenDisplay" style="color:#fff;">0</span> (Multi: <span id="petMultiDisplay" style="color:#4ecca3;">1.001x</span>)</div>
-                    <div style="display:flex; gap:5px;">
-                        <button class="action-btn blue" onclick="convertPetToken('war')" style="flex:1;">10 <i class="fa-solid fa-khanda"></i> ➔ 1 Token</button>
-                        <button class="action-btn blue" onclick="convertPetToken('gold')" style="flex:1;">100 <i class="fa-solid fa-coins"></i> ➔ 1 Token</button>
+                    <div style="font-size:11px; color:#aaa; margin-bottom: 4px;">Level (Tokens): <span id="petTokenDisplay" style="color:#fff;">0</span> (Multi: <span id="petMultiDisplay" style="color:#4ecca3;">1.001x</span>)</div>
+                    
+                    <div style="font-size:10px; color:#f1c40f; margin-top:4px;">Boost with Gold (100 <i class="fa-solid fa-coins"></i> = 1 Token):</div>
+                    <div style="display:flex; gap:3px; margin-top:2px;">
+                        <button class="action-btn blue" onclick="convertPetToken('gold', 1)" style="flex:1;">+1</button>
+                        <button class="action-btn blue" onclick="convertPetToken('gold', 10)" style="flex:1;">+10</button>
+                        <button class="action-btn blue" onclick="convertPetToken('gold', 100)" style="flex:1;">+100</button>
+                        <button class="action-btn blue" onclick="convertPetToken('gold', 1000)" style="flex:1;">+1K</button>
+                        <button class="action-btn blue" onclick="convertPetToken('gold', 'max')" style="flex:1;">MAX</button>
+                    </div>
+
+                    <div id="warCoinPetDiv" style="display:none; margin-top:6px;">
+                        <div style="font-size:10px; color:#aaa;">Boost with War Coins (10 <i class="fa-solid fa-khanda"></i> = 1 Token):</div>
+                        <div style="display:flex; gap:3px; margin-top:2px;">
+                            <button class="action-btn red" onclick="convertPetToken('war', 1)" style="flex:1;">+1</button>
+                            <button class="action-btn red" onclick="convertPetToken('war', 10)" style="flex:1;">+10</button>
+                            <button class="action-btn red" onclick="convertPetToken('war', 100)" style="flex:1;">+100</button>
+                            <button class="action-btn red" onclick="convertPetToken('war', 1000)" style="flex:1;">+1K</button>
+                            <button class="action-btn red" onclick="convertPetToken('war', 'max')" style="flex:1;">MAX</button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -202,7 +218,7 @@
                 <h4 style="color:#f9a826; border-bottom:1px dashed #2e2e54; padding-bottom:4px; margin-top:0;">v1.3.0 - The Prestige Guild Update</h4>
                 <p style="font-size: 11px; color: #888; margin-top: -5px;">Released: June 5, 2026</p>
                 <ul>
-                    <li><span class="tutorial-highlight">Guild Pets:</span> Introduced Guild Pets! Spend War Coins or Gold on Pet Tokens to permanently scale your infinite Multiplier.</li>
+                    <li><span class="tutorial-highlight">Guild Pets:</span> Introduced Guild Pets! Spend War Coins or Gold on Pet Tokens to permanently scale your infinite Multiplier. Backend server authoritative to apply to all alliance members!</li>
                     <li><span class="tutorial-highlight">True Gold Skin:</span> Added a new ultra-tier skin that unlocks at 10M Score, boosting points by 15x and doubling Gold output.</li>
                     <li><span class="tutorial-highlight">Economy Balance:</span> Gold is now earned every 500 points instead of 5,000. Underworld (negative scores) restored!</li>
                     <li><span class="tutorial-highlight">Expanded Guild Ranks:</span> Added 10 new late-game Crests and 10 new Titles for the ultimate Alliances.</li>
@@ -295,7 +311,7 @@
             w_shards: parseInt(localStorage.getItem("ws")) || 0, b_shards: parseInt(localStorage.getItem("bs")) || 0, 
             jolly_sweets: 0, spooky_sweets: 0,
             guild: localStorage.getItem("gd") || "", is_leader: false, guild_coins: 0, war_coins: 0, guild_title_bonus: 1,
-            pet_tokens: parseInt(localStorage.getItem("pet_tokens")) || 0
+            guild_pet_tokens: 0 // Tracked exclusively via backend now
         };
 
         let activeGuildCrest = 0, activeGuildColor = "#f9a826", serverEventMultiplier = 1, currentBoss = null;
@@ -443,8 +459,8 @@
             if (user.equipped_skin === 'orange') m *= 2; if (user.equipped_skin === 'yellow') m *= 5; if (user.equipped_skin === 'gold') m *= 10;
             if (user.equipped_skin === 'true_gold') m *= 15;
             
-            // Guild Pet Logic
-            let petMulti = 1.001 + Math.floor(user.pet_tokens / 10) * 0.001;
+            // Guild Pet Logic (Backend authoritative)
+            let petMulti = 1.001 + Math.floor(user.guild_pet_tokens / 10) * 0.001;
             m *= petMulti;
             if (document.getElementById("petMultiDisplay")) document.getElementById("petMultiDisplay").textContent = petMulti.toFixed(3) + "x";
 
@@ -458,22 +474,41 @@
             return finalM;
         }
 
-        function convertPetToken(type) {
-            if (type === 'war' && user.war_coins >= 10) {
-                user.war_coins -= 10;
-                user.pet_tokens++;
-                showToast("Converted 10 War Coins to 1 Pet Token!", 3000, "#f9a826");
-            } else if (type === 'gold' && user.guild_coins >= 100) {
-                user.guild_coins -= 100;
-                user.pet_tokens++;
-                showToast("Converted 100 Gold to 1 Pet Token!", 3000, "#ffd700");
-            } else {
-                showToast("Not enough currency!", 3000, "#ff4757");
-                return;
+        async function convertPetToken(type, rawAmount) {
+            if (!user.guild) return showToast("You must be in an Alliance!", 3000, "#ff4757");
+            
+            let amount = 0;
+            if (type === 'gold') {
+                let maxTokens = Math.floor(user.guild_coins / 100);
+                if (rawAmount === 'max') amount = maxTokens;
+                else amount = Math.min(rawAmount, maxTokens);
+                
+                if (amount <= 0) return showToast("Not enough Gold! (100 = 1 Token)", 3000, "#ff4757");
+            } else if (type === 'war') {
+                if (!user.is_leader) return showToast("Only leaders can spend War Coins!", 3000, "#ff4757");
+                let maxTokens = Math.floor(user.war_coins / 10);
+                if (rawAmount === 'max') amount = maxTokens;
+                else amount = Math.min(rawAmount, maxTokens);
+                
+                if (amount <= 0) return showToast("Not enough War Coins! (10 = 1 Token)", 3000, "#ff4757");
             }
-            localStorage.setItem("pet_tokens", user.pet_tokens);
-            updateUI();
-            syncSave(0);
+
+            try {
+                const res = await fetch(`${API_URL}/api/guild/upgrade_pet`, { 
+                    method: "POST", headers:{"Content-Type":"application/json"}, 
+                    body: JSON.stringify({ username: user.username, session_token: user.session_token, type: type, amount: amount }) 
+                });
+                const data = await res.json();
+                if (data.success) {
+                    showToast(`Added ${amount.toLocaleString()} Pet Tokens!`, 3000, "#4ecca3");
+                    if (type === 'gold') user.guild_coins -= (amount * 100);
+                    fetchServerData(); // Syncs pet tokens and war coins from backend
+                } else {
+                    showToast(data.error || "Failed to upgrade pet", 3000, "#ff4757");
+                }
+            } catch(e) {
+                showToast("Server Error", 3000, "#ff4757");
+            }
         }
 
         function checkTaskCompletion() {
@@ -495,8 +530,11 @@
             if(document.getElementById("blackShardDisplay")) document.getElementById("blackShardDisplay").textContent = user.b_shards || 0;
             if(document.getElementById("guildCoinDisplay")) document.getElementById("guildCoinDisplay").textContent = (user.guild_coins || 0).toLocaleString();
             if(document.getElementById("warCoinDisplay")) document.getElementById("warCoinDisplay").textContent = (user.war_coins || 0).toLocaleString();
-            if(document.getElementById("petTokenDisplay")) document.getElementById("petTokenDisplay").textContent = (user.pet_tokens || 0).toLocaleString();
+            if(document.getElementById("petTokenDisplay")) document.getElementById("petTokenDisplay").textContent = (user.guild_pet_tokens || 0).toLocaleString();
             
+            let warPetDiv = document.getElementById("warCoinPetDiv");
+            if(warPetDiv) warPetDiv.style.display = user.is_leader ? "block" : "none";
+
             if(eventCurrencyType !== "gold") {
                 const sDisp = document.getElementById("sweetsDisplayContainer");
                 if (sDisp) { sDisp.style.display = "block"; document.getElementById("sweetsDisplay").textContent = (eventCurrencyType==="jolly"?user.jolly_sweets:user.spooky_sweets) || 0; }
@@ -513,7 +551,9 @@
             checkTaskCompletion();
 
             const fuseBtn = document.getElementById("fuseBtn");
-            if (user.w_shards >= 1 && user.b_shards >= 1 && fuseBtn) { if (checkUnlockStatus("yin_yang")) { fuseBtn.style.display = "none"; } else { fuseBtn.style.display = "block"; fuseBtn.textContent = "FUSE SHARDS FOR YIN YANG"; fuseBtn.style.background = "linear-gradient(90deg, #ffffff 50%, #000000 50%)"; fuseBtn.style.color = "#f9a826"; } } else if(fuseBtn) { fuseBtn.style.display = "none"; }
+            if (user.w_shards >= 1 && user.b_shards >= 1 && !checkUnlockStatus("yin_yang")) { 
+                fuseBtn.style.display = "block"; fuseBtn.textContent = "FUSE SHARDS FOR YIN YANG"; fuseBtn.style.background = "linear-gradient(90deg, #ffffff 50%, #000000 50%)"; fuseBtn.style.color = "#f9a826"; 
+            } else if(fuseBtn) { fuseBtn.style.display = "none"; }
             calculateMultiplier();
         }
 
@@ -634,6 +674,8 @@
                         if(document.getElementById("guildSizeDisplay")) document.getElementById("guildSizeDisplay").textContent = `${data.userGuildInfo.members_count} / 10 Players`;
                         if(document.getElementById("warCoinDisplay")) document.getElementById("warCoinDisplay").textContent = data.userGuildInfo.war_coins.toLocaleString();
                         user.war_coins = data.userGuildInfo.war_coins; activeGuildColor = data.userGuildInfo.name_color || "#f9a826"; activeGuildCrest = data.userGuildInfo.active_crest_id || 0;
+                        user.guild_pet_tokens = data.userGuildInfo.pet_tokens || 0;
+                        
                         if(document.getElementById("guildColorPicker")) document.getElementById("guildColorPicker").value = activeGuildColor;
                         let currentTitle = GUILD_TITLES.find(t => t.id === data.userGuildInfo.active_title_id);
                         if (currentTitle) { if(document.getElementById("guildTitleDisplay")) document.getElementById("guildTitleDisplay").textContent = `Active Title: ${currentTitle.name} (${currentTitle.desc})`; user.guild_title_bonus = currentTitle.multi; } else { if(document.getElementById("guildTitleDisplay")) document.getElementById("guildTitleDisplay").textContent = "Active Title: None"; user.guild_title_bonus = 1; }
@@ -648,8 +690,12 @@
                         renderGuildShop(data.userGuildInfo ? data.userGuildInfo.unlocked_titles : "[]", data.userGuildInfo ? data.userGuildInfo.unlocked_crests : "[]");
                     }
                     applySkinAbilities(); updateUI();
+                } else {
+                    console.error("Server reported an error:", data.error);
                 }
-            } catch(e) {}
+            } catch(e) {
+                console.error("Critical error fetching Server Data.", e);
+            }
         }
 
         function renderGuildShop(unlockedTitlesStr, unlockedCrestsStr) {
@@ -709,8 +755,8 @@
             try {
                 const hashedP = await hashPassword(p); const res = await fetch(`${API_URL}/api/login`, { method:"POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify({username:u, password_hash:hashedP}) }); const data = await res.json();
                 if(data.success) {
-                    user.username = u; user.session_token = data.userData.session_token; user.high_score = data.userData.high_score || 0; user.equipped_skin = data.userData.equipped_skin || "default"; user.equipped_weapon = data.userData.equipped_weapon || "none"; user.equipped_coat = data.userData.equipped_coat || "none"; user.unlocked_weapons = data.userData.unlocked_weapons || ["none"]; user.unlocked_coats = data.userData.unlocked_coats || ["none"]; user.w_shards = data.userData.white_shards || 0; user.b_shards = data.userData.black_shards || 0; user.jolly_sweets = data.userData.jolly_sweets || 0; user.spooky_sweets = data.userData.spooky_sweets || 0; user.unlocked = data.userData.unlocked_skins || ["default"]; user.guild = data.userData.guild || ""; user.guild_coins = data.userData.guild_coins || 0; user.is_leader = data.userData.is_guild_leader === 1 || data.userData.is_guild_leader === true; user.pet_tokens = data.userData.pet_tokens || 0;
-                    localStorage.setItem("session_token", user.session_token); localStorage.setItem("hc", user.high_score); localStorage.setItem("eq", user.equipped_skin); localStorage.setItem("ws", user.w_shards); localStorage.setItem("bs", user.b_shards); localStorage.setItem("gd", user.guild); localStorage.setItem("pet_tokens", user.pet_tokens);
+                    user.username = u; user.session_token = data.userData.session_token; user.high_score = data.userData.high_score || 0; user.equipped_skin = data.userData.equipped_skin || "default"; user.equipped_weapon = data.userData.equipped_weapon || "none"; user.equipped_coat = data.userData.equipped_coat || "none"; user.unlocked_weapons = data.userData.unlocked_weapons || ["none"]; user.unlocked_coats = data.userData.unlocked_coats || ["none"]; user.w_shards = data.userData.white_shards || 0; user.b_shards = data.userData.black_shards || 0; user.jolly_sweets = data.userData.jolly_sweets || 0; user.spooky_sweets = data.userData.spooky_sweets || 0; user.unlocked = data.userData.unlocked_skins || ["default"]; user.guild = data.userData.guild || ""; user.guild_coins = data.userData.guild_coins || 0; user.is_leader = data.userData.is_guild_leader === 1 || data.userData.is_guild_leader === true;
+                    localStorage.setItem("session_token", user.session_token); localStorage.setItem("hc", user.high_score); localStorage.setItem("eq", user.equipped_skin); localStorage.setItem("ws", user.w_shards); localStorage.setItem("bs", user.b_shards); localStorage.setItem("gd", user.guild);
                     document.getElementById("authBar").style.display = "none"; document.getElementById("welcomeMessage").textContent = `👤 Player: ${u}`; document.getElementById("userProfileBar").style.display = "flex";
                     applySkinAbilities(); updateUI(); renderChangingRoom(); renderGearShop(); fetchServerData(); fetchSocialData(); showToast("Profile Synced to Mainframe!");
                 } else showToast(data.error, 4000, "#ff4757");
@@ -722,7 +768,7 @@
         async function syncSave(added_points = 0) {
             if(!user.session_token) return;
             try {
-                const res = await fetch(`${API_URL}/api/save`, { method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify({ username: user.username, session_token: user.session_token, high_score: user.high_score, equipped_skin: user.equipped_skin, equipped_weapon: user.equipped_weapon, equipped_coat: user.equipped_coat, white_shards: user.w_shards, black_shards: user.b_shards, jolly_sweets: user.jolly_sweets, spooky_sweets: user.spooky_sweets, unlocked_skins: user.unlocked, unlocked_weapons: user.unlocked_weapons, unlocked_coats: user.unlocked_coats, guild_coins: user.guild_coins, added_points: added_points, pet_tokens: user.pet_tokens }) });
+                const res = await fetch(`${API_URL}/api/save`, { method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify({ username: user.username, session_token: user.session_token, high_score: user.high_score, equipped_skin: user.equipped_skin, equipped_weapon: user.equipped_weapon, equipped_coat: user.equipped_coat, white_shards: user.w_shards, black_shards: user.b_shards, jolly_sweets: user.jolly_sweets, spooky_sweets: user.spooky_sweets, unlocked_skins: user.unlocked, unlocked_weapons: user.unlocked_weapons, unlocked_coats: user.unlocked_coats, guild_coins: user.guild_coins, added_points: added_points }) });
                 if (!res.ok) { if (res.status === 403) showToast("⚠️ Server rejected save: Anomalous data limits exceeded.", 5000, "#ff4757"); return; }
                 const data = await res.json();
                 if (data.bossDefeatedNotification) { const winMsg = document.createElement("div"); winMsg.style.position = "absolute"; winMsg.style.top = "30%"; winMsg.style.left = "50%"; winMsg.style.transform = "translate(-50%, -50%)"; winMsg.style.background = "rgba(0,0,0,0.9)"; winMsg.style.padding = "40px"; winMsg.style.border = "1px solid #4ecca3"; winMsg.style.borderRadius = "16px"; winMsg.style.textAlign = "center"; winMsg.style.zIndex = "9999"; winMsg.style.boxShadow = "0 0 50px rgba(0, 173, 181, 0.6)"; winMsg.innerHTML = `<h1 style="color:#ff4757; font-size:40px; margin:0; text-transform:uppercase;">Boss Destroyed!</h1><p style="color:#fff; font-size:20px; font-weight:bold;">Massive War Coins distributed to top Alliances!</p>`; document.getElementById("game-container").appendChild(winMsg); setTimeout(() => { if (winMsg.parentNode) winMsg.remove(); }, 6000); }
