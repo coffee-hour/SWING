@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>↺</text></svg>">
     <title>Swing!</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2224540154034114" crossorigin="anonymous"></script>
     <style>
         body { margin: 0; background: #0f0f1a; display: flex; justify-content: center; align-items: flex-start; min-height: 100vh; overflow-y: auto; font-family: system-ui, sans-serif; color: white; user-select: none; padding: 10px 0; touch-action: manipulation; }
@@ -71,7 +72,7 @@
 
     <div id="main-layout">
         <div class="side-panel">
-            <h3>🛡️ Guild Base</h3>
+            <h3><i class="fa-solid fa-shield-halved"></i> Guild Base</h3>
             <div style="margin-bottom: 12px; background: #17172e; padding: 10px; border-radius: 8px; border: 1px solid #2e2e54;">
                 <div style="display:flex; gap:5px;">
                     <input type="text" id="guildInput" maxlength="4" placeholder="TAG" class="auth-input" style="width: 60px; text-transform: uppercase;">
@@ -83,12 +84,12 @@
                     <span>Guild: <span id="currentGuildDisplay" class="tag" style="font-size:14px;">None</span></span>
                     <span id="guildSizeDisplay" style="color:#aaa;">0/10 Players</span>
                 </div>
-                <div style="font-size: 12px; color: #ffd700; margin-top: 4px;">War Coins: <span id="warCoinDisplay">0</span> ⚔️ | Gold: <span id="guildCoinDisplay">0</span> 🪙</div>
+                <div style="font-size: 12px; color: #ffd700; margin-top: 4px;">War Coins: <span id="warCoinDisplay">0</span> <i class="fa-solid fa-khanda" style="color:#aaa;"></i> | Gold: <span id="guildCoinDisplay">0</span> <i class="fa-solid fa-coins" style="color:#ffd700;"></i></div>
                 <div style="font-size: 11px; color: #4ecca3; margin-top: 4px; font-weight: bold;" id="guildTitleDisplay">Active Title: None</div>
             </div>
             
             <div id="leaderPanel" style="display:none; background: rgba(30,30,55,0.6); padding:8px; border-radius:6px; border: 1px dashed #4ecca3; font-size:11px;">
-                <span style="color:#4ecca3; font-weight:bold;">👑 Leader Controls</span>
+                <span style="color:#4ecca3; font-weight:bold;"><i class="fa-solid fa-crown"></i> Leader Controls</span>
                 <div style="margin-top:6px; display:flex; gap:5px; align-items:center;">
                     <span style="font-size:10px; color:#aaa;">Tag Color:</span>
                     <input type="color" id="guildColorPicker" value="#f9a826" style="width:30px; height:20px; border:none; background:none; cursor:pointer;">
@@ -108,7 +109,7 @@
             <h4 style="margin:12px 0 5px 0; font-size: 13px; color:#f1c40f;">Top Alliances (Score)</h4>
             <div id="guildScoreList" class="list-container" style="flex: 0.5;">Loading...</div>
 
-            <h4 style="margin:12px 0 5px 0; font-size: 13px; color:#0be881;">📜 Daily Tasks (+20 Gold)</h4>
+            <h4 style="margin:12px 0 5px 0; font-size: 13px; color:#0be881;"><i class="fa-solid fa-scroll"></i> Daily Tasks (+20 Gold)</h4>
             <div class="list-container" style="flex: 0.4;">
                 <div class="list-item"><span>Swing 10,000m</span> <span style="color:#4ecca3;" id="task1">0%</span></div>
                 <div class="list-item"><span>Play 5 Games</span> <span style="color:#4ecca3;" id="task2">0/5</span></div>
@@ -149,7 +150,7 @@
 
             <div id="bottom-panels">
                 <div class="panel-box" style="flex: 1.2;">
-                    <h4>👕 Skins Vault</h4>
+                    <h4><i class="fa-solid fa-shirt"></i> Skins Vault</h4>
                     <button id="fuseBtn">FUSE SHARDS & ROLL GACHA</button>
                     <div class="skins-grid" id="skinsGrid"></div>
                 </div>
@@ -166,9 +167,9 @@
         </div>
 
         <div class="side-panel">
-            <h3>🏆 Leaderboard</h3>
+            <h3><i class="fa-solid fa-trophy"></i> Leaderboard</h3>
             <div id="leaderboardList" class="list-container" style="flex: 1;">Loading ranks...</div>
-            <h3 style="margin-top: 15px;">🤝 Friends & Rivals</h3>
+            <h3 style="margin-top: 15px;<i class="fa-solid fa-handshake"></i> Friends & Rivals</h3>
             <div style="display:flex; gap:5px; margin-bottom: 5px;">
                 <input type="text" id="friendInput" placeholder="Enter name..." class="auth-input" style="font-size:11px; flex:1;">
                 <button id="addFriendBtn" class="auth-btn" style="background:#00adb5; font-size:11px; padding:6px 10px;">Add</button>
@@ -177,7 +178,7 @@
         </div>
     </div>
 
-    <button class="help-fab" id="openDevlogBtn" title="Devlog & Patch Notes" style="right: 75px; background: #00adb5;">📰</button>     <button class="help-fab" id="openTutorialBtn" title="How to Play & Guide">❓</button>
+    <button class="help-fab" id="openDevlogBtn" title="Devlog & Patch Notes" style="right: 75px; background: #00adb5;">📰</button>     <button class="help-fab" id="openTutorialBtn" title="How to Play & Guide"><i class="fa-solid fa-circle-question"></i></button>
     <div class="tutorial-overlay" id="tutorialOverlay">
         <div class="tutorial-modal">
             <div class="tutorial-header">
@@ -223,7 +224,7 @@
 <div class="tutorial-overlay" id="devlogOverlay">
         <div class="tutorial-modal">
             <div class="tutorial-header">
-                <h2>📰 Developer Log</h2>
+                <h2><i class="fa-solid fa-newspaper"></i> Developer Log</h2>
                 <button class="tutorial-close" id="closeDevlogBtn">&times;</button>
             </div>
             <div class="tutorial-body" style="display: block;">
@@ -313,11 +314,11 @@
         // --- GAME ASSETS & CONFIGS ---
         const CRESTS_CONFIG = {
             0: { name: "None", emoji: "", cost: 0, desc: "No buff" },
-            1: { name: "Shield", emoji: "🛡️", cost: 1000, desc: "+10% Multi" },
-            2: { name: "Wolf", emoji: "🐺", cost: 5000, desc: "+25% Multi" },
-            3: { name: "Dragon", emoji: "🐉", cost: 15000, desc: "+50% Multi" },
-            4: { name: "Crown", emoji: "👑", cost: 50000, desc: "+100% Multi" },
-            5: { name: "Cosmic Eye", emoji: "👁️‍🗨️", cost: 150000, desc: "+300% Multi" }
+            1: { name: "Shield", emoji: "<i class='fa-solid fa-shield'></i>", cost: 1000, desc: "+10% Multi" },
+            2: { name: "Wolf", emoji: "<i class='fa-solid fa-paw'></i>", cost: 5000, desc: "+25% Multi" },
+            3: { name: "Dragon", emoji: "<i class='fa-solid fa-dragon'></i>", cost: 15000, desc: "+50% Multi" },
+            4: { name: "Crown", emoji: "<i class='fa-solid fa-crown'></i>", cost: 50000, desc: "+100% Multi" },
+            5: { name: "Cosmic Eye", emoji: "<i class='fa-solid fa-eye'></i>", cost: 150000, desc: "+300% Multi" }
         };
 
         const WEAPONS_CONFIG = {
