@@ -694,7 +694,7 @@
                 if(document.getElementById("scoreDisplay")) document.getElementById("scoreDisplay").textContent = `REALM: ${Math.max(0, rawDist)} / 1000`;
                 if (rawDist >= 1000) { if (currentRealm === "devil") { user.b_shards++; localStorage.setItem("bs", user.b_shards); showToast("⬛ COLLECTED A BLACK SHARD", 4000, "#000"); } else if (currentRealm === "angel") { user.w_shards++; localStorage.setItem("ws", user.w_shards); showToast("⬜ COLLECTED A WHITE SHARD", 4000, "#fff"); } dailyTasks.shards++; updateUI(); syncSave(0); renderChangingRoom(); initGame(); }
             } else {
-                let currentScore = rawDist * calculateMultiplier(); if (currentScore > score) score = currentScore;
+                let currentScore = rawDist * calculateMultiplier(); if (Math.abs(currentScore) > Math.abs(score)) score = currentScore;
                 if(document.getElementById("scoreDisplay")) document.getElementById("scoreDisplay").textContent = Math.floor(score);
                 if (activeChallenges.length > 0) { for(let i=0; i<activeChallenges.length; i++) { let c = activeChallenges[i]; if (score >= c.goal) { activeChallenges.splice(i, 1); i--; winChallenge(c.id); } } }
                 if (score >= 5000 && !localStorage.getItem("stickman_hint_5000")) { showToast("🔒 A secret skin requires a password...", 5000, "#f9a826"); localStorage.setItem("stickman_hint_5000", "true"); }
