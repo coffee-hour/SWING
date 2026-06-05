@@ -169,7 +169,7 @@
         <div class="side-panel">
             <h3><i class="fa-solid fa-trophy"></i> Leaderboard</h3>
             <div id="leaderboardList" class="list-container" style="flex: 1;">Loading ranks...</div>
-            <h3 style="margin-top: 15px;<i class="fa-solid fa-handshake"></i> Friends & Rivals</h3>
+            <h3 style="margin-top: 15px;"><i class="fa-solid fa-handshake"></i> Friends & Rivals</h3>
             <div style="display:flex; gap:5px; margin-bottom: 5px;">
                 <input type="text" id="friendInput" placeholder="Enter name..." class="auth-input" style="font-size:11px; flex:1;">
                 <button id="addFriendBtn" class="auth-btn" style="background:#00adb5; font-size:11px; padding:6px 10px;">Add</button>
@@ -178,7 +178,31 @@
         </div>
     </div>
 
-    <button class="help-fab" id="openDevlogBtn" title="Devlog & Patch Notes" style="right: 75px; background: #00adb5;">📰</button>     <button class="help-fab" id="openTutorialBtn" title="How to Play & Guide"><i class="fa-solid fa-circle-question"></i></button>
+    <button class="help-fab" id="openDevlogBtn" title="Devlog & Patch Notes" style="right: 75px; background: #00adb5;"><i class="fa-solid fa-newspaper"></i></button>
+    <button class="help-fab" id="openTutorialBtn" title="How to Play & Guide"><i class="fa-solid fa-circle-question"></i></button>
+    
+    <div class="tutorial-overlay" id="devlogOverlay">
+        <div class="tutorial-modal">
+            <div class="tutorial-header">
+                <h2><i class="fa-solid fa-newspaper"></i> Developer Log</h2>
+                <button class="tutorial-close" id="closeDevlogBtn">&times;</button>
+            </div>
+            <div class="tutorial-body" style="display: block;">
+                <h4 style="color:#f9a826; border-bottom:1px dashed #2e2e54; padding-bottom:4px; margin-top:0;">v1.1.0 - The Seasonal MMO Update</h4>
+                <p style="font-size: 11px; color: #888; margin-top: -5px;">Released: Today</p>
+                <ul>
+                    <li><span class="tutorial-highlight">Dynamic Gear:</span> Weapons and Coats now physically render on your character in real-time as you swing!</li>
+                    <li><span class="tutorial-highlight">The Black Market:</span> Spend your Guild Gold on powerful new modifiers like the Solar Flare and Void Carapace.</li>
+                    <li><span class="tutorial-highlight">Godly Good Variant:</span> A new ultra-tier skin available for the most dedicated players! Unlocks at 10M Score!</li>
+                    <li><span class="tutorial-highlight">Underworld Uncapped:</span> You can now reach the Underworld again. Negative scores are back!</li>
+                </ul>
+            </div>
+            <div class="tutorial-footer" style="justify-content: center;">
+                <span style="font-size:11px; color:#666;">Thanks for playing Infinite Swing!</span>
+            </div>
+        </div>
+    </div>
+
     <div class="tutorial-overlay" id="tutorialOverlay">
         <div class="tutorial-modal">
             <div class="tutorial-header">
@@ -196,13 +220,13 @@
                     <h4>🕹️ Core Mechanics & Physics</h4>
                     <ul>
                         <li><span class="tutorial-highlight">Grapple Hook:</span> Click anywhere or tap <span class="tutorial-highlight">Spacebar</span> to shoot a line and swing.</li>
-                        <li><span class="tutorial-highlight">Score Scaling:</span> Distance traversed applies your Total Multiplier!</li>
+                        <li><span class="tutorial-highlight">Score Scaling:</span> Distance traversed applies your Total Multiplier! Swing backwards to drop into the Underworld.</li>
                     </ul>
                 </div>
                 <div class="tutorial-pane">
                     <h4>⚔️ The Optimized Build</h4>
                     <ul>
-                        <li><span class="tutorial-highlight">Weapons & Coats:</span> Buy in the Black Market using Guild Coins. Weapons add massive Multipliers, while Coats manipulate gravity and hook range.</li>
+                        <li><span class="tutorial-highlight">Weapons & Coats:</span> Buy in the Black Market using Gold. Weapons add massive Multipliers, while Coats manipulate gravity and hook range.</li>
                     </ul>
                 </div>
                 <div class="tutorial-pane">
@@ -221,54 +245,7 @@
             </div>
         </div>
     </div>
-<div class="tutorial-overlay" id="devlogOverlay">
-        <div class="tutorial-modal">
-            <div class="tutorial-header">
-                <h2><i class="fa-solid fa-newspaper"></i> Developer Log</h2>
-                <button class="tutorial-close" id="closeDevlogBtn">&times;</button>
-            </div>
-            <div class="tutorial-body" style="display: block;">
-                
-                <h4 style="color:#f9a826; border-bottom:1px dashed #2e2e54; padding-bottom:4px; margin-top:0;">v1.1.0 - The Seasonal MMO Update</h4>
-                <p style="font-size: 11px; color: #888; margin-top: -5px;">Released: Today</p>
-                <ul>
-                    <li><span class="tutorial-highlight">Dynamic Gear:</span> Weapons and Coats now physically render on your character in real-time as you swing!</li>
-                    <li><span class="tutorial-highlight">The Black Market:</span> Spend your Guild Gold on powerful new modifiers like the Solar Flare and Void Carapace.</li>
-                    <li><span class="tutorial-highlight">Seasonal Events:</span> Real-time calendar events! Halloween and Christmas completely change the Boss and unlock limited-time Sweets and skins.</li>
-                    <li><span class="tutorial-highlight">Guild Customization:</span> Leaders can now change their Alliance name color and purchase global Crests.</li>
-                </ul>
 
-                <h4 style="color:#00adb5; border-bottom:1px dashed #2e2e54; padding-bottom:4px; margin-top:20px;">v1.0.0 - Full Release (The Boss Raid Update)</h4>
-                <p style="font-size: 11px; color: #888; margin-top: -5px;">Released: Yesterday</p>
-                <ul>
-                    <li><span class="tutorial-highlight">World Boss Raids:</span> Added the Abyssal Leviathan. Every score registers damage against the massive server boss to earn War Coins!</li>
-                    <li><span class="tutorial-highlight">Exponential Scaling:</span> Boss HP and Alliance rewards now scale infinitely as the server levels up.</li>
-                    <li><span class="tutorial-highlight">Guild Expansion:</span> Added Guild Request system, War Coins, and Guild Titles for leaders to buff their alliance.</li>
-                    <li><span class="tutorial-highlight">Anti-Cheat Engine:</span> Implemented secure backend saving and rate limiting to protect the leaderboards.</li>
-                </ul>
-
-                <h4 style="color:#4ecca3; border-bottom:1px dashed #2e2e54; padding-bottom:4px; margin-top:20px;">v0.5.0 - Beta Release (The Alliance Update)</h4>
-                <p style="font-size: 11px; color: #888; margin-top: -5px;">Released: Earlier</p>
-                <ul>
-                    <li><span class="tutorial-highlight">Guild Base:</span> Players can now create or join 10-player Alliances using 4-character TAGs.</li>
-                    <li><span class="tutorial-highlight">Social Features:</span> Added the Friends and Rivals system. Send requests and challenge players to Score Duels.</li>
-                    <li><span class="tutorial-highlight">Daily Tasks:</span> Introduced daily quest objectives to earn extra currency.</li>
-                </ul>
-
-                <h4 style="color:#ff4757; border-bottom:1px dashed #2e2e54; padding-bottom:4px; margin-top:20px;">v0.1.0 - Alpha Release (Genesis)</h4>
-                <p style="font-size: 11px; color: #888; margin-top: -5px;">Released: The Beginning</p>
-                <ul>
-                    <li><span class="tutorial-highlight">Core Engine:</span> The Infinite Swing physics engine is born! Grapple, swing, and bounce to survive.</li>
-                    <li><span class="tutorial-highlight">Skin Vault:</span> Basic stickman physics, default skins, and the White/Black Shard Gacha fusion system implemented.</li>
-                    <li><span class="tutorial-highlight">Cloud Save:</span> The Mainframe goes online to track global scores.</li>
-                </ul>
-
-            </div>
-            <div class="tutorial-footer" style="justify-content: center;">
-                <span style="font-size:11px; color:#666;">Thanks for playing Infinite Swing!</span>
-            </div>
-        </div>
-    </div>
     <script>
         const API_URL = "https://swingworker.xaviersgames.workers.dev";
         const currentMonth = new Date().getMonth(); // 0-11
@@ -305,14 +282,11 @@
             { id: 10, name: "Turkey", cName: "Gobbler", s1: "Pilgrim", w1: "Gravy Boat", c1: "Feather Cape", c: "#8b4513" }
         ];
 
-        let eventCurrencyType = "gold"; 
-        let currentEvent = null;
-        if (currentMonth === 9) eventCurrencyType = "spooky";
-        else if (currentMonth === 11) eventCurrencyType = "jolly";
-        else currentEvent = EVENTS.find(e => e.id === currentMonth) || EVENTS[0];
+        let eventCurrencyType = "gold", currentEvent = null;
+        if (currentMonth === 9) eventCurrencyType = "spooky"; else if (currentMonth === 11) eventCurrencyType = "jolly"; else currentEvent = EVENTS.find(e => e.id === currentMonth) || EVENTS[0];
 
-        // --- GAME ASSETS & CONFIGS ---
-      const CRESTS_CONFIG = {
+        // --- GAME ASSETS & CONFIGS (WITH UNICODE FOR CANVAS) ---
+        const CRESTS_CONFIG = {
             0: { name: "None", emoji: "", unicode: "", cost: 0, desc: "No buff" },
             1: { name: "Shield", emoji: "<i class='fa-solid fa-shield'></i>", unicode: "\uf132", cost: 1000, desc: "+10% Multi" },
             2: { name: "Wolf", emoji: "<i class='fa-solid fa-paw'></i>", unicode: "\uf1b0", cost: 5000, desc: "+25% Multi" },
@@ -351,6 +325,7 @@
             orange: { name: "Orange", color: "#ffa500", score: 10000, ability: "Perm +2.0x Multi", curr: "gold" }, 
             yellow: { name: "Yellow", color: "#ffff00", score: 20000, ability: "Perm +5.0x Multi", curr: "gold" }, 
             gold: { name: "Gold", color: "#ffd700", score: 100000, ability: "Perm +10.0x Multi", curr: "gold" },
+            good_variant: { name: "Godly Good", color: "#FFD700", score: 10000000, ability: "+15.0x Multi, 2x Gold", curr: "gold" },
             guild_master: { name: "Guild Master", color: "#8e44ad", condition: "Costs 1000 Gold", ability: "Guild Leader Status", curr: "gold" },
             angelic: { name: "Angelic", color: "#ffffff", condition: "Password", ability: "Sky Island Portal", curr: "gold" },
             devil: { name: "Devil", color: "#ff0055", condition: "???", ability: "Underworld Portal", curr: "gold" }, 
@@ -358,7 +333,6 @@
             gacha_void_stalker: { name: "Void Stalker", color: "#4a00e0", splitColor: "#000000", condition: "Gacha", ability: "Abyss Save", curr: "gold" }
         };
 
-        // INJECT SEASONAL ITEMS SAFELY
         if (eventCurrencyType === "jolly") {
             SKINS_CONFIG.jolly = { name: "Jolly Santa", color: "#ff0000", splitColor: "#ffffff", ability: "+25% Multi", curr: "jolly", cost: 10 };
             WEAPONS_CONFIG.candy_cane = { name: "Candy Cane", color: "#ff0000", multi: 3.0, desc: "Minty Slice (+300% Multi)", curr: "jolly", cost: 50 };
@@ -370,7 +344,6 @@
         } else if (currentEvent) {
             let sId = currentEvent.s1.toLowerCase().replace(/ /g, '_'); let wId = currentEvent.w1.toLowerCase().replace(/ /g, '_'); let cId = currentEvent.c1.toLowerCase().replace(/ /g, '_');
             let wMulti = 2.0, wDesc = `Event WPN (+200%)`, wCost = 15000;
-            // CHANGED SOLAR WEAPON PRICE HERE
             if (currentEvent.id === 5) { wMulti = 25.0; wDesc = "Sun God's Wrath (+2500%)"; wCost = 250000; } 
             SKINS_CONFIG[sId] = { name: currentEvent.s1, color: currentEvent.c, ability: "Seasonal Power", curr: "gold", cost: 5000 };
             WEAPONS_CONFIG[wId] = { name: currentEvent.w1, color: currentEvent.c, multi: wMulti, desc: wDesc, curr: "gold", cost: wCost };
@@ -404,12 +377,16 @@
             if (serverEventMultiplier > 1) { m *= serverEventMultiplier; texts.push(`🎉 EVENT ${serverEventMultiplier}X`); }
             if (new Date().getDay() === 5) { m *= 2; texts.push("🔥 2X FRIDAY"); }
             if (user.equipped_skin === 'orange') m *= 2; if (user.equipped_skin === 'yellow') m *= 5; if (user.equipped_skin === 'gold') m *= 10;
+            if (user.equipped_skin === 'good_variant') m *= 15;
             if (user.equipped_weapon && user.equipped_weapon !== "none" && WEAPONS_CONFIG[user.equipped_weapon]) { let w = WEAPONS_CONFIG[user.equipped_weapon]; if(w && w.multi) { m += w.multi; texts.push(`⚔️ WPN (+${w.multi}x)`); } }
             if (user.is_leader) { m *= 1.5; texts.push("👑 LEADER (1.5x)"); }
             if (user.guild_title_bonus > 1) { m *= user.guild_title_bonus; texts.push(`🛡️ TITLE (${user.guild_title_bonus}x)`); }
             if (activeGuildCrest > 0 && CRESTS_CONFIG[activeGuildCrest]) { let cBonus = parseInt(CRESTS_CONFIG[activeGuildCrest].desc.match(/\d+/)[0]) / 100 + 1; m *= cBonus; texts.push(`${CRESTS_CONFIG[activeGuildCrest].emoji} CREST (${cBonus}x)`); }
             let finalM = parseFloat(m.toFixed(2));
-          if(document.getElementById("guildMultiDisplay")) document.getElementById("guildMultiDisplay").innerHTML = texts.join(" | ");
+            
+            // Fix: Replaced document.getElementById to querySelectorAll to prevent duplicate HTML id conflicts
+            document.querySelectorAll("#multiDisplay").forEach(el => el.textContent = finalM + "x");
+            
             return finalM;
         }
 
@@ -427,10 +404,10 @@
         function unlockSkin(key) { if (!user.unlocked) user.unlocked = ["default"]; if (!user.unlocked.includes(key)) { user.unlocked.push(key); localStorage.setItem(`stickman_skin_${key}`, "true"); syncSave(0); } }
 
         function updateUI() {
-            if(document.getElementById("highScoreDisplay")) document.getElementById("highScoreDisplay").textContent = user.high_score || 0;
+            if(document.getElementById("highScoreDisplay")) document.getElementById("highScoreDisplay").textContent = (user.high_score || 0).toLocaleString();
             if(document.getElementById("whiteShardDisplay")) document.getElementById("whiteShardDisplay").textContent = user.w_shards || 0;
             if(document.getElementById("blackShardDisplay")) document.getElementById("blackShardDisplay").textContent = user.b_shards || 0;
-            if(document.getElementById("guildCoinDisplay")) document.getElementById("guildCoinDisplay").textContent = user.guild_coins || 0;
+            if(document.getElementById("guildCoinDisplay")) document.getElementById("guildCoinDisplay").textContent = (user.guild_coins || 0).toLocaleString();
             
             if(eventCurrencyType !== "gold") {
                 const sDisp = document.getElementById("sweetsDisplayContainer");
@@ -464,7 +441,7 @@
                     let nameSpan = document.createElement("span"); nameSpan.textContent = skinConfig.name; title.appendChild(dot); title.appendChild(nameSpan); btn.appendChild(title);
                     
                     let reqLabel = document.createElement("div"); reqLabel.style.fontSize = "9px"; reqLabel.style.color = "#888";
-                    if (skinConfig.score !== undefined) reqLabel.innerText = `Req: ${skinConfig.score}`; else if (skinConfig.cost) reqLabel.innerText = `${skinConfig.cost} ${skinConfig.curr}`; else if (skinConfig.condition) reqLabel.innerText = skinConfig.condition;
+                    if (skinConfig.score !== undefined) reqLabel.innerText = `Req: ${skinConfig.score.toLocaleString()}`; else if (skinConfig.cost) reqLabel.innerText = `${skinConfig.cost.toLocaleString()} ${skinConfig.curr}`; else if (skinConfig.condition) reqLabel.innerText = skinConfig.condition;
                     btn.appendChild(reqLabel);
                     if (skinConfig.ability) { let ab = document.createElement("div"); ab.className = "skin-ability"; ab.innerText = skinConfig.ability; btn.appendChild(ab); }
                     if (key === "angelic" && owned) { const arrow = document.createElement("div"); arrow.className = "dropdown-arrow"; arrow.textContent = angelicDropdownOpen ? "▲" : "▼"; arrow.addEventListener("click", (e) => { e.stopPropagation(); angelicDropdownOpen = !angelicDropdownOpen; renderChangingRoom(); }); btn.appendChild(arrow); }
@@ -509,7 +486,7 @@
                     let nameSpan = document.createElement("span"); nameSpan.textContent = item.name;
                     title.appendChild(dot); title.appendChild(nameSpan); btn.appendChild(title);
                     
-                    let reqLabel = document.createElement("div"); reqLabel.style.fontSize = "9px"; reqLabel.style.color = isOwned ? "#4ecca3" : "#ff9ff3"; reqLabel.innerText = isOwned ? (isEquipped ? "EQUIPPED" : "OWNED") : `Cost: ${item.cost} ${item.curr}`; btn.appendChild(reqLabel);
+                    let reqLabel = document.createElement("div"); reqLabel.style.fontSize = "9px"; reqLabel.style.color = isOwned ? "#4ecca3" : "#ff9ff3"; reqLabel.innerText = isOwned ? (isEquipped ? "EQUIPPED" : "OWNED") : `Cost: ${item.cost.toLocaleString()} ${item.curr}`; btn.appendChild(reqLabel);
                     if (item.desc) { let ab = document.createElement("div"); ab.className = "skin-ability"; ab.innerText = item.desc; btn.appendChild(ab); }
 
                     btn.onclick = async () => {
@@ -545,7 +522,7 @@
                     if (data.is_leader_override) user.is_leader = true;
                     if(document.getElementById("leaderboardList")) {
                         const lb = document.getElementById("leaderboardList"); lb.innerHTML = "";
-                        data.leaderboard.forEach((r, i) => { let cObj = CRESTS_CONFIG[r.active_crest_id] || CRESTS_CONFIG[0]; let gCol = r.name_color || "#f9a826"; let tag = r.guild ? `<span style="color:${gCol}; font-weight:bold;">[${cObj.emoji}${r.guild}]</span> ` : ""; let style = (user.username && r.username === user.username) ? 'border-color:#4ecca3; background:#232342;' : ''; lb.innerHTML += `<div class="list-item" style="${style}"><span>#${i+1} ${tag}${r.username}</span> <span style="color:#4ecca3">${r.score}</span></div>`; });
+                        data.leaderboard.forEach((r, i) => { let cObj = CRESTS_CONFIG[r.active_crest_id] || CRESTS_CONFIG[0]; let gCol = r.name_color || "#f9a826"; let tag = r.guild ? `<span style="color:${gCol}; font-weight:bold;">[${cObj.emoji}${r.guild}]</span> ` : ""; let style = (user.username && r.username === user.username) ? 'border-color:#4ecca3; background:#232342;' : ''; lb.innerHTML += `<div class="list-item" style="${style}"><span>#${i+1} ${tag}${r.username}</span> <span style="color:#4ecca3">${r.score.toLocaleString()}</span></div>`; });
                     }
                     if(document.getElementById("guildWarList")) {
                         const gw = document.getElementById("guildWarList"); gw.innerHTML = "";
@@ -567,7 +544,7 @@
                     
                     if (data.userGuildInfo) {
                         if(document.getElementById("guildSizeDisplay")) document.getElementById("guildSizeDisplay").textContent = `${data.userGuildInfo.members_count} / 10 Players`;
-                        if(document.getElementById("warCoinDisplay")) document.getElementById("warCoinDisplay").textContent = data.userGuildInfo.war_coins;
+                        if(document.getElementById("warCoinDisplay")) document.getElementById("warCoinDisplay").textContent = data.userGuildInfo.war_coins.toLocaleString();
                         user.war_coins = data.userGuildInfo.war_coins; activeGuildColor = data.userGuildInfo.name_color || "#f9a826"; activeGuildCrest = data.userGuildInfo.active_crest_id || 0;
                         if(document.getElementById("guildColorPicker")) document.getElementById("guildColorPicker").value = activeGuildColor;
                         let currentTitle = GUILD_TITLES.find(t => t.id === data.userGuildInfo.active_title_id);
@@ -583,14 +560,18 @@
                         renderGuildShop(data.userGuildInfo ? data.userGuildInfo.unlocked_titles : "[]", data.userGuildInfo ? data.userGuildInfo.unlocked_crests : "[]");
                     }
                     applySkinAbilities(); updateUI();
+                } else {
+                    console.error("Server reported an error:", data.error);
                 }
-            } catch(e) {}
+            } catch(e) {
+                console.error("Critical error fetching Server Data. Server might be offline:", e);
+            }
         }
 
         function renderGuildShop(unlockedTitlesStr, unlockedCrestsStr) {
             let unlockedTitles = JSON.parse(unlockedTitlesStr || "[]"); let unlockedCrests = JSON.parse(unlockedCrestsStr || "[0]");
-            const shopT = document.getElementById("titleShop"); if(shopT) { shopT.innerHTML = ""; GUILD_TITLES.forEach(t => { let isOwned = unlockedTitles.includes(t.id); let btnHtml = isOwned ? `<button class="action-btn green" onclick="equipGuildTitle(${t.id})">Equip</button>` : `<button class="action-btn blue" onclick="buyGuildItem('title', ${t.id})">${t.cost} ⚔️</button>`; let glowStyle = t.id === 21 ? 'text-shadow: 0 0 10px #00ffff;' : ''; shopT.innerHTML += `<div style="display:flex; justify-content:space-between; background:#0f0f1a; padding:4px; border-radius:4px; margin-bottom:2px; border:1px solid #2e2e54;"><span style="${glowStyle}">${t.name} <i style="color:#aaa; font-size:9px;">(${t.desc})</i></span>${btnHtml}</div>`; }); }
-            const shopC = document.getElementById("crestShop"); if(shopC) { shopC.innerHTML = ""; Object.keys(CRESTS_CONFIG).forEach(key => { if (key == 0) return; let c = CRESTS_CONFIG[key]; let isOwned = unlockedCrests.includes(parseInt(key)); let isEquip = activeGuildCrest == key; let btnHtml = isOwned ? (isEquip ? `<span style="color:#f9a826; font-weight:bold;">Active</span>` : `<button class="action-btn green" onclick="setGuildCrest(${key})">Equip</button>`) : `<button class="action-btn blue" onclick="buyGuildItem('crest', ${key})">${c.cost} ⚔️</button>`; shopC.innerHTML += `<div style="display:flex; justify-content:space-between; background:#0f0f1a; padding:4px; border-radius:4px; margin-bottom:2px; border:1px solid #2e2e54;"><span>${c.emoji} ${c.name} <i style="color:#aaa; font-size:9px;">(${c.desc})</i></span>${btnHtml}</div>`; }); }
+            const shopT = document.getElementById("titleShop"); if(shopT) { shopT.innerHTML = ""; GUILD_TITLES.forEach(t => { let isOwned = unlockedTitles.includes(t.id); let btnHtml = isOwned ? `<button class="action-btn green" onclick="equipGuildTitle(${t.id})">Equip</button>` : `<button class="action-btn blue" onclick="buyGuildItem('title', ${t.id})">${t.cost.toLocaleString()} <i class="fa-solid fa-khanda"></i></button>`; let glowStyle = t.id === 21 ? 'text-shadow: 0 0 10px #00ffff;' : ''; shopT.innerHTML += `<div style="display:flex; justify-content:space-between; background:#0f0f1a; padding:4px; border-radius:4px; margin-bottom:2px; border:1px solid #2e2e54;"><span style="${glowStyle}">${t.name} <i style="color:#aaa; font-size:9px;">(${t.desc})</i></span>${btnHtml}</div>`; }); }
+            const shopC = document.getElementById("crestShop"); if(shopC) { shopC.innerHTML = ""; Object.keys(CRESTS_CONFIG).forEach(key => { if (key == 0) return; let c = CRESTS_CONFIG[key]; let isOwned = unlockedCrests.includes(parseInt(key)); let isEquip = activeGuildCrest == key; let btnHtml = isOwned ? (isEquip ? `<span style="color:#f9a826; font-weight:bold;">Active</span>` : `<button class="action-btn green" onclick="setGuildCrest(${key})">Equip</button>`) : `<button class="action-btn blue" onclick="buyGuildItem('crest', ${key})">${c.cost.toLocaleString()} <i class="fa-solid fa-khanda"></i></button>`; shopC.innerHTML += `<div style="display:flex; justify-content:space-between; background:#0f0f1a; padding:4px; border-radius:4px; margin-bottom:2px; border:1px solid #2e2e54;"><span>${c.emoji} ${c.name} <i style="color:#aaa; font-size:9px;">(${c.desc})</i></span>${btnHtml}</div>`; }); }
         }
 
         async function buyGuildItem(type, id) {
@@ -601,9 +582,9 @@
             } catch(e) { }
         }
 
-        async function equipGuildTitle(titleId) { try { await fetch(`${API_URL}/api/guild/equip_title`, { method: "POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify({ username: user.username, session_token: user.session_token, titleId }) }); showToast("Title Equipped!"); fetchServerData(); } catch(e) {} }
-        async function setGuildColor() { let color = document.getElementById("guildColorPicker").value; try { await fetch(`${API_URL}/api/guild/customize`, { method: "POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify({ username: user.username, session_token: user.session_token, action: "set_color", payload: { color } }) }); showToast("Guild Color updated!"); fetchServerData(); } catch(e) {} }
-        async function setGuildCrest(crestId) { try { await fetch(`${API_URL}/api/guild/customize`, { method: "POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify({ username: user.username, session_token: user.session_token, action: "buy_crest", payload: { crestId, cost: 0 } }) }); showToast("Crest Equipped!"); fetchServerData(); } catch(e) {} }
+        async function equipGuildTitle(titleId) { try { const res = await fetch(`${API_URL}/api/guild/equip_title`, { method: "POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify({ username: user.username, session_token: user.session_token, titleId }) }); const data = await res.json(); if(data.success) { showToast("Title Equipped!"); fetchServerData(); } else { showToast(data.error || "Action failed", 3000, "#ff4757"); } } catch(e) { console.error("Error equipping title:", e); } }
+        async function setGuildColor() { let color = document.getElementById("guildColorPicker").value; try { const res = await fetch(`${API_URL}/api/guild/customize`, { method: "POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify({ username: user.username, session_token: user.session_token, action: "set_color", payload: { color } }) }); const data = await res.json(); if(data.success) { showToast("Guild Color updated!"); fetchServerData(); } else { showToast(data.error || "Action failed", 3000, "#ff4757"); } } catch(e) { console.error("Error updating tag color:", e); } }
+        async function setGuildCrest(crestId) { try { const res = await fetch(`${API_URL}/api/guild/customize`, { method: "POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify({ username: user.username, session_token: user.session_token, action: "buy_crest", payload: { crestId, cost: 0 } }) }); const data = await res.json(); if(data.success) { showToast("Crest Equipped!"); fetchServerData(); } else { showToast(data.error || "Action failed", 3000, "#ff4757"); } } catch(e) { console.error("Error equipping crest:", e); } }
         async function handleJoinRequest(reqId, choice) { try { const res = await fetch(`${API_URL}/api/guild/handle_request`, { method: "POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify({ username: user.username, session_token: user.session_token, requestId: reqId, action: choice }) }); const data = await res.json(); if (data.success) { showToast(choice === 'approve' ? "Member added!" : "Request denied"); fetchServerData(); } else { showToast(data.error, 4000, "#ff4757"); } } catch(e) {} }
         document.getElementById("leaveGuildBtn").onclick = async () => { if(confirm("Leave this Alliance? You will lose leader status if you created it.")) { try { await fetch(`${API_URL}/api/guild/leave`, { method:"POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify({username: user.username, session_token: user.session_token}) }); user.guild = ""; user.is_leader = false; localStorage.setItem("gd", ""); showToast("Left the Alliance.", 3000, "#ff4757"); fetchServerData(); updateUI(); } catch(e){} } };
 
@@ -618,12 +599,12 @@
                         let isSender = f.user1 === user.username; let other = isSender ? f.user2 : f.user1; let isOnline = false;
                         if (f.last_seen) { let lsTime = new Date(f.last_seen + "Z").getTime(); if (nowUTC - lsTime < 300000) isOnline = true; }
                         let dot = isOnline ? "🟢" : "⚪";
-                        if (f.status === 'pending') { if (!isSender) sl.innerHTML += `<div class="list-item"><span>📥 ${other}</span> <div><button class="action-btn green" onclick="respondFriend(${f.id}, 'accepted')">✓</button> <button class="action-btn red" onclick="respondFriend(${f.id}, 'declined')">X</button></div></div>`; else sl.innerHTML += `<div class="list-item"><span>⏳ ${other} (Sent)</span></div>`; } else { sl.innerHTML += `<div class="list-item"><span>${dot} ${other}</span> <button class="action-btn" onclick="sendChallenge('${other}')">Duel</button></div>`; }
+                        if (f.status === 'pending') { if (!isSender) sl.innerHTML += `<div class="list-item"><span>📥 ${other}</span> <div><button class="action-btn green" onclick="respondFriend(${f.id}, 'accepted')">✓</button> <button class="action-btn red" onclick="respondFriend(${f.id}, 'declined')">X</button></div></div>`; else sl.innerHTML += `<div class="list-item"><span>⏳ ${other} (Sent)</span></div>`; } else { sl.innerHTML += `<div class="list-item"><span>${dot} ${other}</span> <button class="action-btn blue" onclick="sendChallenge('${other}')">Duel</button></div>`; }
                     });
                     activeChallenges = [];
                     data.challenges.forEach(c => {
                         let isSender = c.challenger === user.username; let other = isSender ? c.challenged : c.challenger;
-                        if (c.status === 'pending') { if (!isSender) sl.innerHTML += `<div class="list-item"><span>⚔️ ${other}: ${c.goal}pts</span> <div><button class="action-btn green" onclick="respondChallenge(${c.id}, 'accepted')">✓</button> <button class="action-btn red" onclick="respondChallenge(${c.id}, 'declined')">X</button></div></div>`; else sl.innerHTML += `<div class="list-item"><span>⏳ Duel ${other}: ${c.goal}pts</span></div>`; } else if (c.status === 'accepted') { activeChallenges.push(c); sl.innerHTML += `<div class="list-item" style="border-color:#f9a826;"><span>🔥 vs ${other}: ${c.goal}pts</span></div>`; }
+                        if (c.status === 'pending') { if (!isSender) sl.innerHTML += `<div class="list-item"><span>⚔️ ${other}: ${c.goal.toLocaleString()}pts</span> <div><button class="action-btn green" onclick="respondChallenge(${c.id}, 'accepted')">✓</button> <button class="action-btn red" onclick="respondChallenge(${c.id}, 'declined')">X</button></div></div>`; else sl.innerHTML += `<div class="list-item"><span>⏳ Duel ${other}: ${c.goal.toLocaleString()}pts</span></div>`; } else if (c.status === 'accepted') { activeChallenges.push(c); sl.innerHTML += `<div class="list-item" style="border-color:#f9a826;"><span>🔥 vs ${other}: ${c.goal.toLocaleString()}pts</span></div>`; }
                     });
                     if(sl.innerHTML === "") sl.innerHTML = "<div style='text-align:center; color:#555; font-size:11px; padding:10px;'>Add friends to duel!</div>";
                 }
@@ -637,14 +618,7 @@
         async function sendChallenge(target) { let goal = parseInt(prompt(`Enter score goal to challenge ${target}:`, "50000")); if (!goal || isNaN(goal) || goal <= 0) return; try { const res = await fetch(`${API_URL}/api/social`, { method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify({username: user.username, session_token: user.session_token, action: "send_challenge", payload: {target, goal}}) }); const data = await res.json(); if(data.success) { showToast(`Challenge sent to ${target} for ${goal} pts!`, 3000, "#f9a826"); fetchSocialData(); } else { showToast(data.error, 3000, "#ff4757"); } } catch(e) {} }
         async function respondChallenge(id, response) { try { await fetch(`${API_URL}/api/social`, { method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify({username: user.username, session_token: user.session_token, action: "respond_challenge", payload: {id, response}}) }); fetchSocialData(); } catch(e) {} }
         
-        // --- NEW: THE MISSING WIN CHALLENGE FUNCTION ---
-        async function winChallenge(id) { 
-            try { 
-                const res = await fetch(`${API_URL}/api/social`, { method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify({username: user.username, session_token: user.session_token, action: "win_challenge", payload: {id}}) }); 
-                const data = await res.json(); 
-                if(data.success) { showToast(`🏆 Duel Won! +50 Gold`, 5000, "#f1c40f"); user.guild_coins += 50; updateUI(); fetchSocialData(); } 
-            } catch(e) {} 
-        }
+        async function winChallenge(id) { try { const res = await fetch(`${API_URL}/api/social`, { method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify({username: user.username, session_token: user.session_token, action: "win_challenge", payload: {id}}) }); const data = await res.json(); if(data.success) { showToast(`🏆 Duel Won! +50 Gold`, 5000, "#f1c40f"); user.guild_coins += 50; updateUI(); fetchSocialData(); } } catch(e) {} }
 
         document.getElementById("loginBtn").onclick = async () => {
             const u = document.getElementById("usernameInput").value.trim(); const p = document.getElementById("passwordInput").value; if(!u || !p) return showToast("Enter profile credentials", 3000, "#ff4757");
@@ -667,7 +641,7 @@
                 const res = await fetch(`${API_URL}/api/save`, { method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify({ username: user.username, session_token: user.session_token, high_score: user.high_score, equipped_skin: user.equipped_skin, equipped_weapon: user.equipped_weapon, equipped_coat: user.equipped_coat, white_shards: user.w_shards, black_shards: user.b_shards, jolly_sweets: user.jolly_sweets, spooky_sweets: user.spooky_sweets, unlocked_skins: user.unlocked, unlocked_weapons: user.unlocked_weapons, unlocked_coats: user.unlocked_coats, guild_coins: user.guild_coins, added_points: added_points }) });
                 if (!res.ok) { if (res.status === 403) showToast("⚠️ Server rejected save: Anomalous data limits exceeded.", 5000, "#ff4757"); return; }
                 const data = await res.json();
-                if (data.bossDefeatedNotification) { const winMsg = document.createElement("div"); winMsg.style.position = "absolute"; winMsg.style.top = "30%"; winMsg.style.left = "50%"; winMsg.style.transform = "translate(-50%, -50%)"; winMsg.style.background = "rgba(0,0,0,0.9)"; winMsg.style.padding = "40px"; winMsg.style.border = "4px solid #ffd700"; winMsg.style.borderRadius = "12px"; winMsg.style.textAlign = "center"; winMsg.style.zIndex = "9999"; winMsg.style.boxShadow = "0 0 50px #ffd700"; winMsg.innerHTML = `<h1 style="color:#ff4757; font-size:40px; margin:0;">WORLD BOSS DESTROYED!</h1><p style="color:#fff; font-size:20px;">Massive War Coins distributed to top Alliances!</p>`; document.getElementById("game-container").appendChild(winMsg); setTimeout(() => { if (winMsg.parentNode) winMsg.remove(); }, 6000); }
+                if (data.bossDefeatedNotification) { const winMsg = document.createElement("div"); winMsg.style.position = "absolute"; winMsg.style.top = "30%"; winMsg.style.left = "50%"; winMsg.style.transform = "translate(-50%, -50%)"; winMsg.style.background = "rgba(0,0,0,0.9)"; winMsg.style.padding = "40px"; winMsg.style.border = "1px solid #4ecca3"; winMsg.style.borderRadius = "16px"; winMsg.style.textAlign = "center"; winMsg.style.zIndex = "9999"; winMsg.style.boxShadow = "0 0 50px rgba(0, 173, 181, 0.6)"; winMsg.innerHTML = `<h1 style="color:#ff4757; font-size:40px; margin:0; text-transform:uppercase;">Boss Destroyed!</h1><p style="color:#fff; font-size:20px; font-weight:bold;">Massive War Coins distributed to top Alliances!</p>`; document.getElementById("game-container").appendChild(winMsg); setTimeout(() => { if (winMsg.parentNode) winMsg.remove(); }, 6000); }
                 fetchServerData();
             } catch(e){}
         }
@@ -710,7 +684,6 @@
 
         canvas.addEventListener("mousedown", pointerDown); window.addEventListener("mouseup", pointerUp); canvas.addEventListener("touchstart", e => { e.preventDefault(); pointerDown(e); }, { passive: false }); window.addEventListener("touchend", pointerUp);
         
-        // FIX SPACEBAR SCROLL
         window.addEventListener("keydown", e => { if(e.code === "Space" && document.activeElement?.tagName !== "INPUT") { e.preventDefault(); if(gameStatus === "playing" && user.equipped_skin === 'split_neon_synth') { player.vx += 10; showToast("⚡ Synth Dash!", 1000, "#ff00ff"); } else { pointerDown(); } } }); window.addEventListener("keyup", e => { if(e.code === "Space") pointerUp(); });
 
         let lastGamepadState = false; function checkGamepad() { const pads = navigator.getGamepads ? navigator.getGamepads() : []; if(pads[0]) { const pressed = pads[0].buttons[0].pressed || pads[0].buttons[7].pressed; if(pressed && !lastGamepadState) pointerDown(); else if (!pressed && lastGamepadState) pointerUp(); lastGamepadState = pressed; } }
@@ -720,7 +693,6 @@
             checkGamepad(); flameOffset += 0.05;
             player.vy += currentGravity; player.vx *= currentFriction; player.vy *= currentFriction; player.x += player.vx; player.y += player.vy;
             
-            // COAT TRAIL PHYSICS
             player.trail.push({x: player.x, y: player.y}); if (player.trail.length > 15) player.trail.shift();
 
             spawnEnvironment(); 
@@ -743,7 +715,7 @@
                 if (rawDist >= 1000) { if (currentRealm === "devil") { user.b_shards++; localStorage.setItem("bs", user.b_shards); showToast("⬛ COLLECTED A BLACK SHARD", 4000, "#000"); } else if (currentRealm === "angel") { user.w_shards++; localStorage.setItem("ws", user.w_shards); showToast("⬜ COLLECTED A WHITE SHARD", 4000, "#fff"); } dailyTasks.shards++; updateUI(); syncSave(0); renderChangingRoom(); initGame(); }
             } else {
                 let currentScore = rawDist * calculateMultiplier(); if (Math.abs(currentScore) > Math.abs(score)) score = currentScore;
-                if(document.getElementById("scoreDisplay")) document.getElementById("scoreDisplay").textContent = Math.floor(score);
+                if(document.getElementById("scoreDisplay")) document.getElementById("scoreDisplay").textContent = Math.floor(score).toLocaleString();
                 if (activeChallenges.length > 0) { for(let i=0; i<activeChallenges.length; i++) { let c = activeChallenges[i]; if (score >= c.goal) { activeChallenges.splice(i, 1); i--; winChallenge(c.id); } } }
                 if (score >= 5000 && !localStorage.getItem("stickman_hint_5000")) { showToast("🔒 A secret skin requires a password...", 5000, "#f9a826"); localStorage.setItem("stickman_hint_5000", "true"); }
                 if (score >= 10000 && !localStorage.getItem("stickman_hint_10000")) { showToast("🗝️ The secret password is: ANGEL", 6000, "#f9a826"); localStorage.setItem("stickman_hint_10000", "true"); }
@@ -751,7 +723,6 @@
                 if (score >= 10000) { if (eq.includes("angel") && !user.unlocked.includes("exalted_angel")) { unlockSkin("exalted_angel"); showToast("✨ UNLOCKED: EXALTED ANGEL!", 5000, "#ffeaa7"); renderChangingRoom(); } if (eq.includes("devil") && !user.unlocked.includes("exalted_devil")) { unlockSkin("exalted_devil"); showToast("🔥 UNLOCKED: EXALTED DEVIL!", 5000, "#ff0055"); renderChangingRoom(); } }
                 if (rawDist > dailyTasks.dist) dailyTasks.dist = rawDist;
                 
-                // MONTHLY SWEETS DROPS
                 if (currentMonth === 9 && Math.random() < 0.0005) { user.spooky_sweets++; showToast("🎃 Found a Spooky Sweet!", 2000, "#ff8c00"); updateUI(); syncSave(0); }
                 if (currentMonth === 11 && Math.random() < 0.0005) { user.jolly_sweets++; showToast("🎄 Found a Jolly Sweet!", 2000, "#ff0000"); updateUI(); syncSave(0); }
             }
@@ -760,8 +731,14 @@
                 if (gameStatus === "realm") { showToast("THE REALM HAS REJECTED YOU.", 4000, "#ff4757"); initGame(); return; }
                 if (user.equipped_skin === 'gacha_void_stalker' && !voidStalkerSaveUsed && player.y > canvas.height) { voidStalkerSaveUsed = true; player.vy = -18; player.y = canvas.height - 50; player.vx += 5; showToast("🌌 Abyss Save Triggered!", 2000, "#4a00e0"); } else {
                     gameStatus = "lost"; dailyTasks.games++; let added = Math.max(0, Math.floor(score));
-                    if (score > user.high_score) { user.high_score = Math.floor(score); localStorage.setItem("hc", user.high_score); if(document.getElementById("highScoreDisplay")) document.getElementById("highScoreDisplay").textContent = user.high_score; }
-                    if (added > 0) user.guild_coins += Math.floor(added / 5000); 
+                    if (score > user.high_score) { user.high_score = Math.floor(score); localStorage.setItem("hc", user.high_score); if(document.getElementById("highScoreDisplay")) document.getElementById("highScoreDisplay").textContent = user.high_score.toLocaleString(); }
+                    
+                    if (added > 0) {
+                        let goldEarned = Math.floor(added / 5000);
+                        if (user.equipped_skin === 'good_variant') goldEarned *= 2;
+                        user.guild_coins += goldEarned;
+                    } 
+                    
                     let eq = user.equipped_skin || "";
                     if (rawDist < 0 && !user.unlocked.includes("devil")) { unlockSkin("devil"); showToast("🔥 UNLOCKED: THE DEVIL SKIN!", 5000, "#ff4757"); }
                     if (rawDist < 0 && eq.includes("angel") && !user.unlocked.includes("denied_angel")) { unlockSkin("denied_angel"); showToast("🥀 UNLOCKED: DENIED ANGEL", 5000, "#ff4757"); }
@@ -779,7 +756,6 @@
             let lvl = currentBoss.level; let hue = (lvl * 45) % 360; 
             ctx.save(); ctx.translate(bx, by);
             
-            // SEASONAL BOSS RESKINS
             if (currentMonth === 9) { // HALLOWEEN
                 ctx.shadowBlur = 20; ctx.shadowColor = "#ff8c00"; ctx.fillStyle = "#ff6a00"; ctx.beginPath(); ctx.arc(0, 0, 40 + Math.min(lvl * 2, 40), 0, Math.PI * 2); ctx.fill();
                 ctx.fillStyle = "#000"; ctx.beginPath(); ctx.moveTo(-15, -10); ctx.lineTo(-5, -20); ctx.lineTo(0, -10); ctx.fill(); ctx.beginPath(); ctx.moveTo(15, -10); ctx.lineTo(5, -20); ctx.lineTo(0, -10); ctx.fill(); // Eyes
@@ -790,7 +766,7 @@
                 ctx.fillStyle = "#111"; ctx.beginPath(); ctx.arc(-10, -5, 5, 0, Math.PI*2); ctx.fill(); ctx.beginPath(); ctx.arc(10, -5, 5, 0, Math.PI*2); ctx.fill(); // Eyes
             } else { // DEFAULT / EVENT
                 let evCol = currentEvent ? currentEvent.c : `hsl(${hue}, 100%, 50%)`;
-                ctx.shadowBlur = 20; ctx.shadowColor = evCol; ctx.fillStyle = `hsl(${hue}, 80%, 20%)`; ctx.beginPath(); ctx.arc(0, 0, 35 + Math.min(lvl * 2, 40), 0, Math.PI * 2); ctx.fill();
+                ctx.shadowBlur = 20 + Math.abs(Math.sin(Date.now() / 300)) * 15; ctx.shadowColor = evCol; ctx.fillStyle = `hsl(${hue}, 80%, 20%)`; ctx.beginPath(); ctx.arc(0, 0, 35 + Math.min(lvl * 2, 40), 0, Math.PI * 2); ctx.fill();
                 ctx.fillStyle = evCol; let numSpikes = 4 + (lvl % 6); let spikeLen = 50 + Math.min(lvl * 3, 50);
                 for (let i = 0; i < numSpikes; i++) { let angle = (i / numSpikes) * Math.PI * 2 + (Date.now() / 1500); ctx.beginPath(); ctx.moveTo(Math.cos(angle - 0.2) * 25, Math.sin(angle - 0.2) * 25); ctx.lineTo(Math.cos(angle) * spikeLen, Math.sin(angle) * spikeLen); ctx.lineTo(Math.cos(angle + 0.2) * 25, Math.sin(angle + 0.2) * 25); ctx.fill(); }
                 ctx.fillStyle = "#fff"; ctx.beginPath(); ctx.ellipse(0, 0, 12, 20, 0, 0, Math.PI * 2); ctx.fill(); ctx.fillStyle = "#111"; ctx.beginPath(); ctx.arc(0, 0, 6, 0, Math.PI * 2); ctx.fill(); ctx.fillStyle = evCol; ctx.beginPath(); ctx.arc(0, 0, 3, 0, Math.PI * 2); ctx.fill();
@@ -832,7 +808,7 @@
                         if (available.length > 0) { unlockedSkinKey = available[Math.floor(Math.random() * available.length)]; alertMsg = `🎉 GACHA ROLL SUCCESS! 🎉\nCost: 1⬛ + 1⬜\nUnlocked: ${SKINS_CONFIG[unlockedSkinKey].name.toUpperCase()}`; } else { user.high_score += 5000; localStorage.setItem("hc", user.high_score); alertMsg = "💎 GACHA MAXED OUT! 💎\nCost: 1⬛ + 1⬜\nYou received 5000 Bonus Points instead!"; unlockedSkinKey = user.equipped_skin; }
                     }
                     if (unlockedSkinKey !== user.equipped_skin) { user.equipped_skin = unlockedSkinKey; localStorage.setItem("eq", unlockedSkinKey); unlockSkin(unlockedSkinKey); }
-                    showToast(alertMsg, 5000, "#00ffff"); renderChangingRoom(); initGame(); return;
+                    showToast(alertMsg, 5000, "#00ffff"); renderChangingRoom(); initGame(); gameStatus = "menu"; return;
                 }
             } else {
                 let bx = cx + Math.cos(fusionAngle) * fusionDistance; let by = cy + Math.sin(fusionAngle) * fusionDistance; ctx.fillStyle = "#000"; ctx.strokeStyle = "#fff"; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(bx, by, 15, 0, Math.PI*2); ctx.fill(); ctx.stroke();
@@ -855,7 +831,7 @@
                 portals.forEach(p => { 
                     ctx.beginPath(); ctx.arc(p.x, p.y, p.radius, 0, Math.PI*2); 
                     if (p.type === "devil") { ctx.fillStyle = "rgba(0, 191, 255, 0.6)"; ctx.shadowColor = "#00bfff"; ctx.shadowBlur = 20; } 
-                    else { // VISIBLE ANGEL PORTAL
+                    else { 
                         ctx.fillStyle = "rgba(255, 255, 255, 0.9)"; ctx.shadowColor = "#ffd700"; ctx.shadowBlur = 30 + Math.sin(Date.now()/150)*15; 
                         ctx.beginPath(); ctx.arc(p.x, p.y, p.radius + Math.sin(Date.now()/200)*5, 0, Math.PI*2);
                     } 
@@ -866,9 +842,8 @@
                 bouncers.forEach(pad => { ctx.fillStyle = "#ff4757"; ctx.beginPath(); ctx.arc(pad.x, pad.y, pad.radius, 0, Math.PI*2); ctx.fill(); ctx.fillStyle = "#fff"; ctx.beginPath(); ctx.arc(pad.x, pad.y, pad.radius - 6, 0, Math.PI*2); ctx.fill(); });
 
                 if (gameStatus === "playing") drawBoss();
-                if(player.isSwinging) { ctx.strokeStyle="#fff"; ctx.lineWidth=3; ctx.beginPath(); ctx.moveTo(player.hookX, player.hookY); ctx.lineTo(player.x, player.y); ctx.stroke(); }
+                if(player.isSwinging) { ctx.strokeStyle="rgba(255,255,255,0.7)"; ctx.lineWidth=2; ctx.beginPath(); ctx.moveTo(player.hookX, player.hookY); ctx.lineTo(player.x, player.y); ctx.stroke(); }
 
-                // --- DYNAMIC PHYSICS COATS ---
                 if (user.equipped_coat && user.equipped_coat !== "none" && COATS_CONFIG[user.equipped_coat] && player.trail.length > 5) {
                     ctx.fillStyle = COATS_CONFIG[user.equipped_coat].color || "#fff";
                     ctx.beginPath(); ctx.moveTo(player.x, player.y);
@@ -879,7 +854,6 @@
 
                 ctx.save(); ctx.translate(player.x, player.y);
 
-                // --- DYNAMIC WEAPONS ---
                 if (user.equipped_weapon && user.equipped_weapon !== "none" && WEAPONS_CONFIG[user.equipped_weapon]) {
                     ctx.save();
                     let angle = Math.atan2(player.vy, player.vx); ctx.rotate(angle);
@@ -919,38 +893,17 @@
                 }
                 ctx.restore();
 
-if (user.guild && gameStatus !== "fusion") {
+                if (user.guild && gameStatus !== "fusion") {
                     let cObj = CRESTS_CONFIG[activeGuildCrest] || CRESTS_CONFIG[0];
-                    ctx.fillStyle = activeGuildColor || "#f9a826"; 
-                    
-                    // If an icon is equipped, draw it using the Font Awesome font family
-                    if (cObj.unicode) {
-                        ctx.font = '900 10px "Font Awesome 6 Free"';
-                        let iconWidth = ctx.measureText(cObj.unicode).width;
-                        ctx.font = "bold 10px sans-serif";
-                        let textWidth = ctx.measureText(` [${user.guild}]`).width;
-                        
-                        let startX = player.x - ((iconWidth + textWidth) / 2);
-                        
-                        ctx.textAlign = "left";
-                        ctx.font = '900 10px "Font Awesome 6 Free"';
-                        ctx.fillText(cObj.unicode, startX, player.y - 20);
-                        
-                        ctx.font = "bold 10px sans-serif";
-                        ctx.fillText(` [${user.guild}]`, startX + iconWidth, player.y - 21);
-                    } else {
-                        // Standard text rendering if no icon is equipped
-                        ctx.font = "bold 10px sans-serif"; 
-                        ctx.textAlign = "center";
-                        ctx.fillText(`[${user.guild}]`, player.x, player.y - 20);
-                    }
+                    ctx.fillStyle = activeGuildColor || "#f9a826"; ctx.font = "bold 10px sans-serif"; ctx.textAlign = "center";
+                    ctx.fillText(`${cObj.emoji}[${user.guild}]`, player.x, player.y - 20);
                 }
                 ctx.restore();
 
                 if (gameStatus === "menu") {
                     ctx.fillStyle = "rgba(15, 15, 26, 0.85)"; ctx.fillRect(0, 0, canvas.width, canvas.height); ctx.fillStyle = "#fff"; ctx.font = "bold 32px system-ui"; ctx.textAlign = "center"; ctx.fillText("SWING! MMO EDITION", canvas.width/2, canvas.height/2 - 20); ctx.font = "16px system-ui"; ctx.fillStyle = "#4ecca3"; ctx.fillText("Click anywhere or hit Space to launch", canvas.width/2, canvas.height/2 + 20);
                 } else if (gameStatus === "lost") {
-                    ctx.fillStyle = "rgba(15, 15, 26, 0.85)"; ctx.fillRect(0, 0, canvas.width, canvas.height); ctx.fillStyle = score < 0 ? "#ff0055" : "#e94560"; ctx.font = "bold 42px sans-serif"; ctx.textAlign = "center"; ctx.fillText(score < 0 ? "UNDERWORLD DESCENT" : "GAME OVER", canvas.width / 2, canvas.height / 2 - 20); ctx.font = "20px sans-serif"; ctx.fillStyle = "#fff"; ctx.fillText(`Final Score: ${Math.floor(score)} points`, canvas.width / 2, canvas.height / 2 + 20); ctx.fillStyle = "#888"; ctx.font = "16px sans-serif"; ctx.fillText("Press Space or Click to try again", canvas.width / 2, canvas.height / 2 + 65);
+                    ctx.fillStyle = "rgba(15, 15, 26, 0.85)"; ctx.fillRect(0, 0, canvas.width, canvas.height); ctx.fillStyle = score < 0 ? "#ff0055" : "#e94560"; ctx.font = "bold 42px sans-serif"; ctx.textAlign = "center"; ctx.fillText(score < 0 ? "UNDERWORLD DESCENT" : "GAME OVER", canvas.width / 2, canvas.height / 2 - 20); ctx.font = "20px sans-serif"; ctx.fillStyle = "#fff"; ctx.fillText(`Final Score: ${Math.floor(score).toLocaleString()} points`, canvas.width / 2, canvas.height / 2 + 20); ctx.fillStyle = "#888"; ctx.font = "16px sans-serif"; ctx.fillText("Press Space or Click to try again", canvas.width / 2, canvas.height / 2 + 65);
                 }
             } catch(e) { console.error("Render error caught and suppressed: ", e); }
         }
@@ -964,7 +917,6 @@ if (user.guild && gameStatus !== "fusion") {
         document.getElementById('openTutorialBtn').addEventListener('click', openTutorial); document.getElementById('closeTutorialTopBtn').addEventListener('click', closeTutorial);
         nextBtn.addEventListener('click', () => { if (currentTutorialStep < tutorialPanes.length - 1) switchTutorialTab(currentTutorialStep + 1); else closeTutorial(); }); prevBtn.addEventListener('click', () => { if (currentTutorialStep > 0) switchTutorialTab(currentTutorialStep - 1); });
         
-        // --- DEVLOG LOGIC ---
         const devlogOverlay = document.getElementById('devlogOverlay');
         document.getElementById('openDevlogBtn').addEventListener('click', () => devlogOverlay.classList.add('active'));
         document.getElementById('closeDevlogBtn').addEventListener('click', () => devlogOverlay.classList.remove('active'));
