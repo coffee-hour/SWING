@@ -90,7 +90,7 @@
                 <div style="margin-top:10px; background:#111122; padding:8px; border-radius:6px; border:1px dashed #f9a826;">
                     <div style="display:flex; justify-content:space-between;">
                         <span style="color:#ff9ff3; font-weight:bold; font-size:12px;"><i class="fa-solid fa-dragon"></i> Guild Pet</span>
-                        <span style="font-size:9px; color:#aaa; font-style:italic;">Cost doubles every 10,000 Tokens</span>
+                        <span style="font-size:9px; color:#aaa; font-style:italic;">Cost quadruples every 1,000 Tokens</span>
                     </div>
                     <div style="font-size:11px; color:#aaa; margin-bottom: 4px; margin-top: 4px;">Level (Tokens): <span id="petTokenDisplay" style="color:#fff;">0</span> (Multi: <span id="petMultiDisplay" style="color:#4ecca3;">1.001x</span>)</div>
                     
@@ -556,9 +556,9 @@
             if(document.getElementById("petTokenDisplay")) document.getElementById("petTokenDisplay").textContent = (user.guild_pet_tokens || 0).toLocaleString();
             
             // Exponential UI Updates
-            let currentTier = Math.floor((user.guild_pet_tokens || 0) / 10000);
-            let goldCost = 100 * Math.pow(2, currentTier);
-            let warCost = 10 * Math.pow(2, currentTier);
+            let currentTier = Math.floor((user.guild_pet_tokens || 0) / 1000);
+            let goldCost = 100 * Math.pow(4, currentTier);
+            let warCost = 10 * Math.pow(4, currentTier);
             if(document.getElementById("goldPetCostDisplay")) document.getElementById("goldPetCostDisplay").textContent = goldCost.toLocaleString();
             if(document.getElementById("warPetCostDisplay")) document.getElementById("warPetCostDisplay").textContent = warCost.toLocaleString();
 
