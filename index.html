@@ -411,7 +411,7 @@
             11: { name: "Atom", emoji: "<i class='fa-solid fa-atom'></i>", unicode: "\uf5d2", cost: 25000000, desc: "+25000% Multi" },
             12: { name: "Planet", emoji: "<i class='fa-solid fa-globe'></i>", unicode: "\uf0ac", cost: 50000000, desc: "+50000% Multi" },
             13: { name: "Rocket", emoji: "<i class='fa-solid fa-rocket'></i>", unicode: "\uf135", cost: 100000000, desc: "+100000% Multi" },
-            14: { name: "Jedi", emoji: "<i class='fa-solid fa-khanda'></i>", unicode: "\uf66d", cost: 250000000, desc: "+250000% Multi" },
+            14: { name: "Galaxy", emoji: "<i class='fa-solid fa-khanda'></i>", unicode: "\uf66d", cost: 250000000, desc: "+250000% Multi" },
             15: { name: "Infinity", emoji: "<i class='fa-solid fa-infinity'></i>", unicode: "\uf534", cost: 1000000000, desc: "+1000000% Multi" },
             99: { name: "Creator", emoji: "👑", unicode: "\uf521", cost: 999999999999, desc: "Dev Only" } // Hidden Admin Crest
         };
@@ -1195,7 +1195,7 @@
                 ctx.fillStyle = isFrenzy ? "#8b0000" : `hsl(${hue}, 80%, 20%)`; 
                 
                 ctx.beginPath(); ctx.arc(0, 0, 35 + Math.min(lvl * 2, 40), 0, Math.PI * 2); ctx.fill();
-                ctx.fillStyle = evCol; let numSpikes = 4 + (lvl % 6); let spikeLen = 50 + Math.min(lvl * 3, 50);
+                ctx.fillStyle = evCol; let numSpikes = 4 + (lvl % 6); let spikeLen = 25 + Math.min(lvl * 3, 25);
                 for (let i = 0; i < numSpikes; i++) { let angle = (i / numSpikes) * Math.PI * 2 + (Date.now() / 1500); ctx.beginPath(); ctx.moveTo(Math.cos(angle - 0.2) * 25, Math.sin(angle - 0.2) * 25); ctx.lineTo(Math.cos(angle) * spikeLen, Math.sin(angle) * spikeLen); ctx.lineTo(Math.cos(angle + 0.2) * 25, Math.sin(angle + 0.2) * 25); ctx.fill(); }
                 ctx.fillStyle = "#fff"; ctx.beginPath(); ctx.ellipse(0, 0, 12, 20, 0, 0, Math.PI * 2); ctx.fill(); ctx.fillStyle = "#111"; ctx.beginPath(); ctx.arc(0, 0, 6, 0, Math.PI * 2); ctx.fill(); ctx.fillStyle = evCol; ctx.beginPath(); ctx.arc(0, 0, 3, 0, Math.PI * 2); ctx.fill();
             }
