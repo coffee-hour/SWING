@@ -628,9 +628,8 @@
             let crestEmoji = activeGuildCrest > 0 && CRESTS_CONFIG[activeGuildCrest] ? CRESTS_CONFIG[activeGuildCrest].emoji : "";
             
             // 🔥 APPLY GUILD TAG EFFECTS 🔥
-            let isDev = user.guild === "DEV";
             let isTung = user.guild === "TUNG";
-            let tagStyle = isDev ? `class="fire-tag"` : isTung ? `class="tung-tag"` : `style="color:${activeGuildColor || '#f9a826'};"`;
+            let tagStyle = isTung ? `class="fire-tag"` : `style="color:${activeGuildColor || '#f9a826'};"`;
             if(document.getElementById("currentGuildDisplay")) document.getElementById("currentGuildDisplay").innerHTML = `<span ${tagStyle}>${crestEmoji}[${user.guild || "None"}]</span>`;
             
             if (user.guild) { document.getElementById("leaveGuildBtn").style.display = "block"; document.getElementById("reqGuildBtn").style.display="none"; document.getElementById("createGuildBtn").style.display="none"; }
