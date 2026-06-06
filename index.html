@@ -201,6 +201,15 @@
                     </div>
                     <div class="skins-grid" id="gearShopGrid"></div>
                 </div>
+                <div class="panel-box" style="flex: 1; min-width: 280px; border-color: #ffd166;">
+                    <h4 style="color: #ffd166;">🎰 Casino</h4>
+                    <div style="font-size: 11px; color:#aaa; margin-bottom:8px;">Bet Gold on Roulette or Slots. Winnings are added directly to your gold balance.</div>
+                    <div style="display:flex; gap:10px; margin-bottom:10px;">
+                        <button class="action-btn blue" id="casinoTabRoulette" onclick="switchCasinoTab('roulette')" style="flex:1;">Roulette</button>
+                        <button class="action-btn blue" id="casinoTabSlots" onclick="switchCasinoTab('slots')" style="flex:1;">Slots</button>
+                    </div>
+                    <div id="casinoContent" style="display:flex; flex-direction:column; gap:8px;"></div>
+                </div>
             </div>
         </div>
 
@@ -680,6 +689,100 @@
             } catch(e) {}
         }
 
+        let casinoState = { tab: 'roulette', choice: 'red', message: 'Place a bet to start winning gold!', lastResult: '' };
+        const CASINO_SYMBOLS = ['🍒','🍋','🍉','🔔','💎','7️⃣'];
+
+        function switchCasinoTab(tab) {
+            casinoState.tab = tab;
+            if (tab === 'roulette' && !casinoState.choice) casinoState.choice = 'red';
+            casinoState.message = tab === 'roulette' ? 'Bet on Red, Black, or Green and win big!' : 'Spin the slots for matching symbols!';
+            renderCasinoPanel();
+        }
+
+        function setCasinoChoice(choice) {
+            casinoState.choice = choice;
+            casinoState.message = `Betting on ${choice.charAt(0).toUpperCase() + choice.slice(1)}.`;
+            renderCasinoPanel();
+        }
+
+        function formatGold(value) {
+            return (value || 0).toLocaleString();
+        }
+
+        function renderCasinoPanel() {
+            const content = document.getElementById('casinoContent'); if (!content) return;
+            let html = `<div style="color:#fff; font-size:13px; font-weight:bold;">Gold: ${formatGold(user.guild_coins)}</div>`;
+            if (casinoState.tab === 'roulette') {
+                html += `<div style="display:flex; gap:6px; flex-wrap:wrap;">
+                    <button class="action-btn ${casinoState.choice === 'red' ? 'red' : 'blue'}" onclick="setCasinoChoice('red')">Red</button>
+                    <button class="action-btn ${casinoState.choice === 'black' ? 'red' : 'blue'}" onclick="setCasinoChoice('black')">Black</button>
+                    <button class="action-btn ${casinoState.choice === 'green' ? 'red' : 'blue'}" onclick="setCasinoChoice('green')">Green</button>
+                </div>
+                <div style="display:flex; gap:6px; flex-wrap:wrap;">
+                    <button class="action-btn green" onclick="placeRouletteBet(25)">Bet 25</button>
+                    <button class="action-btn green" onclick="placeRouletteBet(100)">Bet 100</button>
+                    <button class="action-btn green" onclick="placeRouletteBet(500)">Bet 500</button>
+                    <button class="action-btn green" onclick="placeRouletteBet(1000)">Bet 1K</button>
+                </div>`;
+            } else {
+                html += `<div style="display:flex; gap:6px; flex-wrap:wrap;">
+                    <button class="action-btn green" onclick="spinSlots(25)">Spin 25</button>
+                    <button class="action-btn green" onclick="spinSlots(100)">Spin 100</button>
+                    <button class="action-btn green" onclick="spinSlots(500)">Spin 500</button>
+                    <button class="action-btn green" onclick="spinSlots(1000)">Spin 1K</button>
+                </div>`;
+                if (casinoState.lastResult) html += `<div style="font-size:18px; margin-top:6px;">${casinoState.lastResult}</div>`;
+            }
+            html += `<div style="margin-top:8px; color:#f0f0f0; font-size:12px; min-height:32px;">${casinoState.message}</div>`;
+            content.innerHTML = html;
+        }
+
+        function placeRouletteBet(amount) {
+            if (!user.session_token) return showToast('Login to use the casino!', 3000, '#ff4757');
+            if (!amount || amount <= 0) return;
+            if (user.guild_coins < amount) return showToast('Not enough Gold for that bet.', 3000, '#ff4757');
+            user.guild_coins -= amount;
+            const outcome = Math.floor(Math.random() * 37);
+            const color = outcome === 0 ? 'green' : (outcome % 2 === 0 ? 'black' : 'red');
+            let profit = 0;
+            if (casinoState.choice === color) {
+                profit = color === 'green' ? amount * 14 : amount;
+                user.guild_coins += amount + profit;
+                casinoState.message = `Roulette hit ${outcome} (${color.toUpperCase()})! You win +${formatGold(profit)} Gold.`;
+            } else {
+                casinoState.message = `Roulette landed ${outcome} (${color.toUpperCase()}). You lose ${formatGold(amount)} Gold.`;
+            }
+            renderCasinoPanel(); updateUI();
+        }
+
+        function spinSlots(amount) {
+            if (!user.session_token) return showToast('Login to use the casino!', 3000, '#ff4757');
+            if (!amount || amount <= 0) return;
+            if (user.guild_coins < amount) return showToast('Not enough Gold for that spin.', 3000, '#ff4757');
+            user.guild_coins -= amount;
+            const result = [
+                CASINO_SYMBOLS[Math.floor(Math.random() * CASINO_SYMBOLS.length)],
+                CASINO_SYMBOLS[Math.floor(Math.random() * CASINO_SYMBOLS.length)],
+                CASINO_SYMBOLS[Math.floor(Math.random() * CASINO_SYMBOLS.length)]
+            ];
+            let profit = 0;
+            if (result[0] === result[1] && result[1] === result[2]) {
+                profit = result[0] === '7️⃣' ? amount * 10 : amount * 4;
+                user.guild_coins += amount + profit;
+                casinoState.lastResult = `${result.join(' ')} — JACKPOT!`; 
+                casinoState.message = `Three matching symbols! You win +${formatGold(profit)} Gold.`;
+            } else if (result[0] === result[1] || result[1] === result[2] || result[0] === result[2]) {
+                profit = amount * 1;
+                user.guild_coins += amount + profit;
+                casinoState.lastResult = `${result.join(' ')} — Nice!`;
+                casinoState.message = `Two match, small payout +${formatGold(profit)} Gold.`;
+            } else {
+                casinoState.lastResult = result.join(' ');
+                casinoState.message = `No match. You lose ${formatGold(amount)} Gold.`;
+            }
+            renderCasinoPanel(); updateUI();
+        }
+
         async function fetchServerData() {
             try {
                 const url = `${API_URL}/api/server_data` + (user.username ? `?username=${user.username}` : "");
@@ -1084,7 +1187,27 @@
                     let wType = user.equipped_weapon;
                     if (wType === "dagger") { ctx.fillRect(player.radius, -2, 14, 4); }
                     else if (wType === "broadsword") { ctx.shadowColor = ctx.fillStyle; ctx.shadowBlur = 10; ctx.fillRect(player.radius, -4, 28, 8); ctx.fillStyle="#555"; ctx.fillRect(player.radius-2, -8, 4, 16); }
-                    else if (wType === "scythe") { ctx.shadowColor = ctx.fillStyle; ctx.shadowBlur = 15; ctx.fillRect(player.radius, -20, 4, 40); ctx.beginPath(); ctx.moveTo(player.radius, -20); ctx.quadraticCurveTo(player.radius + 30, -10, player.radius + 35, 10); ctx.lineTo(player.radius + 15, -5); ctx.fill(); }
+                    else if (wType === "scythe") {
+                        ctx.shadowColor = ctx.fillStyle;
+                        ctx.shadowBlur = 18;
+                        ctx.fillRect(player.radius, -22, 6, 44);
+                        ctx.fillStyle = "rgba(255,255,255,0.18)";
+                        ctx.beginPath();
+                        ctx.moveTo(player.radius + 6, -18);
+                        ctx.quadraticCurveTo(player.radius + 46, -14, player.radius + 46, 8);
+                        ctx.quadraticCurveTo(player.radius + 26, 22, player.radius + 18, 12);
+                        ctx.quadraticCurveTo(player.radius + 38, 0, player.radius + 20, -18);
+                        ctx.closePath();
+                        ctx.fill();
+                        ctx.fillStyle = WEAPONS_CONFIG[user.equipped_weapon].color || "#aaa";
+                        ctx.beginPath();
+                        ctx.moveTo(player.radius + 6, -18);
+                        ctx.quadraticCurveTo(player.radius + 46, -14, player.radius + 46, 8);
+                        ctx.quadraticCurveTo(player.radius + 26, 22, player.radius + 18, 12);
+                        ctx.quadraticCurveTo(player.radius + 38, 0, player.radius + 20, -18);
+                        ctx.closePath();
+                        ctx.fill();
+                    }
                     else if (wType === "aether_blade") { ctx.shadowColor = "#00ffff"; ctx.shadowBlur = 20; ctx.beginPath(); ctx.moveTo(player.radius, 0); ctx.lineTo(player.radius + 40, -6); ctx.lineTo(player.radius + 40, 6); ctx.fill(); }
                     else if (wType === "singularity_edge") { ctx.shadowColor = "#ff0055"; ctx.shadowBlur = 25; ctx.beginPath(); ctx.moveTo(player.radius, -15); ctx.lineTo(player.radius + 50, 0); ctx.lineTo(player.radius, 15); ctx.fill(); ctx.fillStyle="#000"; ctx.beginPath(); ctx.arc(player.radius + 20, 0, 5, 0, Math.PI*2); ctx.fill(); }
                     else if (wType === "candy_cane") { ctx.fillStyle = "#fff"; ctx.fillRect(player.radius, -4, 25, 8); ctx.fillStyle = "#f00"; for(let i=0; i<20; i+=6) ctx.fillRect(player.radius + i, -4, 3, 8); ctx.beginPath(); ctx.arc(player.radius+25, 0, 4, -Math.PI/2, Math.PI/2); ctx.fill(); }
