@@ -33,17 +33,22 @@
         .casino-box { background: rgba(255,255,255,0.05); border: 1px solid #2e2e54; border-radius: 14px; padding: 12px; display: flex; flex-direction: column; gap: 10px; }
         .casino-header { display:flex; justify-content:space-between; gap:10px; flex-wrap:wrap; align-items:center; }
         .casino-input { width: 100%; min-width: 120px; border-radius: 10px; border: 1px solid #2e2e54; background: #0f0f1a; color: #fff; padding: 10px 12px; font-size: 13px; }
-        .casino-wheel { width: 100%; height: 130px; border-radius: 50%; border: 12px solid #1b1b2c; background: radial-gradient(circle at center, #26264b 25%, #090911 100%); position: relative; display: flex; align-items: center; justify-content: center; overflow: hidden; box-shadow: inset 0 0 16px rgba(0,255,255,0.1), 0 0 20px rgba(0,255,255,0.05); }
-        .casino-wheel.spin { animation: wheel-spin 0.8s cubic-bezier(.12,.72,.5,1.15); }
-        .casino-wheel::before { content:''; position:absolute; width: 14px; height: 14px; background: #ff4757; border-radius: 50%; box-shadow: 0 0 18px rgba(255,71,87,0.7); z-index:2; }
+        .casino-wheel { width: 100%; height: 150px; border-radius: 50%; border: 12px solid #1b1b2c; background: radial-gradient(circle at center, #25253d 28%, #080810 100%); position: relative; display: flex; align-items: center; justify-content: center; overflow: hidden; box-shadow: inset 0 0 24px rgba(255, 160, 0, 0.1), 0 0 32px rgba(255, 160, 0, 0.08); }
+        .casino-wheel.spin { animation: wheel-spin 1.2s cubic-bezier(.22,.61,.36,1.04); }
+        .casino-wheel::before { content: ''; position: absolute; inset: 0; border-radius: 50%; background: conic-gradient(
+            #ff4757 0 10%, #222 10% 20%, #ffffff 20% 30%, #222 30% 40%, #ff4757 40% 50%, #222 50% 60%, #ffffff 60% 70%, #222 70% 80%, #2ed573 80% 90%, #222 90% 100%
+        ); transform: rotate(-10deg); opacity: 0.95; }
+        .casino-wheel::after { content: ''; position: absolute; width: 24px; height: 24px; background: #ffb347; border-radius: 50%; box-shadow: 0 0 18px rgba(255, 179, 71, 0.85); }
+        .casino-wheel .wheel-pointer { position: absolute; top: -10px; left: 50%; transform: translateX(-50%); width: 0; height: 0; border-left: 10px solid transparent; border-right: 10px solid transparent; border-bottom: 16px solid #ff6b6b; filter: drop-shadow(0 0 8px rgba(255,107,107,0.8)); }
         .casino-slot-machine { display:flex; justify-content:space-between; gap: 8px; }
-        .slot-reel { flex:1; min-height: 90px; border-radius: 16px; background: #11111f; border: 1px solid #2e2e54; display:flex; flex-direction:column; justify-content:center; align-items:center; box-shadow: inset 0 0 20px rgba(0,0,0,0.5); }
-        .slot-reel.spin { animation: reel-shake 0.6s ease-in-out infinite; }
-        .slot-cell { font-size: 26px; line-height: 1; display:flex; gap:6px; align-items:center; justify-content:center; }
+        .slot-reel { flex:1; min-height: 100px; border-radius: 18px; background: linear-gradient(180deg, #121228 0%, #1b1b33 100%); border: 1px solid #2e2e54; display:flex; flex-direction:column; justify-content:center; align-items:center; box-shadow: inset 0 0 18px rgba(255,255,255,0.08), 0 0 10px rgba(255,160,0,0.04); }
+        .slot-reel.spin { animation: reel-spin 0.7s ease-in-out infinite; }
+        .slot-cell { font-size: 30px; line-height: 1; display:flex; gap: 8px; align-items:center; justify-content:center; }
+        @keyframes reel-spin { 0% { transform: translateY(0) scale(1); } 25% { transform: translateY(-5px) scale(1.02); } 50% { transform: translateY(5px) scale(1); } 75% { transform: translateY(-3px) scale(1.01); } 100% { transform: translateY(0) scale(1); } }
+        @keyframes tung-fire { from { text-shadow: 0 0 8px #ffae4e, 0 0 18px #ff7f23, 0 0 26px #d94f08; } to { text-shadow: 0 0 11px #ffd57d, 0 0 22px #ff983b, 0 0 34px #ff6d12; } }
+        .tung-tag { font-weight: 900 !important; animation: tung-fire 0.25s infinite alternate; color: #ffb84d !important; text-shadow: 0 0 8px #ffb54a, 0 0 18px #ff893b, 0 0 28px #ff5414; }
         .casino-choice { min-width: 70px; }
         .casino-status { font-size: 12px; color: #dfe6e9; min-height: 42px; }
-        .tung-tag { font-weight: 900 !important; animation: tung-glow 0.3s infinite alternate; color: #7df4ff !important; text-shadow: 0 0 8px #7df4ff, 0 0 18px #6a8cff; }
-        @keyframes tung-glow { from { text-shadow: 0 0 8px #7df4ff, 0 0 18px #6a8cff; } to { text-shadow: 0 0 12px #7df4ff, 0 0 26px #8aacff; } }
         @keyframes wheel-spin { from { transform: rotate(0deg); } to { transform: rotate(1080deg); } }
         @keyframes reel-shake { 0% { transform: translateX(0); } 25% { transform: translateX(-4px); } 50% { transform: translateX(4px); } 75% { transform: translateX(-2px); } 100% { transform: translateX(0); } }
         .casino-art-icon { display:inline-flex; align-items:center; justify-content:center; width: 22px; height: 22px; border-radius: 8px; background: rgba(255,255,255,0.08); }
@@ -260,26 +265,40 @@
                 <button class="tutorial-close" id="closeDevlogBtn">&times;</button>
             </div>
             <div class="tutorial-body" style="display: block;">
-                
-                <h4 style="color:#f9a826; border-bottom:1px dashed #2e2e54; padding-bottom:4px; margin-top:0;">v1.5.0 - The Hazards Update</h4>
-                <p style="font-size: 11px; color: #888; margin-top: -5px;">Released: Current</p>
+                <h4 style="color:#ff6b6b; border-bottom:1px dashed #2e2e54; padding-bottom:4px; margin-top:0;">v1.5.2 - Casino Inferno</h4>
+                <p style="font-size: 11px; color: #888; margin-top: -5px;">Released: June 2026</p>
                 <ul>
-                    <li><span class="tutorial-highlight">Galaxy Mines:</span> Watch out for floating purple hazards! Hitting one snaps your grapple rope and kills your momentum instantly. Keep those reflexes sharp!</li>
+                    <li><span class="tutorial-highlight">Roulette Reimagined:</span> The wheel now spins with a blazing fire-face animation and a glowing pointer. Bets can now feel the heat.</li>
+                    <li><span class="tutorial-highlight">Auto Spinner:</span> Roulette and slots now support a 1,000,000 Gold Auto Spin mode. Tap Auto 1M and watch the casino run until the bank drains or the session ends.</li>
+                    <li><span class="tutorial-highlight">Slot Frenzy:</span> Slot reels now shake and pulse during spins, making each run feel more alive.</li>
+                    <li><span class="tutorial-highlight">TUNG Flame Theme:</span> TUNG guild members now return to a bold flame glow in both UI tags and in-game guild tags.</li>
                 </ul>
 
-                <h4 style="color:#4ecca3; border-bottom:1px dashed #2e2e54; padding-bottom:4px; margin-top:20px;">v1.4.0 - The Live Events Update</h4>
+                <h4 style="color:#f9a826; border-bottom:1px dashed #2e2e54; padding-bottom:4px; margin-top:20px;">v1.5.1 - Guild Glow & Interface Polish</h4>
+                <p style="font-size: 11px; color: #888; margin-top: -5px;">Released: June 2026</p>
+                <ul>
+                    <li><span class="tutorial-highlight">Collapsible Panels:</span> Guild and leaderboard side panels can now be collapsed to keep the interface tidy and focused.</li>
+                    <li><span class="tutorial-highlight">Casino Art Upgrade:</span> Font Awesome icons replaced emoji-only slot symbols, and casino UI now displays crisp button art and animated panels.</li>
+                </ul>
+
+                <h4 style="color:#4ecca3; border-bottom:1px dashed #2e2e54; padding-bottom:4px; margin-top:20px;">v1.5.0 - The Hazards Update</h4>
+                <p style="font-size: 11px; color: #888; margin-top: -5px;">Released: Current</p>
+                <ul>
+                    <li><span class="tutorial-highlight">Galaxy Mines:</span> Watch out for floating purple hazards! Hitting one snaps your grapple rope and kills your momentum instantly.</li>
+                </ul>
+
+                <h4 style="color:#00adb5; border-bottom:1px dashed #2e2e54; padding-bottom:4px; margin-top:20px;">v1.4.0 - The Live Events Update</h4>
                 <p style="font-size: 11px; color: #888; margin-top: -5px;">Released: June 2026</p>
                 <ul>
                     <li><span class="tutorial-highlight">Live Operations:</span> The server can now push live events like the Abyssal Frenzy! (3x Multiplier active while boss is Frenzied).</li>
                 </ul>
 
-                <h4 style="color:#00adb5; border-bottom:1px dashed #2e2e54; padding-bottom:4px; margin-top:20px;">v1.3.0 - The Prestige Guild Update</h4>
+                <h4 style="color:#00b894; border-bottom:1px dashed #2e2e54; padding-bottom:4px; margin-top:20px;">v1.3.0 - The Prestige Guild Update</h4>
                 <p style="font-size: 11px; color: #888; margin-top: -5px;">Released: June 5, 2026</p>
                 <ul>
-                    <li><span class="tutorial-highlight">Exponential Pets:</span> Guild Pet exchange rates now double every 10,000 tokens! Backend securely calculates bulk purchases.</li>
+                    <li><span class="tutorial-highlight">Exponential Pets:</span> Guild Pet exchange rates now double every 10,000 tokens.</li>
                     <li><span class="tutorial-highlight">True Gold Skin:</span> Added a new ultra-tier skin that unlocks at 10M Score, boosting points by 15x and doubling Gold output.</li>
                 </ul>
-
             </div>
             <div class="tutorial-footer" style="justify-content: center;">
                 <span style="font-size:11px; color:#666;">Thanks for playing Infinite Swing!</span>
@@ -723,11 +742,12 @@
             { icon: 'fa-solid fa-diamond', color: '#a29bfe' },
             { icon: 'fa-solid fa-leaf', color: '#00b894' }
         ];
-        let casinoState = { tab: 'roulette', choice: 'red', message: 'Place a bet to start winning gold!', lastResult: '', spinning: false, slotDisplay: [CASINO_SYMBOLS[0], CASINO_SYMBOLS[1], CASINO_SYMBOLS[2]] };
+        let casinoState = { tab: 'roulette', choice: 'red', message: 'Place a bet to start winning gold!', lastResult: '', spinning: false, autoRunning: false, slotDisplay: [CASINO_SYMBOLS[0], CASINO_SYMBOLS[1], CASINO_SYMBOLS[2]] };
 
         function switchCasinoTab(tab) {
             casinoState.tab = tab;
             casinoState.spinning = false;
+            casinoState.autoRunning = false;
             casinoState.lastResult = '';
             casinoState.message = tab === 'roulette' ? 'Bet on Red, Black, or Green and win big!' : 'Spin the slots for matching symbols!';
             renderCasinoPanel();
@@ -762,9 +782,9 @@
             const betAmount = getCasinoBetAmount(100);
             let html = `<div class="casino-box"><div class="casino-header"><div class="casino-title"><i class="fa-solid fa-coins"></i> Gold: ${formatGold(user.guild_coins)}</div><input id="casinoBetAmount" class="casino-input" type="number" min="1" step="25" value="${betAmount}" placeholder="Enter bet amount"></div>`;
             if (casinoState.tab === 'roulette') {
-                html += `<div class="casino-wheel ${casinoState.spinning ? 'spin' : ''}"></div>`;
+                html += `<div class="casino-wheel ${casinoState.spinning ? 'spin' : ''}"><div class="wheel-pointer"></div></div>`;
                 html += `<div class="casino-button-row"><button class="action-btn ${casinoState.choice === 'red' ? 'red' : 'blue'} casino-choice" onclick="setCasinoChoice('red')"><i class="fa-solid fa-circle" style="color:#ff4757"></i> Red</button><button class="action-btn ${casinoState.choice === 'black' ? 'red' : 'blue'} casino-choice" onclick="setCasinoChoice('black')"><i class="fa-solid fa-circle" style="color:#ffffff"></i> Black</button><button class="action-btn ${casinoState.choice === 'green' ? 'red' : 'blue'} casino-choice" onclick="setCasinoChoice('green')"><i class="fa-solid fa-circle" style="color:#2ed573"></i> Green</button></div>`;
-                html += `<div class="casino-button-row"><button class="action-btn blue" onclick="setCasinoBetAmount(25)">25</button><button class="action-btn blue" onclick="setCasinoBetAmount(100)">100</button><button class="action-btn blue" onclick="setCasinoBetAmount(500)">500</button><button class="action-btn blue" onclick="setCasinoBetAmount(1000)">1K</button><button class="action-btn green" onclick="placeRouletteBet(0)">Place Bet</button></div>`;
+                html += `<div class="casino-button-row"><button class="action-btn blue" onclick="setCasinoBetAmount(25)">25</button><button class="action-btn blue" onclick="setCasinoBetAmount(100)">100</button><button class="action-btn blue" onclick="setCasinoBetAmount(500)">500</button><button class="action-btn blue" onclick="setCasinoBetAmount(1000)">1K</button><button class="action-btn blue" onclick="setCasinoBetAmount(1000000)">1M</button><button class="action-btn green" onclick="placeRouletteBet(0)">Place Bet</button><button class="action-btn green" onclick="autoCasinoSpin()">Auto 1M</button></div>`;
             } else {
                 const reels = casinoState.slotDisplay || [CASINO_SYMBOLS[0], CASINO_SYMBOLS[1], CASINO_SYMBOLS[2]];
                 html += `<div class="casino-slot-machine">`;
@@ -772,7 +792,7 @@
                     html += `<div class="slot-reel ${casinoState.spinning ? 'spin' : ''}"><div class="slot-cell"><i class="${symbol.icon}" style="color:${symbol.color}; font-size:28px"></i></div></div>`;
                 });
                 html += `</div>`;
-                html += `<div class="casino-button-row"><button class="action-btn blue" onclick="setCasinoBetAmount(25)">25</button><button class="action-btn blue" onclick="setCasinoBetAmount(100)">100</button><button class="action-btn blue" onclick="setCasinoBetAmount(500)">500</button><button class="action-btn blue" onclick="setCasinoBetAmount(1000)">1K</button><button class="action-btn green" onclick="spinSlots(0)">Spin</button></div>`;
+                html += `<div class="casino-button-row"><button class="action-btn blue" onclick="setCasinoBetAmount(25)">25</button><button class="action-btn blue" onclick="setCasinoBetAmount(100)">100</button><button class="action-btn blue" onclick="setCasinoBetAmount(500)">500</button><button class="action-btn blue" onclick="setCasinoBetAmount(1000)">1K</button><button class="action-btn blue" onclick="setCasinoBetAmount(1000000)">1M</button><button class="action-btn green" onclick="spinSlots(0)">Spin</button><button class="action-btn green" onclick="autoCasinoSpin()">Auto 1M</button></div>`;
             }
             html += `<div class="casino-status">${casinoState.message}</div>`;
             if (casinoState.lastResult) html += `<div class="casino-status">${casinoState.lastResult}</div>`;
@@ -784,7 +804,29 @@
             return CASINO_SYMBOLS[Math.floor(Math.random() * CASINO_SYMBOLS.length)];
         }
 
-        function placeRouletteBet(amount) {
+        function autoCasinoSpin() {
+            if (!user.session_token) return showToast('Login to use the casino!', 3000, '#ff4757');
+            const bet = 1000000;
+            if (user.guild_coins < bet) return showToast('Need 1,000,000 Gold for auto spin!', 3000, '#ff4757');
+            if (casinoState.spinning) return showToast('Wait for the current spin to finish.', 3000, '#ff4757');
+            casinoState.autoRunning = true;
+            casinoState.message = 'Auto spinner engaged: 1M Gold rounds in progress...';
+            renderCasinoPanel();
+            runAutoSpin(bet);
+        }
+
+        function runAutoSpin(bet) {
+            if (!casinoState.autoRunning || user.guild_coins < bet) {
+                casinoState.autoRunning = false;
+                casinoState.message = user.guild_coins < bet ? 'Auto spin ended: not enough Gold.' : 'Auto spin complete.';
+                renderCasinoPanel(); updateUI();
+                return;
+            }
+            if (casinoState.tab === 'roulette') placeRouletteBet(bet, true);
+            else spinSlots(bet, true);
+        }
+
+        function placeRouletteBet(amount, auto = false) {
             if (!user.session_token) return showToast('Login to use the casino!', 3000, '#ff4757');
             const bet = amount > 0 ? amount : getCasinoBetAmount(100);
             if (bet <= 0) return showToast('Enter a bet amount first.', 3000, '#ff4757');
@@ -809,10 +851,13 @@
                     casinoState.lastResult = `<i class="fa-solid fa-circle" style="color:${color === 'red' ? '#ff4757' : color === 'black' ? '#fff' : '#2ed573'}"></i> ${outcome}`;
                 }
                 renderCasinoPanel(); updateUI();
-            }, 900);
+                if (auto && casinoState.autoRunning) {
+                    setTimeout(() => runAutoSpin(bet), 1000);
+                }
+            }, 1100);
         }
 
-        function spinSlots(amount) {
+        function spinSlots(amount, auto = false) {
             if (!user.session_token) return showToast('Login to use the casino!', 3000, '#ff4757');
             const bet = amount > 0 ? amount : getCasinoBetAmount(100);
             if (bet <= 0) return showToast('Enter a bet amount first.', 3000, '#ff4757');
@@ -828,13 +873,12 @@
                 const result = [randomCasinoSymbol(), randomCasinoSymbol(), randomCasinoSymbol()];
                 casinoState.slotDisplay = result;
                 let profit = 0;
-                let matching = 0;
                 if (result[0].icon === result[1].icon && result[1].icon === result[2].icon) {
                     profit = result[0].icon === 'fa-solid fa-crown' ? bet * 10 : bet * 4;
                     casinoState.lastResult = `JACKPOT! ${result.map(s => `<i class="${s.icon}" style="color:${s.color}"></i>`).join(' ')}`;
                     casinoState.message = `Three matching symbols! You win +${formatGold(profit)} Gold.`;
                 } else if (result[0].icon === result[1].icon || result[1].icon === result[2].icon || result[0].icon === result[2].icon) {
-                    profit = bet * 1;
+                    profit = bet;
                     casinoState.lastResult = `Matched pair ${result.map(s => `<i class="${s.icon}" style="color:${s.color}"></i>`).join(' ')}`;
                     casinoState.message = `Two match, small payout +${formatGold(profit)} Gold.`;
                 } else {
@@ -843,7 +887,10 @@
                 }
                 if (profit > 0) user.guild_coins += bet + profit;
                 renderCasinoPanel(); updateUI();
-            }, 900);
+                if (auto && casinoState.autoRunning) {
+                    setTimeout(() => runAutoSpin(bet), 1000);
+                }
+            }, 1100);
         }
 
         function togglePanel(panelId) {
@@ -1328,12 +1375,12 @@
                     } else if (user.guild === "TUNG") {
                         let pulse = (Math.sin(Date.now() / 140) + 1) / 2;
                         let gradient = ctx.createLinearGradient(player.x, player.y - 35, player.x, player.y - 15);
-                        gradient.addColorStop(0, `rgba(116, 255, 255, ${0.85 + pulse * 0.15})`);
-                        gradient.addColorStop(0.5, `rgba(132, 154, 255, ${0.85 + pulse * 0.15})`);
-                        gradient.addColorStop(1, `rgba(187, 244, 255, ${0.85 + pulse * 0.15})`);
+                        gradient.addColorStop(0, `rgba(255, 178, 95, ${0.8 + pulse * 0.2})`);
+                        gradient.addColorStop(0.5, `rgba(255, 120, 50, ${0.85 + pulse * 0.15})`);
+                        gradient.addColorStop(1, `rgba(255, 60, 12, ${0.8 + pulse * 0.2})`);
                         ctx.fillStyle = gradient;
-                        ctx.shadowColor = "#63f0ff";
-                        ctx.shadowBlur = 10 + pulse * 10;
+                        ctx.shadowColor = "#ff8c00";
+                        ctx.shadowBlur = 10 + pulse * 8;
                     } else {
                         ctx.fillStyle = activeGuildColor || "#f9a826";
                         ctx.shadowBlur = 0;
