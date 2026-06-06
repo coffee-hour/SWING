@@ -356,7 +356,7 @@
         const WEAPONS_CONFIG = {
             none: { name: "Bare Hands", cost: 0, multi: 0, curr: "gold" },
             dagger: { name: "Iron Dagger", cost: 200, multi: 0.1, desc: "+10% Flat Multi", color: "#aaaaaa", curr: "gold" },
-            broadsword: { name: "Broadsword", cost: 1000, multi: 0.5, desc: "+50% Flat Multi", color: "#c0c0c0", curr: "gold" },
+            broadsword: { name: "Ultrahard Steel Blades", cost: 1000, multi: 0.5, desc: "+50% Flat Multi", color: "#c0c0c0", curr: "gold" },
             scythe: { name: "Reaper Scythe", cost: 5000, multi: 1.5, desc: "+150% Flat Multi", color: "#8a2be2", curr: "gold" },
             aether_blade: { name: "Aether Blade", cost: 25000, multi: 4.0, desc: "+400% Flat Multi", color: "#00ffff", curr: "gold" },
             singularity_edge: { name: "Singularity Edge", cost: 100000, multi: 10.0, desc: "+1000% Flat Multi", color: "#ff0055", curr: "gold" }
@@ -364,7 +364,7 @@
 
         const COATS_CONFIG = {
             none: { name: "No Coat", cost: 0, curr: "gold" },
-            traveler_cloak: { name: "Traveler Cloak", cost: 200, desc: "+5% Hook Range", color: "#8b4513", curr: "gold" },
+            traveler_cloak: { name: "Scout Coat", cost: 200, desc: "+5% Hook Range", color: "#0e6c14", curr: "gold" },
             feather_mantle: { name: "Feather Mantle", cost: 1000, desc: "-10% Gravity", color: "#ffffff", curr: "gold" },
             shadow_trench: { name: "Shadow Trench", cost: 5000, desc: "+20% Momentum Boost", color: "#333333", curr: "gold" },
             celestial_wings: { name: "Celestial Wings", cost: 25000, desc: "-25% Grav, Magnet", color: "#ffeaa7", curr: "gold" },
@@ -1083,11 +1083,26 @@
                 }
                 ctx.restore();
 
-                if (user.guild && gameStatus !== "fusion") {
+               if (user.guild && gameStatus !== "fusion") {
                     let cObj = CRESTS_CONFIG[activeGuildCrest] || CRESTS_CONFIG[0];
                     ctx.save();
-                    ctx.fillStyle = activeGuildColor || "#f9a826";
                     
+                    // --- ADMIN GUILD CHECK ---
+                    if (user.guild === "TUNG") {
+                        // Create an animated rainbow gradient
+                        let gradient = ctx.createLinearGradient(player.x - 20, 0, player.x + 20, 0);
+                        let hue = (Date.now() / 10) % 360; // Shifts colors constantly
+                        gradient.addColorStop(0, `hsl(${hue}, 100%, 50%)`);
+                        gradient.addColorStop(1, `hsl(${(hue + 90) % 360}, 100%, 50%)`);
+                        
+                        ctx.fillStyle = gradient;
+                        ctx.shadowColor = `hsl(${hue}, 100%, 50%)`;
+                        ctx.shadowBlur = 15; // Massive neon glow
+                    } else {
+                        ctx.fillStyle = activeGuildColor || "#f9a826";
+                    }
+                    // -------------------------
+
                     if (cObj.unicode) {
                         ctx.font = '900 10px "Font Awesome 6 Free"';
                         let iconWidth = ctx.measureText(cObj.unicode).width;
