@@ -25,7 +25,31 @@
         #bottom-panels { display: flex; gap: 15px; width: 100%; flex-wrap: wrap; }
         .panel-box { background: rgba(22, 22, 40, 0.95); border: 1px solid #2e2e54; border-radius: 12px; padding: 15px; flex: 1; min-width: 260px; position: relative; }
         .panel-box h4 { margin: 0 0 10px 0; color: #00adb5; font-size: 14px; text-transform: uppercase; border-bottom: 1px solid #2e2e54; padding-bottom: 4px; }
-        .skins-grid { display: flex; flex-wrap: wrap; gap: 8px; max-height: 180px; overflow-y: auto; padding: 4px 0; }
+        .panel-header { display:flex; justify-content:space-between; align-items:center; gap:10px; margin-bottom:12px; }
+        .panel-header span { display:flex; align-items:center; gap:8px; font-size:16px; }
+        .collapse-btn { border: 1px solid #2e2e54; background: rgba(18,18,32,0.95); color: #fff; padding: 6px 10px; border-radius: 8px; cursor: pointer; font-size: 12px; display: inline-flex; align-items:center; gap:5px; }
+        .side-panel.collapsed { min-height: 52px; max-height: 52px; padding-bottom: 10px; overflow: hidden; }
+        .side-panel.collapsed > :not(.panel-header) { display: none; }
+        .casino-box { background: rgba(255,255,255,0.05); border: 1px solid #2e2e54; border-radius: 14px; padding: 12px; display: flex; flex-direction: column; gap: 10px; }
+        .casino-header { display:flex; justify-content:space-between; gap:10px; flex-wrap:wrap; align-items:center; }
+        .casino-input { width: 100%; min-width: 120px; border-radius: 10px; border: 1px solid #2e2e54; background: #0f0f1a; color: #fff; padding: 10px 12px; font-size: 13px; }
+        .casino-wheel { width: 100%; height: 130px; border-radius: 50%; border: 12px solid #1b1b2c; background: radial-gradient(circle at center, #26264b 25%, #090911 100%); position: relative; display: flex; align-items: center; justify-content: center; overflow: hidden; box-shadow: inset 0 0 16px rgba(0,255,255,0.1), 0 0 20px rgba(0,255,255,0.05); }
+        .casino-wheel.spin { animation: wheel-spin 0.8s cubic-bezier(.12,.72,.5,1.15); }
+        .casino-wheel::before { content:''; position:absolute; width: 14px; height: 14px; background: #ff4757; border-radius: 50%; box-shadow: 0 0 18px rgba(255,71,87,0.7); z-index:2; }
+        .casino-slot-machine { display:flex; justify-content:space-between; gap: 8px; }
+        .slot-reel { flex:1; min-height: 90px; border-radius: 16px; background: #11111f; border: 1px solid #2e2e54; display:flex; flex-direction:column; justify-content:center; align-items:center; box-shadow: inset 0 0 20px rgba(0,0,0,0.5); }
+        .slot-reel.spin { animation: reel-shake 0.6s ease-in-out infinite; }
+        .slot-cell { font-size: 26px; line-height: 1; display:flex; gap:6px; align-items:center; justify-content:center; }
+        .casino-choice { min-width: 70px; }
+        .casino-status { font-size: 12px; color: #dfe6e9; min-height: 42px; }
+        .tung-tag { font-weight: 900 !important; animation: tung-glow 0.3s infinite alternate; color: #7df4ff !important; text-shadow: 0 0 8px #7df4ff, 0 0 18px #6a8cff; }
+        @keyframes tung-glow { from { text-shadow: 0 0 8px #7df4ff, 0 0 18px #6a8cff; } to { text-shadow: 0 0 12px #7df4ff, 0 0 26px #8aacff; } }
+        @keyframes wheel-spin { from { transform: rotate(0deg); } to { transform: rotate(1080deg); } }
+        @keyframes reel-shake { 0% { transform: translateX(0); } 25% { transform: translateX(-4px); } 50% { transform: translateX(4px); } 75% { transform: translateX(-2px); } 100% { transform: translateX(0); } }
+        .casino-art-icon { display:inline-flex; align-items:center; justify-content:center; width: 22px; height: 22px; border-radius: 8px; background: rgba(255,255,255,0.08); }
+        .casino-button-row { display:flex; gap:8px; flex-wrap:wrap; }
+        .casino-button-row .action-btn { min-width: 72px; }
+        .casino-title { display:flex; align-items:center; gap:8px; font-size: 13px; color:#fff; }
         .skin-btn { background: #17172e; border: 2px solid #2e2e54; color: #666; padding: 8px; border-radius: 8px; cursor: pointer; font-size: 11px; font-weight: bold; text-align: left; display: flex; flex-direction: column; gap: 4px; width: calc(50% - 4px); box-sizing: border-box; -webkit-appearance: none; appearance: none; }
         .skin-btn.unlocked { border-color: #4ecca3; color: #fff; cursor: pointer; }
         .skin-btn.equipped { border-color: #f9a826; background: #232342; box-shadow: 0 0 8px rgba(249,168,38,0.2); }
@@ -81,8 +105,8 @@
     <div id="toastContainer"></div>
 
     <div id="main-layout">
-        <div class="side-panel">
-            <h3><i class="fa-solid fa-shield-halved"></i> Guild Base</h3>
+        <div class="side-panel" id="guildBasePanel">
+            <h3 class="panel-header"><span><i class="fa-solid fa-shield-halved"></i> Guild Base</span><button class="collapse-btn" onclick="togglePanel('guildBasePanel')" title="Collapse panel"><i class="fa-solid fa-chevron-up"></i></button></h3>
             <div style="margin-bottom: 12px; background: #17172e; padding: 10px; border-radius: 8px; border: 1px solid #2e2e54;">
                 <div style="display:flex; gap:5px;">
                     <input type="text" id="guildInput" maxlength="4" placeholder="TAG" class="auth-input" style="width: 60px; text-transform: uppercase;">
@@ -213,8 +237,8 @@
             </div>
         </div>
 
-        <div class="side-panel">
-            <h3><i class="fa-solid fa-trophy"></i> Leaderboard</h3>
+        <div class="side-panel" id="leaderboardPanel">
+            <h3 class="panel-header"><span><i class="fa-solid fa-trophy"></i> Leaderboard</span><button class="collapse-btn" onclick="togglePanel('leaderboardPanel')" title="Collapse panel"><i class="fa-solid fa-chevron-up"></i></button></h3>
             <div id="leaderboardList" class="list-container" style="flex: 1;">Loading ranks...</div>
             <h3 style="margin-top: 15px;"><i class="fa-solid fa-handshake"></i> Friends & Rivals</h3>
             <div style="display:flex; gap:5px; margin-bottom: 5px;">
@@ -584,9 +608,10 @@
 
             let crestEmoji = activeGuildCrest > 0 && CRESTS_CONFIG[activeGuildCrest] ? CRESTS_CONFIG[activeGuildCrest].emoji : "";
             
-            // 🔥 APPLY FIRE CLASS TO UI FIRE TAG 🔥
-            let isDev = user.guild === "TUNG";
-            let tagStyle = isDev ? `class="fire-tag"` : `style="color:${activeGuildColor || '#f9a826'};"`;
+            // 🔥 APPLY GUILD TAG EFFECTS 🔥
+            let isDev = user.guild === "DEV";
+            let isTung = user.guild === "TUNG";
+            let tagStyle = isDev ? `class="fire-tag"` : isTung ? `class="tung-tag"` : `style="color:${activeGuildColor || '#f9a826'};"`;
             if(document.getElementById("currentGuildDisplay")) document.getElementById("currentGuildDisplay").innerHTML = `<span ${tagStyle}>${crestEmoji}[${user.guild || "None"}]</span>`;
             
             if (user.guild) { document.getElementById("leaveGuildBtn").style.display = "block"; document.getElementById("reqGuildBtn").style.display="none"; document.getElementById("createGuildBtn").style.display="none"; }
@@ -601,6 +626,7 @@
             if (user.w_shards >= 1 && user.b_shards >= 1 && !checkUnlockStatus("yin_yang")) { 
                 fuseBtn.style.display = "block"; fuseBtn.textContent = "FUSE SHARDS FOR YIN YANG"; fuseBtn.style.background = "linear-gradient(90deg, #ffffff 50%, #000000 50%)"; fuseBtn.style.color = "#f9a826"; 
             } else if(fuseBtn) { fuseBtn.style.display = "none"; }
+            renderCasinoPanel();
             calculateMultiplier();
         }
 
@@ -689,12 +715,20 @@
             } catch(e) {}
         }
 
-        let casinoState = { tab: 'roulette', choice: 'red', message: 'Place a bet to start winning gold!', lastResult: '' };
-        const CASINO_SYMBOLS = ['🍒','🍋','🍉','🔔','💎','7️⃣'];
+        const CASINO_SYMBOLS = [
+            { icon: 'fa-solid fa-gem', color: '#6bedff' },
+            { icon: 'fa-solid fa-star', color: '#ffeaa7' },
+            { icon: 'fa-solid fa-heart', color: '#ff6b81' },
+            { icon: 'fa-solid fa-crown', color: '#f9c74f' },
+            { icon: 'fa-solid fa-diamond', color: '#a29bfe' },
+            { icon: 'fa-solid fa-leaf', color: '#00b894' }
+        ];
+        let casinoState = { tab: 'roulette', choice: 'red', message: 'Place a bet to start winning gold!', lastResult: '', spinning: false, slotDisplay: [CASINO_SYMBOLS[0], CASINO_SYMBOLS[1], CASINO_SYMBOLS[2]] };
 
         function switchCasinoTab(tab) {
             casinoState.tab = tab;
-            if (tab === 'roulette' && !casinoState.choice) casinoState.choice = 'red';
+            casinoState.spinning = false;
+            casinoState.lastResult = '';
             casinoState.message = tab === 'roulette' ? 'Bet on Red, Black, or Green and win big!' : 'Spin the slots for matching symbols!';
             renderCasinoPanel();
         }
@@ -705,82 +739,119 @@
             renderCasinoPanel();
         }
 
+        function setCasinoBetAmount(amount) {
+            const input = document.getElementById('casinoBetAmount');
+            if (!input) return;
+            input.value = amount;
+            renderCasinoPanel();
+        }
+
+        function getCasinoBetAmount(defaultAmount) {
+            const input = document.getElementById('casinoBetAmount');
+            let amount = input ? parseInt(input.value, 10) : NaN;
+            if (isNaN(amount) || amount <= 0) amount = defaultAmount;
+            return Math.max(amount, 1);
+        }
+
         function formatGold(value) {
             return (value || 0).toLocaleString();
         }
 
         function renderCasinoPanel() {
             const content = document.getElementById('casinoContent'); if (!content) return;
-            let html = `<div style="color:#fff; font-size:13px; font-weight:bold;">Gold: ${formatGold(user.guild_coins)}</div>`;
+            const betAmount = getCasinoBetAmount(100);
+            let html = `<div class="casino-box"><div class="casino-header"><div class="casino-title"><i class="fa-solid fa-coins"></i> Gold: ${formatGold(user.guild_coins)}</div><input id="casinoBetAmount" class="casino-input" type="number" min="1" step="25" value="${betAmount}" placeholder="Enter bet amount"></div>`;
             if (casinoState.tab === 'roulette') {
-                html += `<div style="display:flex; gap:6px; flex-wrap:wrap;">
-                    <button class="action-btn ${casinoState.choice === 'red' ? 'red' : 'blue'}" onclick="setCasinoChoice('red')">Red</button>
-                    <button class="action-btn ${casinoState.choice === 'black' ? 'red' : 'blue'}" onclick="setCasinoChoice('black')">Black</button>
-                    <button class="action-btn ${casinoState.choice === 'green' ? 'red' : 'blue'}" onclick="setCasinoChoice('green')">Green</button>
-                </div>
-                <div style="display:flex; gap:6px; flex-wrap:wrap;">
-                    <button class="action-btn green" onclick="placeRouletteBet(25)">Bet 25</button>
-                    <button class="action-btn green" onclick="placeRouletteBet(100)">Bet 100</button>
-                    <button class="action-btn green" onclick="placeRouletteBet(500)">Bet 500</button>
-                    <button class="action-btn green" onclick="placeRouletteBet(1000)">Bet 1K</button>
-                </div>`;
+                html += `<div class="casino-wheel ${casinoState.spinning ? 'spin' : ''}"></div>`;
+                html += `<div class="casino-button-row"><button class="action-btn ${casinoState.choice === 'red' ? 'red' : 'blue'} casino-choice" onclick="setCasinoChoice('red')"><i class="fa-solid fa-circle" style="color:#ff4757"></i> Red</button><button class="action-btn ${casinoState.choice === 'black' ? 'red' : 'blue'} casino-choice" onclick="setCasinoChoice('black')"><i class="fa-solid fa-circle" style="color:#ffffff"></i> Black</button><button class="action-btn ${casinoState.choice === 'green' ? 'red' : 'blue'} casino-choice" onclick="setCasinoChoice('green')"><i class="fa-solid fa-circle" style="color:#2ed573"></i> Green</button></div>`;
+                html += `<div class="casino-button-row"><button class="action-btn blue" onclick="setCasinoBetAmount(25)">25</button><button class="action-btn blue" onclick="setCasinoBetAmount(100)">100</button><button class="action-btn blue" onclick="setCasinoBetAmount(500)">500</button><button class="action-btn blue" onclick="setCasinoBetAmount(1000)">1K</button><button class="action-btn green" onclick="placeRouletteBet(0)">Place Bet</button></div>`;
             } else {
-                html += `<div style="display:flex; gap:6px; flex-wrap:wrap;">
-                    <button class="action-btn green" onclick="spinSlots(25)">Spin 25</button>
-                    <button class="action-btn green" onclick="spinSlots(100)">Spin 100</button>
-                    <button class="action-btn green" onclick="spinSlots(500)">Spin 500</button>
-                    <button class="action-btn green" onclick="spinSlots(1000)">Spin 1K</button>
-                </div>`;
-                if (casinoState.lastResult) html += `<div style="font-size:18px; margin-top:6px;">${casinoState.lastResult}</div>`;
+                const reels = casinoState.slotDisplay || [CASINO_SYMBOLS[0], CASINO_SYMBOLS[1], CASINO_SYMBOLS[2]];
+                html += `<div class="casino-slot-machine">`;
+                reels.forEach(symbol => {
+                    html += `<div class="slot-reel ${casinoState.spinning ? 'spin' : ''}"><div class="slot-cell"><i class="${symbol.icon}" style="color:${symbol.color}; font-size:28px"></i></div></div>`;
+                });
+                html += `</div>`;
+                html += `<div class="casino-button-row"><button class="action-btn blue" onclick="setCasinoBetAmount(25)">25</button><button class="action-btn blue" onclick="setCasinoBetAmount(100)">100</button><button class="action-btn blue" onclick="setCasinoBetAmount(500)">500</button><button class="action-btn blue" onclick="setCasinoBetAmount(1000)">1K</button><button class="action-btn green" onclick="spinSlots(0)">Spin</button></div>`;
             }
-            html += `<div style="margin-top:8px; color:#f0f0f0; font-size:12px; min-height:32px;">${casinoState.message}</div>`;
+            html += `<div class="casino-status">${casinoState.message}</div>`;
+            if (casinoState.lastResult) html += `<div class="casino-status">${casinoState.lastResult}</div>`;
+            html += `</div>`;
             content.innerHTML = html;
+        }
+
+        function randomCasinoSymbol() {
+            return CASINO_SYMBOLS[Math.floor(Math.random() * CASINO_SYMBOLS.length)];
         }
 
         function placeRouletteBet(amount) {
             if (!user.session_token) return showToast('Login to use the casino!', 3000, '#ff4757');
-            if (!amount || amount <= 0) return;
-            if (user.guild_coins < amount) return showToast('Not enough Gold for that bet.', 3000, '#ff4757');
-            user.guild_coins -= amount;
-            const outcome = Math.floor(Math.random() * 37);
-            const color = outcome === 0 ? 'green' : (outcome % 2 === 0 ? 'black' : 'red');
-            let profit = 0;
-            if (casinoState.choice === color) {
-                profit = color === 'green' ? amount * 14 : amount;
-                user.guild_coins += amount + profit;
-                casinoState.message = `Roulette hit ${outcome} (${color.toUpperCase()})! You win +${formatGold(profit)} Gold.`;
-            } else {
-                casinoState.message = `Roulette landed ${outcome} (${color.toUpperCase()}). You lose ${formatGold(amount)} Gold.`;
-            }
-            renderCasinoPanel(); updateUI();
+            const bet = amount > 0 ? amount : getCasinoBetAmount(100);
+            if (bet <= 0) return showToast('Enter a bet amount first.', 3000, '#ff4757');
+            if (user.guild_coins < bet) return showToast('Not enough Gold for that bet.', 3000, '#ff4757');
+            user.guild_coins -= bet;
+            casinoState.spinning = true;
+            casinoState.message = 'Roulette wheel is spinning...';
+            casinoState.lastResult = '';
+            renderCasinoPanel();
+            setTimeout(() => {
+                casinoState.spinning = false;
+                const outcome = Math.floor(Math.random() * 37);
+                const color = outcome === 0 ? 'green' : (outcome % 2 === 0 ? 'black' : 'red');
+                let profit = 0;
+                if (casinoState.choice === color) {
+                    profit = color === 'green' ? bet * 14 : bet;
+                    user.guild_coins += bet + profit;
+                    casinoState.message = `Roulette hit ${outcome} (${color.toUpperCase()})! You win +${formatGold(profit)} Gold.`;
+                    casinoState.lastResult = `<i class="fa-solid fa-circle" style="color:${color === 'red' ? '#ff4757' : color === 'black' ? '#fff' : '#2ed573'}"></i> ${outcome}`;
+                } else {
+                    casinoState.message = `Roulette landed ${outcome} (${color.toUpperCase()}). You lose ${formatGold(bet)} Gold.`;
+                    casinoState.lastResult = `<i class="fa-solid fa-circle" style="color:${color === 'red' ? '#ff4757' : color === 'black' ? '#fff' : '#2ed573'}"></i> ${outcome}`;
+                }
+                renderCasinoPanel(); updateUI();
+            }, 900);
         }
 
         function spinSlots(amount) {
             if (!user.session_token) return showToast('Login to use the casino!', 3000, '#ff4757');
-            if (!amount || amount <= 0) return;
-            if (user.guild_coins < amount) return showToast('Not enough Gold for that spin.', 3000, '#ff4757');
-            user.guild_coins -= amount;
-            const result = [
-                CASINO_SYMBOLS[Math.floor(Math.random() * CASINO_SYMBOLS.length)],
-                CASINO_SYMBOLS[Math.floor(Math.random() * CASINO_SYMBOLS.length)],
-                CASINO_SYMBOLS[Math.floor(Math.random() * CASINO_SYMBOLS.length)]
-            ];
-            let profit = 0;
-            if (result[0] === result[1] && result[1] === result[2]) {
-                profit = result[0] === '7️⃣' ? amount * 10 : amount * 4;
-                user.guild_coins += amount + profit;
-                casinoState.lastResult = `${result.join(' ')} — JACKPOT!`; 
-                casinoState.message = `Three matching symbols! You win +${formatGold(profit)} Gold.`;
-            } else if (result[0] === result[1] || result[1] === result[2] || result[0] === result[2]) {
-                profit = amount * 1;
-                user.guild_coins += amount + profit;
-                casinoState.lastResult = `${result.join(' ')} — Nice!`;
-                casinoState.message = `Two match, small payout +${formatGold(profit)} Gold.`;
-            } else {
-                casinoState.lastResult = result.join(' ');
-                casinoState.message = `No match. You lose ${formatGold(amount)} Gold.`;
-            }
-            renderCasinoPanel(); updateUI();
+            const bet = amount > 0 ? amount : getCasinoBetAmount(100);
+            if (bet <= 0) return showToast('Enter a bet amount first.', 3000, '#ff4757');
+            if (user.guild_coins < bet) return showToast('Not enough Gold for that spin.', 3000, '#ff4757');
+            user.guild_coins -= bet;
+            casinoState.spinning = true;
+            casinoState.message = 'Reels are spinning...';
+            casinoState.lastResult = '';
+            casinoState.slotDisplay = [randomCasinoSymbol(), randomCasinoSymbol(), randomCasinoSymbol()];
+            renderCasinoPanel();
+            setTimeout(() => {
+                casinoState.spinning = false;
+                const result = [randomCasinoSymbol(), randomCasinoSymbol(), randomCasinoSymbol()];
+                casinoState.slotDisplay = result;
+                let profit = 0;
+                let matching = 0;
+                if (result[0].icon === result[1].icon && result[1].icon === result[2].icon) {
+                    profit = result[0].icon === 'fa-solid fa-crown' ? bet * 10 : bet * 4;
+                    casinoState.lastResult = `JACKPOT! ${result.map(s => `<i class="${s.icon}" style="color:${s.color}"></i>`).join(' ')}`;
+                    casinoState.message = `Three matching symbols! You win +${formatGold(profit)} Gold.`;
+                } else if (result[0].icon === result[1].icon || result[1].icon === result[2].icon || result[0].icon === result[2].icon) {
+                    profit = bet * 1;
+                    casinoState.lastResult = `Matched pair ${result.map(s => `<i class="${s.icon}" style="color:${s.color}"></i>`).join(' ')}`;
+                    casinoState.message = `Two match, small payout +${formatGold(profit)} Gold.`;
+                } else {
+                    casinoState.lastResult = result.map(s => `<i class="${s.icon}" style="color:${s.color}"></i>`).join(' ');
+                    casinoState.message = `No match. You lose ${formatGold(bet)} Gold.`;
+                }
+                if (profit > 0) user.guild_coins += bet + profit;
+                renderCasinoPanel(); updateUI();
+            }, 900);
+        }
+
+        function togglePanel(panelId) {
+            const panel = document.getElementById(panelId);
+            if (!panel) return;
+            panel.classList.toggle('collapsed');
+            const btn = panel.querySelector('.collapse-btn i');
+            if (btn) btn.className = panel.classList.contains('collapsed') ? 'fa-solid fa-chevron-down' : 'fa-solid fa-chevron-up';
         }
 
         async function fetchServerData() {
@@ -796,8 +867,8 @@
                         const lb = document.getElementById("leaderboardList"); lb.innerHTML = "";
                         data.leaderboard.forEach((r, i) => { 
                             let cObj = CRESTS_CONFIG[r.active_crest_id] || CRESTS_CONFIG[0]; 
-                            let isDev = r.guild === "DEV"; // 🔥 LEADERBOARD CHECK 🔥
-                            let tagStyle = isDev ? `class="fire-tag"` : `style="color:${r.name_color || '#f9a826'}; font-weight:bold;"`;
+                            let isDev = r.guild === "DEV"; let isTung = r.guild === "TUNG"; // 🔥 LEADERBOARD CHECK 🔥
+                            let tagStyle = isDev ? `class="fire-tag"` : isTung ? `class="tung-tag"` : `style="color:${r.name_color || '#f9a826'}; font-weight:bold;"`;
                             let tag = r.guild ? `<span ${tagStyle}>[${cObj.emoji}${r.guild}]</span> ` : ""; 
                             let style = (user.username && r.username === user.username) ? 'border-color:#4ecca3; background:#232342;' : ''; 
                             lb.innerHTML += `<div class="list-item" style="${style}"><span>#${i+1} ${tag}${r.username}</span> <span style="color:#4ecca3">${r.score.toLocaleString()}</span></div>`; 
@@ -1254,6 +1325,15 @@
                         ctx.fillStyle = gradient;
                         ctx.shadowColor = "#ff4500";
                         ctx.shadowBlur = 10 + flicker; // Flickering fire glow
+                    } else if (user.guild === "TUNG") {
+                        let pulse = (Math.sin(Date.now() / 140) + 1) / 2;
+                        let gradient = ctx.createLinearGradient(player.x, player.y - 35, player.x, player.y - 15);
+                        gradient.addColorStop(0, `rgba(116, 255, 255, ${0.85 + pulse * 0.15})`);
+                        gradient.addColorStop(0.5, `rgba(132, 154, 255, ${0.85 + pulse * 0.15})`);
+                        gradient.addColorStop(1, `rgba(187, 244, 255, ${0.85 + pulse * 0.15})`);
+                        ctx.fillStyle = gradient;
+                        ctx.shadowColor = "#63f0ff";
+                        ctx.shadowBlur = 10 + pulse * 10;
                     } else {
                         ctx.fillStyle = activeGuildColor || "#f9a826";
                         ctx.shadowBlur = 0;
