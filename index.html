@@ -90,7 +90,7 @@
                 <div style="margin-top:10px; background:#111122; padding:8px; border-radius:6px; border:1px dashed #f9a826;">
                     <div style="display:flex; justify-content:space-between;">
                         <span style="color:#ff9ff3; font-weight:bold; font-size:12px;"><i class="fa-solid fa-dragon"></i> Guild Pet</span>
-                        <span style="font-size:9px; color:#aaa; font-style:italic;">Cost quadruples every 1,000 Tokens</span>
+                        <span style="font-size:9px; color:#aaa; font-style:italic;">Cost doubles every 10,000 Tokens</span>
                     </div>
                     <div style="font-size:11px; color:#aaa; margin-bottom: 4px; margin-top: 4px;">Level (Tokens): <span id="petTokenDisplay" style="color:#fff;">0</span> (Multi: <span id="petMultiDisplay" style="color:#4ecca3;">1.001x</span>)</div>
                     
@@ -218,8 +218,14 @@
             </div>
             <div class="tutorial-body" style="display: block;">
                 
-                <h4 style="color:#f9a826; border-bottom:1px dashed #2e2e54; padding-bottom:4px; margin-top:0;">v1.4.0 - The Live Events Update</h4>
+                <h4 style="color:#f9a826; border-bottom:1px dashed #2e2e54; padding-bottom:4px; margin-top:0;">v1.5.0 - The Hazards Update</h4>
                 <p style="font-size: 11px; color: #888; margin-top: -5px;">Released: Current</p>
+                <ul>
+                    <li><span class="tutorial-highlight">Galaxy Mines:</span> Watch out for floating purple hazards! Hitting one snaps your grapple rope and kills your momentum instantly. Keep those reflexes sharp!</li>
+                </ul>
+
+                <h4 style="color:#4ecca3; border-bottom:1px dashed #2e2e54; padding-bottom:4px; margin-top:20px;">v1.4.0 - The Live Events Update</h4>
+                <p style="font-size: 11px; color: #888; margin-top: -5px;">Released: June 2026</p>
                 <ul>
                     <li><span class="tutorial-highlight">Live Operations:</span> The server can now push live events like the Abyssal Frenzy! (3x Multiplier active while boss is Frenzied).</li>
                 </ul>
@@ -229,22 +235,7 @@
                 <ul>
                     <li><span class="tutorial-highlight">Exponential Pets:</span> Guild Pet exchange rates now double every 10,000 tokens! Backend securely calculates bulk purchases.</li>
                     <li><span class="tutorial-highlight">True Gold Skin:</span> Added a new ultra-tier skin that unlocks at 10M Score, boosting points by 15x and doubling Gold output.</li>
-                    <li><span class="tutorial-highlight">Economy Balance:</span> Gold is now earned every 500 points instead of 5,000. Underworld (negative scores) restored!</li>
                 </ul>
-
-                <h4 style="color:#4ecca3; border-bottom:1px dashed #2e2e54; padding-bottom:4px; margin-top:20px;">v1.0.0 - Full Release (The Boss Raid Update)</h4>
-                <p style="font-size: 11px; color: #888; margin-top: -5px;">Released: June 4, 2026</p>
-                <ul>
-                    <li><span class="tutorial-highlight">World Boss Raids:</span> The Abyssal Leviathan global raid is added.</li>
-                </ul>
-
-                <h4 style="color:#ff4757; border-bottom:1px dashed #2e2e54; padding-bottom:4px; margin-top:20px;">v0.5.0 - Beta Release (The Alliance Update)</h4>
-                <p style="font-size: 11px; color: #888; margin-top: -5px;">Released: May 20, 2026</p>
-                <ul><li>Guild bases, Social Friends/Rivals, and Daily Tasks implemented.</li></ul>
-
-                <h4 style="color:#ffffff; border-bottom:1px dashed #2e2e54; padding-bottom:4px; margin-top:20px;">v0.1.0 - Alpha Release (Genesis)</h4>
-                <p style="font-size: 11px; color: #888; margin-top: -5px;">Released: May 1, 2026</p>
-                <ul><li>The Infinite Swing physics engine goes online.</li></ul>
 
             </div>
             <div class="tutorial-footer" style="justify-content: center;">
@@ -271,6 +262,7 @@
                     <ul>
                         <li><span class="tutorial-highlight">Grapple Hook:</span> Click anywhere or tap <span class="tutorial-highlight">Spacebar</span> to shoot a line and swing.</li>
                         <li><span class="tutorial-highlight">Score Scaling:</span> Distance traversed applies your Total Multiplier! Swing backwards to drop into the Underworld.</li>
+                        <li><span class="tutorial-highlight" style="color: #e056fd;">Galaxy Mines:</span> Avoid floating purple mines! If you swing into one, your rope will snap and you will instantly lose 90% of your speed!</li>
                     </ul>
                 </div>
                 <div class="tutorial-pane">
@@ -357,7 +349,7 @@
             11: { name: "Atom", emoji: "<i class='fa-solid fa-atom'></i>", unicode: "\uf5d2", cost: 25000000, desc: "+25000% Multi" },
             12: { name: "Planet", emoji: "<i class='fa-solid fa-globe'></i>", unicode: "\uf0ac", cost: 50000000, desc: "+50000% Multi" },
             13: { name: "Rocket", emoji: "<i class='fa-solid fa-rocket'></i>", unicode: "\uf135", cost: 100000000, desc: "+100000% Multi" },
-            14: { name: "Galaxy", emoji: "<i class='fa-solid fa-khanda'></i>", unicode: "\uf66d", cost: 250000000, desc: "+250000% Multi" },
+            14: { name: "Jedi", emoji: "<i class='fa-solid fa-khanda'></i>", unicode: "\uf66d", cost: 250000000, desc: "+250000% Multi" },
             15: { name: "Infinity", emoji: "<i class='fa-solid fa-infinity'></i>", unicode: "\uf534", cost: 1000000000, desc: "+1000000% Multi" }
         };
 
@@ -493,8 +485,8 @@
 
             if (rawAmount === 'max') {
                 while (true) {
-                    let tier = Math.floor(tempTokens / 1000);
-                    let cost = baseCost * Math.pow(4, tier);
+                    let tier = Math.floor(tempTokens / 10000);
+                    let cost = baseCost * Math.pow(2, tier);
                     if (currencyAvailable >= totalCost + cost) {
                         totalCost += cost;
                         tempTokens++;
@@ -556,9 +548,9 @@
             if(document.getElementById("petTokenDisplay")) document.getElementById("petTokenDisplay").textContent = (user.guild_pet_tokens || 0).toLocaleString();
             
             // Exponential UI Updates
-            let currentTier = Math.floor((user.guild_pet_tokens || 0) / 1000);
-            let goldCost = 100 * Math.pow(4, currentTier);
-            let warCost = 10 * Math.pow(4, currentTier);
+            let currentTier = Math.floor((user.guild_pet_tokens || 0) / 10000);
+            let goldCost = 100 * Math.pow(2, currentTier);
+            let warCost = 10 * Math.pow(2, currentTier);
             if(document.getElementById("goldPetCostDisplay")) document.getElementById("goldPetCostDisplay").textContent = goldCost.toLocaleString();
             if(document.getElementById("warPetCostDisplay")) document.getElementById("warPetCostDisplay").textContent = warCost.toLocaleString();
 
@@ -818,7 +810,7 @@
         // --- CORE GAME ENGINE & PHYSICS INTERFACE ---
         const canvas = document.getElementById("gameCanvas"); const ctx = canvas.getContext("2d");
         let gameStatus = "menu", score = 0, cameraX = 0, player = { x: 100, y: 200, vx: 8, vy: 0, radius: 12, isSwinging: false, hookX: 0, hookY: 0, ropeLength: 0, trail: [] };
-        let hooks = [], bouncers = [], portals = [], voidStalkerSaveUsed = false, lastTapTime = 0, currentRealm = null, flameOffset = 0, rawDist = 0, canGrapple = true; 
+        let hooks = [], bouncers = [], portals = [], mines = [], voidStalkerSaveUsed = false, lastTapTime = 0, currentRealm = null, flameOffset = 0, rawDist = 0, canGrapple = true; 
         let fusionAngle = 0, fusionSpeed = 0, fusionDistance = 0, fusionFlash = 0; 
         
         document.getElementById("fuseBtn").onclick = () => { if (user.w_shards >= 1 && user.b_shards >= 1 && !checkUnlockStatus("yin_yang")) { gameStatus = "fusion"; fusionAngle = 0; fusionSpeed = 0.05; fusionDistance = 150; fusionFlash = 0; } };
@@ -828,15 +820,17 @@
             while (lastHook.x < player.x + 1200) {
                 let nextX = lastHook.x + Math.floor(Math.random() * 100) + 190; let nextY = Math.floor(Math.random() * 130) + 100; hooks.push({ x: nextX, y: nextY });
                 if (Math.random() < 0.3) bouncers.push({ x: nextX + (Math.random() * 80 - 40), y: 350 + Math.random() * 50, radius: 18 });
+                if (Math.random() < 0.15) mines.push({ x: nextX + (Math.random() * 100 - 50), y: nextY + Math.random() * 150 - 50, radius: 14, rot: Math.random() * Math.PI });
+                
                 let eq = user.equipped_skin || "";
                 if (gameStatus === "playing" && Math.random() < 0.01) { if (eq.includes("devil")) portals.push({ type: "devil", x: nextX + 50, y: canvas.height - 20, radius: 30 }); else if (eq.includes("angel")) portals.push({ type: "angel", x: nextX + 50, y: canvas.height - 20, radius: 30 }); }
                 lastHook = hooks[hooks.length - 1];
             }
-            hooks = hooks.filter(h => h.x > cameraX - 100); bouncers = bouncers.filter(b => b.x > cameraX - 100); portals = portals.filter(p => p.x > cameraX - 100);
+            hooks = hooks.filter(h => h.x > cameraX - 100); bouncers = bouncers.filter(b => b.x > cameraX - 100); portals = portals.filter(p => p.x > cameraX - 100); mines = mines.filter(m => m.x > cameraX - 100);
         }
 
         function initGame(realmType = null) {
-            gameStatus = realmType ? "realm" : "playing"; currentRealm = realmType; score = 0; cameraX = 0; voidStalkerSaveUsed = false; rawDist = 0; player.x = 100; player.y = 200; player.vx = 8; player.vy = 0; player.isSwinging = false; player.trail = []; hooks = []; bouncers = []; portals = []; canGrapple = true;
+            gameStatus = realmType ? "realm" : "playing"; currentRealm = realmType; score = 0; cameraX = 0; voidStalkerSaveUsed = false; rawDist = 0; player.x = 100; player.y = 200; player.vx = 8; player.vy = 0; player.isSwinging = false; player.trail = []; hooks = []; bouncers = []; portals = []; mines = []; canGrapple = true;
             spawnEnvironment(); updateUI();
         }
 
@@ -873,6 +867,8 @@
                 }
             }
             bouncers.forEach(pad => { let dx = player.x - pad.x; let dy = player.y - pad.y; if (Math.hypot(dx, dy) < player.radius + pad.radius) { let bMulti = bounceMultiplier; player.y = pad.y - player.radius - 5; player.vy = -Math.max(Math.abs(player.vy) * 1.2, 14) * bMulti; player.vx += dx * 0.1; player.isSwinging = false; canGrapple = true; } });
+
+            mines.forEach((mine, idx) => { let dx = player.x - mine.x; let dy = player.y - mine.y; if (Math.hypot(dx, dy) < player.radius + mine.radius) { player.isSwinging = false; player.vx *= 0.1; player.vy *= 0.1; canGrapple = true; mines.splice(idx, 1); showToast("💥 Galaxy Mine! Momentum killed!", 2000, "#e056fd"); } });
 
             cameraX = player.x - 200; rawDist = Math.floor(player.x / 10) - 10;
             
@@ -1023,6 +1019,17 @@
 
                 hooks.forEach(h => { let isTargeted = (h.x === player.hookX && h.y === player.hookY && player.isSwinging); ctx.fillStyle = isTargeted ? "#4ecca3" : "#e94560"; ctx.beginPath(); ctx.arc(h.x,h.y,8,0,Math.PI*2); ctx.fill(); ctx.strokeStyle = isTargeted ? "rgba(255, 255, 255, 0.8)" : "rgba(100, 100, 100, 0.3)"; ctx.lineWidth = isTargeted ? 4 : 2; ctx.beginPath(); ctx.arc(h.x, h.y, 16, 0, Math.PI * 2); ctx.stroke(); });
                 bouncers.forEach(pad => { ctx.fillStyle = "#ff4757"; ctx.beginPath(); ctx.arc(pad.x, pad.y, pad.radius, 0, Math.PI*2); ctx.fill(); ctx.fillStyle = "#fff"; ctx.beginPath(); ctx.arc(pad.x, pad.y, pad.radius - 6, 0, Math.PI*2); ctx.fill(); });
+
+                // Render Galaxy Mines
+                mines.forEach(m => {
+                    ctx.save(); ctx.translate(m.x, m.y); ctx.rotate((Date.now() / 800) + m.rot);
+                    ctx.shadowBlur = 15; ctx.shadowColor = "#e056fd";
+                    ctx.fillStyle = "#111"; ctx.beginPath(); ctx.arc(0, 0, m.radius, 0, Math.PI * 2); ctx.fill();
+                    ctx.strokeStyle = "#e056fd"; ctx.lineWidth = 3;
+                    for(let i=0; i<4; i++) { ctx.beginPath(); ctx.moveTo(-m.radius-6, 0); ctx.lineTo(m.radius+6, 0); ctx.stroke(); ctx.rotate(Math.PI/4); }
+                    ctx.fillStyle = "#ff4757"; ctx.beginPath(); ctx.arc(0, 0, 4 + Math.sin(Date.now()/150)*2, 0, Math.PI*2); ctx.fill();
+                    ctx.restore();
+                });
 
                 if (gameStatus === "playing") drawBoss();
                 if(player.isSwinging) { ctx.strokeStyle="rgba(255,255,255,0.7)"; ctx.lineWidth=2; ctx.beginPath(); ctx.moveTo(player.hookX, player.hookY); ctx.lineTo(player.x, player.y); ctx.stroke(); }
