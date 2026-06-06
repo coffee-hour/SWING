@@ -629,7 +629,7 @@
             
             // 🔥 APPLY GUILD TAG EFFECTS 🔥
             let isTung = user.guild === "TUNG";
-            let tagStyle = isTung ? `class="fire-tag"` : `style="color:${activeGuildColor || '#f9a826'};"`;
+            let tagStyle = isTung ? `class="tung-tag"` : `style="color:${activeGuildColor || '#f9a826'};"`;
             if(document.getElementById("currentGuildDisplay")) document.getElementById("currentGuildDisplay").innerHTML = `<span ${tagStyle}>${crestEmoji}[${user.guild || "None"}]</span>`;
             
             if (user.guild) { document.getElementById("leaveGuildBtn").style.display = "block"; document.getElementById("reqGuildBtn").style.display="none"; document.getElementById("createGuildBtn").style.display="none"; }
@@ -913,8 +913,8 @@
                         const lb = document.getElementById("leaderboardList"); lb.innerHTML = "";
                         data.leaderboard.forEach((r, i) => { 
                             let cObj = CRESTS_CONFIG[r.active_crest_id] || CRESTS_CONFIG[0]; 
-                            let isDev = r.guild === "DEV"; let isTung = r.guild === "TUNG"; // 🔥 LEADERBOARD CHECK 🔥
-                            let tagStyle = isDev ? `class="fire-tag"` : isTung ? `class="tung-tag"` : `style="color:${r.name_color || '#f9a826'}; font-weight:bold;"`;
+                            let isTung = r.guild === "TUNG"; // 🔥 LEADERBOARD CHECK 🔥
+                            let tagStyle = isTung ? `class="tung-tag"` : `style="color:${r.name_color || '#f9a826'}; font-weight:bold;"`;
                             let tag = r.guild ? `<span ${tagStyle}>[${cObj.emoji}${r.guild}]</span> ` : ""; 
                             let style = (user.username && r.username === user.username) ? 'border-color:#4ecca3; background:#232342;' : ''; 
                             lb.innerHTML += `<div class="list-item" style="${style}"><span>#${i+1} ${tag}${r.username}</span> <span style="color:#4ecca3">${r.score.toLocaleString()}</span></div>`; 
@@ -924,8 +924,8 @@
                         const gw = document.getElementById("guildWarList"); gw.innerHTML = "";
                         data.guildWars.forEach((r, i) => { 
                             let cObj = CRESTS_CONFIG[r.active_crest_id] || CRESTS_CONFIG[0]; 
-                            let isDev = r.tag === "DEV"; // 🔥 GUILD WAR CHECK 🔥
-                            let tagStyle = isDev ? `class="fire-tag"` : `style="color:${r.name_color || '#f9a826'}; font-weight:bold;"`;
+                            let isTung = r.tag === "TUNG"; // 🔥 GUILD WAR CHECK 🔥
+                            let tagStyle = isTung ? `class="tung-tag"` : `style="color:${r.name_color || '#f9a826'}; font-weight:bold;"`;
                             gw.innerHTML += `<div class="list-item"><span>#${i+1} <span ${tagStyle}>[${cObj.emoji}${r.tag}]</span></span> <span style="color:#ff4757; font-weight:bold;">${r.damage.toLocaleString()} DMG</span></div>`; 
                         });
                     }
@@ -933,8 +933,8 @@
                         const gs = document.getElementById("guildScoreList"); gs.innerHTML = "";
                         data.guildScores.forEach((r, i) => { 
                             let cObj = CRESTS_CONFIG[r.active_crest_id] || CRESTS_CONFIG[0]; 
-                            let isDev = r.tag === "DEV"; // 🔥 GUILD SCORE CHECK 🔥
-                            let tagStyle = isDev ? `class="fire-tag"` : `style="color:${r.name_color || '#f9a826'}; font-weight:bold;"`;
+                            let isTung = r.tag === "TUNG"; // 🔥 GUILD SCORE CHECK 🔥
+                            let tagStyle = isTung ? `class="tung-tag"` : `style="color:${r.name_color || '#f9a826'}; font-weight:bold;"`;
                             gs.innerHTML += `<div class="list-item"><span>#${i+1} <span ${tagStyle}>[${cObj.emoji}${r.tag}]</span></span> <span style="color:#f1c40f; font-weight:bold;">${r.total_score.toLocaleString()} PTS</span></div>`; 
                         });
                     }
@@ -1360,18 +1360,8 @@
                     let cObj = CRESTS_CONFIG[activeGuildCrest] || CRESTS_CONFIG[0];
                     ctx.save();
                     
-                    // 🔥 ADMIN GUILD CHECK (FIRE EFFECT) 🔥
-                    if (user.guild === "DEV") {
-                        let flicker = Math.random() * 8;
-                        let gradient = ctx.createLinearGradient(player.x, player.y - 35, player.x, player.y - 15);
-                        gradient.addColorStop(0, "#ff0000"); // Top is red
-                        gradient.addColorStop(0.5, "#ff8c00"); // Middle orange
-                        gradient.addColorStop(1, "#ffff00"); // Bottom yellow
-                        
-                        ctx.fillStyle = gradient;
-                        ctx.shadowColor = "#ff4500";
-                        ctx.shadowBlur = 10 + flicker; // Flickering fire glow
-                    } else if (user.guild === "TUNG") {
+                    // 🔥 TUNG GUILD CHECK (FLAME EFFECT) 🔥
+                    if (user.guild === "TUNG") {
                         let pulse = (Math.sin(Date.now() / 140) + 1) / 2;
                         let gradient = ctx.createLinearGradient(player.x, player.y - 35, player.x, player.y - 15);
                         gradient.addColorStop(0, `rgba(255, 178, 95, ${0.8 + pulse * 0.2})`);
