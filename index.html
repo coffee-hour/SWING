@@ -33,13 +33,13 @@
         .casino-box { background: rgba(255,255,255,0.05); border: 1px solid #2e2e54; border-radius: 14px; padding: 12px; display: flex; flex-direction: column; gap: 10px; }
         .casino-header { display:flex; justify-content:space-between; gap:10px; flex-wrap:wrap; align-items:center; }
         .casino-input { width: 100%; min-width: 120px; border-radius: 10px; border: 1px solid #2e2e54; background: #0f0f1a; color: #fff; padding: 10px 12px; font-size: 13px; }
-        .casino-wheel { width: 100%; height: 150px; border-radius: 50%; border: 12px solid #1b1b2c; background: radial-gradient(circle at center, #25253d 28%, #080810 100%); position: relative; display: flex; align-items: center; justify-content: center; overflow: hidden; box-shadow: inset 0 0 24px rgba(255, 160, 0, 0.1), 0 0 32px rgba(255, 160, 0, 0.08); }
-        .casino-wheel.spin { animation: wheel-spin 1.2s cubic-bezier(.22,.61,.36,1.04); }
-        .casino-wheel::before { content: ''; position: absolute; inset: 0; border-radius: 50%; background: conic-gradient(
-            #ff4757 0 10%, #222 10% 20%, #ffffff 20% 30%, #222 30% 40%, #ff4757 40% 50%, #222 50% 60%, #ffffff 60% 70%, #222 70% 80%, #2ed573 80% 90%, #222 90% 100%
-        ); transform: rotate(-10deg); opacity: 0.95; }
-        .casino-wheel::after { content: ''; position: absolute; width: 24px; height: 24px; background: #ffb347; border-radius: 50%; box-shadow: 0 0 18px rgba(255, 179, 71, 0.85); }
-        .casino-wheel .wheel-pointer { position: absolute; top: -10px; left: 50%; transform: translateX(-50%); width: 0; height: 0; border-left: 10px solid transparent; border-right: 10px solid transparent; border-bottom: 16px solid #ff6b6b; filter: drop-shadow(0 0 8px rgba(255,107,107,0.8)); }
+        .casino-wheel { width: 100%; height: 190px; border-radius: 50%; border: 10px solid #1b1b2c; background: radial-gradient(circle at center, #181826 0%, #0c0c13 100%); position: relative; display: flex; align-items: center; justify-content: center; overflow: hidden; box-shadow: inset 0 0 12px rgba(255,255,255,0.05), 0 0 12px rgba(0,0,0,0.25); }
+        .casino-wheel.spin { animation: wheel-spin 1.2s ease-out forwards; }
+        .casino-wheel::before { content: ''; position: absolute; inset: 12px; border-radius: 50%; background: conic-gradient(
+            #ff4757 0 16.66%, #222 16.66% 33.33%, #ffffff 33.33% 50%, #222 50% 66.66%, #2ed573 66.66% 83.33%, #222 83.33% 100%
+        ); }
+        .casino-wheel::after { content: ''; position: absolute; width: 34px; height: 34px; background: #181826; border: 2px solid #444; border-radius: 50%; }
+        .casino-wheel .wheel-pointer { position: absolute; top: -12px; left: 50%; transform: translateX(-50%); width: 0; height: 0; border-left: 12px solid transparent; border-right: 12px solid transparent; border-bottom: 18px solid #e1e1e1; }
         .casino-slot-machine { display:flex; justify-content:space-between; gap: 8px; }
         .slot-reel { flex:1; min-height: 100px; border-radius: 18px; background: linear-gradient(180deg, #121228 0%, #1b1b33 100%); border: 1px solid #2e2e54; display:flex; flex-direction:column; justify-content:center; align-items:center; box-shadow: inset 0 0 18px rgba(255,255,255,0.08), 0 0 10px rgba(255,160,0,0.04); }
         .slot-reel.spin { animation: reel-spin 0.7s ease-in-out infinite; }
