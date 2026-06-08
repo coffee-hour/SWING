@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>↺</text></svg>">
     <title>Swing!</title>
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#17172e">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2224540154034114" crossorigin="anonymous"></script>
     <style>
@@ -1125,6 +1127,15 @@ function handleSendAllianceChat() {
                 if (currentMonth === 9 && Math.random() < 0.0005) { user.spooky_sweets++; showToast("🎃 Found a Spooky Sweet!", 2000, "#ff8c00"); updateUI(); syncSave(0); }
                 if (currentMonth === 11 && Math.random() < 0.0005) { user.jolly_sweets++; showToast("🎄 Found a Jolly Sweet!", 2000, "#ff0000"); updateUI(); syncSave(0); }
             }
+
+            // PWA Service Worker Registration
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('sw.js')
+                    .then(reg => console.log('Service Worker registered!', reg.scope))
+                    .catch(err => console.log('Service Worker registration failed: ', err));
+            });
+        }
 
             if (player.y > canvas.height + 140 || player.y < -150) {
                 if (gameStatus === "realm") { showToast("THE REALM HAS REJECTED YOU.", 4000, "#ff4757"); initGame(); return; }
