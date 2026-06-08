@@ -252,7 +252,7 @@
     <button class="help-fab" id="openDevlogBtn" title="Devlog & Patch Notes" style="right: 75px; background: #00adb5;"><i class="fa-solid fa-newspaper"></i></button>
     <button class="help-fab" id="openTutorialBtn" title="How to Play & Guide"><i class="fa-solid fa-circle-question"></i></button>
     
-    <div class="tutorial-overlay" id="devlogOverlay">
+   <div class="tutorial-overlay" id="devlogOverlay">
         <div class="tutorial-modal">
             <div class="tutorial-header">
                 <h2><i class="fa-solid fa-newspaper"></i> Developer Log</h2>
@@ -260,35 +260,70 @@
             </div>
             <div class="tutorial-body" style="display: block;">
                 
-                <h4 style="color:#00adb5; border-bottom:1px dashed #2e2e54; padding-bottom:4px; margin-top:0;">v1.7.0 - Custom Boss Visuals</h4>
+                <h4 style="color:#00adb5; border-bottom:1px dashed #2e2e54; padding-bottom:4px; margin-top:0;">v1.7.0 - Live Ops & Visuals</h4>
                 <p style="font-size: 11px; color: #888; margin-top: -5px;">Released: June 7, 2026</p>
                 <ul>
-                    <li><span class="tutorial-highlight">Boss Art:</span> Every single monthly boss now has fully custom art matching their seasonal event (Kraken, Leprechaun, Scarecrow, etc.)!</li>
-                    <li><span class="tutorial-highlight">Frenzy Fix:</span> The Abyssal Frenzy multiplier now properly applies to all seasonal bosses instead of defaulting to June.</li>
+                    <li><span class="tutorial-highlight">Boss Art:</span> Every monthly boss now has fully custom art (Kraken, Leprechaun, Scarecrow, etc.).</li>
+                    <li><span class="tutorial-highlight">Frenzy Event:</span> Server-side 3x Multiplier "Abyssal Frenzy" correctly applies to seasonal bosses.</li>
+                    <li><span class="tutorial-highlight">Admin Tags:</span> Added exclusive animated neon-fire rendering for the DEV alliance.</li>
+                </ul>
+
+                <h4 style="color:#ff4757; border-bottom:1px dashed #2e2e54; padding-bottom:4px; margin-top:20px;">v1.6.1 - Security & QoL Patch</h4>
+                <p style="font-size: 11px; color: #888; margin-top: -5px;">Released: June 6, 2026</p>
+                <ul>
+                    <li><span class="tutorial-highlight">Safe Chat:</span> Integrated PurgoMalum profanity filter for usernames, guild tags, notices, and chat.</li>
+                    <li><span class="tutorial-highlight">Anti-Cheat:</span> Added HTML tag sanitization to prevent injection, and strict shard/score backend limits.</li>
                 </ul>
 
                 <h4 style="color:#f9a826; border-bottom:1px dashed #2e2e54; padding-bottom:4px; margin-top:20px;">v1.6.0 - The Hierarchy Update</h4>
                 <p style="font-size: 11px; color: #888; margin-top: -5px;">Released: June 5, 2026</p>
                 <ul>
-                    <li><span class="tutorial-highlight">Alliance Chat & Ranks:</span> Live Alliance Chat added (requires R2). Ranks R1 to R5 now control recruiting, notices, and kicking!</li>
+                    <li><span class="tutorial-highlight">Alliance Chat:</span> Live Alliance Chat added (requires R2).</li>
+                    <li><span class="tutorial-highlight">Ranks R1-R5:</span> Complete role overhaul. R3s can invite, R4s manage notices/kicks/coins, R5 controls ranks.</li>
                 </ul>
 
                 <h4 style="color:#4ecca3; border-bottom:1px dashed #2e2e54; padding-bottom:4px; margin-top:20px;">v1.5.0 - Proportional Raid Rewards</h4>
                 <p style="font-size: 11px; color: #888; margin-top: -5px;">Released: May 28, 2026</p>
                 <ul>
-                    <li><span class="tutorial-highlight">Fair War Coins:</span> Defeating the Boss now distributes War Coins dynamically to ALL participating Alliances based on their exact damage %.</li>
+                    <li><span class="tutorial-highlight">Fair War Coins:</span> Defeating the Boss distributes War Coins dynamically to ALL participating Alliances based on exact damage %.</li>
                 </ul>
 
-                <h4 style="color:#ff4757; border-bottom:1px dashed #2e2e54; padding-bottom:4px; margin-top:20px;">v1.4.0 - The Hazards Update</h4>
-                <p style="font-size: 11px; color: #888; margin-top: -5px;">Released: May 14, 2026</p>
+                <h4 style="color:#e056fd; border-bottom:1px dashed #2e2e54; padding-bottom:4px; margin-top:20px;">v1.4.1 - Economy Balancing</h4>
+                <p style="font-size: 11px; color: #888; margin-top: -5px;">Released: May 18, 2026</p>
                 <ul>
-                    <li><span class="tutorial-highlight">Galaxy Mines:</span> Watch out for floating purple hazards! Hitting one snaps your grapple rope and kills your momentum instantly.</li>
+                    <li><span class="tutorial-highlight">Guild Pets:</span> Prices now dynamically double every 10,000 tokens to balance the late-game token economy.</li>
                 </ul>
 
-                <h4 style="color:#ff9ff3; border-bottom:1px dashed #2e2e54; padding-bottom:4px; margin-top:20px;">v1.0.0 - Official Launch</h4>
+                <h4 style="color:#ff9ff3; border-bottom:1px dashed #2e2e54; padding-bottom:4px; margin-top:20px;">v1.4.0 - The Hazards Update</h4>
+                <p style="font-size: 11px; color: #888; margin-top: -5px;">Released: May 5, 2026</p>
+                <ul>
+                    <li><span class="tutorial-highlight">Galaxy Mines:</span> Floating purple hazards added. Hitting one snaps your rope and drops momentum by 90%.</li>
+                </ul>
+
+                <h4 style="color:#f1c40f; border-bottom:1px dashed #2e2e54; padding-bottom:4px; margin-top:20px;">v1.3.0 - Alliance Foundations</h4>
+                <p style="font-size: 11px; color: #888; margin-top: -5px;">Released: April 10, 2026</p>
+                <ul>
+                    <li><span class="tutorial-highlight">Guilds:</span> Create/join Alliances. Added active Titles and custom Crest buffs.</li>
+                    <li><span class="tutorial-highlight">Social:</span> Friends list and 1v1 score duels added.</li>
+                </ul>
+
+                <h4 style="color:#1e90ff; border-bottom:1px dashed #2e2e54; padding-bottom:4px; margin-top:20px;">v1.2.0 - The Black Market</h4>
+                <p style="font-size: 11px; color: #888; margin-top: -5px;">Released: March 15, 2026</p>
+                <ul>
+                    <li><span class="tutorial-highlight">Gear System:</span> Added Weapons (Multipliers) and Coats (Physics buffs) purchasable with Gold.</li>
+                </ul>
+
+                <h4 style="color:#ffffff; border-bottom:1px dashed #2e2e54; padding-bottom:4px; margin-top:20px;">v1.1.0 - The Underworld Update</h4>
+                <p style="font-size: 11px; color: #888; margin-top: -5px;">Released: February 20, 2026</p>
+                <ul>
+                    <li><span class="tutorial-highlight">Realms:</span> Added Angel and Devil portal realms. Collect White and Black shards to fuse the Yin Yang skin.</li>
+                    <li><span class="tutorial-highlight">Secrets:</span> Added password-locked skins and death-streak achievements.</li>
+                </ul>
+
+                <h4 style="color:#2ed573; border-bottom:1px dashed #2e2e54; padding-bottom:4px; margin-top:20px;">v1.0.0 - Official Launch</h4>
                 <p style="font-size: 11px; color: #888; margin-top: -5px;">Released: January 15, 2026</p>
                 <ul>
-                    <li><span class="tutorial-highlight">Game Live:</span> Grappling hooks, cosmetics, and the infinite abyss!</li>
+                    <li><span class="tutorial-highlight">Game Live:</span> Grappling hooks, bouncers, momentum physics, and base cosmetics enabled!</li>
                 </ul>
 
             </div>
@@ -297,7 +332,6 @@
             </div>
         </div>
     </div>
-
     <div class="tutorial-overlay" id="tutorialOverlay">
         <div class="tutorial-modal">
             <div class="tutorial-header">
