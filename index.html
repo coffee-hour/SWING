@@ -233,6 +233,7 @@
                         <button class="tutorial-tab-btn active" id="tabWeapon" onclick="switchGearTab('weapon')" style="flex:1;">Weapons</button>
                         <button class="tutorial-tab-btn" id="tabCoat" onclick="switchGearTab('coat')" style="flex:1;">Coats</button>
                     </div>
+                    <div id="weaponForgeArea" style="margin-bottom:10px; min-height:70px; padding:10px; border:1px solid #2e2e54; border-radius:10px; background:#0f1021; color:#ddd; display:block;"></div>
                     <div class="skins-grid" id="gearShopGrid"></div>
                 </div>
             </div>
@@ -460,6 +461,9 @@
         try { let p = JSON.parse(localStorage.getItem("mmo_swing_tasks")); if (p && p.date === todayStr) dailyTasks = p; } catch(e) {}
         
         let activeChallenges = [], angelicDropdownOpen = false, devilDropdownOpen = false, currentGearTab = 'weapon';
+        let storedWeaponLevels = {};
+        try { storedWeaponLevels = JSON.parse(localStorage.getItem("weapon_levels") || "{}"); } catch(e) { storedWeaponLevels = {}; }
+        user.weapon_levels = storedWeaponLevels;
 
         // --- MONTHLY EVENT SYSTEM (FULLY RESTORED) ---
         const EVENTS = [
@@ -519,6 +523,11 @@
             omega_fist: { name: "Omega Fist", cost: 100000000, multi: 900.0, desc: "+90000% Flat Multi", color: "#2c3e50", curr: "gold" },
             apocalypse_scythe: { name: "Apocalypse Scythe", cost: 250000000, multi: 2200.0, desc: "+220000% Flat Multi", color: "#34495e", curr: "gold" }
         };
+
+        function saveWeaponLevels() { localStorage.setItem("weapon_levels", JSON.stringify(user.weapon_levels || {})); }
+        function getWeaponUpgradeLevel(weaponKey) { return (user.weapon_levels && user.weapon_levels[weaponKey]) || 0; }
+        function getWeaponUpgradeBonus(weaponKey) { return getWeaponUpgradeLevel(weaponKey) * 0.5; }
+        function getWeaponForgeCost(weaponKey) { let level = getWeaponUpgradeLevel(weaponKey); let base = WEAPONS_CONFIG[weaponKey] ? Math.max(200, Math.round(WEAPONS_CONFIG[weaponKey].cost * 0.12)) : 200; return Math.max(100, Math.round(base * Math.pow(1.75, level))); }
 
         const COATS_CONFIG = {
             none: { name: "No Coat", cost: 0, curr: "gold" },
@@ -634,6 +643,7 @@
             if (serverEventMultiplier > 1) { m *= serverEventMultiplier; texts.push(`🎉 EVENT ${serverEventMultiplier}X`); }
             
             if (activeLiveEvent === "boss_frenzy") { m *= 3; texts.push("🔥 FRENZY (3x)"); }
+            if (activeLiveEvent === "gold_rush") { m *= 2; texts.push("💰 GOLD RUSH (2x)"); }
 
             if (new Date().getDay() === 5) { m *= 2; texts.push("🔥 2X FRIDAY"); }
             if (user.equipped_skin === 'orange') m *= 2; if (user.equipped_skin === 'yellow') m *= 5; if (user.equipped_skin === 'gold') m *= 10;
@@ -644,8 +654,13 @@
             m *= petMulti;
             if (document.getElementById("petMultiDisplay")) document.getElementById("petMultiDisplay").textContent = petMulti.toFixed(3) + "x";
 
-            if (user.equipped_weapon && user.equipped_weapon !== "none" && WEAPONS_CONFIG[user.equipped_weapon]) { let w = WEAPONS_CONFIG[user.equipped_weapon]; if(w && w.multi) { m += w.multi; texts.push(`⚔️ WPN (+${w.multi}x)`); } }
+            if (user.equipped_weapon && user.equipped_weapon !== "none" && WEAPONS_CONFIG[user.equipped_weapon]) {
+                let w = WEAPONS_CONFIG[user.equipped_weapon]; if(w && w.multi) { m += w.multi; texts.push(`⚔️ WPN (+${w.multi}x)`); }
+                let upgradeBonus = getWeaponUpgradeBonus(user.equipped_weapon);
+                if (upgradeBonus > 0) { m += upgradeBonus; texts.push(`⚒️ FORGE +${upgradeBonus.toFixed(1)}x`); }
+            }
             if (user.guild_rank === 5) { m *= 1.5; texts.push("👑 LEADER (1.5x)"); }
+            if (user.username === "Xavier") { m *= 5; texts.push("✨ XAVIER BONUS (5x)"); }
             if (user.guild_title_bonus > 1) { m *= user.guild_title_bonus; texts.push(`🛡️ TITLE (${user.guild_title_bonus}x)`); }
             if (activeGuildCrest > 0 && CRESTS_CONFIG[activeGuildCrest]) { let cBonus = parseInt(CRESTS_CONFIG[activeGuildCrest].desc.match(/\d+/)[0]) / 100 + 1; m *= cBonus; texts.push(`${CRESTS_CONFIG[activeGuildCrest].emoji} CREST (${cBonus}x)`); }
             
@@ -778,6 +793,66 @@
                     grid.appendChild(btn);
                 });
             } catch(e) {}
+            renderWeaponForge();
+        }
+
+        function upgradeWeapon() {
+            let weapon = user.equipped_weapon;
+            if (!weapon || weapon === "none" || !WEAPONS_CONFIG[weapon]) return showToast("Equip a weapon before forging.", 3000, "#ff4757");
+            let cost = getWeaponForgeCost(weapon);
+            if (user.guild_coins < cost) return showToast("Not enough Gold to forge this weapon.", 3000, "#ff4757");
+            user.guild_coins -= cost;
+            user.weapon_levels[weapon] = getWeaponUpgradeLevel(weapon) + 1;
+            saveWeaponLevels();
+            showToast(`Weapon Forged to Level ${user.weapon_levels[weapon]}!`, 4000, "#4ecca3");
+            applySkinAbilities(); renderGearShop(); updateUI(); syncSave(0);
+        }
+
+        function renderWeaponForge() {
+            const forge = document.getElementById("weaponForgeArea");
+            if (!forge) return;
+            if (currentGearTab !== 'weapon') { forge.style.display = 'none'; return; }
+            forge.style.display = 'block';
+            let weapon = user.equipped_weapon || "none";
+            if (!weapon || weapon === "none" || !WEAPONS_CONFIG[weapon]) {
+                forge.innerHTML = `<div style="color:#aaa;">Equip a weapon to access the forge.</div>`;
+                return;
+            }
+            let level = getWeaponUpgradeLevel(weapon);
+            let cost = getWeaponForgeCost(weapon);
+            let bonus = getWeaponUpgradeBonus(weapon);
+            forge.innerHTML = "";
+            let title = document.createElement('div');
+            title.style.marginBottom = '8px';
+            title.style.fontSize = '13px';
+            title.style.fontWeight = 'bold';
+            title.textContent = `Forge ${WEAPONS_CONFIG[weapon].name} (Level ${level})`;
+            let desc = document.createElement('div');
+            desc.style.fontSize = '11px';
+            desc.style.color = '#aaa';
+            desc.style.marginBottom = '8px';
+            desc.textContent = `Each forge upgrade costs gold and increases weapon flat multi by +0.5. Current forge bonus: +${bonus.toFixed(1)}x.`;
+            let row = document.createElement('div');
+            row.style.display = 'flex';
+            row.style.flexWrap = 'wrap';
+            row.style.gap = '10px';
+            let costInfo = document.createElement('div');
+            costInfo.style.color = '#fff';
+            costInfo.style.fontSize = '12px';
+            costInfo.textContent = `Next Forge Cost: ${cost.toLocaleString()} Gold`;
+            let btn = document.createElement('button');
+            btn.className = 'auth-btn';
+            btn.style.padding = '8px 12px';
+            btn.style.fontSize = '12px';
+            btn.style.background = '#4ecca3';
+            btn.style.color = '#111';
+            btn.textContent = `Forge Weapon`;
+            btn.onclick = upgradeWeapon;
+            row.appendChild(costInfo);
+            row.appendChild(btn);
+            forge.appendChild(title);
+            forge.appendChild(desc);
+            forge.appendChild(row);
         }
 
         function switchGearTab(tab) { currentGearTab = tab; document.getElementById('tabWeapon').classList.toggle('active', tab === 'weapon'); document.getElementById('tabCoat').classList.toggle('active', tab === 'coat'); renderGearShop(); }
@@ -823,6 +898,7 @@
                     grid.appendChild(btn);
                 });
             } catch(e) {}
+            renderWeaponForge();
         }
 
         async function fetchServerData() {
@@ -866,6 +942,7 @@
                         currentBoss = data.boss; 
                         let bName = currentEvent.cName;
                         if (activeLiveEvent === "boss_frenzy") bName = "FRENZIED " + bName;
+                        if (activeLiveEvent === "gold_rush") bName = "GILDED " + bName;
                         if(document.getElementById("bossNameDisplay")) document.getElementById("bossNameDisplay").textContent = `Lvl ${data.boss.level} Boss: ${bName}`; 
                         if(document.getElementById("bossHpText")) document.getElementById("bossHpText").textContent = `${data.boss.current_hp.toLocaleString()} / ${data.boss.max_hp.toLocaleString()} HP`; 
                         if(document.getElementById("bossHpFill")) document.getElementById("bossHpFill").style.width = Math.max(0, (data.boss.current_hp / data.boss.max_hp) * 100) + "%"; 
