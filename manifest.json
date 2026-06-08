@@ -4,7 +4,7 @@
   "description": "A multiplayer grappling hook MMO.",
   "start_url": "./index.html",
   "display": "fullscreen",
-  "background_color": "#0f0f1a",
+  "background_color": "#000000",
   "theme_color": "#17172e",
   "orientation": "landscape",
   "icons": [
