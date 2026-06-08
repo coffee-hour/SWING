@@ -1,11 +1,11 @@
 {
-  "name": "Infinite Swing MMO",
+  "name": "↺",
   "short_name": "Swing!",
   "description": "A multiplayer grappling hook MMO.",
   "start_url": "./index.html",
   "display": "fullscreen",
   "background_color": "#000000",
-  "theme_color": "#17172e",
+  "theme_color": "#000000",
   "orientation": "landscape",
   "icons": [
     {
