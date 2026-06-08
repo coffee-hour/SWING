@@ -25,36 +25,7 @@
         #bottom-panels { display: flex; gap: 15px; width: 100%; flex-wrap: wrap; }
         .panel-box { background: rgba(22, 22, 40, 0.95); border: 1px solid #2e2e54; border-radius: 12px; padding: 15px; flex: 1; min-width: 260px; position: relative; }
         .panel-box h4 { margin: 0 0 10px 0; color: #00adb5; font-size: 14px; text-transform: uppercase; border-bottom: 1px solid #2e2e54; padding-bottom: 4px; }
-        .panel-header { display:flex; justify-content:space-between; align-items:center; gap:10px; margin-bottom:12px; }
-        .panel-header span { display:flex; align-items:center; gap:8px; font-size:16px; }
-        .collapse-btn { border: 1px solid #2e2e54; background: rgba(18,18,32,0.95); color: #fff; padding: 6px 10px; border-radius: 8px; cursor: pointer; font-size: 12px; display: inline-flex; align-items:center; gap:5px; }
-        .side-panel.collapsed { min-height: 52px; max-height: 52px; padding-bottom: 10px; overflow: hidden; }
-        .side-panel.collapsed > :not(.panel-header) { display: none; }
-        .casino-box { background: rgba(255,255,255,0.05); border: 1px solid #2e2e54; border-radius: 14px; padding: 12px; display: flex; flex-direction: column; gap: 10px; }
-        .casino-header { display:flex; justify-content:space-between; gap:10px; flex-wrap:wrap; align-items:center; }
-        .casino-input { width: 100%; min-width: 120px; border-radius: 10px; border: 1px solid #2e2e54; background: #0f0f1a; color: #fff; padding: 10px 12px; font-size: 13px; }
-        .casino-wheel { width: 100%; height: 190px; border-radius: 50%; border: 10px solid #1b1b2c; background: radial-gradient(circle at center, #181826 0%, #0c0c13 100%); position: relative; display: flex; align-items: center; justify-content: center; overflow: hidden; box-shadow: inset 0 0 12px rgba(255,255,255,0.05), 0 0 12px rgba(0,0,0,0.25); }
-        .casino-wheel.spin { animation: wheel-spin 1.2s ease-out forwards; }
-        .casino-wheel::before { content: ''; position: absolute; inset: 12px; border-radius: 50%; background: conic-gradient(
-            #ff4757 0 16.66%, #222 16.66% 33.33%, #ffffff 33.33% 50%, #222 50% 66.66%, #2ed573 66.66% 83.33%, #222 83.33% 100%
-        ); }
-        .casino-wheel::after { content: ''; position: absolute; width: 34px; height: 34px; background: #181826; border: 2px solid #444; border-radius: 50%; }
-        .casino-wheel .wheel-pointer { position: absolute; top: -12px; left: 50%; transform: translateX(-50%); width: 0; height: 0; border-left: 12px solid transparent; border-right: 12px solid transparent; border-bottom: 18px solid #e1e1e1; }
-        .casino-slot-machine { display:flex; justify-content:space-between; gap: 8px; }
-        .slot-reel { flex:1; min-height: 100px; border-radius: 18px; background: linear-gradient(180deg, #121228 0%, #1b1b33 100%); border: 1px solid #2e2e54; display:flex; flex-direction:column; justify-content:center; align-items:center; box-shadow: inset 0 0 18px rgba(255,255,255,0.08), 0 0 10px rgba(255,160,0,0.04); }
-        .slot-reel.spin { animation: reel-spin 0.7s ease-in-out infinite; }
-        .slot-cell { font-size: 30px; line-height: 1; display:flex; gap: 8px; align-items:center; justify-content:center; }
-        @keyframes reel-spin { 0% { transform: translateY(0) scale(1); } 25% { transform: translateY(-5px) scale(1.02); } 50% { transform: translateY(5px) scale(1); } 75% { transform: translateY(-3px) scale(1.01); } 100% { transform: translateY(0) scale(1); } }
-        @keyframes tung-fire { from { text-shadow: 0 0 8px #ffae4e, 0 0 18px #ff7f23, 0 0 26px #d94f08; } to { text-shadow: 0 0 11px #ffd57d, 0 0 22px #ff983b, 0 0 34px #ff6d12; } }
-        .tung-tag { font-weight: 900 !important; animation: tung-fire 0.25s infinite alternate; color: #ffb84d !important; text-shadow: 0 0 8px #ffb54a, 0 0 18px #ff893b, 0 0 28px #ff5414; }
-        .casino-choice { min-width: 70px; }
-        .casino-status { font-size: 12px; color: #dfe6e9; min-height: 42px; }
-        @keyframes wheel-spin { from { transform: rotate(0deg); } to { transform: rotate(1080deg); } }
-        @keyframes reel-shake { 0% { transform: translateX(0); } 25% { transform: translateX(-4px); } 50% { transform: translateX(4px); } 75% { transform: translateX(-2px); } 100% { transform: translateX(0); } }
-        .casino-art-icon { display:inline-flex; align-items:center; justify-content:center; width: 22px; height: 22px; border-radius: 8px; background: rgba(255,255,255,0.08); }
-        .casino-button-row { display:flex; gap:8px; flex-wrap:wrap; }
-        .casino-button-row .action-btn { min-width: 72px; }
-        .casino-title { display:flex; align-items:center; gap:8px; font-size: 13px; color:#fff; }
+        .skins-grid { display: flex; flex-wrap: wrap; gap: 8px; max-height: 180px; overflow-y: auto; padding: 4px 0; }
         .skin-btn { background: #17172e; border: 2px solid #2e2e54; color: #666; padding: 8px; border-radius: 8px; cursor: pointer; font-size: 11px; font-weight: bold; text-align: left; display: flex; flex-direction: column; gap: 4px; width: calc(50% - 4px); box-sizing: border-box; -webkit-appearance: none; appearance: none; }
         .skin-btn.unlocked { border-color: #4ecca3; color: #fff; cursor: pointer; }
         .skin-btn.equipped { border-color: #f9a826; background: #232342; box-shadow: 0 0 8px rgba(249,168,38,0.2); }
@@ -110,64 +81,96 @@
     <div id="toastContainer"></div>
 
     <div id="main-layout">
-        <div class="side-panel" id="guildBasePanel">
-            <h3 class="panel-header"><span><i class="fa-solid fa-shield-halved"></i> Guild Base</span><button class="collapse-btn" onclick="togglePanel('guildBasePanel')" title="Collapse panel"><i class="fa-solid fa-chevron-up"></i></button></h3>
+        <div class="side-panel">
+            <h3><i class="fa-solid fa-shield-halved"></i> Guild Base</h3>
+            
             <div style="margin-bottom: 12px; background: #17172e; padding: 10px; border-radius: 8px; border: 1px solid #2e2e54;">
-                <div style="display:flex; gap:5px;">
-                    <input type="text" id="guildInput" maxlength="4" placeholder="TAG" class="auth-input" style="width: 60px; text-transform: uppercase;">
-                    <button id="reqGuildBtn" class="auth-btn" style="background:#f9a826; color: #111; flex:1;">Send Request</button>
-                    <button id="createGuildBtn" class="auth-btn" style="background:#00adb5; color:#fff;">Create</button>
-                    <button id="leaveGuildBtn" class="auth-btn" style="background:#ff4757; color:#fff; display:none;">Leave</button>
-                </div>
-                <div style="font-size: 12px; margin-top: 8px; display:flex; justify-content:space-between;">
-                    <span>Guild: <span id="currentGuildDisplay" class="tag" style="font-size:14px;">None</span></span>
-                    <span id="guildSizeDisplay" style="color:#aaa;">0/10 Players</span>
-                </div>
-                <div style="font-size: 12px; color: #ffd700; margin-top: 4px;">War Coins: <span id="warCoinDisplay">0</span> <i class="fa-solid fa-khanda" style="color:#aaa;"></i> | Gold: <span id="guildCoinDisplay">0</span> <i class="fa-solid fa-coins" style="color:#ffd700;"></i></div>
-                <div style="font-size: 11px; color: #4ecca3; margin-top: 4px; font-weight: bold;" id="guildTitleDisplay">Active Title: None</div>
                 
-                <div style="margin-top:10px; background:#111122; padding:8px; border-radius:6px; border:1px dashed #f9a826;">
-                    <div style="display:flex; justify-content:space-between;">
-                        <span style="color:#ff9ff3; font-weight:bold; font-size:12px;"><i class="fa-solid fa-dragon"></i> Guild Pet</span>
-                        <span style="font-size:9px; color:#aaa; font-style:italic;">Cost doubles every 10,000 Tokens</span>
+                <div id="noGuildDiv" style="display:none;">
+                    <div style="display:flex; gap:5px;">
+                        <input type="text" id="guildInput" maxlength="4" placeholder="TAG" class="auth-input" style="width: 60px; text-transform: uppercase;">
+                        <button id="reqGuildBtn" class="auth-btn" style="background:#f9a826; color: #111; flex:1;">Send Request</button>
+                        <button id="createGuildBtn" class="auth-btn" style="background:#00adb5; color:#fff;">Create</button>
                     </div>
-                    <div style="font-size:11px; color:#aaa; margin-bottom: 4px; margin-top: 4px;">Level (Tokens): <span id="petTokenDisplay" style="color:#fff;">0</span> (Multi: <span id="petMultiDisplay" style="color:#4ecca3;">1.001x</span>)</div>
-                    
-                    <div style="font-size:10px; color:#f1c40f; margin-top:4px;">Boost with Gold (<span id="goldPetCostDisplay">100</span> <i class="fa-solid fa-coins"></i> / Token):</div>
-                    <div style="display:flex; gap:3px; margin-top:2px;">
-                        <button class="action-btn blue" onclick="convertPetToken('gold', 1)" style="flex:1;">+1</button>
-                        <button class="action-btn blue" onclick="convertPetToken('gold', 10)" style="flex:1;">+10</button>
-                        <button class="action-btn blue" onclick="convertPetToken('gold', 100)" style="flex:1;">+100</button>
-                        <button class="action-btn blue" onclick="convertPetToken('gold', 1000)" style="flex:1;">+1K</button>
-                        <button class="action-btn blue" onclick="convertPetToken('gold', 'max')" style="flex:1;">MAX</button>
-                    </div>
+                </div>
 
-                    <div id="warCoinPetDiv" style="display:none; margin-top:6px;">
-                        <div style="font-size:10px; color:#aaa;">Boost with War Coins (<span id="warPetCostDisplay">10</span> <i class="fa-solid fa-khanda"></i> / Token):</div>
-                        <div style="display:flex; gap:3px; margin-top:2px;">
-                            <button class="action-btn red" onclick="convertPetToken('war', 1)" style="flex:1;">+1</button>
-                            <button class="action-btn red" onclick="convertPetToken('war', 10)" style="flex:1;">+10</button>
-                            <button class="action-btn red" onclick="convertPetToken('war', 100)" style="flex:1;">+100</button>
-                            <button class="action-btn red" onclick="convertPetToken('war', 1000)" style="flex:1;">+1K</button>
-                            <button class="action-btn red" onclick="convertPetToken('war', 'max')" style="flex:1;">MAX</button>
+                <div id="hasGuildDiv" style="display:none;">
+                    <div style="font-size: 14px; margin-bottom: 8px;">Guild: <span id="currentGuildDisplay" class="tag"></span> <span id="guildSizeDisplay" style="color:#aaa; font-size:10px; float:right;">0/10</span></div>
+                    
+                    <div class="tutorial-tabs" style="margin-bottom:8px;">
+                        <button class="tutorial-tab-btn active" onclick="switchGuildTab('home')" id="gTabHome" style="padding: 6px;">Home</button>
+                        <button class="tutorial-tab-btn" onclick="switchGuildTab('chat')" id="gTabChat" style="padding: 6px;">Chat</button>
+                        <button class="tutorial-tab-btn" onclick="switchGuildTab('roster')" id="gTabRoster" style="padding: 6px;">Roster</button>
+                    </div>
+                    
+                    <div id="guildPaneHome" class="tutorial-pane active">
+                        <div style="font-size: 12px; color: #ffd700;">War Coins: <span id="warCoinDisplay">0</span> <i class="fa-solid fa-khanda" style="color:#aaa;"></i> | Gold: <span id="guildCoinDisplay">0</span> <i class="fa-solid fa-coins" style="color:#ffd700;"></i></div>
+                        <div style="font-size: 11px; color: #4ecca3; margin-top: 4px; font-weight: bold;" id="guildTitleDisplay">Active Title: None</div>
+                        
+                        <div style="margin-top:10px; background:#111122; padding:8px; border-radius:6px; border:1px dashed #f9a826;">
+                            <div style="display:flex; justify-content:space-between;">
+                                <span style="color:#ff9ff3; font-weight:bold; font-size:12px;"><i class="fa-solid fa-dragon"></i> Guild Pet</span>
+                                <span style="font-size:9px; color:#aaa; font-style:italic;">Cost doubles every 10,000</span>
+                            </div>
+                            <div style="font-size:11px; color:#aaa; margin-bottom: 4px; margin-top: 4px;">Level (Tokens): <span id="petTokenDisplay" style="color:#fff;">0</span> (Multi: <span id="petMultiDisplay" style="color:#4ecca3;">1.001x</span>)</div>
+                            
+                            <div style="font-size:10px; color:#f1c40f; margin-top:4px;">Boost with Gold (<span id="goldPetCostDisplay">100</span> / Token):</div>
+                            <div style="display:flex; gap:3px; margin-top:2px;">
+                                <button class="action-btn blue" onclick="convertPetToken('gold', 1)" style="flex:1;">+1</button>
+                                <button class="action-btn blue" onclick="convertPetToken('gold', 10)" style="flex:1;">+10</button>
+                                <button class="action-btn blue" onclick="convertPetToken('gold', 100)" style="flex:1;">+100</button>
+                                <button class="action-btn blue" onclick="convertPetToken('gold', 1000)" style="flex:1;">+1K</button>
+                            </div>
+
+                            <div id="warCoinPetDiv" style="display:none; margin-top:6px;">
+                                <div style="font-size:10px; color:#aaa;">Boost with War Coins (R4+) (<span id="warPetCostDisplay">10</span> / Token):</div>
+                                <div style="display:flex; gap:3px; margin-top:2px;">
+                                    <button class="action-btn red" onclick="convertPetToken('war', 1)" style="flex:1;">+1</button>
+                                    <button class="action-btn red" onclick="convertPetToken('war', 10)" style="flex:1;">+10</button>
+                                    <button class="action-btn red" onclick="convertPetToken('war', 100)" style="flex:1;">+100</button>
+                                    <button class="action-btn red" onclick="convertPetToken('war', 1000)" style="flex:1;">+1K</button>
+                                </div>
+                            </div>
                         </div>
                     </div>
+
+                    <div id="guildPaneChat" class="tutorial-pane" style="display:none;">
+                        <div id="guildChatList" class="list-container" style="height:140px; flex:none; background:#111; padding:5px; margin-bottom:5px;"></div>
+                        <div style="display:flex; gap:4px;">
+                            <input type="text" id="guildChatInput" class="auth-input" placeholder="R2 required to chat..." style="flex:1; font-size:11px;">
+                            <button class="action-btn green" onclick="sendGuildChat()" id="guildChatBtn">Send</button>
+                        </div>
+                    </div>
+
+                    <div id="guildPaneRoster" class="tutorial-pane" style="display:none;">
+                        <div style="margin-bottom:8px; font-size:11px; background:#111; padding:6px; border:1px solid #2e2e54;">
+                            <div style="color:#00adb5; font-weight:bold; margin-bottom:2px;">Notice: <button onclick="setGuildNotice()" id="editNoticeBtn" style="display:none; float:right;" class="action-btn blue">Edit (R4)</button></div>
+                            <span id="guildNoticeDisplay" style="color:#aaa;">Loading...</span>
+                        </div>
+                        <div id="guildRosterList" class="list-container" style="height:120px; flex:none;"></div>
+                        <button id="leaveGuildBtn" class="auth-btn" style="background:#ff4757; color:#fff; width:100%; margin-top:5px;">Leave Alliance</button>
+                    </div>
+
                 </div>
             </div>
             
             <div id="leaderPanel" style="display:none; background: rgba(30,30,55,0.6); padding:8px; border-radius:6px; border: 1px dashed #4ecca3; font-size:11px;">
-                <span style="color:#4ecca3; font-weight:bold;"><i class="fa-solid fa-crown"></i> Leader Controls</span>
-                <div style="margin-top:6px; display:flex; gap:5px; align-items:center;">
-                    <span style="font-size:10px; color:#aaa;">Tag Color:</span>
-                    <input type="color" id="guildColorPicker" value="#f9a826" style="width:30px; height:20px; border:none; background:none; cursor:pointer;">
-                    <button class="action-btn blue" onclick="setGuildColor()">Save</button>
-                </div>
-                <div style="margin-top:8px; font-weight:bold; color:#f9a826;">Join Requests:</div>
+                <span style="color:#4ecca3; font-weight:bold;"><i class="fa-solid fa-crown"></i> Command Center</span>
+                
+                <div style="margin-top:8px; font-weight:bold; color:#f9a826;">Join Requests (R3+):</div>
                 <div id="joinRequestsList" style="max-height:60px; overflow-y:auto; display:flex; flex-direction:column; gap:4px; margin-bottom:8px;"></div>
-                <div style="font-weight:bold; color:#00adb5;">Titles (War Coins):</div>
-                <div id="titleShop" class="title-shop-grid"></div>
-                <div style="font-weight:bold; color:#ff9ff3; margin-top:8px;">Crests (War Coins):</div>
-                <div id="crestShop" class="title-shop-grid"></div>
+                
+                <div id="leaderSettingsDiv" style="display:none;">
+                    <div style="margin-top:6px; display:flex; gap:5px; align-items:center;">
+                        <span style="font-size:10px; color:#aaa;">Tag Color (R4+):</span>
+                        <input type="color" id="guildColorPicker" value="#f9a826" style="width:30px; height:20px; border:none; background:none; cursor:pointer;">
+                        <button class="action-btn blue" onclick="setGuildColor()">Save</button>
+                    </div>
+                    <div style="font-weight:bold; color:#00adb5; margin-top:8px;">Titles (War Coins, R4+):</div>
+                    <div id="titleShop" class="title-shop-grid"></div>
+                    <div style="font-weight:bold; color:#ff9ff3; margin-top:8px;">Crests (War Coins, R4+):</div>
+                    <div id="crestShop" class="title-shop-grid"></div>
+                </div>
             </div>
 
             <h4 style="margin:12px 0 5px 0; font-size: 13px; color:#ff4757;">Alliance Raid Damage</h4>
@@ -230,20 +233,11 @@
                     </div>
                     <div class="skins-grid" id="gearShopGrid"></div>
                 </div>
-                <div class="panel-box" style="flex: 1; min-width: 280px; border-color: #ffd166;">
-                    <h4 style="color: #ffd166;">🎰 Casino</h4>
-                    <div style="font-size: 11px; color:#aaa; margin-bottom:8px;">Bet Gold on Roulette or Slots. Winnings are added directly to your gold balance.</div>
-                    <div style="display:flex; gap:10px; margin-bottom:10px;">
-                        <button class="action-btn blue" id="casinoTabRoulette" onclick="switchCasinoTab('roulette')" style="flex:1;">Roulette</button>
-                        <button class="action-btn blue" id="casinoTabSlots" onclick="switchCasinoTab('slots')" style="flex:1;">Slots</button>
-                    </div>
-                    <div id="casinoContent" style="display:flex; flex-direction:column; gap:8px;"></div>
-                </div>
             </div>
         </div>
 
-        <div class="side-panel" id="leaderboardPanel">
-            <h3 class="panel-header"><span><i class="fa-solid fa-trophy"></i> Leaderboard</span><button class="collapse-btn" onclick="togglePanel('leaderboardPanel')" title="Collapse panel"><i class="fa-solid fa-chevron-up"></i></button></h3>
+        <div class="side-panel">
+            <h3><i class="fa-solid fa-trophy"></i> Leaderboard</h3>
             <div id="leaderboardList" class="list-container" style="flex: 1;">Loading ranks...</div>
             <h3 style="margin-top: 15px;"><i class="fa-solid fa-handshake"></i> Friends & Rivals</h3>
             <div style="display:flex; gap:5px; margin-bottom: 5px;">
@@ -265,40 +259,20 @@
                 <button class="tutorial-close" id="closeDevlogBtn">&times;</button>
             </div>
             <div class="tutorial-body" style="display: block;">
-                <h4 style="color:#ff6b6b; border-bottom:1px dashed #2e2e54; padding-bottom:4px; margin-top:0;">v1.5.2 - Casino Inferno</h4>
-                <p style="font-size: 11px; color: #888; margin-top: -5px;">Released: June 2026</p>
-                <ul>
-                    <li><span class="tutorial-highlight">Roulette Reimagined:</span> The wheel now spins with a blazing fire-face animation and a glowing pointer. Bets can now feel the heat.</li>
-                    <li><span class="tutorial-highlight">Auto Spinner:</span> Roulette and slots now support a 1,000,000 Gold Auto Spin mode. Tap Auto 1M and watch the casino run until the bank drains or the session ends.</li>
-                    <li><span class="tutorial-highlight">Slot Frenzy:</span> Slot reels now shake and pulse during spins, making each run feel more alive.</li>
-                    <li><span class="tutorial-highlight">TUNG Flame Theme:</span> TUNG guild members now return to a bold flame glow in both UI tags and in-game guild tags.</li>
-                </ul>
-
-                <h4 style="color:#f9a826; border-bottom:1px dashed #2e2e54; padding-bottom:4px; margin-top:20px;">v1.5.1 - Guild Glow & Interface Polish</h4>
-                <p style="font-size: 11px; color: #888; margin-top: -5px;">Released: June 2026</p>
-                <ul>
-                    <li><span class="tutorial-highlight">Collapsible Panels:</span> Guild and leaderboard side panels can now be collapsed to keep the interface tidy and focused.</li>
-                    <li><span class="tutorial-highlight">Casino Art Upgrade:</span> Font Awesome icons replaced emoji-only slot symbols, and casino UI now displays crisp button art and animated panels.</li>
-                </ul>
-
-                <h4 style="color:#4ecca3; border-bottom:1px dashed #2e2e54; padding-bottom:4px; margin-top:20px;">v1.5.0 - The Hazards Update</h4>
+                
+                <h4 style="color:#00adb5; border-bottom:1px dashed #2e2e54; padding-bottom:4px; margin-top:0;">v1.6.0 - The Hierarchy Update</h4>
                 <p style="font-size: 11px; color: #888; margin-top: -5px;">Released: Current</p>
                 <ul>
-                    <li><span class="tutorial-highlight">Galaxy Mines:</span> Watch out for floating purple hazards! Hitting one snaps your grapple rope and kills your momentum instantly.</li>
+                    <li><span class="tutorial-highlight">Alliance Chat:</span> Guilds now have a live chat board. R2 required to chat.</li>
+                    <li><span class="tutorial-highlight">Ranks R1 to R5:</span> Permissions are now scaled! R3s can invite, R4s can change the notice board and kick, and R5s control the ranks!</li>
                 </ul>
 
-                <h4 style="color:#00adb5; border-bottom:1px dashed #2e2e54; padding-bottom:4px; margin-top:20px;">v1.4.0 - The Live Events Update</h4>
+                <h4 style="color:#f9a826; border-bottom:1px dashed #2e2e54; padding-bottom:4px; margin-top:20px;">v1.5.0 - The Hazards Update</h4>
                 <p style="font-size: 11px; color: #888; margin-top: -5px;">Released: June 2026</p>
                 <ul>
-                    <li><span class="tutorial-highlight">Live Operations:</span> The server can now push live events like the Abyssal Frenzy! (3x Multiplier active while boss is Frenzied).</li>
+                    <li><span class="tutorial-highlight">Galaxy Mines:</span> Watch out for floating purple hazards! Hitting one snaps your grapple rope and kills your momentum instantly. Keep those reflexes sharp!</li>
                 </ul>
 
-                <h4 style="color:#00b894; border-bottom:1px dashed #2e2e54; padding-bottom:4px; margin-top:20px;">v1.3.0 - The Prestige Guild Update</h4>
-                <p style="font-size: 11px; color: #888; margin-top: -5px;">Released: June 5, 2026</p>
-                <ul>
-                    <li><span class="tutorial-highlight">Exponential Pets:</span> Guild Pet exchange rates now double every 10,000 tokens.</li>
-                    <li><span class="tutorial-highlight">True Gold Skin:</span> Added a new ultra-tier skin that unlocks at 10M Score, boosting points by 15x and doubling Gold output.</li>
-                </ul>
             </div>
             <div class="tutorial-footer" style="justify-content: center;">
                 <span style="font-size:11px; color:#666;">Thanks for playing Infinite Swing!</span>
@@ -315,7 +289,7 @@
             <div class="tutorial-tabs">
                 <button class="tutorial-tab-btn active" onclick="switchTutorialTab(0)">🕹️ Controls</button>
                 <button class="tutorial-tab-btn" onclick="switchTutorialTab(1)">⚔️ Optimized Builds</button>
-                <button class="tutorial-tab-btn" onclick="switchTutorialTab(2)">🛡️ Guilds</button>
+                <button class="tutorial-tab-btn" onclick="switchTutorialTab(2)">🛡️ Guilds & Ranks</button>
                 <button class="tutorial-tab-btn" onclick="switchTutorialTab(3)">🐉 Boss Raids</button>
             </div>
             <div class="tutorial-body">
@@ -334,10 +308,13 @@
                     </ul>
                 </div>
                 <div class="tutorial-pane">
-                    <h4>🛡️ Guild Base</h4>
+                    <h4>🛡️ Guild Base & Permissions</h4>
                     <ul>
-                        <li><span class="tutorial-highlight">Guild Leader Tools:</span> Leaders can spend War Coins on massive Title Buffs, select Crests, and set custom hex Colors!</li>
-                        <li><span class="tutorial-highlight">Guild Pets:</span> All members can spend their Gold to buy Pet Tokens. Leaders can spend War Coins. Exchange rates double every 10,000 Tokens!</li>
+                        <li><span class="tutorial-highlight">R1 Recruit:</span> Welcome to the guild! (Cannot chat yet).</li>
+                        <li><span class="tutorial-highlight">R2 Member:</span> Unlocks Guild Chat access.</li>
+                        <li><span class="tutorial-highlight">R3 Officer:</span> Can approve new Join Requests.</li>
+                        <li><span class="tutorial-highlight">R4 Co-Leader:</span> Can spend War Coins, edit the Notice Board, and Kick lower ranks.</li>
+                        <li><span class="tutorial-highlight">R5 Leader:</span> Complete control. Can promote or demote any member.</li>
                     </ul>
                 </div>
                 <div class="tutorial-pane">
@@ -366,11 +343,11 @@
             w_shards: parseInt(localStorage.getItem("ws")) || 0, b_shards: parseInt(localStorage.getItem("bs")) || 0, 
             jolly_sweets: 0, spooky_sweets: 0,
             guild: localStorage.getItem("gd") || "", is_leader: false, guild_coins: 0, war_coins: 0, guild_title_bonus: 1,
-            guild_pet_tokens: 0
+            guild_pet_tokens: 0, guild_rank: parseInt(localStorage.getItem("gr")) || 1
         };
 
         let activeGuildCrest = 0, activeGuildColor = "#f9a826", serverEventMultiplier = 1, currentBoss = null;
-        let activeLiveEvent = null; // Track current live event
+        let activeLiveEvent = null; 
         
         let todayStr = new Date().toISOString().split('T')[0];
         let dailyTasks = { date: todayStr, dist: 0, games: 0, shards: 0, c1: false, c2: false, c3: false };
@@ -411,7 +388,7 @@
             11: { name: "Atom", emoji: "<i class='fa-solid fa-atom'></i>", unicode: "\uf5d2", cost: 25000000, desc: "+25000% Multi" },
             12: { name: "Planet", emoji: "<i class='fa-solid fa-globe'></i>", unicode: "\uf0ac", cost: 50000000, desc: "+50000% Multi" },
             13: { name: "Rocket", emoji: "<i class='fa-solid fa-rocket'></i>", unicode: "\uf135", cost: 100000000, desc: "+100000% Multi" },
-            14: { name: "Galaxy", emoji: "<i class='fa-solid fa-khanda'></i>", unicode: "\uf66d", cost: 250000000, desc: "+250000% Multi" },
+            14: { name: "Jedi", emoji: "<i class='fa-solid fa-khanda'></i>", unicode: "\uf66d", cost: 250000000, desc: "+250000% Multi" },
             15: { name: "Infinity", emoji: "<i class='fa-solid fa-infinity'></i>", unicode: "\uf534", cost: 1000000000, desc: "+1000000% Multi" },
             99: { name: "Creator", emoji: "👑", unicode: "\uf521", cost: 999999999999, desc: "Dev Only" } // Hidden Admin Crest
         };
@@ -495,6 +472,16 @@
         async function hashPassword(p) { const m = new TextEncoder().encode(p); const h = await crypto.subtle.digest('SHA-256', m); return Array.from(new Uint8Array(h)).map(b => b.toString(16).padStart(2, '0')).join(''); }
         function showToast(msg, duration=4000, color="#4ecca3") { const c = document.getElementById("toastContainer"); if (!c) return; const t = document.createElement("div"); t.className = "toast"; t.style.borderColor = color; t.style.animationDuration = (duration/1000)+"s"; t.innerText = msg; c.appendChild(t); setTimeout(() => { if (t.parentElement) t.remove(); }, duration); }
 
+        function switchGuildTab(tab) {
+            document.getElementById('gTabHome').classList.toggle('active', tab === 'home');
+            document.getElementById('gTabChat').classList.toggle('active', tab === 'chat');
+            document.getElementById('gTabRoster').classList.toggle('active', tab === 'roster');
+            document.getElementById('guildPaneHome').style.display = tab === 'home' ? 'block' : 'none';
+            document.getElementById('guildPaneChat').style.display = tab === 'chat' ? 'block' : 'none';
+            document.getElementById('guildPaneRoster').style.display = tab === 'roster' ? 'block' : 'none';
+            if (tab === 'chat') { const cl = document.getElementById("guildChatList"); cl.scrollTop = cl.scrollHeight; }
+        }
+
         // --- PHYSICS & ENGINE ---
         const BASE_GRAVITY = 0.45, BASE_FRICTION = 0.995, BASE_HOOK_RANGE = 350; 
         let currentGravity = BASE_GRAVITY, currentFriction = BASE_FRICTION, maxHookRange = BASE_HOOK_RANGE;
@@ -527,7 +514,7 @@
             if (document.getElementById("petMultiDisplay")) document.getElementById("petMultiDisplay").textContent = petMulti.toFixed(3) + "x";
 
             if (user.equipped_weapon && user.equipped_weapon !== "none" && WEAPONS_CONFIG[user.equipped_weapon]) { let w = WEAPONS_CONFIG[user.equipped_weapon]; if(w && w.multi) { m += w.multi; texts.push(`⚔️ WPN (+${w.multi}x)`); } }
-            if (user.is_leader) { m *= 1.5; texts.push("👑 LEADER (1.5x)"); }
+            if (user.guild_rank === 5) { m *= 1.5; texts.push("👑 LEADER (1.5x)"); }
             if (user.guild_title_bonus > 1) { m *= user.guild_title_bonus; texts.push(`🛡️ TITLE (${user.guild_title_bonus}x)`); }
             if (activeGuildCrest > 0 && CRESTS_CONFIG[activeGuildCrest]) { let cBonus = parseInt(CRESTS_CONFIG[activeGuildCrest].desc.match(/\d+/)[0]) / 100 + 1; m *= cBonus; texts.push(`${CRESTS_CONFIG[activeGuildCrest].emoji} CREST (${cBonus}x)`); }
             
@@ -538,55 +525,24 @@
 
         async function convertPetToken(type, rawAmount) {
             if (!user.guild) return showToast("You must be in an Alliance!", 3000, "#ff4757");
-            if (type === 'war' && !user.is_leader) return showToast("Only leaders can spend War Coins!", 3000, "#ff4757");
+            if (type === 'war' && user.guild_rank < 4) return showToast("Only R4+ Co-Leaders can spend War Coins!", 3000, "#ff4757");
 
-            let amount = 0;
-            let totalCost = 0;
-            let tempTokens = user.guild_pet_tokens || 0;
-            let baseCost = type === 'gold' ? 100 : 10;
-            let currencyAvailable = type === 'gold' ? user.guild_coins : user.war_coins;
+            let amount = 0; let totalCost = 0; let tempTokens = user.guild_pet_tokens || 0;
+            let baseCost = type === 'gold' ? 100 : 10; let currencyAvailable = type === 'gold' ? user.guild_coins : user.war_coins;
 
             if (rawAmount === 'max') {
-                while (true) {
-                    let tier = Math.floor(tempTokens / 10000);
-                    let cost = baseCost * Math.pow(2, tier);
-                    if (currencyAvailable >= totalCost + cost) {
-                        totalCost += cost;
-                        tempTokens++;
-                        amount++;
-                    } else {
-                        break;
-                    }
-                }
+                while (true) { let tier = Math.floor(tempTokens / 10000); let cost = baseCost * Math.pow(2, tier); if (currencyAvailable >= totalCost + cost) { totalCost += cost; tempTokens++; amount++; } else { break; } }
             } else {
-                amount = rawAmount;
-                for (let i = 0; i < amount; i++) {
-                    let tier = Math.floor(tempTokens / 10000);
-                    totalCost += baseCost * Math.pow(2, tier);
-                    tempTokens++;
-                }
+                amount = rawAmount; for (let i = 0; i < amount; i++) { let tier = Math.floor(tempTokens / 10000); totalCost += baseCost * Math.pow(2, tier); tempTokens++; }
             }
 
-            if (amount <= 0 || currencyAvailable < totalCost) {
-                return showToast(`Not enough ${type === 'gold' ? 'Gold' : 'War Coins'} for ${rawAmount === 'max' ? 'any tokens' : rawAmount + ' tokens'}!`, 3000, "#ff4757");
-            }
+            if (amount <= 0 || currencyAvailable < totalCost) return showToast(`Not enough ${type === 'gold' ? 'Gold' : 'War Coins'} for ${rawAmount === 'max' ? 'any tokens' : rawAmount + ' tokens'}!`, 3000, "#ff4757");
 
             try {
-                const res = await fetch(`${API_URL}/api/guild/upgrade_pet`, { 
-                    method: "POST", headers:{"Content-Type":"application/json"}, 
-                    body: JSON.stringify({ username: user.username, session_token: user.session_token, type: type, amount: amount }) 
-                });
+                const res = await fetch(`${API_URL}/api/guild/upgrade_pet`, { method: "POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify({ username: user.username, session_token: user.session_token, type: type, amount: amount }) });
                 const data = await res.json();
-                if (data.success) {
-                    showToast(`Bought ${amount.toLocaleString()} Tokens for ${totalCost.toLocaleString()} ${type === 'gold' ? 'Gold' : 'War Coins'}!`, 3000, "#4ecca3");
-                    if (type === 'gold') user.guild_coins -= totalCost;
-                    fetchServerData(); // Syncs pet tokens and war coins from backend
-                } else {
-                    showToast(data.error || "Failed to upgrade pet", 3000, "#ff4757");
-                }
-            } catch(e) {
-                showToast("Server Error", 3000, "#ff4757");
-            }
+                if (data.success) { showToast(`Bought ${amount.toLocaleString()} Tokens for ${totalCost.toLocaleString()} ${type === 'gold' ? 'Gold' : 'War Coins'}!`, 3000, "#4ecca3"); if (type === 'gold') user.guild_coins -= totalCost; fetchServerData(); } else { showToast(data.error || "Failed to upgrade pet", 3000, "#ff4757"); }
+            } catch(e) {}
         }
 
         function checkTaskCompletion() {
@@ -612,39 +568,45 @@
             
             // Exponential UI Updates
             let currentTier = Math.floor((user.guild_pet_tokens || 0) / 10000);
-            let goldCost = 100 * Math.pow(2, currentTier);
-            let warCost = 10 * Math.pow(2, currentTier);
+            let goldCost = 100 * Math.pow(2, currentTier); let warCost = 10 * Math.pow(2, currentTier);
             if(document.getElementById("goldPetCostDisplay")) document.getElementById("goldPetCostDisplay").textContent = goldCost.toLocaleString();
             if(document.getElementById("warPetCostDisplay")) document.getElementById("warPetCostDisplay").textContent = warCost.toLocaleString();
 
-            let warPetDiv = document.getElementById("warCoinPetDiv");
-            if(warPetDiv) warPetDiv.style.display = user.is_leader ? "block" : "none";
+            let warPetDiv = document.getElementById("warCoinPetDiv"); if(warPetDiv) warPetDiv.style.display = user.guild_rank >= 4 ? "block" : "none";
 
-            if(eventCurrencyType !== "gold") {
-                const sDisp = document.getElementById("sweetsDisplayContainer");
-                if (sDisp) { sDisp.style.display = "block"; document.getElementById("sweetsDisplay").textContent = (eventCurrencyType==="jolly"?user.jolly_sweets:user.spooky_sweets) || 0; }
-            }
+            if(eventCurrencyType !== "gold") { const sDisp = document.getElementById("sweetsDisplayContainer"); if (sDisp) { sDisp.style.display = "block"; document.getElementById("sweetsDisplay").textContent = (eventCurrencyType==="jolly"?user.jolly_sweets:user.spooky_sweets) || 0; } }
 
             let crestEmoji = activeGuildCrest > 0 && CRESTS_CONFIG[activeGuildCrest] ? CRESTS_CONFIG[activeGuildCrest].emoji : "";
             
-            // 🔥 APPLY GUILD TAG EFFECTS 🔥
-            let isTung = user.guild === "TUNG";
-            let tagStyle = isTung ? `class="tung-tag"` : `style="color:${activeGuildColor || '#f9a826'};"`;
+            // 🔥 APPLY FIRE CLASS TO UI FIRE TAG 🔥
+            let isDev = user.guild === "DEV";
+            let tagStyle = isDev ? `class="fire-tag"` : `style="color:${activeGuildColor || '#f9a826'};"`;
             if(document.getElementById("currentGuildDisplay")) document.getElementById("currentGuildDisplay").innerHTML = `<span ${tagStyle}>${crestEmoji}[${user.guild || "None"}]</span>`;
             
-            if (user.guild) { document.getElementById("leaveGuildBtn").style.display = "block"; document.getElementById("reqGuildBtn").style.display="none"; document.getElementById("createGuildBtn").style.display="none"; }
-            else { document.getElementById("leaveGuildBtn").style.display = "none"; document.getElementById("reqGuildBtn").style.display="block"; document.getElementById("createGuildBtn").style.display="block"; }
+            if (user.guild) { 
+                document.getElementById("hasGuildDiv").style.display = "block"; document.getElementById("noGuildDiv").style.display = "none";
+            } else { 
+                document.getElementById("hasGuildDiv").style.display = "none"; document.getElementById("noGuildDiv").style.display = "block"; 
+            }
+
+            // Permissions Handling
+            if(document.getElementById("leaderPanel")) document.getElementById("leaderPanel").style.display = user.guild_rank >= 3 ? "block" : "none";
+            if(document.getElementById("leaderSettingsDiv")) document.getElementById("leaderSettingsDiv").style.display = user.guild_rank >= 4 ? "block" : "none";
+            if(document.getElementById("editNoticeBtn")) document.getElementById("editNoticeBtn").style.display = user.guild_rank >= 4 ? "block" : "none";
+            
+            let chatInput = document.getElementById("guildChatInput");
+            let chatBtn = document.getElementById("guildChatBtn");
+            if (chatInput && chatBtn) {
+                if (user.guild_rank < 2) { chatInput.disabled = true; chatBtn.disabled = true; chatInput.placeholder = "R2 Member status required to chat..."; } 
+                else { chatInput.disabled = false; chatBtn.disabled = false; chatInput.placeholder = "Message Alliance..."; }
+            }
 
             let conf = SKINS_CONFIG[user.equipped_skin] || SKINS_CONFIG.default;
             if(document.getElementById("skinDisplay")) { document.getElementById("skinDisplay").textContent = conf.name; document.getElementById("skinDisplay").style.color = conf.color || conf.splitColor || "#fff"; }
-            if(document.getElementById("leaderPanel")) document.getElementById("leaderPanel").style.display = user.is_leader ? "block" : "none";
             checkTaskCompletion();
 
             const fuseBtn = document.getElementById("fuseBtn");
-            if (user.w_shards >= 1 && user.b_shards >= 1 && !checkUnlockStatus("yin_yang")) { 
-                fuseBtn.style.display = "block"; fuseBtn.textContent = "FUSE SHARDS FOR YIN YANG"; fuseBtn.style.background = "linear-gradient(90deg, #ffffff 50%, #000000 50%)"; fuseBtn.style.color = "#f9a826"; 
-            } else if(fuseBtn) { fuseBtn.style.display = "none"; }
-            renderCasinoPanel();
+            if (user.w_shards >= 1 && user.b_shards >= 1 && !checkUnlockStatus("yin_yang")) { fuseBtn.style.display = "block"; fuseBtn.textContent = "FUSE SHARDS FOR YIN YANG"; fuseBtn.style.background = "linear-gradient(90deg, #ffffff 50%, #000000 50%)"; fuseBtn.style.color = "#f9a826"; } else if(fuseBtn) { fuseBtn.style.display = "none"; }
             calculateMultiplier();
         }
 
@@ -733,188 +695,19 @@
             } catch(e) {}
         }
 
-        const CASINO_SYMBOLS = [
-            { icon: 'fa-solid fa-gem', color: '#6bedff' },
-            { icon: 'fa-solid fa-star', color: '#ffeaa7' },
-            { icon: 'fa-solid fa-heart', color: '#ff6b81' },
-            { icon: 'fa-solid fa-crown', color: '#f9c74f' },
-            { icon: 'fa-solid fa-diamond', color: '#a29bfe' },
-            { icon: 'fa-solid fa-leaf', color: '#00b894' }
-        ];
-        let casinoState = { tab: 'roulette', choice: 'red', message: 'Place a bet to start winning gold!', lastResult: '', spinning: false, autoRunning: false, slotDisplay: [CASINO_SYMBOLS[0], CASINO_SYMBOLS[1], CASINO_SYMBOLS[2]] };
-
-        function switchCasinoTab(tab) {
-            casinoState.tab = tab;
-            casinoState.spinning = false;
-            casinoState.autoRunning = false;
-            casinoState.lastResult = '';
-            casinoState.message = tab === 'roulette' ? 'Bet on Red, Black, or Green and win big!' : 'Spin the slots for matching symbols!';
-            renderCasinoPanel();
-        }
-
-        function setCasinoChoice(choice) {
-            casinoState.choice = choice;
-            casinoState.message = `Betting on ${choice.charAt(0).toUpperCase() + choice.slice(1)}.`;
-            renderCasinoPanel();
-        }
-
-        function setCasinoBetAmount(amount) {
-            const input = document.getElementById('casinoBetAmount');
-            if (!input) return;
-            input.value = amount;
-            renderCasinoPanel();
-        }
-
-        function getCasinoBetAmount(defaultAmount) {
-            const input = document.getElementById('casinoBetAmount');
-            let amount = input ? parseInt(input.value, 10) : NaN;
-            if (isNaN(amount) || amount <= 0) amount = defaultAmount;
-            return Math.max(amount, 1);
-        }
-
-        function formatGold(value) {
-            return (value || 0).toLocaleString();
-        }
-
-        function renderCasinoPanel() {
-            const content = document.getElementById('casinoContent'); if (!content) return;
-            const betAmount = getCasinoBetAmount(100);
-            let html = `<div class="casino-box"><div class="casino-header"><div class="casino-title"><i class="fa-solid fa-coins"></i> Gold: ${formatGold(user.guild_coins)}</div><input id="casinoBetAmount" class="casino-input" type="number" min="1" step="25" value="${betAmount}" placeholder="Enter bet amount"></div>`;
-            if (casinoState.tab === 'roulette') {
-                html += `<div class="casino-wheel ${casinoState.spinning ? 'spin' : ''}"><div class="wheel-pointer"></div></div>`;
-                html += `<div class="casino-button-row"><button class="action-btn ${casinoState.choice === 'red' ? 'red' : 'blue'} casino-choice" onclick="setCasinoChoice('red')"><i class="fa-solid fa-circle" style="color:#ff4757"></i> Red</button><button class="action-btn ${casinoState.choice === 'black' ? 'red' : 'blue'} casino-choice" onclick="setCasinoChoice('black')"><i class="fa-solid fa-circle" style="color:#ffffff"></i> Black</button><button class="action-btn ${casinoState.choice === 'green' ? 'red' : 'blue'} casino-choice" onclick="setCasinoChoice('green')"><i class="fa-solid fa-circle" style="color:#2ed573"></i> Green</button></div>`;
-                html += `<div class="casino-button-row"><button class="action-btn blue" onclick="setCasinoBetAmount(25)">25</button><button class="action-btn blue" onclick="setCasinoBetAmount(100)">100</button><button class="action-btn blue" onclick="setCasinoBetAmount(500)">500</button><button class="action-btn blue" onclick="setCasinoBetAmount(1000)">1K</button><button class="action-btn blue" onclick="setCasinoBetAmount(1000000)">1M</button><button class="action-btn green" onclick="placeRouletteBet(0)">Place Bet</button><button class="action-btn green" onclick="autoCasinoSpin()">Auto 1M</button></div>`;
-            } else {
-                const reels = casinoState.slotDisplay || [CASINO_SYMBOLS[0], CASINO_SYMBOLS[1], CASINO_SYMBOLS[2]];
-                html += `<div class="casino-slot-machine">`;
-                reels.forEach(symbol => {
-                    html += `<div class="slot-reel ${casinoState.spinning ? 'spin' : ''}"><div class="slot-cell"><i class="${symbol.icon}" style="color:${symbol.color}; font-size:28px"></i></div></div>`;
-                });
-                html += `</div>`;
-                html += `<div class="casino-button-row"><button class="action-btn blue" onclick="setCasinoBetAmount(25)">25</button><button class="action-btn blue" onclick="setCasinoBetAmount(100)">100</button><button class="action-btn blue" onclick="setCasinoBetAmount(500)">500</button><button class="action-btn blue" onclick="setCasinoBetAmount(1000)">1K</button><button class="action-btn blue" onclick="setCasinoBetAmount(1000000)">1M</button><button class="action-btn green" onclick="spinSlots(0)">Spin</button><button class="action-btn green" onclick="autoCasinoSpin()">Auto 1M</button></div>`;
-            }
-            html += `<div class="casino-status">${casinoState.message}</div>`;
-            if (casinoState.lastResult) html += `<div class="casino-status">${casinoState.lastResult}</div>`;
-            html += `</div>`;
-            content.innerHTML = html;
-        }
-
-        function randomCasinoSymbol() {
-            return CASINO_SYMBOLS[Math.floor(Math.random() * CASINO_SYMBOLS.length)];
-        }
-
-        function autoCasinoSpin() {
-            if (!user.session_token) return showToast('Login to use the casino!', 3000, '#ff4757');
-            const bet = 1000000;
-            if (user.guild_coins < bet) return showToast('Need 1,000,000 Gold for auto spin!', 3000, '#ff4757');
-            if (casinoState.spinning) return showToast('Wait for the current spin to finish.', 3000, '#ff4757');
-            casinoState.autoRunning = true;
-            casinoState.message = 'Auto spinner engaged: 1M Gold rounds in progress...';
-            renderCasinoPanel();
-            runAutoSpin(bet);
-        }
-
-        function runAutoSpin(bet) {
-            if (!casinoState.autoRunning || user.guild_coins < bet) {
-                casinoState.autoRunning = false;
-                casinoState.message = user.guild_coins < bet ? 'Auto spin ended: not enough Gold.' : 'Auto spin complete.';
-                renderCasinoPanel(); updateUI();
-                return;
-            }
-            if (casinoState.tab === 'roulette') placeRouletteBet(bet, true);
-            else spinSlots(bet, true);
-        }
-
-        function placeRouletteBet(amount, auto = false) {
-            if (!user.session_token) return showToast('Login to use the casino!', 3000, '#ff4757');
-            const bet = amount > 0 ? amount : getCasinoBetAmount(100);
-            if (bet <= 0) return showToast('Enter a bet amount first.', 3000, '#ff4757');
-            if (user.guild_coins < bet) return showToast('Not enough Gold for that bet.', 3000, '#ff4757');
-            user.guild_coins -= bet;
-            casinoState.spinning = true;
-            casinoState.message = 'Roulette wheel is spinning...';
-            casinoState.lastResult = '';
-            renderCasinoPanel();
-            setTimeout(() => {
-                casinoState.spinning = false;
-                const outcome = Math.floor(Math.random() * 37);
-                const color = outcome === 0 ? 'green' : (outcome % 2 === 0 ? 'black' : 'red');
-                let profit = 0;
-                if (casinoState.choice === color) {
-                    profit = color === 'green' ? bet * 14 : bet;
-                    user.guild_coins += bet + profit;
-                    casinoState.message = `Roulette hit ${outcome} (${color.toUpperCase()})! You win +${formatGold(profit)} Gold.`;
-                    casinoState.lastResult = `<i class="fa-solid fa-circle" style="color:${color === 'red' ? '#ff4757' : color === 'black' ? '#fff' : '#2ed573'}"></i> ${outcome}`;
-                } else {
-                    casinoState.message = `Roulette landed ${outcome} (${color.toUpperCase()}). You lose ${formatGold(bet)} Gold.`;
-                    casinoState.lastResult = `<i class="fa-solid fa-circle" style="color:${color === 'red' ? '#ff4757' : color === 'black' ? '#fff' : '#2ed573'}"></i> ${outcome}`;
-                }
-                renderCasinoPanel(); updateUI();
-                if (auto && casinoState.autoRunning) {
-                    setTimeout(() => runAutoSpin(bet), 1000);
-                }
-            }, 1100);
-        }
-
-        function spinSlots(amount, auto = false) {
-            if (!user.session_token) return showToast('Login to use the casino!', 3000, '#ff4757');
-            const bet = amount > 0 ? amount : getCasinoBetAmount(100);
-            if (bet <= 0) return showToast('Enter a bet amount first.', 3000, '#ff4757');
-            if (user.guild_coins < bet) return showToast('Not enough Gold for that spin.', 3000, '#ff4757');
-            user.guild_coins -= bet;
-            casinoState.spinning = true;
-            casinoState.message = 'Reels are spinning...';
-            casinoState.lastResult = '';
-            casinoState.slotDisplay = [randomCasinoSymbol(), randomCasinoSymbol(), randomCasinoSymbol()];
-            renderCasinoPanel();
-            setTimeout(() => {
-                casinoState.spinning = false;
-                const result = [randomCasinoSymbol(), randomCasinoSymbol(), randomCasinoSymbol()];
-                casinoState.slotDisplay = result;
-                let profit = 0;
-                if (result[0].icon === result[1].icon && result[1].icon === result[2].icon) {
-                    profit = result[0].icon === 'fa-solid fa-crown' ? bet * 10 : bet * 4;
-                    casinoState.lastResult = `JACKPOT! ${result.map(s => `<i class="${s.icon}" style="color:${s.color}"></i>`).join(' ')}`;
-                    casinoState.message = `Three matching symbols! You win +${formatGold(profit)} Gold.`;
-                } else if (result[0].icon === result[1].icon || result[1].icon === result[2].icon || result[0].icon === result[2].icon) {
-                    profit = bet;
-                    casinoState.lastResult = `Matched pair ${result.map(s => `<i class="${s.icon}" style="color:${s.color}"></i>`).join(' ')}`;
-                    casinoState.message = `Two match, small payout +${formatGold(profit)} Gold.`;
-                } else {
-                    casinoState.lastResult = result.map(s => `<i class="${s.icon}" style="color:${s.color}"></i>`).join(' ');
-                    casinoState.message = `No match. You lose ${formatGold(bet)} Gold.`;
-                }
-                if (profit > 0) user.guild_coins += bet + profit;
-                renderCasinoPanel(); updateUI();
-                if (auto && casinoState.autoRunning) {
-                    setTimeout(() => runAutoSpin(bet), 1000);
-                }
-            }, 1100);
-        }
-
-        function togglePanel(panelId) {
-            const panel = document.getElementById(panelId);
-            if (!panel) return;
-            panel.classList.toggle('collapsed');
-            const btn = panel.querySelector('.collapse-btn i');
-            if (btn) btn.className = panel.classList.contains('collapsed') ? 'fa-solid fa-chevron-down' : 'fa-solid fa-chevron-up';
-        }
-
         async function fetchServerData() {
             try {
                 const url = `${API_URL}/api/server_data` + (user.username ? `?username=${user.username}` : "");
                 const res = await fetch(url); const data = await res.json();
                 if (data.success) {
-                    // Update Active Live Event
                     activeLiveEvent = data.live_event_active || null;
-
-                    if (data.is_leader_override) user.is_leader = true;
+                    if (data.is_leader_override) { user.is_leader = true; user.guild_rank = 5; localStorage.setItem("gr", 5); }
                     if(document.getElementById("leaderboardList")) {
                         const lb = document.getElementById("leaderboardList"); lb.innerHTML = "";
                         data.leaderboard.forEach((r, i) => { 
                             let cObj = CRESTS_CONFIG[r.active_crest_id] || CRESTS_CONFIG[0]; 
-                            let isTung = r.guild === "TUNG"; // 🔥 LEADERBOARD CHECK 🔥
-                            let tagStyle = isTung ? `class="tung-tag"` : `style="color:${r.name_color || '#f9a826'}; font-weight:bold;"`;
+                            let isDev = r.guild === "DEV"; // 🔥 LEADERBOARD CHECK 🔥
+                            let tagStyle = isDev ? `class="fire-tag"` : `style="color:${r.name_color || '#f9a826'}; font-weight:bold;"`;
                             let tag = r.guild ? `<span ${tagStyle}>[${cObj.emoji}${r.guild}]</span> ` : ""; 
                             let style = (user.username && r.username === user.username) ? 'border-color:#4ecca3; background:#232342;' : ''; 
                             lb.innerHTML += `<div class="list-item" style="${style}"><span>#${i+1} ${tag}${r.username}</span> <span style="color:#4ecca3">${r.score.toLocaleString()}</span></div>`; 
@@ -924,8 +717,8 @@
                         const gw = document.getElementById("guildWarList"); gw.innerHTML = "";
                         data.guildWars.forEach((r, i) => { 
                             let cObj = CRESTS_CONFIG[r.active_crest_id] || CRESTS_CONFIG[0]; 
-                            let isTung = r.tag === "TUNG"; // 🔥 GUILD WAR CHECK 🔥
-                            let tagStyle = isTung ? `class="tung-tag"` : `style="color:${r.name_color || '#f9a826'}; font-weight:bold;"`;
+                            let isDev = r.tag === "DEV"; // 🔥 GUILD WAR CHECK 🔥
+                            let tagStyle = isDev ? `class="fire-tag"` : `style="color:${r.name_color || '#f9a826'}; font-weight:bold;"`;
                             gw.innerHTML += `<div class="list-item"><span>#${i+1} <span ${tagStyle}>[${cObj.emoji}${r.tag}]</span></span> <span style="color:#ff4757; font-weight:bold;">${r.damage.toLocaleString()} DMG</span></div>`; 
                         });
                     }
@@ -933,8 +726,8 @@
                         const gs = document.getElementById("guildScoreList"); gs.innerHTML = "";
                         data.guildScores.forEach((r, i) => { 
                             let cObj = CRESTS_CONFIG[r.active_crest_id] || CRESTS_CONFIG[0]; 
-                            let isTung = r.tag === "TUNG"; // 🔥 GUILD SCORE CHECK 🔥
-                            let tagStyle = isTung ? `class="tung-tag"` : `style="color:${r.name_color || '#f9a826'}; font-weight:bold;"`;
+                            let isDev = r.tag === "DEV"; // 🔥 GUILD SCORE CHECK 🔥
+                            let tagStyle = isDev ? `class="fire-tag"` : `style="color:${r.name_color || '#f9a826'}; font-weight:bold;"`;
                             gs.innerHTML += `<div class="list-item"><span>#${i+1} <span ${tagStyle}>[${cObj.emoji}${r.tag}]</span></span> <span style="color:#f1c40f; font-weight:bold;">${r.total_score.toLocaleString()} PTS</span></div>`; 
                         });
                     }
@@ -943,9 +736,7 @@
                         currentBoss = data.boss; 
                         let bName = data.boss.name;
                         if (currentMonth === 9) bName = "The Great Jack-o'-Lantern"; else if (currentMonth === 11) bName = "Abominable Snowman"; else if (currentEvent) bName = currentEvent.cName;
-                        
-                        if (activeLiveEvent === "boss_frenzy") bName = "FRENZIED " + bName; // Frenzy title change
-
+                        if (activeLiveEvent === "boss_frenzy") bName = "FRENZIED " + bName;
                         if(document.getElementById("bossNameDisplay")) document.getElementById("bossNameDisplay").textContent = `Lvl ${data.boss.level} Boss: ${bName}`; 
                         if(document.getElementById("bossHpText")) document.getElementById("bossHpText").textContent = `${data.boss.current_hp.toLocaleString()} / ${data.boss.max_hp.toLocaleString()} HP`; 
                         if(document.getElementById("bossHpFill")) document.getElementById("bossHpFill").style.width = Math.max(0, (data.boss.current_hp / data.boss.max_hp) * 100) + "%"; 
@@ -956,13 +747,14 @@
                         if(document.getElementById("warCoinDisplay")) document.getElementById("warCoinDisplay").textContent = data.userGuildInfo.war_coins.toLocaleString();
                         user.war_coins = data.userGuildInfo.war_coins; activeGuildColor = data.userGuildInfo.name_color || "#f9a826"; activeGuildCrest = data.userGuildInfo.active_crest_id || 0;
                         user.guild_pet_tokens = data.userGuildInfo.pet_tokens || 0;
+                        if(document.getElementById("guildNoticeDisplay")) document.getElementById("guildNoticeDisplay").textContent = data.userGuildInfo.notice || "Welcome!";
                         
                         if(document.getElementById("guildColorPicker")) document.getElementById("guildColorPicker").value = activeGuildColor;
                         let currentTitle = GUILD_TITLES.find(t => t.id === data.userGuildInfo.active_title_id);
                         if (currentTitle) { if(document.getElementById("guildTitleDisplay")) document.getElementById("guildTitleDisplay").textContent = `Active Title: ${currentTitle.name} (${currentTitle.desc})`; user.guild_title_bonus = currentTitle.multi; } else { if(document.getElementById("guildTitleDisplay")) document.getElementById("guildTitleDisplay").textContent = "Active Title: None"; user.guild_title_bonus = 1; }
                     }
 
-                    if (user.is_leader && data.pendingRequests) {
+                    if (user.guild_rank >= 3 && data.pendingRequests) {
                         if(document.getElementById("joinRequestsList")) {
                             const reqBox = document.getElementById("joinRequestsList"); reqBox.innerHTML = "";
                             if (data.pendingRequests.length === 0) reqBox.innerHTML = `<div style="color:#666; font-style:italic; font-size:10px;">No pending requests</div>`;
@@ -970,14 +762,72 @@
                         }
                         renderGuildShop(data.userGuildInfo ? data.userGuildInfo.unlocked_titles : "[]", data.userGuildInfo ? data.userGuildInfo.unlocked_crests : "[]");
                     }
+
+                    // Render Chat
+                    if (data.guildChat && document.getElementById("guildChatList")) {
+                        const cl = document.getElementById("guildChatList");
+                        let isScrolledToBottom = cl.scrollHeight - cl.clientHeight <= cl.scrollTop + 10;
+                        cl.innerHTML = "";
+                        [...data.guildChat].reverse().forEach(msg => {
+                            let isMe = msg.username === user.username ? "color:#4ecca3;" : "color:#f9a826;";
+                            cl.innerHTML += `<div style="margin-bottom:4px; font-size:11px; line-height:1.3; border-bottom:1px solid #222; padding-bottom:2px;"><span style="font-weight:bold; ${isMe}">${msg.username}:</span> <span style="color:#eee;">${msg.message}</span></div>`;
+                        });
+                        if (isScrolledToBottom) cl.scrollTop = cl.scrollHeight;
+                    }
+
+                    // Render Roster
+                    if (data.guildMembers && document.getElementById("guildRosterList")) {
+                        const rl = document.getElementById("guildRosterList"); rl.innerHTML = "";
+                        const rNames = {1:"R1 Recruit", 2:"R2 Member", 3:"R3 Officer", 4:"R4 Co-Leader", 5:"R5 Leader"};
+                        data.guildMembers.forEach(m => {
+                            let controls = "";
+                            if (user.guild_rank >= 4 && user.guild_rank > m.guild_rank) {
+                                controls += `<button class="action-btn red" style="padding:2px 6px;" onclick="kickGuildMember('${m.username}')">Kick</button>`;
+                            }
+                            if (user.guild_rank === 5 && m.username !== user.username) {
+                                controls += `<select onchange="setGuildRank('${m.username}', this.value)" style="font-size:9px; background:#111; color:#fff; border:1px solid #2e2e54; border-radius:4px;">
+                                    <option value="" disabled selected>Rank</option><option value="1">R1</option><option value="2">R2</option><option value="3">R3</option><option value="4">R4</option>
+                                </select>`;
+                            }
+                            let isMe = m.username === user.username ? "font-weight:bold; color:#4ecca3;" : "";
+                            rl.innerHTML += `<div class="list-item" style="padding:6px; flex-direction:column; align-items:flex-start;">
+                                <div style="display:flex; justify-content:space-between; width:100%;">
+                                    <span style="${isMe}">${m.username}</span><span style="color:#aaa; font-size:9px;">${rNames[m.guild_rank]}</span>
+                                </div>
+                                ${controls ? `<div style="display:flex; gap:5px; margin-top:4px; width:100%; justify-content:flex-end;">${controls}</div>` : ''}
+                            </div>`;
+                        });
+                    }
+
                     applySkinAbilities(); updateUI();
-                } else {
-                    console.error("Server reported an error:", data.error);
                 }
-            } catch(e) {
-                console.error("Critical error fetching Server Data.", e);
-            }
+            } catch(e) {}
         }
+
+        // --- NEW CHAT & ROSTER FUNCTIONS ---
+        async function sendGuildChat() {
+            const input = document.getElementById("guildChatInput"); const msg = input.value.trim();
+            if (!msg || !user.session_token) return;
+            input.value = "";
+            try { await fetch(`${API_URL}/api/guild/chat`, { method: "POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify({ username: user.username, session_token: user.session_token, message: msg }) }); fetchServerData(); } catch(e){}
+        }
+
+        async function setGuildNotice() {
+            let msg = prompt("Enter new Alliance Notice (Max 120 chars):");
+            if (!msg || !user.session_token) return;
+            try { await fetch(`${API_URL}/api/guild/notice`, { method: "POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify({ username: user.username, session_token: user.session_token, notice: msg }) }); fetchServerData(); showToast("Notice updated!"); } catch(e){}
+        }
+
+        async function kickGuildMember(target) {
+            if(!confirm(`Kick ${target} from the Alliance?`)) return;
+            try { await fetch(`${API_URL}/api/guild/kick`, { method: "POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify({ username: user.username, session_token: user.session_token, target_user: target }) }); fetchServerData(); showToast(`${target} removed.`); } catch(e){}
+        }
+
+        async function setGuildRank(target, newRank) {
+            if(!newRank) return;
+            try { await fetch(`${API_URL}/api/guild/set_rank`, { method: "POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify({ username: user.username, session_token: user.session_token, target_user: target, new_rank: parseInt(newRank) }) }); fetchServerData(); showToast(`${target} promoted to R${newRank}!`); } catch(e){}
+        }
+        // -----------------------------------
 
         function renderGuildShop(unlockedTitlesStr, unlockedCrestsStr) {
             let unlockedTitles = JSON.parse(unlockedTitlesStr || "[]"); let unlockedCrests = JSON.parse(unlockedCrestsStr || "[0]");
@@ -997,7 +847,7 @@
         async function setGuildColor() { let color = document.getElementById("guildColorPicker").value; try { const res = await fetch(`${API_URL}/api/guild/customize`, { method: "POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify({ username: user.username, session_token: user.session_token, action: "set_color", payload: { color } }) }); const data = await res.json(); if(data.success) { showToast("Guild Color updated!"); fetchServerData(); } else { showToast(data.error || "Action failed", 3000, "#ff4757"); } } catch(e) { console.error("Error updating tag color:", e); } }
         async function setGuildCrest(crestId) { try { const res = await fetch(`${API_URL}/api/guild/customize`, { method: "POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify({ username: user.username, session_token: user.session_token, action: "buy_crest", payload: { crestId, cost: 0 } }) }); const data = await res.json(); if(data.success) { showToast("Crest Equipped!"); fetchServerData(); } else { showToast(data.error || "Action failed", 3000, "#ff4757"); } } catch(e) { console.error("Error equipping crest:", e); } }
         async function handleJoinRequest(reqId, choice) { try { const res = await fetch(`${API_URL}/api/guild/handle_request`, { method: "POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify({ username: user.username, session_token: user.session_token, requestId: reqId, action: choice }) }); const data = await res.json(); if (data.success) { showToast(choice === 'approve' ? "Member added!" : "Request denied"); fetchServerData(); } else { showToast(data.error, 4000, "#ff4757"); } } catch(e) {} }
-        document.getElementById("leaveGuildBtn").onclick = async () => { if(confirm("Leave this Alliance? You will lose leader status if you created it.")) { try { await fetch(`${API_URL}/api/guild/leave`, { method:"POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify({username: user.username, session_token: user.session_token}) }); user.guild = ""; user.is_leader = false; localStorage.setItem("gd", ""); showToast("Left the Alliance.", 3000, "#ff4757"); fetchServerData(); updateUI(); } catch(e){} } };
+        document.getElementById("leaveGuildBtn").onclick = async () => { if(confirm("Leave this Alliance?")) { try { await fetch(`${API_URL}/api/guild/leave`, { method:"POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify({username: user.username, session_token: user.session_token}) }); user.guild = ""; user.guild_rank = 1; localStorage.setItem("gd", ""); localStorage.setItem("gr", 1); showToast("Left the Alliance.", 3000, "#ff4757"); fetchServerData(); updateUI(); } catch(e){} } };
 
         async function fetchSocialData() {
             if(!user.username || !user.session_token) return;
@@ -1022,7 +872,7 @@
             } catch(e){}
         }
 
-        setInterval(() => { fetchServerData(); if(user.session_token) fetchSocialData(); }, 12000);
+        setInterval(() => { fetchServerData(); if(user.session_token) fetchSocialData(); }, 8000); // Polling faster for chat
 
         document.getElementById("addFriendBtn").onclick = async () => { if(!user.session_token) return showToast("You must be logged in to add friends!", 3000, "#ff4757"); const target = document.getElementById("friendInput").value.trim(); if(!target || target === user.username) return showToast("Invalid target username", 3000, "#ff4757"); try { const res = await fetch(`${API_URL}/api/social`, { method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify({username: user.username, session_token: user.session_token, action: "add_friend", payload: {target}}) }); const data = await res.json(); if(data.success) { showToast(`Friend request sent to ${target}!`); document.getElementById("friendInput").value = ""; fetchSocialData(); } else { showToast(data.error, 3000, "#ff4757"); } } catch(e) {} };
         async function respondFriend(id, response) { try { await fetch(`${API_URL}/api/social`, { method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify({username: user.username, session_token: user.session_token, action: "respond_friend", payload: {id, response}}) }); fetchSocialData(); } catch(e) {} }
@@ -1031,13 +881,16 @@
         
         async function winChallenge(id) { try { const res = await fetch(`${API_URL}/api/social`, { method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify({username: user.username, session_token: user.session_token, action: "win_challenge", payload: {id}}) }); const data = await res.json(); if(data.success) { showToast(`🏆 Duel Won! +50 Gold`, 5000, "#f1c40f"); user.guild_coins += 50; updateUI(); fetchSocialData(); } } catch(e) {} }
 
+        // Send chat on Enter key
+        document.getElementById("guildChatInput").addEventListener("keypress", function(event) { if (event.key === "Enter") { event.preventDefault(); sendGuildChat(); } });
+
         document.getElementById("loginBtn").onclick = async () => {
             const u = document.getElementById("usernameInput").value.trim(); const p = document.getElementById("passwordInput").value; if(!u || !p) return showToast("Enter profile credentials", 3000, "#ff4757");
             try {
                 const hashedP = await hashPassword(p); const res = await fetch(`${API_URL}/api/login`, { method:"POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify({username:u, password_hash:hashedP}) }); const data = await res.json();
                 if(data.success) {
-                    user.username = u; user.session_token = data.userData.session_token; user.high_score = data.userData.high_score || 0; user.equipped_skin = data.userData.equipped_skin || "default"; user.equipped_weapon = data.userData.equipped_weapon || "none"; user.equipped_coat = data.userData.equipped_coat || "none"; user.unlocked_weapons = data.userData.unlocked_weapons || ["none"]; user.unlocked_coats = data.userData.unlocked_coats || ["none"]; user.w_shards = data.userData.white_shards || 0; user.b_shards = data.userData.black_shards || 0; user.jolly_sweets = data.userData.jolly_sweets || 0; user.spooky_sweets = data.userData.spooky_sweets || 0; user.unlocked = data.userData.unlocked_skins || ["default"]; user.guild = data.userData.guild || ""; user.guild_coins = data.userData.guild_coins || 0; user.is_leader = data.userData.is_guild_leader === 1 || data.userData.is_guild_leader === true;
-                    localStorage.setItem("session_token", user.session_token); localStorage.setItem("hc", user.high_score); localStorage.setItem("eq", user.equipped_skin); localStorage.setItem("ws", user.w_shards); localStorage.setItem("bs", user.b_shards); localStorage.setItem("gd", user.guild);
+                    user.username = u; user.session_token = data.userData.session_token; user.high_score = data.userData.high_score || 0; user.equipped_skin = data.userData.equipped_skin || "default"; user.equipped_weapon = data.userData.equipped_weapon || "none"; user.equipped_coat = data.userData.equipped_coat || "none"; user.unlocked_weapons = data.userData.unlocked_weapons || ["none"]; user.unlocked_coats = data.userData.unlocked_coats || ["none"]; user.w_shards = data.userData.white_shards || 0; user.b_shards = data.userData.black_shards || 0; user.jolly_sweets = data.userData.jolly_sweets || 0; user.spooky_sweets = data.userData.spooky_sweets || 0; user.unlocked = data.userData.unlocked_skins || ["default"]; user.guild = data.userData.guild || ""; user.guild_coins = data.userData.guild_coins || 0; user.guild_rank = data.userData.guild_rank || 1;
+                    localStorage.setItem("session_token", user.session_token); localStorage.setItem("hc", user.high_score); localStorage.setItem("eq", user.equipped_skin); localStorage.setItem("ws", user.w_shards); localStorage.setItem("bs", user.b_shards); localStorage.setItem("gd", user.guild); localStorage.setItem("gr", user.guild_rank);
                     document.getElementById("authBar").style.display = "none"; document.getElementById("welcomeMessage").textContent = `👤 Player: ${u}`; document.getElementById("userProfileBar").style.display = "flex";
                     applySkinAbilities(); updateUI(); renderChangingRoom(); renderGearShop(); fetchServerData(); fetchSocialData(); showToast("Profile Synced to Mainframe!");
                 } else showToast(data.error, 4000, "#ff4757");
@@ -1058,7 +911,7 @@
         }
 
         document.getElementById("reqGuildBtn").onclick = async () => { let tag = document.getElementById("guildInput").value.trim().toUpperCase(); if(!tag || !user.session_token) return showToast("Login & input 4-letter tag", 3000, "#ff4757"); try { const res = await fetch(`${API_URL}/api/guild/request_join`, { method: "POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify({ username: user.username, session_token: user.session_token, guild_tag: tag }) }); const data = await res.json(); if (data.success) showToast(`Alliance request sent to [${tag}]! Waiting for leader approval.`); else showToast(data.error, 4000, "#ff4757"); } catch(e) {} };
-        document.getElementById("createGuildBtn").onclick = async () => { let tag = document.getElementById("guildInput").value.trim().toUpperCase(); if(!tag || tag.length < 2) return showToast("Tag must be 2-4 characters", 3000, "#ff4757"); try { const res = await fetch(`${API_URL}/api/guild/create`, { method: "POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify({ username: user.username, session_token: user.session_token, guild_tag: tag }) }); const data = await res.json(); if (data.success) { user.guild = tag; user.is_leader = true; showToast(`Alliance Guild [${tag}] established! You are the Leader.`, 4000, "#00adb5"); fetchServerData(); updateUI(); } else showToast(data.error, 4000, "#ff4757"); } catch(e) {} };
+        document.getElementById("createGuildBtn").onclick = async () => { let tag = document.getElementById("guildInput").value.trim().toUpperCase(); if(!tag || tag.length < 2) return showToast("Tag must be 2-4 characters", 3000, "#ff4757"); try { const res = await fetch(`${API_URL}/api/guild/create`, { method: "POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify({ username: user.username, session_token: user.session_token, guild_tag: tag }) }); const data = await res.json(); if (data.success) { user.guild = tag; user.guild_rank = 5; localStorage.setItem("gr", 5); showToast(`Alliance Guild [${tag}] established! You are the Leader.`, 4000, "#00adb5"); fetchServerData(); updateUI(); } else showToast(data.error, 4000, "#ff4757"); } catch(e) {} };
 
         // --- CORE GAME ENGINE & PHYSICS INTERFACE ---
         const canvas = document.getElementById("gameCanvas"); const ctx = canvas.getContext("2d");
@@ -1304,27 +1157,7 @@
                     let wType = user.equipped_weapon;
                     if (wType === "dagger") { ctx.fillRect(player.radius, -2, 14, 4); }
                     else if (wType === "broadsword") { ctx.shadowColor = ctx.fillStyle; ctx.shadowBlur = 10; ctx.fillRect(player.radius, -4, 28, 8); ctx.fillStyle="#555"; ctx.fillRect(player.radius-2, -8, 4, 16); }
-                    else if (wType === "scythe") {
-                        ctx.shadowColor = ctx.fillStyle;
-                        ctx.shadowBlur = 18;
-                        ctx.fillRect(player.radius, -22, 6, 44);
-                        ctx.fillStyle = "rgba(255,255,255,0.18)";
-                        ctx.beginPath();
-                        ctx.moveTo(player.radius + 6, -18);
-                        ctx.quadraticCurveTo(player.radius + 46, -14, player.radius + 46, 8);
-                        ctx.quadraticCurveTo(player.radius + 26, 22, player.radius + 18, 12);
-                        ctx.quadraticCurveTo(player.radius + 38, 0, player.radius + 20, -18);
-                        ctx.closePath();
-                        ctx.fill();
-                        ctx.fillStyle = WEAPONS_CONFIG[user.equipped_weapon].color || "#aaa";
-                        ctx.beginPath();
-                        ctx.moveTo(player.radius + 6, -18);
-                        ctx.quadraticCurveTo(player.radius + 46, -14, player.radius + 46, 8);
-                        ctx.quadraticCurveTo(player.radius + 26, 22, player.radius + 18, 12);
-                        ctx.quadraticCurveTo(player.radius + 38, 0, player.radius + 20, -18);
-                        ctx.closePath();
-                        ctx.fill();
-                    }
+                    else if (wType === "scythe") { ctx.shadowColor = ctx.fillStyle; ctx.shadowBlur = 15; ctx.fillRect(player.radius, -20, 4, 40); ctx.beginPath(); ctx.moveTo(player.radius, -20); ctx.quadraticCurveTo(player.radius + 30, -10, player.radius + 35, 10); ctx.lineTo(player.radius + 15, -5); ctx.fill(); }
                     else if (wType === "aether_blade") { ctx.shadowColor = "#00ffff"; ctx.shadowBlur = 20; ctx.beginPath(); ctx.moveTo(player.radius, 0); ctx.lineTo(player.radius + 40, -6); ctx.lineTo(player.radius + 40, 6); ctx.fill(); }
                     else if (wType === "singularity_edge") { ctx.shadowColor = "#ff0055"; ctx.shadowBlur = 25; ctx.beginPath(); ctx.moveTo(player.radius, -15); ctx.lineTo(player.radius + 50, 0); ctx.lineTo(player.radius, 15); ctx.fill(); ctx.fillStyle="#000"; ctx.beginPath(); ctx.arc(player.radius + 20, 0, 5, 0, Math.PI*2); ctx.fill(); }
                     else if (wType === "candy_cane") { ctx.fillStyle = "#fff"; ctx.fillRect(player.radius, -4, 25, 8); ctx.fillStyle = "#f00"; for(let i=0; i<20; i+=6) ctx.fillRect(player.radius + i, -4, 3, 8); ctx.beginPath(); ctx.arc(player.radius+25, 0, 4, -Math.PI/2, Math.PI/2); ctx.fill(); }
@@ -1360,16 +1193,17 @@
                     let cObj = CRESTS_CONFIG[activeGuildCrest] || CRESTS_CONFIG[0];
                     ctx.save();
                     
-                    // 🔥 TUNG GUILD CHECK (FLAME EFFECT) 🔥
-                    if (user.guild === "TUNG") {
-                        let pulse = (Math.sin(Date.now() / 140) + 1) / 2;
+                    // 🔥 ADMIN GUILD CHECK (FIRE EFFECT) 🔥
+                    if (user.guild === "DEV") {
+                        let flicker = Math.random() * 8;
                         let gradient = ctx.createLinearGradient(player.x, player.y - 35, player.x, player.y - 15);
-                        gradient.addColorStop(0, `rgba(255, 178, 95, ${0.8 + pulse * 0.2})`);
-                        gradient.addColorStop(0.5, `rgba(255, 120, 50, ${0.85 + pulse * 0.15})`);
-                        gradient.addColorStop(1, `rgba(255, 60, 12, ${0.8 + pulse * 0.2})`);
+                        gradient.addColorStop(0, "#ff0000"); // Top is red
+                        gradient.addColorStop(0.5, "#ff8c00"); // Middle orange
+                        gradient.addColorStop(1, "#ffff00"); // Bottom yellow
+                        
                         ctx.fillStyle = gradient;
-                        ctx.shadowColor = "#ff8c00";
-                        ctx.shadowBlur = 10 + pulse * 8;
+                        ctx.shadowColor = "#ff4500";
+                        ctx.shadowBlur = 10 + flicker; // Flickering fire glow
                     } else {
                         ctx.fillStyle = activeGuildColor || "#f9a826";
                         ctx.shadowBlur = 0;
