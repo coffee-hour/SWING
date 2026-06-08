@@ -260,17 +260,35 @@
             </div>
             <div class="tutorial-body" style="display: block;">
                 
-                <h4 style="color:#00adb5; border-bottom:1px dashed #2e2e54; padding-bottom:4px; margin-top:0;">v1.6.0 - The Hierarchy Update</h4>
-                <p style="font-size: 11px; color: #888; margin-top: -5px;">Released: Current</p>
+                <h4 style="color:#00adb5; border-bottom:1px dashed #2e2e54; padding-bottom:4px; margin-top:0;">v1.7.0 - Custom Boss Visuals</h4>
+                <p style="font-size: 11px; color: #888; margin-top: -5px;">Released: June 7, 2026</p>
                 <ul>
-                    <li><span class="tutorial-highlight">Alliance Chat:</span> Guilds now have a live chat board. R2 required to chat.</li>
-                    <li><span class="tutorial-highlight">Ranks R1 to R5:</span> Permissions are now scaled! R3s can invite, R4s can change the notice board and kick, and R5s control the ranks!</li>
+                    <li><span class="tutorial-highlight">Boss Art:</span> Every single monthly boss now has fully custom art matching their seasonal event (Kraken, Leprechaun, Scarecrow, etc.)!</li>
+                    <li><span class="tutorial-highlight">Frenzy Fix:</span> The Abyssal Frenzy multiplier now properly applies to all seasonal bosses instead of defaulting to June.</li>
                 </ul>
 
-                <h4 style="color:#f9a826; border-bottom:1px dashed #2e2e54; padding-bottom:4px; margin-top:20px;">v1.5.0 - The Hazards Update</h4>
-                <p style="font-size: 11px; color: #888; margin-top: -5px;">Released: June 2026</p>
+                <h4 style="color:#f9a826; border-bottom:1px dashed #2e2e54; padding-bottom:4px; margin-top:20px;">v1.6.0 - The Hierarchy Update</h4>
+                <p style="font-size: 11px; color: #888; margin-top: -5px;">Released: June 5, 2026</p>
                 <ul>
-                    <li><span class="tutorial-highlight">Galaxy Mines:</span> Watch out for floating purple hazards! Hitting one snaps your grapple rope and kills your momentum instantly. Keep those reflexes sharp!</li>
+                    <li><span class="tutorial-highlight">Alliance Chat & Ranks:</span> Live Alliance Chat added (requires R2). Ranks R1 to R5 now control recruiting, notices, and kicking!</li>
+                </ul>
+
+                <h4 style="color:#4ecca3; border-bottom:1px dashed #2e2e54; padding-bottom:4px; margin-top:20px;">v1.5.0 - Proportional Raid Rewards</h4>
+                <p style="font-size: 11px; color: #888; margin-top: -5px;">Released: May 28, 2026</p>
+                <ul>
+                    <li><span class="tutorial-highlight">Fair War Coins:</span> Defeating the Boss now distributes War Coins dynamically to ALL participating Alliances based on their exact damage %.</li>
+                </ul>
+
+                <h4 style="color:#ff4757; border-bottom:1px dashed #2e2e54; padding-bottom:4px; margin-top:20px;">v1.4.0 - The Hazards Update</h4>
+                <p style="font-size: 11px; color: #888; margin-top: -5px;">Released: May 14, 2026</p>
+                <ul>
+                    <li><span class="tutorial-highlight">Galaxy Mines:</span> Watch out for floating purple hazards! Hitting one snaps your grapple rope and kills your momentum instantly.</li>
+                </ul>
+
+                <h4 style="color:#ff9ff3; border-bottom:1px dashed #2e2e54; padding-bottom:4px; margin-top:20px;">v1.0.0 - Official Launch</h4>
+                <p style="font-size: 11px; color: #888; margin-top: -5px;">Released: January 15, 2026</p>
+                <ul>
+                    <li><span class="tutorial-highlight">Game Live:</span> Grappling hooks, cosmetics, and the infinite abyss!</li>
                 </ul>
 
             </div>
@@ -355,9 +373,9 @@
         
         let activeChallenges = [], angelicDropdownOpen = false, devilDropdownOpen = false, currentGearTab = 'weapon';
 
-        // --- MONTHLY EVENT SYSTEM ---
+        // --- MONTHLY EVENT SYSTEM (FULLY RESTORED) ---
         const EVENTS = [
-            { id: 0, name: "Frost", cName: "Snowman", s1: "Yeti", w1: "Icicle", c1: "Blizzard Cloak", c: "#00ffff" },
+            { id: 0, name: "Frost", cName: "Yeti Boss", s1: "Yeti", w1: "Icicle", c1: "Blizzard Cloak", c: "#00ffff" },
             { id: 1, name: "Love", cName: "Cupid", s1: "Angel of Love", w1: "Heart Bow", c1: "Rose Petals", c: "#ff69b4" },
             { id: 2, name: "Spring", cName: "Leprechaun", s1: "Lucky Charm", w1: "Clover Wand", c1: "Rainbow Trail", c: "#32cd32" },
             { id: 3, name: "Rain", cName: "Stormcloud", s1: "Thunderer", w1: "Lightning Strike", c1: "Raincoat", c: "#1e90ff" },
@@ -366,11 +384,13 @@
             { id: 6, name: "Ocean", cName: "Kraken", s1: "Diver", w1: "Trident", c1: "Water Stream", c: "#00ced1" },
             { id: 7, name: "Sand", cName: "Pharaoh", s1: "Mummy", w1: "Sandstone Blade", c1: "Dust Storm", c: "#eedd82" },
             { id: 8, name: "Harvest", cName: "Scarecrow", s1: "Farmer", w1: "Pitchfork", c1: "Hay Cloak", c: "#cd853f" },
-            { id: 10, name: "Turkey", cName: "Gobbler", s1: "Pilgrim", w1: "Gravy Boat", c1: "Feather Cape", c: "#8b4513" }
+            { id: 9, name: "Spooky", cName: "Jack-o'-Lantern", s1: "Ghost", w1: "Candy Bar", c1: "Spirit Tail", c: "#ff8c00" },
+            { id: 10, name: "Turkey", cName: "Gobbler", s1: "Pilgrim", w1: "Gravy Boat", c1: "Feather Cape", c: "#8b4513" },
+            { id: 11, name: "Jolly", cName: "Abominable Snowman", s1: "Jolly Santa", w1: "Candy Cane", c1: "Jolly Jacket", c: "#ff0000" }
         ];
 
-        let eventCurrencyType = "gold", currentEvent = null;
-        if (currentMonth === 9) eventCurrencyType = "spooky"; else if (currentMonth === 11) eventCurrencyType = "jolly"; else currentEvent = EVENTS.find(e => e.id === currentMonth) || EVENTS[0];
+        let currentEvent = EVENTS.find(e => e.id === currentMonth) || EVENTS[0];
+        let eventCurrencyType = (currentMonth === 9) ? "spooky" : (currentMonth === 11) ? "jolly" : "gold";
 
         // --- GAME ASSETS & CONFIGS (WITH UNICODE FOR CANVAS) ---
         const CRESTS_CONFIG = {
@@ -438,7 +458,10 @@
             SKINS_CONFIG.ghost = { name: "Ghost", color: "#eeeeee", splitColor: "#aaa", ability: "Pass through 1 death line", curr: "spooky", cost: 10 };
             WEAPONS_CONFIG.candy_bar = { name: "Candy Bar", color: "#8b4513", multi: 3.0, desc: "Sugar Rush (+300% Multi)", curr: "spooky", cost: 50 };
             COATS_CONFIG.spirit = { name: "Spirit Tail", color: "#ffffff", desc: "Ethereal: +25% Hook Range", curr: "spooky", cost: 50 };
-        } else if (currentEvent) {
+        } 
+        
+        // Add current month's standard event to shop if it's not Halloween or Christmas
+        if (currentMonth !== 9 && currentMonth !== 11 && currentEvent) {
             let sId = currentEvent.s1.toLowerCase().replace(/ /g, '_'); let wId = currentEvent.w1.toLowerCase().replace(/ /g, '_'); let cId = currentEvent.c1.toLowerCase().replace(/ /g, '_');
             let wMulti = 2.0, wDesc = `Event WPN (+200%)`, wCost = 15000;
             if (currentEvent.id === 5) { wMulti = 25.0; wDesc = "Sun God's Wrath (+2500%)"; wCost = 250000; } 
@@ -501,7 +524,6 @@
             let m = 1, texts = [];
             if (serverEventMultiplier > 1) { m *= serverEventMultiplier; texts.push(`🎉 EVENT ${serverEventMultiplier}X`); }
             
-            // Abyssal Frenzy Live Event 3x Boost
             if (activeLiveEvent === "boss_frenzy") { m *= 3; texts.push("🔥 FRENZY (3x)"); }
 
             if (new Date().getDay() === 5) { m *= 2; texts.push("🔥 2X FRIDAY"); }
@@ -578,7 +600,6 @@
 
             let crestEmoji = activeGuildCrest > 0 && CRESTS_CONFIG[activeGuildCrest] ? CRESTS_CONFIG[activeGuildCrest].emoji : "";
             
-            // 🔥 APPLY FIRE CLASS TO UI FIRE TAG 🔥
             let isDev = user.guild === "DEV";
             let tagStyle = isDev ? `class="fire-tag"` : `style="color:${activeGuildColor || '#f9a826'};"`;
             if(document.getElementById("currentGuildDisplay")) document.getElementById("currentGuildDisplay").innerHTML = `<span ${tagStyle}>${crestEmoji}[${user.guild || "None"}]</span>`;
@@ -706,7 +727,7 @@
                         const lb = document.getElementById("leaderboardList"); lb.innerHTML = "";
                         data.leaderboard.forEach((r, i) => { 
                             let cObj = CRESTS_CONFIG[r.active_crest_id] || CRESTS_CONFIG[0]; 
-                            let isDev = r.guild === "DEV"; // 🔥 LEADERBOARD CHECK 🔥
+                            let isDev = r.guild === "DEV"; 
                             let tagStyle = isDev ? `class="fire-tag"` : `style="color:${r.name_color || '#f9a826'}; font-weight:bold;"`;
                             let tag = r.guild ? `<span ${tagStyle}>[${cObj.emoji}${r.guild}]</span> ` : ""; 
                             let style = (user.username && r.username === user.username) ? 'border-color:#4ecca3; background:#232342;' : ''; 
@@ -717,7 +738,7 @@
                         const gw = document.getElementById("guildWarList"); gw.innerHTML = "";
                         data.guildWars.forEach((r, i) => { 
                             let cObj = CRESTS_CONFIG[r.active_crest_id] || CRESTS_CONFIG[0]; 
-                            let isDev = r.tag === "DEV"; // 🔥 GUILD WAR CHECK 🔥
+                            let isDev = r.tag === "DEV"; 
                             let tagStyle = isDev ? `class="fire-tag"` : `style="color:${r.name_color || '#f9a826'}; font-weight:bold;"`;
                             gw.innerHTML += `<div class="list-item"><span>#${i+1} <span ${tagStyle}>[${cObj.emoji}${r.tag}]</span></span> <span style="color:#ff4757; font-weight:bold;">${r.damage.toLocaleString()} DMG</span></div>`; 
                         });
@@ -726,7 +747,7 @@
                         const gs = document.getElementById("guildScoreList"); gs.innerHTML = "";
                         data.guildScores.forEach((r, i) => { 
                             let cObj = CRESTS_CONFIG[r.active_crest_id] || CRESTS_CONFIG[0]; 
-                            let isDev = r.tag === "DEV"; // 🔥 GUILD SCORE CHECK 🔥
+                            let isDev = r.tag === "DEV"; 
                             let tagStyle = isDev ? `class="fire-tag"` : `style="color:${r.name_color || '#f9a826'}; font-weight:bold;"`;
                             gs.innerHTML += `<div class="list-item"><span>#${i+1} <span ${tagStyle}>[${cObj.emoji}${r.tag}]</span></span> <span style="color:#f1c40f; font-weight:bold;">${r.total_score.toLocaleString()} PTS</span></div>`; 
                         });
@@ -734,8 +755,7 @@
 
                     if (data.boss) {
                         currentBoss = data.boss; 
-                        let bName = data.boss.name;
-                        if (currentMonth === 9) bName = "The Great Jack-o'-Lantern"; else if (currentMonth === 11) bName = "Abominable Snowman"; else if (currentEvent) bName = currentEvent.cName;
+                        let bName = currentEvent.cName;
                         if (activeLiveEvent === "boss_frenzy") bName = "FRENZIED " + bName;
                         if(document.getElementById("bossNameDisplay")) document.getElementById("bossNameDisplay").textContent = `Lvl ${data.boss.level} Boss: ${bName}`; 
                         if(document.getElementById("bossHpText")) document.getElementById("bossHpText").textContent = `${data.boss.current_hp.toLocaleString()} / ${data.boss.max_hp.toLocaleString()} HP`; 
@@ -1020,9 +1040,8 @@
         function drawBoss() {
             if (!currentBoss || currentBoss.level < 1) return;
             let bx = cameraX + canvas.width - 120; let by = 120 + Math.sin(Date.now() / 400) * 15;
-            let lvl = currentBoss.level; let hue = (lvl * 45) % 360; 
+            let lvl = currentBoss.level; let radius = 35 + Math.min(lvl * 2, 40);
             
-            // FRENZY Visual Effects
             let isFrenzy = activeLiveEvent === "boss_frenzy";
             if (isFrenzy) {
                 bx += (Math.random() - 0.5) * 6; // Shake effect
@@ -1031,29 +1050,71 @@
             
             ctx.save(); ctx.translate(bx, by);
             
-            if (currentMonth === 9) { // HALLOWEEN
-                ctx.shadowBlur = isFrenzy ? 40 : 20; ctx.shadowColor = isFrenzy ? "#ff0000" : "#ff8c00"; ctx.fillStyle = isFrenzy ? "#8b0000" : "#ff6a00"; ctx.beginPath(); ctx.arc(0, 0, 40 + Math.min(lvl * 2, 40), 0, Math.PI * 2); ctx.fill();
+            ctx.shadowBlur = isFrenzy ? 40 : 20; 
+            ctx.shadowColor = isFrenzy ? "#ff0000" : (currentEvent ? currentEvent.c : "#ffffff");
+            
+            // --- FULLY CUSTOM MONTHLY BOSS ART ---
+            if (currentMonth === 0) { // Frost
+                ctx.fillStyle = isFrenzy ? "#8b0000" : "#e0ffff";
+                ctx.beginPath(); ctx.arc(0, 0, radius, 0, Math.PI * 2); ctx.fill();
+                ctx.fillStyle = "#00ffff"; ctx.beginPath(); ctx.moveTo(-15, -10); ctx.lineTo(-5, 5); ctx.lineTo(5, -10); ctx.fill(); ctx.beginPath(); ctx.moveTo(5, -10); ctx.lineTo(15, 5); ctx.lineTo(25, -10); ctx.fill();
+            } else if (currentMonth === 1) { // Love
+                ctx.fillStyle = isFrenzy ? "#8b0000" : "#ffb6c1";
+                ctx.beginPath(); ctx.arc(0, 0, radius, 0, Math.PI * 2); ctx.fill();
+                ctx.fillStyle = "#ff1493"; ctx.font = "bold 40px sans-serif"; ctx.textAlign="center"; ctx.textBaseline="middle"; ctx.fillText("♥", 0, 0);
+            } else if (currentMonth === 2) { // Leprechaun
+                ctx.fillStyle = isFrenzy ? "#8b0000" : "#32cd32";
+                ctx.beginPath(); ctx.arc(0, 0, radius, 0, Math.PI * 2); ctx.fill();
+                ctx.fillStyle = "#ff8c00"; ctx.beginPath(); ctx.arc(0, 10, radius*0.8, 0, Math.PI); ctx.fill(); // beard
+                ctx.fillStyle = "#111"; ctx.fillRect(-25, -radius-15, 50, 30); ctx.fillRect(-40, -radius+10, 80, 5); // hat
+            } else if (currentMonth === 3) { // Storm
+                ctx.fillStyle = isFrenzy ? "#8b0000" : "#778899";
+                ctx.beginPath(); ctx.arc(-15, 5, radius*0.8, 0, Math.PI*2); ctx.arc(15, 5, radius*0.8, 0, Math.PI*2); ctx.arc(0, -15, radius*0.9, 0, Math.PI*2); ctx.fill(); // cloud shape
+                ctx.fillStyle = "#ffd700"; ctx.beginPath(); ctx.moveTo(5, -10); ctx.lineTo(-10, 10); ctx.lineTo(0, 10); ctx.lineTo(-5, 30); ctx.lineTo(15, 0); ctx.lineTo(5, 0); ctx.fill(); // lightning
+            } else if (currentMonth === 4) { // Treant
+                ctx.fillStyle = isFrenzy ? "#8b0000" : "#8b4513";
+                ctx.fillRect(-radius*0.6, -radius, radius*1.2, radius*2);
+                ctx.fillStyle = "#228b22"; ctx.beginPath(); ctx.arc(0, -radius, radius*1.2, 0, Math.PI*2); ctx.fill(); // leaves
+            } else if (currentMonth === 5) { // Sun
+                ctx.fillStyle = isFrenzy ? "#8b0000" : "#ffa500";
+                for(let i=0; i<8; i++){ ctx.rotate(Math.PI/4); ctx.beginPath(); ctx.moveTo(-15, -radius); ctx.lineTo(15, -radius); ctx.lineTo(0, -radius-30); ctx.fill(); }
+                ctx.fillStyle = "#ffd700"; ctx.beginPath(); ctx.arc(0, 0, radius, 0, Math.PI*2); ctx.fill();
+            } else if (currentMonth === 6) { // Kraken
+                ctx.fillStyle = isFrenzy ? "#8b0000" : "#20b2aa";
+                ctx.beginPath(); ctx.arc(0, -10, radius, Math.PI, 0); ctx.fill(); // head
+                for(let i=-20; i<=20; i+=20) { ctx.beginPath(); ctx.arc(i, 10, radius*0.4, 0, Math.PI); ctx.fill(); } // tentacles
+            } else if (currentMonth === 7) { // Pharaoh
+                ctx.fillStyle = isFrenzy ? "#8b0000" : "#ffd700";
+                ctx.beginPath(); ctx.moveTo(0, -radius*1.2); ctx.lineTo(-radius, radius); ctx.lineTo(radius, radius); ctx.fill(); // pyramid
+                ctx.fillStyle = "#1e90ff"; ctx.fillRect(-radius*0.7, -10, radius*1.4, 5); ctx.fillRect(-radius*0.9, 10, radius*1.8, 5); // stripes
+            } else if (currentMonth === 8) { // Scarecrow
+                ctx.fillStyle = isFrenzy ? "#8b0000" : "#deb887";
+                ctx.beginPath(); ctx.arc(0, 0, radius, 0, Math.PI*2); ctx.fill();
+                ctx.strokeStyle = "#111"; ctx.lineWidth = 3; ctx.beginPath(); ctx.moveTo(-15, 10); ctx.lineTo(15, 10); ctx.stroke(); // stitched mouth
+                for(let i=-10; i<=10; i+=10) { ctx.beginPath(); ctx.moveTo(i, 5); ctx.lineTo(i, 15); ctx.stroke(); }
+                ctx.fillStyle = "#111"; ctx.beginPath(); ctx.arc(-10, -10, 4, 0, Math.PI*2); ctx.arc(10, -10, 4, 0, Math.PI*2); ctx.fill();
+            } else if (currentMonth === 9) { // Jack-o-Lantern
+                ctx.fillStyle = isFrenzy ? "#8b0000" : "#ff6a00";
+                ctx.beginPath(); ctx.arc(0, 0, radius, 0, Math.PI * 2); ctx.fill();
                 ctx.fillStyle = "#000"; ctx.beginPath(); ctx.moveTo(-15, -10); ctx.lineTo(-5, -20); ctx.lineTo(0, -10); ctx.fill(); ctx.beginPath(); ctx.moveTo(15, -10); ctx.lineTo(5, -20); ctx.lineTo(0, -10); ctx.fill(); // Eyes
                 ctx.beginPath(); ctx.arc(0, 10, 20, 0, Math.PI); ctx.fill(); // Mouth
-            } else if (currentMonth === 11) { // CHRISTMAS
-                ctx.shadowBlur = isFrenzy ? 40 : 20; ctx.shadowColor = isFrenzy ? "#ff0000" : "#fff"; ctx.fillStyle = isFrenzy ? "#8b0000" : "#fff"; ctx.beginPath(); ctx.arc(0, 0, 40 + Math.min(lvl * 2, 40), 0, Math.PI * 2); ctx.fill();
-                ctx.fillStyle = "#ff0000"; ctx.beginPath(); ctx.arc(0, -40, 20, 0, Math.PI*2); ctx.fill(); // Hat
+            } else if (currentMonth === 10) { // Turkey
+                ctx.fillStyle = isFrenzy ? "#8b0000" : "#8b4513";
+                ctx.beginPath(); ctx.arc(0, 0, radius, 0, Math.PI*2); ctx.fill(); // body
+                let colors = ["#ff4500", "#ffd700", "#8b0000"];
+                for(let i=0; i<6; i++) { ctx.fillStyle = colors[i%3]; ctx.beginPath(); ctx.ellipse(Math.cos(Math.PI + i*0.6)*radius, Math.sin(Math.PI + i*0.6)*radius, 10, 25, Math.PI/2 + i*0.6, 0, Math.PI*2); ctx.fill(); }
+            } else if (currentMonth === 11) { // Snowman
+                ctx.fillStyle = isFrenzy ? "#8b0000" : "#fff"; 
+                ctx.beginPath(); ctx.arc(0, 0, radius, 0, Math.PI * 2); ctx.fill();
+                ctx.fillStyle = "#ff0000"; ctx.beginPath(); ctx.arc(0, -radius, 20, 0, Math.PI*2); ctx.fill(); // Hat
                 ctx.fillStyle = "#111"; ctx.beginPath(); ctx.arc(-10, -5, 5, 0, Math.PI*2); ctx.fill(); ctx.beginPath(); ctx.arc(10, -5, 5, 0, Math.PI*2); ctx.fill(); // Eyes
-            } else { // DEFAULT / EVENT
-                let evCol = currentEvent ? currentEvent.c : `hsl(${hue}, 100%, 50%)`;
-                if (isFrenzy) evCol = "#ff0000";
-                
-                ctx.shadowBlur = isFrenzy ? 40 + Math.abs(Math.sin(Date.now() / 100)) * 25 : 20 + Math.abs(Math.sin(Date.now() / 300)) * 15; 
-                ctx.shadowColor = isFrenzy ? "#ff0000" : evCol; 
-                ctx.fillStyle = isFrenzy ? "#8b0000" : `hsl(${hue}, 80%, 20%)`; 
-                
-                ctx.beginPath(); ctx.arc(0, 0, 35 + Math.min(lvl * 2, 40), 0, Math.PI * 2); ctx.fill();
-                ctx.fillStyle = evCol; let numSpikes = 4 + (lvl % 6); let spikeLen = 50 + Math.min(lvl * 3, 50);
-                for (let i = 0; i < numSpikes; i++) { let angle = (i / numSpikes) * Math.PI * 2 + (Date.now() / 1500); ctx.beginPath(); ctx.moveTo(Math.cos(angle - 0.2) * 25, Math.sin(angle - 0.2) * 25); ctx.lineTo(Math.cos(angle) * spikeLen, Math.sin(angle) * spikeLen); ctx.lineTo(Math.cos(angle + 0.2) * 25, Math.sin(angle + 0.2) * 25); ctx.fill(); }
-                ctx.fillStyle = "#fff"; ctx.beginPath(); ctx.ellipse(0, 0, 12, 20, 0, 0, Math.PI * 2); ctx.fill(); ctx.fillStyle = "#111"; ctx.beginPath(); ctx.arc(0, 0, 6, 0, Math.PI * 2); ctx.fill(); ctx.fillStyle = evCol; ctx.beginPath(); ctx.arc(0, 0, 3, 0, Math.PI * 2); ctx.fill();
+                ctx.fillStyle = "#ffa500"; ctx.beginPath(); ctx.moveTo(0, 0); ctx.lineTo(20, 5); ctx.lineTo(0, 10); ctx.fill(); // Carrot
             }
-
-            ctx.shadowBlur = 0; ctx.fillStyle = "rgba(0,0,0,0.5)"; ctx.fillRect(-30, 45 + Math.min(lvl*2, 40), 60, 6); ctx.fillStyle = "#ff4757"; let hpPct = Math.max(0, currentBoss.current_hp / currentBoss.max_hp); ctx.fillRect(-30, 45 + Math.min(lvl*2, 40), 60 * hpPct, 6); ctx.restore();
+            
+            ctx.shadowBlur = 0; ctx.fillStyle = "rgba(0,0,0,0.5)"; ctx.fillRect(-30, radius + 10, 60, 6); 
+            ctx.fillStyle = "#ff4757"; let hpPct = Math.max(0, currentBoss.current_hp / currentBoss.max_hp); 
+            ctx.fillRect(-30, radius + 10, 60 * hpPct, 6); 
+            ctx.restore();
         }
 
         function drawDevilBackground() {
