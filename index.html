@@ -381,6 +381,62 @@
     <script>
         const API_URL = "https://swingworker.xaviersgames.workers.dev";
         const currentMonth = new Date().getMonth(); // 0-11
+
+        // ==========================================
+// SECURITY LAYER: ANTI-TAMPER STORAGE SHIELD
+// ==========================================
+(function() {
+    // The specific local storage keys that need military-grade protection
+    const SECURE_KEYS = ['mmo_swing_gold', 'mmo_swing_score', 'mmo_swing_shards', 'mmo_swing_skins', 'mmo_swing_gear'];
+    const SECURITY_SALT = "InfiniteSwingSecretSalt_2026!!";
+
+    // Generates a fast, tamper-proof verification signature based on the value + salt
+    function generateSignature(value) {
+        let str = value + SECURITY_SALT;
+        let hash = 0;
+        for (let i = 0; i < str.length; i++) {
+            hash = (hash << 5) - hash + str.charCodeAt(i);
+            hash |= 0; // Convert to signed 32-bit integer
+        }
+        return hash.toString(36);
+    }
+
+    // Capture the original browser storage functions
+    const originalSetItem = localStorage.setItem;
+    const originalGetItem = localStorage.getItem;
+
+    // Overwrite setItem to automatically attach a signature alongside critical game data
+    localStorage.setItem = function(key, value) {
+        if (SECURE_KEYS.includes(key)) {
+            const signature = generateSignature(value);
+            originalSetItem.call(localStorage, key, value);
+            originalSetItem.call(localStorage, key + "_sig", signature);
+        } else {
+            originalSetItem.call(localStorage, key, value);
+        }
+    };
+
+    // Overwrite getItem to verify the signature before giving data to the game engine
+    localStorage.getItem = function(key) {
+        if (SECURE_KEYS.includes(key)) {
+            const rawValue = originalGetItem.call(localStorage, key);
+            const signature = originalGetItem.call(localStorage, key + "_sig");
+
+            if (rawValue === null) return null;
+
+            // If the value exists but the signature is missing or incorrect -> TAMPERING DETECTED
+            if (!signature || signature !== generateSignature(rawValue)) {
+                console.warn(`%c[SECURITY] Tampering detected on key: "${key}"! Resetting data.`, "color: #ff4757; font-weight: bold;");
+                
+                // Poison pill: Reset the value to zero to punish the exploit attempt
+                localStorage.setItem(key, "0");
+                return "0";
+            }
+            return rawValue;
+        }
+        return originalGetItem.call(localStorage, key);
+    };
+})();
         
         let user = {
             username: null, session_token: localStorage.getItem("session_token") || null, 
@@ -856,6 +912,31 @@
 
         // --- NEW CHAT & ROSTER FUNCTIONS ---
         async function sendGuildChat() {
+            // Add this variable globally inside your script scope
+let lastChatMessageTime = 0;
+
+// INSIDE your send chat function (where you extract input text):
+function handleSendAllianceChat() {
+    const now = Date.now();
+    
+    // Check if 500 milliseconds (0.5s) have elapsed since the last message
+    if (now - lastChatMessageTime < 500) {
+        // Show a brief, friendly visual warning on screen or console
+        console.log("Spam prevention: Sending messages too quickly!");
+        
+        // Optional: If you want to show a small error notice text in the UI
+        const chatNotice = document.getElementById('chatNoticeElement'); // tweak if needed
+        if(chatNotice) chatNotice.textContent = "Please wait 0.5s between messages.";
+        
+        return; // Halt execution, message is blocked!
+    }
+
+    // --- YOUR EXISTING CHAT SEND CODE HERE ---
+    // (e.g., filteredText = purgoMalum(chatInput.value)... sending to alliance...)
+    
+    // If message sends successfully, log the timestamp!
+    lastChatMessageTime = Date.now();
+}
             const input = document.getElementById("guildChatInput"); const msg = input.value.trim();
             if (!msg || !user.session_token) return;
             input.value = "";
