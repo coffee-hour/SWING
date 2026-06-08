@@ -3,921 +3,719 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <link rel="icon" type="image/png" href="icon-192.png">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>↺</text></svg>">
     <title>Swing!</title>
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#17172e">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2224540154034114" crossorigin="anonymous"></script>
     <style>
-        body { margin: 0; background: #0f0f1a; display: flex; justify-content: center; align-items: flex-start; min-height: 100vh; overflow-y: auto; font-family: system-ui, sans-serif; color: white; user-select: none; padding: 10px 0; }
-        #gameContainer { width: 1000px; display: flex; flex-direction: column; gap: 15px; padding: 0 10px; box-sizing: border-box; }
-        #topBar { display: flex; justify-content: space-between; align-items: center; background: #17172e; padding: 12px 20px; border-radius: 12px; border: 1px solid #2e2e54; box-shadow: 0 4px 20px rgba(0,0,0,0.3); }
-        .brand { display: flex; align-items: center; gap: 10px; }
-        .brand h1 { margin: 0; font-size: 22px; font-weight: 800; background: linear-gradient(45deg, #4ecca3, #00adb5); -webkit-background-clip: text; -webkit-text-fill-color: transparent; letter-spacing: 0.5px; }
-        .dev-badge { background: linear-gradient(45deg, #ff4757, #ff6b81); color: white; font-size: 10px; font-weight: 900; padding: 2px 6px; border-radius: 4px; text-transform: uppercase; letter-spacing: 1px; animation: pulse 1.5s infinite; }
-        .stats-cluster { display: flex; align-items: center; gap: 20px; }
-        .stat-box { display: flex; align-items: center; gap: 8px; font-weight: 700; font-size: 15px; background: #0f0f1a; padding: 6px 14px; border-radius: 8px; border: 1px solid #232342; }
-        .stat-box i { font-size: 14px; }
-        #goldCount { color: #f9a826; }
-        #scoreCount { color: #4ecca3; }
-        #shardCount { color: #e056fd; }
-        #mainWorkspace { display: flex; gap: 15px; height: 500px; align-items: flex-start; }
-        #canvasWrapper { position: relative; width: 720px; height: 500px; background: #131324; border-radius: 16px; border: 2px solid #2e2e54; overflow: hidden; box-shadow: 0 8px 32px rgba(0,0,0,0.4); }
-        canvas { display: block; width: 100%; height: 100%; background: radial-gradient(circle at center, #181830 0%, #0d0d1a 100%); }
-        #sidePanel { width: 265px; height: 500px; display: flex; flex-direction: column; gap: 15px; }
-        .panel-card { background: #17172e; border-radius: 14px; border: 1px solid #2e2e54; padding: 15px; box-sizing: border-box; display: flex; flex-direction: column; box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
-        #leaderboardCard { flex: 1; min-height: 0; }
-        .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; border-bottom: 1px solid #2e2e54; padding-bottom: 8px; }
-        .card-header h3 { margin: 0; font-size: 14px; text-transform: uppercase; letter-spacing: 1px; color: #888ec1; display: flex; align-items: center; gap: 6px; }
-        .leaderboard-list { flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 6px; padding-right: 4px; }
-        .lb-row { display: flex; justify-content: space-between; align-items: center; padding: 6px 10px; background: #111122; border-radius: 6px; font-size: 12px; border: 1px solid transparent; transition: all 0.2s; }
-        .lb-row.me { background: rgba(78, 204, 163, 0.1); border-color: rgba(78, 204, 163, 0.3); }
-        .lb-left { display: flex; align-items: center; gap: 8px; font-weight: 600; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
-        .lb-rank { color: #888ec1; font-size: 11px; width: 14px; }
-        .lb-name { color: #fff; overflow: hidden; text-overflow: ellipsis; }
-        .lb-score { font-weight: 700; color: #4ecca3; }
-        #controlsCard { height: 125px; justify-content: center; gap: 10px; }
-        .action-btn { background: #2e2e54; border: none; color: white; padding: 10px 14px; border-radius: 8px; font-weight: 600; font-size: 13px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; transition: all 0.2s; border-bottom: 3px solid #1f1f3a; }
-        .action-btn:hover { background: #3b3b6b; transform: translateY(-1px); }
-        .action-btn:active { transform: translateY(1px); border-bottom-width: 1px; margin-top: 2px; }
-        .action-btn.primary { background: linear-gradient(135deg, #4ecca3 0%, #3caea3 100%); color: #0f0f1a; border-bottom-color: #2b9375; }
-        .action-btn.primary:hover { background: linear-gradient(135deg, #5ffdd0 0%, #47c4b7 100%); }
-        #tabsArea { display: flex; gap: 12px; background: #17172e; padding: 10px 15px; border-radius: 12px; border: 1px solid #2e2e54; }
-        .tab-trigger { background: transparent; border: none; color: #888ec1; font-weight: 700; font-size: 13px; padding: 8px 16px; border-radius: 8px; cursor: pointer; display: flex; align-items: center; gap: 8px; transition: all 0.2s; }
-        .tab-trigger:hover { color: white; background: #1f1f3d; }
-        .tab-trigger.active { color: #4ecca3; background: #111122; box-shadow: inset 0 2px 8px rgba(0,0,0,0.5); }
-        #viewportsContainer { background: #17172e; border-radius: 14px; border: 1px solid #2e2e54; padding: 20px; min-height: 220px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
-        .viewport-panel { display: none; }
-        .viewport-panel.active { display: block; }
-        .shop-grid-container { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-        .shop-section h4 { margin: 0 0 12px 0; font-size: 14px; text-transform: uppercase; color: #00adb5; letter-spacing: 0.5px; border-bottom: 1px dashed #2e2e54; padding-bottom: 6px; }
-        .shop-list { display: flex; flex-direction: column; gap: 8px; max-height: 260px; overflow-y: auto; padding-right: 4px; }
-        .shop-item-card { background: #111122; border: 1px solid #232342; border-radius: 8px; padding: 10px; display: flex; justify-content: space-between; align-items: center; gap: 10px; }
-        .item-details { display: flex; flex-direction: column; gap: 2px; }
-        .item-title { font-weight: 700; font-size: 13px; color: #fff; }
-        .item-desc { font-size: 11px; color: #888ec1; line-height: 1.3; }
-        .item-price { font-size: 11px; font-weight: 700; color: #f9a826; margin-top: 2px; }
-        .buy-item-btn { background: #4ecca3; border: none; color: #0f0f1a; font-weight: 700; font-size: 11px; padding: 6px 12px; border-radius: 6px; cursor: pointer; white-space: nowrap; transition: all 0.2s; }
-        .buy-item-btn:hover { background: #5ffdd0; }
-        .buy-item-btn.owned { background: #2e2e54; color: #888ec1; cursor: default; }
-        .inventory-flex { display: grid; grid-template-columns: repeat(auto-fill, minmax(135px, 1fr)); gap: 10px; }
-        .inv-card { background: #111122; border: 1px solid #232342; border-radius: 8px; padding: 10px; text-align: center; display: flex; flex-direction: column; gap: 6px; align-items: center; cursor: pointer; transition: all 0.2s; position: relative; }
-        .inv-card:hover { border-color: #4ecca3; background: #141429; }
-        .inv-card.equipped { border-color: #4ecca3; background: rgba(78, 204, 163, 0.05); }
-        .inv-icon-box { width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 16px; background: #17172e; color: #888ec1; border: 1px solid #2e2e54; }
-        .inv-card.equipped .inv-icon-box { color: #4ecca3; border-color: #4ecca3; box-shadow: 0 0 10px rgba(78,204,163,0.2); }
-        .inv-name { font-weight: 700; font-size: 12px; color: #fff; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; width: 100%; }
-        .inv-tag { font-size: 10px; font-weight: 600; color: #888ec1; text-transform: uppercase; letter-spacing: 0.5px; }
-        .eq-badge { position: absolute; top: -6px; right: -6px; background: #4ecca3; color: #0f0f1a; font-size: 8px; font-weight: 800; padding: 2px 5px; border-radius: 4px; text-transform: uppercase; }
-        .alliance-view-grid { display: grid; grid-template-columns: 240px 1fr; gap: 20px; }
-        .all-sidebar { display: flex; flex-direction: column; gap: 12px; border-right: 1px solid #2e2e54; padding-right: 20px; }
-        .all-main { display: flex; flex-direction: column; gap: 12px; }
-        .all-meta-block { background: #111122; padding: 12px; border-radius: 8px; border: 1px solid #232342; display: flex; flex-direction: column; gap: 6px; }
-        .all-meta-label { font-size: 11px; text-transform: uppercase; color: #888ec1; font-weight: 600; }
-        .all-meta-val { font-size: 14px; font-weight: 700; color: #fff; }
-        .notice-board { background: #111122; border-radius: 8px; border: 1px solid #232342; padding: 12px; display: flex; flex-direction: column; gap: 6px; flex: 1; min-height: 100px; }
-        .notice-content { font-size: 12px; color: #b2b8e3; line-height: 1.4; white-space: pre-wrap; word-break: break-word; }
-        .chat-container { background: #111122; border-radius: 8px; border: 1px solid #232342; height: 180px; display: flex; flex-direction: column; overflow: hidden; }
-        .chat-messages { flex: 1; overflow-y: auto; padding: 10px; display: flex; flex-direction: column; gap: 6px; }
-        .chat-line { font-size: 12px; line-height: 1.4; word-break: break-word; }
-        .chat-sender { font-weight: 700; color: #4ecca3; }
-        .chat-sender.r5 { color: #ff4757; }
-        .chat-sender.r4 { color: #f9a826; }
-        .chat-text { color: #fff; }
-        .chat-input-row { display: flex; border-top: 1px solid #232342; background: #0f0f1a; }
-        .chat-field { flex: 1; background: transparent; border: none; padding: 10px; color: white; font-size: 12px; outline: none; }
-        .chat-send-btn { background: #2e2e54; border: none; color: white; padding: 0 14px; font-size: 12px; cursor: pointer; font-weight: 600; }
-        .chat-send-btn:hover { background: #3b3b6b; }
-        .tutorial-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(10,10,20,0.85); display: flex; justify-content: center; align-items: center; z-index: 20000; opacity: 0; pointer-events: none; transition: opacity 0.3s; }
-        .tutorial-overlay.active { opacity: 1; pointer-events: auto; }
-        .tutorial-modal { background: #17172e; border: 2px solid #4ecca3; width: 440px; border-radius: 16px; display: flex; flex-direction: column; box-shadow: 0 10px 40px rgba(0,0,0,0.6); overflow: hidden; }
-        #devlogOverlay .tutorial-modal { border-color: #00adb5; width: 500px; }
-        .tutorial-header { background: #111122; padding: 14px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #2e2e54; }
-        .tutorial-header h2 { margin: 0; font-size: 16px; font-weight: 800; display: flex; align-items: center; gap: 8px; color: #4ecca3; }
-        #devlogOverlay .tutorial-header h2 { color: #00adb5; }
-        .tutorial-close { background: transparent; border: none; color: #888ec1; font-size: 20px; cursor: pointer; font-weight: 700; line-height: 1; }
-        .tutorial-close:hover { color: white; }
-        .tutorial-body { padding: 20px; max-height: 360px; overflow-y: auto; font-size: 13px; line-height: 1.5; color: #b2b8e3; }
-        .tutorial-body ul { margin: 8px 0; padding-left: 20px; }
-        .tutorial-body li { margin-bottom: 6px; }
-        .tutorial-highlight { color: white; font-weight: 700; }
-        .tutorial-footer { background: #111122; padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; border-top: 1px solid #2e2e54; }
-        .tutorial-nav-btn { background: #2e2e54; border: none; color: white; padding: 6px 12px; border-radius: 6px; font-size: 12px; font-weight: 600; cursor: pointer; }
-        .tutorial-nav-btn:hover { background: #3b3b6b; }
-        .tutorial-step-indicator { font-size: 11px; color: #888ec1; font-weight: 600; }
-        ::-webkit-scrollbar { width: 6px; height: 6px; }
-        ::-webkit-scrollbar-track { background: #111122; }
-        ::-webkit-scrollbar-thumb { background: #2e2e54; border-radius: 3px; }
-        ::-webkit-scrollbar-thumb:hover { background: #3b3b6b; }
-        @keyframes pulse { 0% { opacity: 0.8; } 50% { opacity: 1; } 100% { opacity: 0.8; } }
-        @keyframes fadeAndSlide {
-            0% { opacity: 0; transform: translate(-50%, -10px); }
-            10% { opacity: 1; transform: translate(-50%, 0); }
-            90% { opacity: 1; transform: translate(-50%, 0); }
-            100% { opacity: 0; transform: translate(-50%, -20px); }
-        }
+        body { margin: 0; background: #0f0f1a; display: flex; justify-content: center; align-items: flex-start; min-height: 100vh; overflow-y: auto; font-family: system-ui, sans-serif; color: white; user-select: none; padding: 10px; box-sizing: border-box; }
+        #gameContainer { position: relative; width: 100%; max-width: 480px; background: #131324; border-radius: 16px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.5); border: 2px solid #232343; display: flex; flex-direction: column; }
+        header { display: flex; justify-content: space-between; align-items: center; padding: 12px 16px; background: #17172e; border-bottom: 2px solid #232343; z-index: 10; }
+        .stats-group { display: flex; gap: 14px; align-items: center; }
+        .stat-item { display: flex; align-items: center; gap: 6px; font-weight: bold; font-size: 1.05rem; text-shadow: 0 2px 4px rgba(0,0,0,0.3); }
+        .stat-item.coins { color: #ffd32a; }
+        .stat-item.score { color: #00d2d3; }
+        .menu-btn { background: #2f3542; border: none; color: white; padding: 8px 12px; border-radius: 8px; font-size: 0.9rem; cursor: pointer; transition: background 0.2s, transform 0.1s; font-weight: 600; display: flex; align-items: center; gap: 6px; }
+        .menu-btn:hover { background: #57606f; }
+        .menu-btn:active { transform: scale(0.95); }
+        #canvasWrapper { position: relative; width: 100%; aspect-ratio: 3 / 4; background: linear-gradient(to bottom, #0f0f1a, #1e1e38); overflow: hidden; }
+        canvas { width: 100%; height: 100%; display: block; }
+        .overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15,15,26,0.85); display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 20px; box-sizing: border-box; z-index: 20; opacity: 0; pointer-events: none; transition: opacity 0.3s ease; backdrop-filter: blur(4px); }
+        .overlay.active { opacity: 1; pointer-events: auto; }
+        h2 { margin: 0 0 15px 0; font-size: 1.8rem; text-align: center; color: #fff; text-shadow: 0 2px 8px rgba(255,255,255,0.1); font-weight: 800; letter-spacing: -0.5px; }
+        .overlay-content { width: 100%; max-height: 80%; overflow-y: auto; background: #17172e; border: 2px solid #232343; border-radius: 12px; padding: 16px; box-sizing: border-box; margin-bottom: 15px; }
+        .btn-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; width: 100%; }
+        .action-btn { background: #ff4757; color: white; border: none; padding: 12px 20px; border-radius: 10px; font-size: 1.1rem; font-weight: bold; cursor: pointer; transition: all 0.2s; width: 100%; box-shadow: 0 4px 6px rgba(255, 71, 87, 0.3); text-align: center; box-sizing: border-box; }
+        .action-btn:hover { background: #ff6b81; transform: translateY(-1px); }
+        .action-btn.secondary { background: #2f3542; box-shadow: 0 4px 6px rgba(0,0,0,0.2); }
+        .action-btn.secondary:hover { background: #57606f; }
+        .action-btn:active { transform: translateY(1px); }
+        .shop-tabs { display: flex; gap: 8px; width: 100%; margin-bottom: 12px; }
+        .tab-btn { flex: 1; background: #232343; border: 2px solid #232343; color: #a4b0be; padding: 8px; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 0.9rem; transition: all 0.2s; }
+        .tab-btn.active { background: #ff4757; color: white; border-color: #ff4757; }
+        .shop-grid { display: flex; flex-direction: column; gap: 10px; }
+        .shop-card { background: #1e1e38; border: 2px solid #2d2d54; border-radius: 10px; padding: 12px; display: flex; justify-content: space-between; align-items: center; gap: 10px; transition: border-color 0.2s; }
+        .shop-card.active-item { border-color: #2ed573; }
+        .card-left { display: flex; align-items: center; gap: 12px; }
+        .card-preview { width: 34px; height: 34px; border-radius: 50%; display: inline-block; box-shadow: 0 0 10px rgba(0,0,0,0.3); flex-shrink: 0; position: relative; }
+        .card-preview.rope-preview::after { content: ''; position: absolute; top: 50%; left: 10%; width: 80%; height: 4px; background: currentColor; transform: translateY(-50%) rotate(-30deg); border-radius: 2px; }
+        .card-info { display: flex; flex-direction: column; }
+        .card-name { font-weight: bold; font-size: 1rem; color: #ffffff; }
+        .card-desc { font-size: 0.75rem; color: #a4b0be; margin-top: 2px; line-height: 1.2; }
+        .card-source { font-size: 0.7rem; font-weight: bold; margin-top: 3px; text-transform: uppercase; padding: 1px 4px; border-radius: 4px; display: inline-block; width: max-content; }
+        .source-shop { background: rgba(52, 152, 219, 0.2); color: #3498db; }
+        .source-boss { background: rgba(231, 76, 60, 0.2); color: #e74c3c; animation: pulseGlow 1.5s infinite alternate; }
+        @keyframes pulseGlow { from { box-shadow: 0 0 2px rgba(231,76,60,0.2); } to { box-shadow: 0 0 8px rgba(231,76,60,0.6); } }
+        .buy-btn { background: #2ed573; color: white; border: none; padding: 8px 14px; border-radius: 6px; font-weight: bold; font-size: 0.85rem; cursor: pointer; transition: all 0.2s; white-space: nowrap; min-width: 75px; text-align: center; }
+        .buy-btn:hover { background: #26af5f; }
+        .buy-btn.equip { background: #3498db; }
+        .buy-btn.equip:hover { background: #2980b9; }
+        .buy-btn.active-equip { background: #1e1e38; color: #2ed573; border: 2px solid #2ed573; cursor: default; }
+        .buy-btn.locked { background: #3d3d5c; color: #7575a3; cursor: not-allowed; }
+        #notificationContainer { position: absolute; top: 60px; left: 50%; transform: translateX(-50%); width: 90%; z-index: 100; display: flex; flex-direction: column; gap: 6px; pointer-events: none; }
+        .notification { background: rgba(23, 23, 46, 0.95); border-left: 4px solid #ff4757; color: white; padding: 10px 14px; border-radius: 6px; font-size: 0.85rem; font-weight: bold; box-shadow: 0 4px 12px rgba(0,0,0,0.4); animation: slideIn 0.3s ease forwards; display: flex; align-items: center; gap: 8px; backdrop-filter: blur(4px); }
+        .notification.success { border-left-color: #2ed573; }
+        .notification.loot { border-left-color: #eab308; background: linear-gradient(90deg, rgba(45,35,15,0.95), rgba(23,23,46,0.95)); }
+        @keyframes slideIn { from { transform: translateY(-20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        .tutorial-pane { display: none; flex-direction: column; gap: 12px; font-size: 0.95rem; line-height: 1.5; color: #c8d6e5; }
+        .tutorial-pane.active { display: flex; }
+        .tutorial-img { width: 100%; height: 120px; background: #1e1e38; border-radius: 8px; display: flex; justify-content: center; align-items: center; font-size: 3rem; border: 2px dashed #3d3d5c; }
+        .tutorial-nav { display: flex; justify-content: space-between; align-items: center; margin-top: 15px; width: 100%; }
+        .devlog-item { margin-bottom: 14px; border-bottom: 1px solid #232343; padding-bottom: 10px; }
+        .devlog-item:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+        .devlog-meta { display: flex; justify-content: space-between; font-size: 0.8rem; color: #ff4757; font-weight: bold; margin-bottom: 4px; }
+        .devlog-title { font-weight: bold; font-size: 1rem; color: white; margin-bottom: 4px; }
+        .devlog-body { font-size: 0.85rem; color: #a4b0be; line-height: 1.4; }
+        #controlIndicator { position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); background: rgba(15,15,26,0.6); padding: 6px 14px; border-radius: 20px; font-size: 0.8rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; color: #a4b0be; border: 1px solid rgba(255,255,255,0.1); pointer-events: none; transition: opacity 0.2s; animation: pulse 2s infinite; }
+        @keyframes pulse { 0% { opacity: 0.5; } 50% { opacity: 0.9; } 100% { opacity: 0.5; } }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #17172e; }
+        ::-webkit-scrollbar-thumb { background: #2f3542; border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: #57606f; }
+        .social-row { display: flex; justify-content: space-around; background: #17172e; padding: 12px; border-top: 2px solid #232343; font-size: 0.8rem; color: #a4b0be; }
+        .social-link { color: #ff4757; text-decoration: none; font-weight: bold; display: flex; align-items: center; gap: 4px; }
+        .social-link:hover { text-decoration: underline; }
     </style>
 </head>
 <body>
-
     <div id="gameContainer">
-        
-        <div id="topBar">
-            <div class="brand">
-                <h1>SWING!</h1>
-                <div class="dev-badge">DEV Team</div>
+        <header>
+            <div class="stats-group">
+                <div class="stat-item score"><i class="fa-solid fa-trophy"></i> <span id="scoreVal">0</span></div>
+                <div class="stat-item coins"><i class="fa-solid fa-circle-dollar-to-slot"></i> <span id="coinVal">0</span></div>
             </div>
-            <div class="stats-cluster">
-                <div class="stat-box" title="Gold Coins"><i class="fa-solid fa-coins" style="color:#f9a826;"></i> <span id="goldCount">0</span></div>
-                <div class="stat-box" title="High Score"><i class="fa-solid fa-trophy" style="color:#4ecca3;"></i> <span id="scoreCount">0</span></div>
-                <div class="stat-box" title="Elemental Shards"><i class="fa-solid fa-gem" style="color:#e056fd;"></i> <span id="shardCount">0</span></div>
-            </div>
-        </div>
+            <button class="menu-btn" id="openGearBtn"><i class="fa-solid fa-bag-shopping"></i> Shop / Gear</button>
+        </header>
 
-        <div id="mainWorkspace">
-            
-            <div id="canvasWrapper">
-                <canvas id="gameCanvas"></canvas>
-            </div>
+        <div id="canvasWrapper">
+            <div id="notificationContainer"></div>
+            <div id="controlIndicator">Tap & Hold to Swing</div>
+            <canvas id="gameCanvas"></canvas>
 
-            <div id="sidePanel">
-                
-                <div class="panel-card" id="leaderboardCard">
-                    <div class="card-header">
-                        <h3><i class="fa-solid fa-stairs"></i> Global Ranks</h3>
-                    </div>
-                    <div class="leaderboard-list" id="lbListContainer">
-                        </div>
+            <div id="menuOverlay" class="overlay active">
+                <h2 style="font-size: 2.5rem; margin-bottom: 5px; letter-spacing: -1px; color: #ff4757;">SWING!</h2>
+                <p style="color: #a4b0be; margin: 0 0 25px 0; font-size: 0.9rem; font-weight: 600; text-transform: uppercase; letter-spacing: 1px;">Physics Grapple Arena</p>
+                <div class="overlay-content" style="background: rgba(23,23,46,0.6); border: none; text-align: center; margin-bottom: 25px;">
+                    <div style="font-size: 0.85rem; color: #a4b0be; text-transform: uppercase; font-weight: bold; letter-spacing: 0.5px;">Personal High Score</div>
+                    <div id="highScoreVal" style="font-size: 2.2rem; font-weight: 900; color: #00d2d3; margin-top: 5px;">0</div>
                 </div>
-
-                <div class="panel-card" id="controlsCard">
-                    <button class="action-btn primary" id="openTutorialBtn"><i class="fa-solid fa-graduation-cap"></i> View Tutorial</button>
-                    <button class="action-btn" id="openDevlogBtn"><i class="fa-solid fa-newspaper"></i> Developer Log</button>
-                </div>
-
-            </div>
-
-        </div>
-
-        <div id="tabsArea">
-            <button class="tab-trigger active" data-target="shopViewport"><i class="fa-solid fa-shop"></i> Black Market</button>
-            <button class="tab-trigger" data-target="inventoryViewport"><i class="fa-solid fa-box-open"></i> Changing Room</button>
-            <button class="tab-trigger" data-target="allianceViewport"><i class="fa-solid fa-shield-halved"></i> Alliance Base</button>
-        </div>
-
-        <div id="viewportsContainer">
-            
-            <div class="viewport-panel active" id="shopViewport">
-                <div class="shop-grid-container">
-                    <div class="shop-section">
-                        <h4>Weapons Marketplace</h4>
-                        <div class="shop-list" id="shopWeaponsContainer"></div>
-                    </div>
-                    <div class="shop-section">
-                        <h4>Coats & Tailoring</h4>
-                        <div class="shop-list" id="shopCoatsContainer"></div>
-                    </div>
+                <button class="action-btn" id="startBtn" style="margin-bottom: 12px; padding: 14px 20px;">LAUNCH GRAPPLE</button>
+                <div class="btn-grid">
+                    <button class="action-btn secondary" id="openTutorialBtn"><i class="fa-solid fa-book-open"></i> Guide</button>
+                    <button class="action-btn secondary" id="openDevlogBtn"><i class="fa-solid fa-code-branch"></i> Logs</button>
                 </div>
             </div>
 
-            <div class="viewport-panel" id="inventoryViewport">
-                <div class="inventory-flex" id="inventoryContainer"></div>
-            </div>
-
-            <div class="viewport-panel" id="allianceViewport">
-                <div class="alliance-view-grid">
-                    <div class="all-sidebar">
-                        <div class="all-meta-block">
-                            <span class="all-meta-label">Alliance Name</span>
-                            <span class="all-meta-val" style="color: #4ecca3; font-size: 16px;">[DEV] Developers</span>
-                        </div>
-                        <div class="all-meta-block">
-                            <span class="all-meta-label">Your Standing</span>
-                            <span class="all-meta-val" style="color: #ff4757;">R5 Alliance Leader</span>
-                        </div>
-                        <div class="all-meta-block">
-                            <span class="all-meta-label">Total Treasury</span>
-                            <span class="all-meta-val" style="color: #f9a826;"><i class="fa-solid fa-gavel"></i> 8,450 War Coins</span>
-                        </div>
+            <div id="gearOverlay" class="overlay">
+                <div style="display:flex; justify-content:space-between; width:100%; align-items:center; margin-bottom:12px;">
+                    <h2 style="margin:0;"><i class="fa-solid fa-store" style="color:#ff4757;"></i> Armory Shop</h2>
+                    <button class="menu-btn" id="closeGearBtn"><i class="fa-solid fa-xmark"></i></button>
+                </div>
+                <div class="shop-tabs">
+                    <button class="tab-btn active" id="tabSkinsBtn">Spheres</button>
+                    <button class="tab-btn" id="tabRopesBtn">Grapples</button>
+                </div>
+                <div class="overlay-content" id="gearShopContainer">
                     </div>
-                    <div class="all-main">
-                        <div class="notice-board">
-                            <div class="all-meta-label" style="margin-bottom: 4px;"><i class="fa-solid fa-bullhorn"></i> Guild Broadcast</div>
-                            <div class="notice-content" id="allianceNoticeText">Welcome to the inner sanctum of the core development crew. Next server architecture update synchronized for midnight. Avoid gravity engine core desync parameters.</div>
-                        </div>
-                        <div class="chat-container">
-                            <div class="chat-messages" id="allianceChatBox">
-                                <div class="chat-line"><span class="chat-sender r4">[R4] Alice:</span> <span class="chat-text">Physics subroutines feel extremely responsive on this node build.</span></div>
-                                <div class="chat-line"><span class="chat-sender">[R2] Bob:</span> <span class="chat-text">Can someone help assist processing the Kraken Raid entity? It's scaling fast.</span></div>
-                            </div>
-                            <div class="chat-input-row">
-                                <input type="text" class="chat-field" id="allianceChatInput" placeholder="Broadcast secure encrypted message to crew...">
-                                <button class="chat-send-btn" id="sendAllianceChatBtn">Send</button>
-                            </div>
-                        </div>
-                    </div>
+                <div style="width:100%; font-size:0.8rem; text-align:center; color:#a4b0be; font-weight:bold; background:#17172e; padding:8px; border-radius:8px; border:2px solid #232343; box-sizing:border-box;">
+                    Wallet Balance: <span style="color:#ffd32a;"><i class="fa-solid fa-circle-dollar-to-slot"></i> <span id="shopCoinVal">0</span> Gold</span>
                 </div>
             </div>
 
-        </div>
-
-    </div>
-
-    <div class="tutorial-overlay" id="tutorialOverlay">
-        <div class="tutorial-modal">
-            <div class="tutorial-header">
-                <h2><i class="fa-solid fa-compass"></i> Flight Academy</h2>
-                <button class="tutorial-close" id="closeTutorialTopBtn">&times;</button>
-            </div>
-            <div class="tutorial-body" id="tutorialContentArea">
+            <div id="tutorialOverlay" class="overlay">
+                <div style="display:flex; justify-content:space-between; width:100%; align-items:center; margin-bottom:12px;">
+                    <h2 style="margin:0;">How to Swing</h2>
+                    <button class="menu-btn" id="closeTutorialTopBtn"><i class="fa-solid fa-xmark"></i></button>
                 </div>
-            <div class="tutorial-footer">
-                <button class="tutorial-nav-btn" id="prevTutorialBtn">Previous</button>
-                <span class="tutorial-step-indicator" id="tutorialStepText">Step 1 of 3</span>
-                <button class="tutorial-nav-btn" id="nextTutorialBtn" style="background:#4ecca3; color:#0f0f1a;">Next</button>
+                <div class="overlay-content" id="tutorialContent">
+                    <div class="tutorial-pane active">
+                        <div class="tutorial-img">🪝</div>
+                        <div style="font-weight:bold; color:white; font-size:1.1rem; text-align:center;">Grappling Engine</div>
+                        <p style="margin:0; text-align:center;">Press and hold your pointer anywhere on screen to automatically attach a high-tension cable to the nearest anchor ceiling anchor.</p>
+                    </div>
+                    <div class="tutorial-pane">
+                        <div class="tutorial-img">🪙</div>
+                        <div style="font-weight:bold; color:white; font-size:1.1rem; text-align:center;">Gaining Momentum</div>
+                        <p style="margin:0; text-align:center;">Release your hold while moving forward to launch yourself dynamically through the air. Nab gold coins and cross checkpoints to maintain speed.</p>
+                    </div>
+                    <div class="tutorial-pane">
+                        <div class="tutorial-img">👾</div>
+                        <div style="font-weight:bold; color:white; font-size:1.1rem; text-align:center;">The Core Guardians</div>
+                        <p style="margin:0; text-align:center;">Survive laser grids and incoming missiles. Defeating the automated Goliath Core boss drops premium hyper-skins and high-spec ropes.</p>
+                    </div>
+                </div>
+                <div class="tutorial-nav">
+                    <button class="menu-btn" id="prevTutorialBtn" style="visibility:hidden;"><i class="fa-solid fa-arrow-left"></i> Back</button>
+                    <span id="tutorialStepText" style="font-size:0.85rem; font-weight:bold; color:#a4b0be;">Step 1 of 3</span>
+                    <button class="menu-btn" id="nextTutorialBtn" style="background:#ff4757;">Next <i class="fa-solid fa-arrow-right"></i></button>
+                </div>
+            </div>
+
+            <div id="devlogOverlay" class="overlay">
+                <div style="display:flex; justify-content:space-between; width:100%; align-items:center; margin-bottom:12px;">
+                    <h2 style="margin:0;"><i class="fa-solid fa-terminal" style="color:#00d2d3;"></i> Engineering Logs</h2>
+                    <button class="menu-btn" id="closeDevlogBtn"><i class="fa-solid fa-xmark"></i></button>
+                </div>
+                <div class="overlay-content" id="devlogContent">
+                    <div class="devlog-item">
+                        <div class="devlog-meta"><span>v1.4.0</span><span>CURRENT UPDATE</span></div>
+                        <div class="devlog-title">The Armory & Boss Loot Expansion</div>
+                        <div class="devlog-body">Added 5 premium tiers of item store upgrades including the Shadow Phantom and Diamond Core. Implemented 3 new algorithmic ultra-rare item drops directly via defeating the Goliath Core Boss. Updated stat loop calculation hooks.</div>
+                    </div>
+                    <div class="devlog-item">
+                        <div class="devlog-meta"><span>v1.2.0</span><span>STABLE RELEASE</span></div>
+                        <div class="devlog-title">Goliath Core Implementation</div>
+                        <div class="devlog-body">Engineered systemic tracking mechanics to spawn boss assets at deep distance criteria. Added health scaling frameworks, firing indicators, projectile avoidance patterns, and automatic loot verification functions.</div>
+                    </div>
+                    <div class="devlog-item">
+                        <div class="devlog-meta"><span>v1.0.0</span><span>BASE REVISION</span></div>
+                        <div class="devlog-title">Core Physics Integration</div>
+                        <div class="devlog-body">Constructed structural Verlet hooke-tether systems, canvas alignment matrices, asset loops, local storage synchronization modules, and absolute coordinate optimization setups.</div>
+                    </div>
+                </div>
+                <button class="action-btn secondary" id="closeDevlogBtnLower" style="width:100%;">Return to Deck</button>
             </div>
         </div>
-    </div>
 
-    <div class="tutorial-overlay" id="devlogOverlay">
-        <div class="tutorial-modal">
-            <div class="tutorial-header">
-                <h2><i class="fa-solid fa-newspaper"></i> Developer Log</h2>
-                <button class="tutorial-close" id="closeDevlogBtn">&times;</button>
-            </div>
-            <div class="tutorial-body" style="display: block;">
-                
-                <h4 style="color:#00adb5; border-bottom:1px dashed #2e2e54; padding-bottom:4px; margin-top:0;">v1.7.1 - Visuals & Security Patch</h4>
-                <p style="font-size: 11px; color: #888; margin-top: -5px;">Released: June 7, 2026</p>
-                <ul>
-                    <li><span class="tutorial-highlight">Boss Art:</span> Every single monthly boss now has custom canvas art (Kraken, Leprechaun, Yeti, etc.).</li>
-                    <li><span class="tutorial-highlight">Admin Tags:</span> Added exclusive animated neon-fire rendering for the DEV alliance across the game and leaderboards.</li>
-                    <li><span class="tutorial-highlight">Security:</span> Integrated PurgoMalum profanity filter for chat/tags and added strict HTML sanitization to prevent code injection.</li>
-                </ul>
-
-                <h4 style="color:#f9a826; border-bottom:1px dashed #2e2e54; padding-bottom:4px; margin-top:20px;">v1.7.0 - The Hierarchy Update</h4>
-                <p style="font-size: 11px; color: #888; margin-top: -5px;">Released: June 7, 2026</p>
-                <ul>
-                    <li><span class="tutorial-highlight">Alliance Chat:</span> Live Alliance Chat added (requires R2 Member status to talk).</li>
-                    <li><span class="tutorial-highlight">Ranks R1-R5:</span> Complete role overhaul. R3s invite, R4s manage notices/kicks, and R5 Leaders control the ranks!</li>
-                </ul>
-
-                <h4 style="color:#4ecca3; border-bottom:1px dashed #2e2e54; padding-bottom:4px; margin-top:20px;">v1.6.0 - Proportional Raid Rewards</h4>
-                <p style="font-size: 11px; color: #888; margin-top: -5px;">Released: June 6, 2026</p>
-                <ul>
-                    <li><span class="tutorial-highlight">Fair War Coins:</span> Defeating the Boss now distributes War Coins dynamically to ALL participating Alliances based on their exact damage percentage!</li>
-                </ul>
-
-                <h4 style="color:#ff4757; border-bottom:1px dashed #2e2e54; padding-bottom:4px; margin-top:20px;">v1.5.0 - The Hazards Update</h4>
-                <p style="font-size: 11px; color: #888; margin-top: -5px;">Released: June 5, 2026</p>
-                <ul>
-                    <li><span class="tutorial-highlight">Galaxy Mines:</span> Floating purple hazards added to the sky. Hitting one snaps your rope and drops momentum by 90%.</li>
-                </ul>
-
-                <h4 style="color:#e056fd; border-bottom:1px dashed #2e2e54; padding-bottom:4px; margin-top:20px;">v1.4.0 - The Live Events Update</h4>
-                <p style="font-size: 11px; color: #888; margin-top: -5px;">Released: June 4, 2026</p>
-                <ul>
-                    <li><span class="tutorial-highlight">Live Operations:</span> The server can now push live global events (like the 3x Boss Frenzy) directly to all connected clients!</li>
-                    <li><span class="tutorial-highlight">Daily Tasks:</span> Swing, play, and collect shards to earn daily Gold payouts.</li>
-                </ul>
-
-                <h4 style="color:#ff9ff3; border-bottom:1px dashed #2e2e54; padding-bottom:4px; margin-top:20px;">v1.3.0 - The Prestige Guild Update</h4>
-                <p style="font-size: 11px; color: #888; margin-top: -5px;">Released: June 3, 2026</p>
-                <ul>
-                    <li><span class="tutorial-highlight">Exponential Pets:</span> Guild Pet exchange rates now actively double every 10,000 tokens to balance late-game scaling.</li>
-                    <li><span class="tutorial-highlight">True Gold Skin:</span> Added a new ultra-tier skin that unlocks at 10M Score, boosting points by 15x and doubling Gold output.</li>
-                </ul>
-
-                <h4 style="color:#f1c40f; border-bottom:1px dashed #2e2e54; padding-bottom:4px; margin-top:20px;">v1.2.0 - Alliances & The Black Market</h4>
-                <p style="font-size: 11px; color: #888; margin-top: -5px;">Released: June 2, 2026</p>
-                <ul>
-                    <li><span class="tutorial-highlight">Guilds:</span> Create/join Alliances. Added active Titles and custom Crest buffs.</li>
-                    <li><span class="tutorial-highlight">Gear System:</span> Added Black Market Weapons (Multipliers) and Coats (Physics buffs) purchasable with Gold.</li>
-                    <li><span class="tutorial-highlight">Social:</span> Friends list and 1v1 score duels added.</li>
-                </ul>
-
-                <h4 style="color:#ffffff; border-bottom:1px dashed #2e2e54; padding-bottom:4px; margin-top:20px;">v1.1.0 - The Underworld Update</h4>
-                <p style="font-size: 11px; color: #888; margin-top: -5px;">Released: June 1, 2026</p>
-                <ul>
-                    <li><span class="tutorial-highlight">Realms:</span> Added Angel and Devil portal realms. Collect White and Black shards to fuse the Yin Yang skin.</li>
-                    <li><span class="tutorial-highlight">Secrets:</span> Added password-locked skins (ANGEL) and death-streak achievements.</li>
-                </ul>
-
-                <h4 style="color:#2ed573; border-bottom:1px dashed #2e2e54; padding-bottom:4px; margin-top:20px;">v1.0.0 - Official Launch</h4>
-                <p style="font-size: 11px; color: #888; margin-top: -5px;">Released: May 31, 2026</p>
-                <ul>
-                    <li><span class="tutorial-highlight">Game Live:</span> Core grappling mechanics, momentum physics, bouncers, and base cosmetics enabled!</li>
-                </ul>
-
-            </div>
-            <div class="tutorial-footer" style="justify-content: center;">
-                <span style="font-size:11px; color:#666;">Thanks for playing Infinite Swing!</span>
-            </div>
+        <div class="social-row">
+            <span>Framework: Pure Canvas 2D</span>
+            <a href="#" class="social-link" id="serverStat"><i class="fa-solid fa-circle" style="font-size:0.6rem; color:#2ed573;"></i> Engine Active</a>
         </div>
     </div>
 
     <script>
-        // ==========================================
-        // SECURITY LAYER: ANTI-TAMPER STORAGE SHIELD
-        // ==========================================
-        (function() {
-            const SECURE_KEYS = ['mmo_swing_gold', 'mmo_swing_score', 'mmo_swing_shards', 'mmo_swing_owned_weapons', 'mmo_swing_owned_coats', 'mmo_swing_equipped_weapon', 'mmo_swing_equipped_coat'];
-            const SECURITY_SALT = "InfiniteSwingSecretSalt_2026!!";
-
-            function generateSignature(value) {
-                let str = value + SECURITY_SALT;
-                let hash = 0;
-                for (let i = 0; i < str.length; i++) {
-                    hash = (hash << 5) - hash + str.charCodeAt(i);
-                    hash |= 0;
-                }
-                return hash.toString(36);
-            }
-
-            const originalSetItem = localStorage.setItem;
-            const originalGetItem = localStorage.getItem;
-
-            localStorage.setItem = function(key, value) {
-                if (SECURE_KEYS.includes(key)) {
-                    const signature = generateSignature(value);
-                    originalSetItem.call(localStorage, key, value);
-                    originalSetItem.call(localStorage, key + "_sig", signature);
-                } else {
-                    originalSetItem.call(localStorage, key, value);
-                }
-            };
-
-            localStorage.getItem = function(key) {
-                if (SECURE_KEYS.includes(key)) {
-                    const rawValue = originalGetItem.call(localStorage, key);
-                    const signature = originalGetItem.call(localStorage, key + "_sig");
-                    if (rawValue === null) return null;
-                    if (!signature || signature !== generateSignature(rawValue)) {
-                        console.warn(`[SECURITY] Tampering detected on key: "${key}"! Resetting data.`);
-                        if (key.includes('owned')) {
-                            const defVal = key.includes('weapons') ? '["fists"]' : '["rags"]';
-                            originalSetItem.call(localStorage, key, defVal);
-                            return defVal;
-                        }
-                        originalSetItem.call(localStorage, key, "0");
-                        return "0";
-                    }
-                    return rawValue;
-                }
-                return originalGetItem.call(localStorage, key);
-            };
-        })();
-
-        // Canvas Setup Context variables
         const canvas = document.getElementById('gameCanvas');
         const ctx = canvas.getContext('2d');
-        canvas.width = 720;
-        canvas.height = 500;
+        
+        let score = 0;
+        let coins = 0;
+        let highScore = 0;
+        let gameState = 'menu'; // 'menu', 'playing', 'gameover'
+        
+        // Physics Engine Constants & Configs
+        const VIEW_W = 360;
+        const VIEW_H = 480;
+        canvas.width = VIEW_W;
+        canvas.height = VIEW_H;
 
-        // Reactive Application State Properties
-        let gold = parseInt(localStorage.getItem('mmo_swing_gold')) || 0;
-        let highScore = parseInt(localStorage.getItem('mmo_swing_score')) || 0;
-        let shards = parseInt(localStorage.getItem('mmo_swing_shards')) || 0;
+        let player = { x: 80, y: 200, vx: 4, vy: 0, radius: 12 };
+        let gravity = 0.28;
+        let rope = { active: false, anchorX: 0, anchorY: 0, length: 0 };
+        
+        let anchors = [];
+        let mapCoins = [];
+        let hazards = [];
+        let backgroundStars = [];
+        
+        // Boss Tracking Variables
+        let bossActive = false;
+        let bossSpawned = false;
+        let bossX = VIEW_W + 100;
+        let bossY = 80;
+        let bossHp = 100;
+        let bossMaxHp = 100;
+        let bossDirection = 1;
+        let bossProjectiles = [];
+        let bossFlashTime = 0;
+        let nextBossDistance = 1200; 
 
-        // Inventory Systems arrays
-        let ownedWeapons = JSON.parse(localStorage.getItem('mmo_swing_owned_weapons')) || ['fists'];
-        let ownedCoats = JSON.parse(localStorage.getItem('mmo_swing_owned_coats')) || ['rags'];
-        let equippedWeapon = localStorage.getItem('mmo_swing_equipped_weapon') || 'fists';
-        let equippedCoat = localStorage.getItem('mmo_swing_equipped_coat') || 'rags';
+        // Active Ability Modifiers (Derived dynamically from active gear)
+        let coinMultiplier = 1;
+        let swingAgility = 1.0;
+        let coinMagnetActive = false;
+        let scoreBonus = 0;
+        let ropeLengthModifier = 1.0;
 
-        // Marketplace items definitions
-        const weapons = [
-            { id: 'fists', name: 'Bare Fists', mult: 1, cost: 0, desc: "Default close combat fists." },
-            { id: 'bat', name: 'Spiked Bat', mult: 3, cost: 15000, desc: "A heavy baseball bat with spikes." },
-            { id: 'katana', name: 'Energy Katana', mult: 12, cost: 150000, desc: "A blade made of condensed hard-light plasma." },
-            { id: 'scythe', name: 'Void Reaper Scythe', mult: 50, cost: 2000000, desc: "An outer-realm tool that harvests life force." },
-            { id: 'oblivion', name: 'Oblivion Core', mult: 250, cost: 250000000, desc: "Legendary Singularity Core. 250x Boss Damage. Disables shard/gold collection." },
-            { id: 'drop_kraken_harpoon', name: "Kraken's Harpoon", mult: 15, cost: 0, desc: "[RARE BOSS DROP] Deep sea hunting weapon. 15x Damage." },
-            { id: 'drop_cosmic_core', name: 'Chrono-Cosmic Core', mult: 120, cost: 0, desc: "[SUPER RARE BOSS DROP] Temporal item. 120x Damage." }
+        // EXTENDED ARMORY AND BOSS DROPS DATABASE
+        let shopItems = [
+            { id: 'skin_default', name: 'Neon Sphere', price: 0, type: 'skin', color: '#ff4757', desc: 'Classic neon pink sphere.', owned: true, source: 'shop', active: true },
+            { id: 'skin_mint', name: 'Mint Glide', price: 200, type: 'skin', color: '#2ed573', desc: '+10% extra swing agility.', owned: false, source: 'shop', active: false },
+            { id: 'skin_shadow', name: 'Shadow Phantom', price: 450, type: 'skin', color: '#2f3542', desc: 'Blends into shadows. +15% swing agility.', owned: false, source: 'shop', active: false },
+            { id: 'skin_gold', name: 'Golden Boy', price: 650, type: 'skin', color: '#ffa502', desc: 'Coins are worth 2x value.', owned: false, source: 'shop', active: false },
+            { id: 'skin_amethyst', name: 'Amethyst Overdrive', price: 950, type: 'skin', color: '#9b59b6', desc: 'Sparks with crystal fuel. +20% score bonus.', owned: false, source: 'shop', active: false },
+            { id: 'skin_cosmic', name: 'Cosmic Singularity', price: 1400, type: 'skin', color: '#5f27cd', desc: 'Draws coins closer to you.', owned: false, source: 'shop', active: false },
+            { id: 'skin_diamond', name: 'Diamond Core', price: 2200, type: 'skin', color: '#70a1ff', desc: 'Flawless clean crystal. 3x massive coin multiplier!', owned: false, source: 'shop', active: false },
+            
+            { id: 'rope_white', name: 'Basic Rope', price: 0, type: 'rope', color: '#ffffff', desc: 'Standard high-tensile strength rope.', owned: true, source: 'shop', active: true },
+            { id: 'rope_laser', name: 'Neon Laser Line', price: 250, type: 'rope', color: '#00d2d3', desc: 'Cyan laser light trail.', owned: false, source: 'shop', active: false },
+            { id: 'rope_pulse', name: 'Pulse Cord', price: 400, type: 'rope', color: '#ff4757', desc: 'Thumping electromagnetic tether line.', owned: false, source: 'shop', active: false },
+            { id: 'rope_emerald', name: 'Jade Tether', price: 650, type: 'rope', color: '#2ed573', desc: 'Glows with nature. +20% extra grapple range reach.', owned: false, source: 'shop', active: false },
+            { id: 'rope_rainbow', name: 'Rainbow Ribbon', price: 850, type: 'rope', color: 'rainbow', desc: 'Cycles across the full visible spectrum.', owned: false, source: 'shop', active: false },
+            
+            // EXPANDED BOSS LOOT DROP POOL (source matching 'boss_goliath')
+            { id: 'skin_boss_skull', name: 'Skull of Doom', price: 0, type: 'skin', color: '#747d8c', desc: 'Goliath Drop. Extreme specs: +25% points!', owned: false, source: 'boss_goliath', active: false },
+            { id: 'skin_boss_goliath', name: 'Goliath Shell', price: 0, type: 'skin', color: '#ffaf40', desc: 'Goliath Drop. Heavy armor: 2x coins & +15% agility.', owned: false, source: 'boss_goliath', active: false },
+            { id: 'skin_boss_void', name: 'Void Herald', price: 0, type: 'skin', color: '#3d3d3d', desc: 'Goliath Drop. Mystical shell: Full coin magnet & 2x coins.', owned: false, source: 'boss_goliath', active: false },
+            { id: 'rope_boss_plasma', name: 'Hyper Plasma', price: 0, type: 'rope', color: '#ff6b6b', desc: 'Goliath Drop. Blazing hot plasma: +35% super reach extension.', owned: false, source: 'boss_goliath', active: false },
+            { id: 'rope_boss_glitch', name: 'Cyber Glitch', price: 0, type: 'rope', color: 'rainbow', desc: 'Goliath Drop. Distorted matrix line: Dynamic rainbow spectrum.', owned: false, source: 'boss_goliath', active: false }
         ];
 
-        const coats = [
-            { id: 'rags', name: 'Tattered Rags', grav: 0.35, cost: 0, desc: "Old garments with no specialized physics bonuses." },
-            { id: 'hoodie', name: 'Acrobat Hoodie', grav: 0.28, cost: 25000, desc: "Lightweight fibers that decrease gravity pull by 20%." },
-            { id: 'trench', name: 'Cyberpunk Duster', grav: 0.18, cost: 250000, desc: "Thick synth-leather coat reducing gravity by ~50%." },
-            { id: 'suit', name: 'Nebula Gravity Suit', grav: 0.05, cost: 2500000, desc: "Harnesses miniature black holes to counter 85% gravity." },
-            { id: 'voidsilk', name: 'Void-Silk Tether', grav: 0.04, cost: 50000000, desc: "Honed Hook. Immune to Galaxy Mine momentum loss. +300% Acceleration force." },
-            { id: 'eventhorizon', name: 'Event Horizon Coat', grav: 0.02, cost: 100000000, desc: "Cosmic Cloak. Extreme gravity drop and 2x boundary momentum reflection bounce parameters." },
-            { id: 'drop_yeti_parka', name: 'Yeti Winter Parka', grav: 0.12, cost: 0, desc: "[BOSS DROP] Heavy frost-laden armor insulating against high gravity." },
-            { id: 'drop_leprechaun_hat', name: 'Leprechaun Top Hat', grav: 0.22, cost: 0, desc: "[BOSS DROP] Lucky headgear. Spawns pristine golden collectibles." }
-        ];
+        let activeShopTab = 'skin';
 
-        // Rare Event Loot Pool Drop Table configuration
-        const BOSS_LOOT_POOL = [
-            { id: "drop_kraken_harpoon", name: "Kraken's Harpoon", type: "weapon", rarity: "Rare", chance: 0.10, color: "#00adb5" },
-            { id: "drop_yeti_parka", name: "Yeti Winter Parka", type: "coat", rarity: "Epic", chance: 0.05, color: "#4ecca3" },
-            { id: "drop_leprechaun_hat", name: "Leprechaun Top Hat", type: "coat", rarity: "Epic", chance: 0.03, color: "#2ed573" },
-            { id: "drop_cosmic_core", name: "Chrono-Cosmic Core", type: "weapon", rarity: "SUPER RARE", chance: 0.01, color: "#ff9ff3" }
-        ];
+        // INPUT LISTENERS
+        let isPressed = false;
+        const handlePressStart = (e) => { if(gameState === 'playing') { isPressed = true; attachRope(); } };
+        const handlePressEnd = (e) => { isPressed = false; rope.active = false; };
 
-        // Simulation Entities and Physics vectors
-        let player = { x: 360, y: 400, vx: 0, vy: 0, r: 12, score: 0 };
-        let isGrappling = false;
-        let grappleX = 0;
-        let grappleY = 0;
+        canvas.addEventListener('mousedown', handlePressStart);
+        canvas.addEventListener('mouseup', handlePressEnd);
+        canvas.addEventListener('touchstart', (e) => { e.preventDefault(); handlePressStart(e); }, {passive:false});
+        canvas.addEventListener('touchend', (e) => { e.preventDefault(); handlePressEnd(e); }, {passive:false});
 
-        // Interactive Stage Collectibles array
-        let shardsArray = [];
-        function spawnShards() {
-            shardsArray = [];
-            for (let i = 0; i < 5; i++) {
-                shardsArray.push({
-                    x: Math.random() * (canvas.width - 60) + 30,
-                    y: Math.random() * (canvas.height - 180) + 20,
-                    r: 6,
-                    type: (equippedCoat === 'drop_leprechaun_hat' || Math.random() > 0.4) ? 'gold' : 'shard'
-                });
+        // SYSTEM GAME INITIALIZATION & GENERATION
+        function initGame() {
+            score = 0;
+            player.x = 80; player.y = 200; player.vx = 4; player.vy = 0;
+            rope.active = false; isPressed = false;
+            bossActive = false; bossSpawned = false; bossX = VIEW_W + 100; bossHp = bossMaxHp; bossProjectiles = [];
+            nextBossDistance = 1200;
+
+            anchors = []; mapCoins = []; hazards = []; backgroundStars = [];
+            for (let i = 0; i < 20; i++) {
+                backgroundStars.push({ x: Math.random() * VIEW_W, y: Math.random() * VIEW_H, size: Math.random() * 2, speed: Math.random() * 0.5 + 0.1 });
+            }
+            for (let x = 60; x < VIEW_W * 3; x += 100) { anchors.push({ x: x + Math.random() * 40, y: 30 + Math.random() * 30 }); }
+            for (let x = 150; x < VIEW_W * 3; x += 130) { mapCoins.push({ x: x + Math.random() * 30, y: 150 + Math.random() * 140, active: true }); }
+            for (let x = 300; x < VIEW_W * 3; x += 260) { hazards.push({ x: x + Math.random() * 50, y: 250 + Math.random() * 100, radius: 14 + Math.random() * 10 }); }
+            
+            applySkinAbilities();
+            updateUI();
+        }
+
+        function saveGame() {
+            localStorage.setItem("mmo_swing_coins", coins);
+            localStorage.setItem("mmo_swing_highScore", highScore);
+            localStorage.setItem("mmo_swing_items", JSON.stringify(shopItems));
+        }
+
+        function loadGame() {
+            const sc = localStorage.getItem("mmo_swing_coins"); if (sc !== null) coins = parseInt(sc);
+            const sh = localStorage.getItem("mmo_swing_highScore"); if (sh !== null) highScore = parseInt(sh);
+            const si = localStorage.getItem("mmo_swing_items");
+            if (si) {
+                try {
+                    const parsed = JSON.parse(si);
+                    parsed.forEach(saved => {
+                        let target = shopItems.find(i => i.id === saved.id);
+                        if (target) { target.owned = saved.owned; target.active = saved.active; }
+                    });
+                } catch(e) {}
             }
         }
-        spawnShards();
 
-        // Hazards System (Galaxy Mines) array
-        let galaxyMines = [
-            { x: 200, y: 150, r: 10 },
-            { x: 520, y: 180, r: 10 }
-        ];
+        // AGILITY & ABILITY RESOLUTION ENGINE
+        function applySkinAbilities() {
+            coinMultiplier = 1;
+            swingAgility = 1.0;
+            coinMagnetActive = false;
+            scoreBonus = 0;
+            ropeLengthModifier = 1.0;
 
-        // Threat Matrix Entity Object
-        let boss = { x: 360, y: 100, r: 35, health: 300, maxHealth: 300, name: "Kraken", active: true };
+            let activeSkin = shopItems.find(item => item.type === 'skin' && item.active);
+            if (activeSkin) {
+                if (activeSkin.id === 'skin_mint') swingAgility = 1.1;
+                if (activeSkin.id === 'skin_shadow') swingAgility = 1.15;
+                if (activeSkin.id === 'skin_gold') coinMultiplier = 2;
+                if (activeSkin.id === 'skin_amethyst') scoreBonus = 0.20;
+                if (activeSkin.id === 'skin_cosmic') coinMagnetActive = true;
+                if (activeSkin.id === 'skin_diamond') coinMultiplier = 3;
+                
+                // Boss item hooks
+                if (activeSkin.id === 'skin_boss_skull') scoreBonus = 0.25;
+                if (activeSkin.id === 'skin_boss_goliath') { coinMultiplier = 2; swingAgility = 1.15; }
+                if (activeSkin.id === 'skin_boss_void') { coinMagnetActive = true; coinMultiplier = 2; }
+            }
 
-        // Mock Multiplayer Network Registry instances
-        let mockPlayers = [
-            { name: "AlphaSwinger", score: 85200, isDev: false },
-            { name: "HookMaster99", score: 64100, isDev: false },
-            { name: "Dev_Quantum", score: 999999, isDev: true }
-        ];
+            let activeRope = shopItems.find(item => item.type === 'rope' && item.active);
+            if (activeRope) {
+                if (activeRope.id === 'rope_emerald') ropeLengthModifier = 1.20;
+                if (activeRope.id === 'rope_boss_plasma') ropeLengthModifier = 1.35;
+            }
+        }
 
-        // System Interface Framework Control Tabs logic
-        document.querySelectorAll('.tab-trigger').forEach(btn => {
-            btn.addEventListener('click', () => {
-                document.querySelectorAll('.tab-trigger').forEach(b => b.classList.remove('active'));
-                document.querySelectorAll('.viewport-panel').forEach(v => v.classList.remove('active'));
-                btn.classList.add('active');
-                document.getElementById(btn.dataset.target).classList.add('active');
+        function attachRope() {
+            let closest = null;
+            let minDist = 999999;
+            let maxAllowedRange = 260 * ropeLengthModifier;
+
+            anchors.forEach(a => {
+                let d = Math.hypot(a.x - player.x, a.y - player.y);
+                if (d < minDist && d < maxAllowedRange) { minDist = d; closest = a; }
             });
-        });
 
-        // Chat Rate Limiter configuration
-        let lastChatMessageTime = 0;
-
-        document.getElementById('sendAllianceChatBtn').addEventListener('click', () => {
-            const now = Date.now();
-            if (now - lastChatMessageTime < 500) {
-                return; 
+            if (closest) {
+                rope.active = true;
+                rope.anchorX = closest.x;
+                rope.anchorY = closest.y;
+                rope.length = minDist;
             }
-            const input = document.getElementById('allianceChatInput');
-            if (input.value.trim() !== '') {
-                const box = document.getElementById('allianceChatBox');
-                const line = document.createElement('div');
-                line.className = 'chat-line';
-                line.innerHTML = `<span class="chat-sender r5">[R5] You:</span> <span class="chat-text">${input.value}</span>`;
-                box.appendChild(line);
-                box.scrollTop = box.scrollHeight;
-                input.value = '';
-                lastChatMessageTime = Date.now();
-            }
-        });
+        }
 
-        // Interface Display Sync engine
+        function addNotification(text, type = 'normal') {
+            const el = document.createElement('div');
+            el.className = `notification ${type}`;
+            el.innerHTML = type === 'loot' ? `<i class="fa-solid fa-gift"></i> ${text}` : text;
+            const container = document.getElementById('notificationContainer');
+            container.appendChild(el);
+            setTimeout(() => el.remove(), 2500);
+        }
+
+        // TRIGGER COMPREHENSIVE BOSS LOOT DROPS SYSTEM
+        function triggerBossDefeatLoot() {
+            bossActive = false;
+            bossSpawned = false;
+            let payout = 300 * coinMultiplier;
+            coins += payout;
+            addNotification(`Boss Liquidated! +${payout} Gold Coins`, 'success');
+
+            // 45% base drop chance for any locked premium boss drop
+            if (Math.random() < 0.45) {
+                let lockedDrops = shopItems.filter(item => item.source === 'boss_goliath' && !item.owned);
+                if (lockedDrops.length > 0) {
+                    let randomReward = lockedDrops[Math.floor(Math.random() * lockedDrops.length)];
+                    randomReward.owned = true;
+                    saveGame();
+                    addNotification(`LEGENDARY DROPPED: ${randomReward.name}! Check Spheres/Grapples inventory.`, 'loot');
+                } else {
+                    addNotification(`Goliath dropped bonus loot! +150 Extra Gold.`, 'success');
+                    coins += 150;
+                }
+            }
+            nextBossDistance = score + 1500;
+            saveGame();
+            updateUI();
+        }
+
+        // GAME RENDERING AND REFRESH UI HOOKS
         function updateUI() {
-            document.getElementById('goldCount').textContent = gold.toLocaleString();
-            document.getElementById('scoreCount').textContent = player.score.toLocaleString();
-            document.getElementById('shardCount').textContent = shards.toLocaleString();
-            
-            // Build Scoreboards
-            const list = document.getElementById('lbListContainer');
-            list.innerHTML = '';
-            
-            let currentBoard = [...mockPlayers, { name: "You", score: player.score, isDev: true }];
-            currentBoard.sort((a,b) => b.score - a.score);
-            
-            currentBoard.forEach((p, idx) => {
-                const r = document.createElement('div');
-                r.className = `lb-row ${p.name === 'You' ? 'me' : ''}`;
-                
-                let devDecoration = p.isDev ? 'background: linear-gradient(45deg, #ff4757, #f9a826); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight:900;' : '';
-                
-                r.innerHTML = `
-                    <div class="lb-left">
-                        <span class="lb-rank">#${idx+1}</span>
-                        <span class="lb-name" style="${devDecoration}">${p.isDev ? '[DEV] ' : ''}${p.name}</span>
-                    </div>
-                    <span class="lb-score">${p.score.toLocaleString()}</span>
-                `;
-                list.appendChild(r);
-            });
+            document.getElementById('scoreVal').textContent = Math.floor(score);
+            document.getElementById('coinVal').textContent = coins;
+            document.getElementById('highScoreVal').textContent = Math.floor(highScore);
+            document.getElementById('shopCoinVal').textContent = coins;
         }
 
-        // Shop UI Painter
         function renderGearShop() {
-            const wepBox = document.getElementById('shopWeaponsContainer');
-            const coatBox = document.getElementById('shopCoatsContainer');
-            wepBox.innerHTML = '';
-            coatBox.innerHTML = '';
-
-            weapons.forEach(w => {
-                const c = document.createElement('div');
-                c.className = 'shop-item-card';
-                let isOwned = ownedWeapons.includes(w.id);
-                let displayPrice = w.cost === 0 ? `<span style="color:#ff4757;">BOSS DROP ONLY</span>` : `<i class="fa-solid fa-coins"></i> ${w.cost.toLocaleString()}`;
+            const container = document.getElementById('gearShopContainer');
+            container.innerHTML = '';
+            
+            let itemsToRender = shopItems.filter(i => i.type === activeShopTab);
+            
+            itemsToRender.forEach(item => {
+                let card = document.createElement('div');
+                card.className = `shop-card ${item.active ? 'active-item' : ''}`;
                 
-                c.innerHTML = `
-                    <div class="item-details">
-                        <span class="item-title" style="color:${w.id.startsWith('drop') ? '#ff9ff3' : '#fff'}">${w.name}</span>
-                        <span class="item-desc">${w.desc}</span>
-                        <span class="item-price">${displayPrice}</span>
-                    </div>
-                    <button class="buy-item-btn ${isOwned ? 'owned' : ''}" onclick="${isOwned ? '' : `buyWeapon('${w.id}')`}">${isOwned ? 'Acquired' : 'Purchase'}</button>
-                `;
-                wepBox.appendChild(c);
-            });
+                let sourceLabel = item.source === 'shop' 
+                    ? `<span class="card-source source-shop"><i class="fa-solid fa-cart-shopping"></i> Store</span>`
+                    : `<span class="card-source source-boss"><i class="fa-solid fa-skull"></i> Boss Drop</span>`;
 
-            coats.forEach(ct => {
-                const c = document.createElement('div');
-                c.className = 'shop-item-card';
-                let isOwned = ownedCoats.includes(ct.id);
-                let displayPrice = ct.cost === 0 ? `<span style="color:#ff4757;">BOSS DROP ONLY</span>` : `<i class="fa-solid fa-coins"></i> ${ct.cost.toLocaleString()}`;
-
-                c.innerHTML = `
-                    <div class="item-details">
-                        <span class="item-title" style="color:${ct.id.startsWith('drop') ? '#ff9ff3' : '#fff'}">${ct.name}</span>
-                        <span class="item-desc">${ct.desc}</span>
-                        <span class="item-price">${displayPrice}</span>
-                    </div>
-                    <button class="buy-item-btn ${isOwned ? 'owned' : ''}" onclick="${isOwned ? '' : `buyCoat('${ct.id}')`}">${isOwned ? 'Acquired' : 'Purchase'}</button>
-                `;
-                coatBox.appendChild(c);
-            });
-        }
-
-        window.buyWeapon = function(id) {
-            const item = weapons.find(w => w.id === id);
-            if (item && item.cost > 0 && gold >= item.cost && !ownedWeapons.includes(id)) {
-                gold -= item.cost;
-                ownedWeapons.push(id);
-                localStorage.setItem('mmo_swing_gold', gold.toString());
-                localStorage.setItem('mmo_swing_owned_weapons', JSON.stringify(ownedWeapons));
-                renderGearShop();
-                renderChangingRoom();
-                updateUI();
-            }
-        };
-
-        window.buyCoat = function(id) {
-            const item = coats.find(c => c.id === id);
-            if (item && item.cost > 0 && gold >= item.cost && !ownedCoats.includes(id)) {
-                gold -= item.cost;
-                ownedCoats.push(id);
-                localStorage.setItem('mmo_swing_gold', gold.toString());
-                localStorage.setItem('mmo_swing_owned_coats', JSON.stringify(ownedCoats));
-                renderGearShop();
-                renderChangingRoom();
-                updateUI();
-            }
-        };
-
-        // Inventory Management Interface Render
-        function renderChangingRoom() {
-            const box = document.getElementById('inventoryContainer');
-            box.innerHTML = '';
-
-            weapons.forEach(w => {
-                if (!ownedWeapons.includes(w.id)) return;
-                const active = equippedWeapon === w.id;
-                const card = document.createElement('div');
-                card.className = `inv-card ${active ? 'equipped' : ''}`;
-                card.onclick = () => { equippedWeapon = w.id; localStorage.setItem('mmo_swing_equipped_weapon', w.id); renderChangingRoom(); updateUI(); };
-                card.innerHTML = `
-                    ${active ? '<span class="eq-badge">Active</span>' : ''}
-                    <div class="inv-icon-box"><i class="fa-solid fa-gavel"></i></div>
-                    <span class="inv-name">${w.name}</span>
-                    <span class="inv-tag">Weapon</span>
-                `;
-                box.appendChild(card);
-            });
-
-            coats.forEach(c => {
-                if (!ownedCoats.includes(c.id)) return;
-                const active = equippedCoat === c.id;
-                const card = document.createElement('div');
-                card.className = `inv-card ${active ? 'equipped' : ''}`;
-                card.onclick = () => { equippedCoat = c.id; localStorage.setItem('mmo_swing_equipped_coat', c.id); renderChangingRoom(); updateUI(); };
-                card.innerHTML = `
-                    ${active ? '<span class="eq-badge">Active</span>' : ''}
-                    <div class="inv-icon-box"><i class="fa-solid fa-shirt"></i></div>
-                    <span class="inv-name">${c.name}</span>
-                    <span class="inv-tag">Coat</span>
-                `;
-                box.appendChild(card);
-            });
-        }
-
-        // Rare Item Drop System Logic
-        function rollBossDrop() {
-            const roll = Math.random();
-            let currentWeight = 0;
-
-            for (let item of BOSS_LOOT_POOL) {
-                currentWeight += item.chance;
-                if (roll <= currentWeight) {
-                    grantBossItem(item);
-                    return;
+                let btnHtml = '';
+                if (item.active) {
+                    btnHtml = `<button class="buy-btn active-equip">Equipped</button>`;
+                } else if (item.owned) {
+                    btnHtml = `<button class="buy-btn equip" onclick="equipItem('${item.id}')">Equip</button>`;
+                } else if (item.source !== 'shop') {
+                    btnHtml = `<button class="buy-btn locked"><i class="fa-solid fa-lock"></i> Boss Only</button>`;
+                } else {
+                    btnHtml = `<button class="buy-btn" onclick="buyItem('${item.id}')">${item.price} G</button>`;
                 }
-            }
+
+                let previewColor = item.color === 'rainbow' ? '#ff4757' : item.color;
+                let extraClass = item.type === 'rope' ? 'rope-preview' : '';
+
+                card.innerHTML = `
+                    <div class="card-left">
+                        <div class="card-preview ${extraClass}" style="color:${item.color}; background:${previewColor}; shadow: 0 0 5px ${previewColor};"></div>
+                        <div class="card-info">
+                            <div class="card-name">${item.name}</div>
+                            <div class="card-desc">${item.desc}</div>
+                            ${sourceLabel}
+                        </div>
+                    </div>
+                    ${btnHtml}
+                `;
+                container.appendChild(card);
+            });
         }
 
-        function grantBossItem(item) {
-            if (item.type === "weapon") {
-                if (ownedWeapons.includes(item.id)) {
-                    if (equippedWeapon !== 'oblivion') {
-                        gold += 500000;
-                        localStorage.setItem('mmo_swing_gold', gold.toString());
-                    }
-                    showDropNotification(`Duplicate Drop! Awarded +500,000 Gold!`, "#f1c40f");
-                    return;
-                }
-                ownedWeapons.push(item.id);
-                localStorage.setItem('mmo_swing_owned_weapons', JSON.stringify(ownedWeapons));
+        window.buyItem = function(id) {
+            let item = shopItems.find(i => i.id === id);
+            if (!item) return;
+            if (coins >= item.price) {
+                coins -= item.price;
+                item.owned = true;
+                saveGame();
+                addNotification(`Purchased ${item.name}!`, 'success');
+                renderGearShop();
+                updateUI();
             } else {
-                if (ownedCoats.includes(item.id)) {
-                    if (equippedWeapon !== 'oblivion') {
-                        gold += 500000;
-                        localStorage.setItem('mmo_swing_gold', gold.toString());
-                    }
-                    showDropNotification(`Duplicate Drop! Awarded +500,000 Gold!`, "#f1c40f");
-                    return;
-                }
-                ownedCoats.push(item.id);
-                localStorage.setItem('mmo_swing_owned_coats', JSON.stringify(ownedCoats));
+                addNotification("Inadequate gold reserves!");
             }
+        };
 
-            showDropNotification(`🎁 BOSS DROP! Looted: ${item.name} (${item.rarity})!`, item.color);
+        window.equipItem = function(id) {
+            let item = shopItems.find(i => i.id === id);
+            if (!item || !item.owned) return;
+            
+            shopItems.forEach(i => { if(i.type === item.type) i.active = false; });
+            item.active = true;
+            
+            applySkinAbilities();
+            saveGame();
             renderGearShop();
-            renderChangingRoom();
-        }
+        };
 
-        function showDropNotification(text, color) {
-            const alertBox = document.createElement("div");
-            alertBox.style.cssText = `
-                position: fixed;
-                top: 20px;
-                left: 50%;
-                transform: translateX(-50%);
-                background: #17172e;
-                border: 2px solid ${color};
-                color: white;
-                padding: 10px 15px;
-                border-radius: 6px;
-                font-size: 13px;
-                font-weight: bold;
-                box-shadow: 0 4px 15px rgba(0,0,0,0.5);
-                z-index: 10000;
-                pointer-events: none;
-                animation: fadeAndSlide 3.5s forwards;
-            `;
-            alertBox.textContent = text;
-            document.body.appendChild(alertBox);
-            setTimeout(() => alertBox.remove(), 3500);
-        }
+        // RUNNING GAME LOOP PHYSICS MATRIX
+        function updatePhysics() {
+            score += player.vx * 0.05 * (1 + scoreBonus);
+            
+            backgroundStars.forEach(s => {
+                s.x -= player.vx * s.speed;
+                if(s.x < 0) s.x = VIEW_W;
+            });
 
-        // Pointer/Grapple Connection Handlers
-        canvas.addEventListener('mousedown', (e) => {
-            const rect = canvas.getBoundingClientRect();
-            grappleX = e.clientX - rect.left;
-            grappleY = e.clientY - rect.top;
-            isGrappling = true;
-        });
-
-        canvas.addEventListener('mouseup', () => { isGrappling = false; });
-        canvas.addEventListener('mouseleave', () => { isGrappling = false; });
-
-        // Touch Interface Scaling Context mapping
-        canvas.addEventListener('touchstart', (e) => {
-            if(e.touches.length > 0) {
-                const rect = canvas.getBoundingClientRect();
-                grappleX = e.touches[0].clientX - rect.left;
-                grappleY = e.touches[0].clientY - rect.top;
-                isGrappling = true;
+            // Boss Lifecycle Trigger Activation 
+            if (!bossActive && score >= nextBossDistance) {
+                bossActive = true;
+                bossX = VIEW_W + 80;
+                bossHp = bossMaxHp;
+                addNotification("WARNING: Goliath Core Incoming!", "normal");
             }
-        });
-        canvas.addEventListener('touchend', () => { isGrappling = false; });
 
-        // Core Physics Calculation Engine & Frame Render Loop
-        function loop() {
-            // Apply Gravity Modifier parameters based on equipment metrics
-            const currentCoatObj = coats.find(c => c.id === equippedCoat) || coats[0];
-            player.vy += currentCoatObj.grav;
+            if (bossActive) {
+                let targetX = VIEW_W - 80;
+                bossX += (targetX - bossX) * 0.03;
+                bossY += bossDirection * 1.2;
+                if (bossY > 160 || bossY < 40) bossDirection *= -1;
 
-            // Rope tension vectors acceleration computation
-            if (isGrappling) {
-                let dx = grappleX - player.x;
-                let dy = grappleY - player.y;
+                if (Math.random() < 0.03) {
+                    bossProjectiles.push({ x: bossX, y: bossY, vx: -3.5, vy: (player.y - bossY) * 0.01, r: 6 });
+                }
+
+                if (rope.active) {
+                    bossHp -= 0.22; 
+                    bossFlashTime = 2;
+                    if (bossHp <= 0) triggerBossDefeatLoot();
+                }
+            } else {
+                if (bossX > -100) bossX -= player.vx;
+            }
+
+            // Projectiles collision validation loop
+            for (let i = bossProjectiles.length - 1; i >= 0; i--) {
+                let p = bossProjectiles[i];
+                p.x += p.vx - player.vx * 0.2;
+                p.y += p.vy;
+                if (Math.hypot(p.x - player.x, p.y - player.y) < player.radius + p.r) {
+                    triggerGameOver();
+                }
+                if (p.x < -20) bossProjectiles.splice(i, 1);
+            }
+
+            // Standard swinging constraints calculations
+            if (rope.active) {
+                let dx = player.x - rope.anchorX;
+                let dy = player.y - rope.anchorY;
                 let dist = Math.hypot(dx, dy);
-                if (dist > 5) {
-                    let accelerationForce = (equippedCoat === 'voidsilk') ? 2.0 : 0.5;
-                    player.vx += (dx / dist) * accelerationForce;
-                    player.vy += (dy / dist) * accelerationForce;
+
+                if (dist > rope.length) {
+                    let nx = dx / dist;
+                    let ny = dy / dist;
+                    
+                    let tangentX = -ny;
+                    let tangentY = nx;
+                    
+                    let velAlongNormal = player.vx * nx + player.vy * ny;
+                    player.vx -= velAlongNormal * nx;
+                    player.vy -= velAlongNormal * ny;
+                    
+                    player.x = rope.anchorX + nx * rope.length;
+                    player.y = rope.anchorY + ny * rope.length;
+
+                    if (isPressed) {
+                        player.vx += tangentX * 0.07 * swingAgility;
+                        player.vy += tangentY * 0.07 * swingAgility;
+                    }
                 }
             }
 
-            // Move entities
-            player.x += player.vx;
+            player.vy += gravity;
+            player.x += player.vx * 0.2; 
             player.y += player.vy;
 
-            // Apply friction drag
-            player.vx *= 0.99;
-            player.vy *= 0.99;
-
-            // Spatial boundaries collision constraints handling with custom bounce retention
-            let bounceFactor = (equippedCoat === 'eventhorizon') ? -0.95 : -0.6;
-            if (player.x < player.r) { player.x = player.r; player.vx *= bounceFactor; }
-            if (player.x > canvas.width - player.r) { player.x = canvas.width - player.r; player.vx *= bounceFactor; }
-            if (player.y < player.r) { player.y = player.r; player.vy *= bounceFactor; }
-            if (player.y > canvas.height - player.r) { player.y = canvas.height - player.r; player.vy *= bounceFactor; }
-
-            // Threat Matrix entity hazard collision processing
-            galaxyMines.forEach(mine => {
-                let mDist = Math.hypot(player.x - mine.x, player.y - mine.y);
-                if (mDist < player.r + mine.r) {
-                    if (equippedCoat !== 'voidsilk') {
-                        isGrappling = false;
-                        player.vx *= 0.1;
-                        player.vy *= 0.1;
-                    }
-                }
+            // Environment wrapping array tracking
+            anchors.forEach(a => {
+                a.x -= player.vx;
+                if (a.x < -50) { a.x = VIEW_W + Math.random() * 80; a.y = 30 + Math.random() * 30; }
             });
 
-            // Target Objective Collectibles extraction loops
-            shardsArray.forEach((sh, idx) => {
-                let sDist = Math.hypot(player.x - sh.x, player.y - sh.y);
-                if (sDist < player.r + sh.r) {
-                    if (equippedWeapon !== 'oblivion') {
-                        if (sh.type === 'gold') gold += 100;
-                        else shards += 1;
-                        localStorage.setItem('mmo_swing_gold', gold.toString());
-                        localStorage.setItem('mmo_swing_shards', shards.toString());
-                    }
-                    player.score += 250;
-                    if (player.score > highScore) {
-                        highScore = player.score;
-                        localStorage.setItem('mmo_swing_score', highScore.toString());
-                    }
-                    shardsArray.splice(idx, 1);
-                    updateUI();
-                }
-            });
-
-            if (shardsArray.length === 0) spawnShards();
-
-            // Raid Encounter Objective Combat loop with Spillover logic
-            if (boss.active) {
-                let bDist = Math.hypot(player.x - boss.x, player.y - boss.y);
-                if (bDist < player.r + boss.r) {
-                    // Reversing standard velocity direction parameters to push back out
-                    let angle = Math.atan2(player.y - boss.y, player.x - boss.x);
-                    player.vx = Math.cos(angle) * 8;
-                    player.vy = Math.sin(angle) * 8;
-
-                    const activeWeaponObj = weapons.find(w => w.id === equippedWeapon) || weapons[0];
-                    let incomingDamage = 10 * activeWeaponObj.mult;
-
-                    // Execute Overkill/Spillover damage sequence loop
-                    while (incomingDamage > 0 && boss.health > 0) {
-                        if (incomingDamage >= boss.health) {
-                            incomingDamage -= boss.health;
-                            boss.health = 0;
-
-                            // Handle reward drops
-                            if (equippedWeapon !== 'oblivion') {
-                                gold += 25000;
-                                localStorage.setItem('mmo_swing_gold', gold.toString());
-                            }
-                            
-                            rollBossDrop();
-
-                            // Instantiate structural profile of the subsequent boss entity tier
-                            boss.maxHealth = Math.floor(boss.maxHealth * 1.6);
-                            boss.health = boss.maxHealth;
-                            const thematicNames = ["Yeti", "Leprechaun", "Void Leviathan", "Chrono Weaver", "Kraken Core"];
-                            boss.name = thematicNames[Math.floor(Math.random() * thematicNames.length)];
-                        } else {
-                            boss.health -= incomingDamage;
-                            incomingDamage = 0;
-                        }
-                    }
-                    updateUI();
-                }
-            }
-
-            // Canvas Painting routines
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-            // Draw link line vectors
-            if (isGrappling) {
-                ctx.beginPath();
-                ctx.moveTo(player.x, player.y);
-                ctx.lineTo(grappleX, grappleY);
-                ctx.strokeStyle = (equippedCoat === 'voidsilk') ? '#e056fd' : '#4ecca3';
-                ctx.lineWidth = (equippedCoat === 'voidsilk') ? 3 : 1.5;
-                ctx.stroke();
+            mapCoins.forEach(c => {
+                c.x -= player.vx;
                 
-                ctx.beginPath();
-                ctx.arc(grappleX, grappleY, 4, 0, Math.PI * 2);
-                ctx.fillStyle = '#ff4757';
-                ctx.fill();
-            }
+                // Magnet integration module
+                if (c.active && coinMagnetActive) {
+                    let mDist = Math.hypot(c.x - player.x, c.y - player.y);
+                    if (mDist < 110) {
+                        c.x += (player.x - c.x) * 0.18;
+                        c.y += (player.y - c.y) * 0.18;
+                    }
+                }
 
-            // Draw hazards (Galaxy Mines)
-            galaxyMines.forEach(mine => {
-                ctx.beginPath();
-                ctx.arc(mine.x, mine.y, mine.r, 0, Math.PI * 2);
-                ctx.fillStyle = '#a55eea';
-                ctx.shadowBlur = 12;
-                ctx.shadowColor = '#a55eea';
-                ctx.fill();
+                if (c.active && Math.hypot(c.x - player.x, c.y - player.y) < player.radius + 12) {
+                    c.active = false;
+                    coins += 1 * coinMultiplier;
+                    updateUI();
+                }
+                if (c.x < -50) { c.x = VIEW_W + Math.random() * 100; c.y = 120 + Math.random() * 160; c.active = true; }
+            });
+
+            hazards.forEach(h => {
+                h.x -= player.vx;
+                if (Math.hypot(h.x - player.x, h.y - player.y) < player.radius + h.radius - 2) {
+                    triggerGameOver();
+                }
+                if (h.x < -60) { h.x = VIEW_W + Math.random() * 200; h.y = 260 + Math.random() * 120; h.radius = 14 + Math.random() * 10; }
+            });
+
+            if (player.y > VIEW_H + 40 || player.y < -100 || player.vx < -2) { triggerGameOver(); }
+        }
+
+        function triggerGameOver() {
+            gameState = 'menu';
+            rope.active = false;
+            if (score > highScore) { highScore = score; saveGame(); }
+            document.getElementById('menuOverlay').classList.add('active');
+            updateUI();
+        }
+
+        // CANVAS PLOTTING WRAPPER GRAPHICS
+        function draw() {
+            ctx.clearRect(0, 0, VIEW_W, VIEW_H);
+            
+            // Draw Deep Universe Backdrop Stars
+            ctx.fillStyle = '#ffffff';
+            backgroundStars.forEach(s => { ctx.fillRect(s.x, s.y, s.size, s.size); });
+
+            // Render Node Anchors
+            anchors.forEach(a => {
+                ctx.fillStyle = '#3d3d5c';
+                ctx.beginPath(); ctx.arc(a.x, a.y, 6, 0, Math.PI*2); ctx.fill();
+                ctx.fillStyle = '#00d2d3';
+                ctx.beginPath(); ctx.arc(a.x, a.y, 2, 0, Math.PI*2); ctx.fill();
+            });
+
+            // Render Collectible Crystals
+            mapCoins.forEach(c => {
+                if (!c.active) return;
+                ctx.fillStyle = '#ffd32a';
+                ctx.shadowColor = '#ffd32a'; ctx.shadowBlur = 4;
+                ctx.beginPath(); ctx.arc(c.x, c.y, 7, 0, Math.PI*2); ctx.fill();
                 ctx.shadowBlur = 0;
             });
 
-            // Draw active player circle element representation
-            ctx.beginPath();
-            ctx.arc(player.x, player.y, player.r, 0, Math.PI * 2);
-            ctx.fillStyle = (equippedCoat === 'eventhorizon') ? '#ffffff' : '#4ecca3';
-            if (equippedCoat === 'eventhorizon') {
-                ctx.shadowBlur = 15;
-                ctx.shadowColor = '#ffffff';
-            }
-            ctx.fill();
-            ctx.shadowBlur = 0;
-
-            // Draw active entities (Shards)
-            shardsArray.forEach(sh => {
-                ctx.beginPath();
-                ctx.arc(sh.x, sh.y, sh.r, 0, Math.PI * 2);
-                ctx.fillStyle = sh.type === 'gold' ? '#f9a826' : '#e056fd';
-                ctx.fill();
+            // Render Laser Grids Hazards
+            hazards.forEach(h => {
+                ctx.fillStyle = '#ff4757';
+                ctx.beginPath(); ctx.arc(h.x, h.y, h.radius, 0, Math.PI*2); ctx.fill();
+                ctx.fillStyle = '#ff6b81';
+                ctx.beginPath(); ctx.arc(h.x, h.y, h.radius * 0.5, 0, Math.PI*2); ctx.fill();
             });
 
-            // Draw Boss entity framework geometry
-            if (boss.active && boss.health > 0) {
-                ctx.beginPath();
-                ctx.arc(boss.x, boss.y, boss.r, 0, Math.PI * 2);
-                ctx.fillStyle = 'rgba(255, 71, 87, 0.2)';
-                ctx.strokeStyle = '#ff4757';
-                ctx.lineWidth = 3;
-                ctx.stroke();
-                ctx.fill();
-
-                // Health bar render matrix
-                let barW = boss.r * 2;
-                let barH = 5;
-                let barX = boss.x - boss.r;
-                let barY = boss.y - boss.r - 12;
-                ctx.fillStyle = '#232342';
-                ctx.fillRect(barX, barY, barW, barH);
+            // Render Boss Goliath Profile Core
+            if (bossActive || bossX > -80) {
+                ctx.save();
+                if (bossFlashTime > 0) { ctx.fillStyle = '#ffffff'; bossFlashTime--; }
+                else { ctx.fillStyle = '#ffa502'; }
+                ctx.shadowColor = '#ffa502'; ctx.shadowBlur = 12;
+                ctx.beginPath(); ctx.arc(bossX, bossY, 28, 0, Math.PI*2); ctx.fill();
+                
+                // Core Eye Shield
+                ctx.fillStyle = '#2f3542';
+                ctx.beginPath(); ctx.arc(bossX, bossY, 14, 0, Math.PI*2); ctx.fill();
                 ctx.fillStyle = '#ff4757';
-                ctx.fillRect(barX, barY, barW * (boss.health / boss.maxHealth), barH);
-
-                // Text identifiers tags
-                ctx.fillStyle = '#fff';
-                ctx.font = 'bold 11px system-ui';
-                ctx.textAlign = 'center';
-                ctx.fillText(`${boss.name} (Lv. Overkill)`, boss.x, boss.y - boss.r - 20);
-                ctx.fillText(`${boss.health.toLocaleString()} HP`, boss.x, boss.y + 4);
+                ctx.beginPath(); ctx.arc(bossX - 4, bossY, 5, 0, Math.PI*2); ctx.fill();
+                
+                // Overlay Health Monitor Line
+                if (bossActive) {
+                    ctx.fillStyle = 'rgba(0,0,0,0.4)'; ctx.fillRect(bossX - 30, bossY - 42, 60, 6);
+                    ctx.fillStyle = '#2ed573'; ctx.fillRect(bossX - 30, bossY - 42, 60 * (bossHp / bossMaxHp), 6);
+                }
+                ctx.restore();
             }
 
+            // Render Boss Projectiles
+            ctx.fillStyle = '#eccc68';
+            bossProjectiles.forEach(p => {
+                ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI*2); ctx.fill();
+            });
+
+            // Draw Tension Physics Tether Cable Line
+            if (rope.active) {
+                let activeRope = shopItems.find(r => r.type === 'rope' && r.active);
+                ctx.save();
+                ctx.lineWidth = 3;
+                if (activeRope && activeRope.color === 'rainbow') {
+                    ctx.strokeStyle = `hsl(${Math.floor(Date.now() / 6) % 360}, 95%, 60%)`;
+                } else {
+                    ctx.strokeStyle = activeRope ? activeRope.color : '#ffffff';
+                }
+                ctx.shadowColor = ctx.strokeStyle; ctx.shadowBlur = 6;
+                ctx.beginPath(); ctx.moveTo(player.x, player.y); ctx.lineTo(rope.anchorX, rope.anchorY); ctx.stroke();
+                ctx.restore();
+            }
+
+            // Draw Player Node Sphere Outer Shell
+            let activeSkin = shopItems.find(s => s.type === 'skin' && s.active);
+            let skinColor = activeSkin ? activeSkin.color : '#ff4757';
+            ctx.save();
+            ctx.fillStyle = skinColor;
+            ctx.shadowColor = skinColor; ctx.shadowBlur = 8;
+            ctx.beginPath(); ctx.arc(player.x, player.y, player.radius, 0, Math.PI*2); ctx.fill();
+            ctx.restore();
+        }
+
+        function loop() {
+            if (gameState === 'playing') updatePhysics();
+            draw();
             requestAnimationFrame(loop);
         }
 
-        // Informative Dialog Navigation Layer Array
-        const tutorialPanes = [
-            `<h4>1. Grappling Trajectory</h4><p>Click or press anywhere within the top landscape boundary map. The string line will attach instantly to anchor spatial anchors, launching you forward using momentum.</p>`,
-            `<h4>2. Market Collection</h4><p>Navigate the field to extract purple shards and golden drops. Avoid contact with glowing <b>Galaxy Mines</b> unless you possess a protected tether build variant.</p>`,
-            `<h4>3. Raid Targets</h4><p>Slam your avatar node body directly against the center threat boss loop matrix. High-end weapon configurations deal amplified tier spillover damage parameters natively.</p>`
-        ];
+        // MENU INTERACTION ELEMENT LAYER ATTRIBUTES
+        document.getElementById('startBtn').addEventListener('click', () => {
+            document.getElementById('menuOverlay').classList.remove('active');
+            gameState = 'playing';
+            initGame();
+        });
+
+        const gearOverlay = document.getElementById('gearOverlay');
+        document.getElementById('openGearBtn').addEventListener('click', () => { gearOverlay.classList.add('active'); renderGearShop(); });
+        document.getElementById('closeGearBtn').addEventListener('click', () => gearOverlay.classList.remove('active'));
+
+        document.getElementById('tabSkinsBtn').addEventListener('click', (e) => {
+            activeShopTab = 'skin'; document.getElementById('tabRopesBtn').classList.remove('active'); e.target.classList.add('active'); renderGearShop();
+        });
+        document.getElementById('tabRopesBtn').addEventListener('click', (e) => {
+            activeShopTab = 'rope'; document.getElementById('tabSkinsBtn').classList.remove('active'); e.target.classList.add('active'); renderGearShop();
+        });
+
+        const tutorialOverlay = document.getElementById('tutorialOverlay');
+        const tutorialPanes = document.querySelectorAll('.tutorial-pane');
+        const nextBtn = document.getElementById('nextTutorialBtn');
+        const prevBtn = document.getElementById('prevTutorialBtn');
+        const stepText = document.getElementById('tutorialStepText');
         let currentTutorialStep = 0;
 
-        const overlay = document.getElementById('tutorialOverlay');
-        const contentBox = document.getElementById('tutorialContentArea');
-        const prevBtn = document.getElementById('prevTutorialBtn');
-        const nextBtn = document.getElementById('nextTutorialBtn');
-        const stepText = document.getElementById('tutorialStepText');
-
-        function openTutorial() { currentTutorialStep = 0; switchTutorialTab(0); overlay.classList.add('active'); }
-        function closeTutorial() { overlay.classList.remove('active'); localStorage.setItem("mmo_swing_tutorial_completed", "true"); }
+        function openTutorial() { tutorialOverlay.classList.add('active'); switchTutorialTab(0); }
+        function closeTutorial() { tutorialOverlay.classList.remove('active'); localStorage.setItem("mmo_swing_tutorial_completed", "true"); }
         
         function switchTutorialTab(step) {
             currentTutorialStep = step;
-            contentBox.innerHTML = tutorialPanes[step];
+            tutorialPanes.forEach((p, idx) => p.classList.toggle('active', idx === step));
             prevBtn.style.visibility = step === 0 ? 'hidden' : 'visible';
             nextBtn.textContent = step === tutorialPanes.length - 1 ? 'Got it!' : 'Next';
             stepText.textContent = `Step ${step + 1} of ${tutorialPanes.length}`;
         }
-
         document.getElementById('openTutorialBtn').addEventListener('click', openTutorial);
         document.getElementById('closeTutorialTopBtn').addEventListener('click', closeTutorial);
         nextBtn.addEventListener('click', () => { if (currentTutorialStep < tutorialPanes.length - 1) switchTutorialTab(currentTutorialStep + 1); else closeTutorial(); });
@@ -926,11 +724,13 @@
         const devlogOverlay = document.getElementById('devlogOverlay');
         document.getElementById('openDevlogBtn').addEventListener('click', () => devlogOverlay.classList.add('active'));
         document.getElementById('closeDevlogBtn').addEventListener('click', () => devlogOverlay.classList.remove('active'));
+        document.getElementById('closeDevlogBtnLower').addEventListener('click', () => devlogOverlay.classList.remove('active'));
         
-        // BULLETPROOF INITIALIZATION BOOTLOADER
+        // BULLETPROOF SYSTEM BOOTLOADER
         window.addEventListener('DOMContentLoaded', () => { 
+            loadGame();
             setTimeout(() => { if (!localStorage.getItem("mmo_swing_tutorial_completed")) openTutorial(); }, 800);
-            try { renderChangingRoom(); } catch(e) {}
+            try { applySkinAbilities(); } catch(e) {}
             try { renderGearShop(); } catch(e) {}
             try { updateUI(); } catch(e) {}
             loop();
