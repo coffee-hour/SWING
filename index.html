@@ -456,7 +456,8 @@
             jolly_sweets: 0, spooky_sweets: 0,
             refined_gold: parseInt(localStorage.getItem("rg")) || 0,
             guild: localStorage.getItem("gd") || "", is_leader: false, guild_coins: 0, war_coins: 0, guild_title_bonus: 1,
-            guild_pet_tokens: 0, guild_rank: parseInt(localStorage.getItem("gr")) || 1
+            guild_pet_tokens: 0, guild_rank: parseInt(localStorage.getItem("gr")) || 1,
+            skin_levels: JSON.parse(localStorage.getItem("sk") || "{}")
         };
 
         let activeGuildCrest = 0, activeGuildColor = "#f9a826", serverEventMultiplier = 1, currentBoss = null;
@@ -532,9 +533,13 @@
         };
 
         function saveWeaponLevels() { localStorage.setItem("weapon_levels", JSON.stringify(user.weapon_levels || {})); }
+        function saveSkinLevels() { localStorage.setItem("sk", JSON.stringify(user.skin_levels || {})); }
         function getWeaponUpgradeLevel(weaponKey) { return (user.weapon_levels && user.weapon_levels[weaponKey]) || 0; }
         function getWeaponUpgradeBonus(weaponKey) { return getWeaponUpgradeLevel(weaponKey) * 0.5; }
         function getWeaponForgeCost(weaponKey) { let level = getWeaponUpgradeLevel(weaponKey); let base = WEAPONS_CONFIG[weaponKey] ? Math.max(200, Math.round(WEAPONS_CONFIG[weaponKey].cost * 0.12)) : 200; return Math.max(100, Math.round(base * Math.pow(1.75, level))); }
+        function getSkinForgeLevel(skinKey) { return (user.skin_levels && user.skin_levels[skinKey]) || 0; }
+        function getSkinForgeCost(skinKey) { if (skinKey === 'awakened_gold') { let base = SKINS_CONFIG[skinKey]?.forge?.baseCost || 1; return Math.max(1, Math.ceil(base * Math.pow(2.2, getSkinForgeLevel(skinKey)))); } return 0; }
+        function getSkinForgeBonus(skinKey) { if (skinKey === 'awakened_gold') { let lvl = getSkinForgeLevel(skinKey); return { score: 50 + lvl * 5, gold: 5 + lvl * 0.5 }; } return { score: 1, gold: 1 }; }
 
         const COATS_CONFIG = {
             none: { name: "No Coat", cost: 0, curr: "gold" },
@@ -568,7 +573,7 @@
             yellow: { name: "Yellow", color: "#ffff00", score: 20000, ability: "Perm +5.0x Multi", curr: "gold" }, 
             gold: { name: "Gold", color: "#ffd700", score: 100000, ability: "Perm +10.0x Multi", curr: "gold" },
             true_gold: { name: "True Gold", color: "#FFD700", score: 10000000, ability: "+15.0x Multi, 2x Gold", curr: "gold" },
-            awakened_gold: { name: "Awakened Gold", color: "#ffd700", splitColor: "#ffffff", ability: "50x Score, 5x Gold", condition: "Extremely rare swing pickup or forge with 1 Refined Gold", curr: "refined", cost: 1 },
+            awakened_gold: { name: "Awakened Gold", color: "#ffd700", splitColor: "#ffffff", ability: "50x Score, 5x Gold (+upgradeable)", condition: "Extremely rare swing pickup only. Upgrade with Refined Gold.", forge: { currency: "refined", baseCost: 1 } },
             guild_master: { name: "Guild Master", color: "#8e44ad", condition: "Costs 1000 Gold", ability: "Guild Leader Status", curr: "gold" },
             angelic: { name: "Angelic", color: "#ffffff", condition: "Password", ability: "Sky Island Portal", curr: "gold" },
             devil: { name: "Devil", color: "#ff0055", condition: "???", ability: "Underworld Portal", curr: "gold" }, 
@@ -660,7 +665,10 @@
             if (new Date().getDay() === 5) { m *= 2; texts.push("🔥 2X FRIDAY"); }
             if (user.equipped_skin === 'orange') m *= 2; if (user.equipped_skin === 'yellow') m *= 5; if (user.equipped_skin === 'gold') m *= 10;
             if (user.equipped_skin === 'true_gold') m *= 15;
-            if (user.equipped_skin === 'awakened_gold') m *= 50;
+            if (user.equipped_skin === 'awakened_gold') {
+                const skinBonus = getSkinForgeBonus('awakened_gold');
+                m *= skinBonus.score;
+            }
             
             // Guild Pet Logic (Backend authoritative)
             let petMulti = 1.001 + Math.floor(user.guild_pet_tokens / 10) * 0.001;
@@ -725,6 +733,7 @@
             localStorage.setItem("rg", user.refined_gold);
             showToast("Converted 1,000,000,000 Gold into 1 Refined Gold!", 4000, "#00ffff");
             updateUI();
+            if (user.session_token) syncSave(0);
         }
 
         function updateUI() {
@@ -868,29 +877,51 @@
             const forge = document.getElementById("skinForgeArea");
             if (!forge) return;
             forge.style.display = 'block';
-            if (checkUnlockStatus('awakened_gold')) {
-                forge.innerHTML = `<div style="color:#4ecca3; font-size:12px;">Awakened Gold already acquired. Equip it from the Skins Vault.</div>`;
-                return;
-            }
             forge.innerHTML = "";
+
             let title = document.createElement('div');
             title.style.marginBottom = '8px';
             title.style.fontSize = '13px';
             title.style.fontWeight = 'bold';
-            title.textContent = 'Skin Forge';
+            title.textContent = 'Awakened Gold Forge';
+
             let desc = document.createElement('div');
             desc.style.fontSize = '11px';
             desc.style.color = '#aaa';
             desc.style.marginBottom = '8px';
-            desc.textContent = 'Use Refined Gold to forge the Awakened Gold skin with weapon forge-style mechanics.';
+            desc.textContent = 'Use Refined Gold to upgrade Awakened Gold with weapon-style forge levels.';
+
+            if (!checkUnlockStatus('awakened_gold')) {
+                forge.appendChild(title);
+                forge.appendChild(desc);
+                let warning = document.createElement('div');
+                warning.style.color = '#ccc';
+                warning.style.fontSize = '12px';
+                warning.textContent = 'Awakened Gold must be discovered while swinging before the forge can empower it.';
+                forge.appendChild(warning);
+                return;
+            }
+
+            let level = getSkinForgeLevel('awakened_gold');
+            let cost = getSkinForgeCost('awakened_gold');
+            let bonus = getSkinForgeBonus('awakened_gold');
+
+            let current = document.createElement('div');
+            current.style.color = '#fff';
+            current.style.fontSize = '12px';
+            current.style.marginBottom = '6px';
+            current.textContent = `Current Awakened Gold Level: ${level} — ${bonus.score}x score, ${bonus.gold}x gold.`;
+
             let row = document.createElement('div');
             row.style.display = 'flex';
             row.style.flexWrap = 'wrap';
             row.style.gap = '10px';
+
             let costInfo = document.createElement('div');
             costInfo.style.color = '#fff';
             costInfo.style.fontSize = '12px';
-            costInfo.textContent = `Required: ${SKINS_CONFIG.awakened_gold.cost.toLocaleString()} Refined Gold`;
+            costInfo.textContent = `Next Forge Cost: ${cost.toLocaleString()} Refined Gold`;
+
             let btn = document.createElement('button');
             btn.className = 'auth-btn';
             btn.style.padding = '8px 12px';
@@ -898,24 +929,27 @@
             btn.style.background = '#00ffff';
             btn.style.color = '#111';
             btn.textContent = `Forge Awakened Gold`;
-            btn.disabled = user.refined_gold < SKINS_CONFIG.awakened_gold.cost;
+            btn.disabled = user.refined_gold < cost;
             btn.onclick = () => {
-                if (user.refined_gold < SKINS_CONFIG.awakened_gold.cost) return showToast('Not enough Refined Gold.', 3000, '#ff4757');
-                user.refined_gold -= SKINS_CONFIG.awakened_gold.cost;
+                if (user.refined_gold < cost) return showToast('Not enough Refined Gold.', 3000, '#ff4757');
+                user.refined_gold -= cost;
+                user.skin_levels = user.skin_levels || {};
+                user.skin_levels.awakened_gold = level + 1;
+                saveSkinLevels();
                 localStorage.setItem('rg', user.refined_gold);
-                unlockSkin('awakened_gold');
-                user.equipped_skin = 'awakened_gold';
-                localStorage.setItem('eq', 'awakened_gold');
                 applySkinAbilities();
                 updateUI();
                 syncSave(0);
                 renderChangingRoom();
-                showToast('Awakened Gold forged successfully!', 4000, '#00ffff');
+                renderSkinForge();
+                showToast(`Awakened Gold forged to Level ${user.skin_levels.awakened_gold}!`, 4000, '#00ffff');
             };
-            row.appendChild(costInfo);
-            row.appendChild(btn);
+
             forge.appendChild(title);
             forge.appendChild(desc);
+            forge.appendChild(current);
+            row.appendChild(costInfo);
+            row.appendChild(btn);
             forge.appendChild(row);
         }
 
@@ -1239,8 +1273,9 @@
             try {
                 const hashedP = await hashPassword(p); const res = await fetch(`${API_URL}/api/login`, { method:"POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify({username:u, password_hash:hashedP}) }); const data = await res.json();
                 if(data.success) {
-                    user.username = u; user.session_token = data.userData.session_token; user.high_score = data.userData.high_score || 0; user.equipped_skin = data.userData.equipped_skin || "default"; user.equipped_weapon = data.userData.equipped_weapon || "none"; user.equipped_coat = data.userData.equipped_coat || "none"; user.unlocked_weapons = data.userData.unlocked_weapons || ["none"]; user.unlocked_coats = data.userData.unlocked_coats || ["none"]; user.w_shards = data.userData.white_shards || 0; user.b_shards = data.userData.black_shards || 0; user.jolly_sweets = data.userData.jolly_sweets || 0; user.spooky_sweets = data.userData.spooky_sweets || 0; user.refined_gold = data.userData.refined_gold || 0; user.unlocked = data.userData.unlocked_skins || ["default"]; user.guild = data.userData.guild || ""; user.guild_coins = data.userData.guild_coins || 0; user.guild_rank = data.userData.guild_rank || 1;
-                    localStorage.setItem("session_token", user.session_token); localStorage.setItem("hc", user.high_score); localStorage.setItem("eq", user.equipped_skin); localStorage.setItem("ws", user.w_shards); localStorage.setItem("bs", user.b_shards); localStorage.setItem("gd", user.guild); localStorage.setItem("gr", user.guild_rank); localStorage.setItem("rg", user.refined_gold);
+                    user.username = u; user.session_token = data.userData.session_token; user.high_score = data.userData.high_score || 0; user.equipped_skin = data.userData.equipped_skin || "default"; user.equipped_weapon = data.userData.equipped_weapon || "none"; user.equipped_coat = data.userData.equipped_coat || "none"; user.unlocked_weapons = data.userData.unlocked_weapons || ["none"]; user.unlocked_coats = data.userData.unlocked_coats || ["none"]; user.w_shards = data.userData.white_shards || 0; user.b_shards = data.userData.black_shards || 0; user.jolly_sweets = data.userData.jolly_sweets || 0; user.spooky_sweets = data.userData.spooky_sweets || 0; user.refined_gold = data.userData.refined_gold || 0; user.unlocked = data.userData.unlocked_skins || ["default"]; user.guild = data.userData.guild || ""; user.guild_coins = data.userData.guild_coins || 0; user.guild_rank = data.userData.guild_rank || 1; const skinLevelsFromServer = data.userData.skin_levels || user.skin_levels || {};
+                    user.skin_levels = typeof skinLevelsFromServer === 'string' ? JSON.parse(skinLevelsFromServer) : skinLevelsFromServer;
+                    localStorage.setItem("session_token", user.session_token); localStorage.setItem("hc", user.high_score); localStorage.setItem("eq", user.equipped_skin); localStorage.setItem("ws", user.w_shards); localStorage.setItem("bs", user.b_shards); localStorage.setItem("gd", user.guild); localStorage.setItem("gr", user.guild_rank); localStorage.setItem("rg", user.refined_gold); localStorage.setItem("sk", JSON.stringify(user.skin_levels || {}));
                     document.getElementById("authBar").style.display = "none"; document.getElementById("welcomeMessage").textContent = `👤 Player: ${u}`; document.getElementById("userProfileBar").style.display = "flex";
                     applySkinAbilities(); updateUI(); renderChangingRoom(); renderGearShop(); fetchServerData(); fetchSocialData(); showToast("Profile Synced to Mainframe!");
                 } else showToast(data.error, 4000, "#ff4757");
@@ -1252,7 +1287,7 @@
         async function syncSave(added_points = 0) {
             if(!user.session_token) return;
             try {
-                const res = await fetch(`${API_URL}/api/save`, { method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify({ username: user.username, session_token: user.session_token, high_score: user.high_score, equipped_skin: user.equipped_skin, equipped_weapon: user.equipped_weapon, equipped_coat: user.equipped_coat, white_shards: user.w_shards, black_shards: user.b_shards, jolly_sweets: user.jolly_sweets, spooky_sweets: user.spooky_sweets, refined_gold: user.refined_gold, unlocked_skins: user.unlocked, unlocked_weapons: user.unlocked_weapons, unlocked_coats: user.unlocked_coats, guild_coins: user.guild_coins, added_points: added_points }) });
+                const res = await fetch(`${API_URL}/api/save`, { method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify({ username: user.username, session_token: user.session_token, high_score: user.high_score, equipped_skin: user.equipped_skin, equipped_weapon: user.equipped_weapon, equipped_coat: user.equipped_coat, white_shards: user.w_shards, black_shards: user.b_shards, jolly_sweets: user.jolly_sweets, spooky_sweets: user.spooky_sweets, refined_gold: user.refined_gold, unlocked_skins: user.unlocked, unlocked_weapons: user.unlocked_weapons, unlocked_coats: user.unlocked_coats, guild_coins: user.guild_coins, skin_levels: user.skin_levels, added_points: added_points }) });
                 if (!res.ok) { if (res.status === 403) showToast("⚠️ Server rejected save: Anomalous data limits exceeded.", 5000, "#ff4757"); return; }
                 const data = await res.json();
                 if (data.bossDefeatedNotification) { const winMsg = document.createElement("div"); winMsg.style.position = "absolute"; winMsg.style.top = "20%"; winMsg.style.left = "35%"; winMsg.style.transform = "translate(-35%, -35%)"; winMsg.style.background = "rgba(0,0,0,0.9)"; winMsg.style.padding = "26px"; winMsg.style.border = "1px solid #4ecca3"; winMsg.style.borderRadius = "10px"; winMsg.style.textAlign = "center"; winMsg.style.zIndex = "9999"; winMsg.style.boxShadow = "0 0 35px rgba(0, 176, 120, 0.4)"; winMsg.innerHTML = `<h1 style="color:#ff4757; font-size:26px; margin:0; text-transform:uppercase;">Boss Destroyed!</h1><p style="color:#fff; font-size:14px; font-weight:bold;">War Coins distributed to top Alliances!</p>`; document.getElementById("game-container").appendChild(winMsg); setTimeout(() => { if (winMsg.parentNode) winMsg.remove(); }, 6000); }
@@ -1369,7 +1404,10 @@
                 if (added > 0) {
                     let goldEarned = Math.floor(added / 500);
                     if (user.equipped_skin === 'true_gold') goldEarned *= 2;
-                    if (user.equipped_skin === 'awakened_gold') goldEarned *= 5;
+                    if (user.equipped_skin === 'awakened_gold') {
+                        const skinBonus = getSkinForgeBonus('awakened_gold');
+                        goldEarned = Math.floor(goldEarned * skinBonus.gold);
+                    }
                 let eq = user.equipped_skin || "";
                 if (rawDist < 0 && !user.unlocked.includes("devil")) { unlockSkin("devil"); showToast("🔥 UNLOCKED: THE DEVIL SKIN!", 5000, "#ff4757"); }
                 if (rawDist < 0 && eq.includes("angel") && !user.unlocked.includes("denied_angel")) { unlockSkin("denied_angel"); showToast("🥀 UNLOCKED: DENIED ANGEL", 5000, "#ff4757"); }
