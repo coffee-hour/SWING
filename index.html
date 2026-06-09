@@ -1090,35 +1090,19 @@
 
         // --- NEW CHAT & ROSTER FUNCTIONS ---
         async function sendGuildChat() {
-            // Add this variable globally inside your script scope
-let lastChatMessageTime = 0;
-
-// INSIDE your send chat function (where you extract input text):
-function handleSendAllianceChat() {
-    const now = Date.now();
-    
-    // Check if 500 milliseconds (0.5s) have elapsed since the last message
-    if (now - lastChatMessageTime < 500) {
-        // Show a brief, friendly visual warning on screen or console
-        console.log("Spam prevention: Sending messages too quickly!");
-        
-        // Optional: If you want to show a small error notice text in the UI
-        const chatNotice = document.getElementById('chatNoticeElement'); // tweak if needed
-        if(chatNotice) chatNotice.textContent = "Please wait 0.5s between messages.";
-        
-        return; // Halt execution, message is blocked!
-    }
-
-    // --- YOUR EXISTING CHAT SEND CODE HERE ---
-    // (e.g., filteredText = purgoMalum(chatInput.value)... sending to alliance...)
-    
-    // If message sends successfully, log the timestamp!
-    lastChatMessageTime = Date.now();
-}
-            const input = document.getElementById("guildChatInput"); const msg = input.value.trim();
+            const input = document.getElementById("guildChatInput");
+            if (!input) return;
+            const msg = input.value.trim();
             if (!msg || !user.session_token) return;
             input.value = "";
-            try { await fetch(`${API_URL}/api/guild/chat`, { method: "POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify({ username: user.username, session_token: user.session_token, message: msg }) }); fetchServerData(); } catch(e){}
+            try {
+                await fetch(`${API_URL}/api/guild/chat`, {
+                    method: "POST",
+                    headers:{"Content-Type":"application/json"},
+                    body: JSON.stringify({ username: user.username, session_token: user.session_token, message: msg })
+                });
+                fetchServerData();
+            } catch(e) {}
         }
 
         async function setGuildNotice() {
