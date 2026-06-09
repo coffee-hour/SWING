@@ -228,6 +228,7 @@
                 <div class="panel-box" style="flex: 1.2;">
                     <h4><i class="fa-solid fa-shirt"></i> Skins Vault</h4>
                     <button id="fuseBtn">FUSE SHARDS FOR YIN YANG</button>
+                    <div id="skinForgeArea" style="margin-bottom:10px; min-height:70px; padding:12px; border:1px solid #2e2e54; border-radius:10px; background:#0f1021; color:#ddd;"></div>
                     <div class="skins-grid" id="skinsGrid"></div>
                 </div>
                 <div class="panel-box" style="flex: 1.2; border-color: #e056fd;">
@@ -567,7 +568,7 @@
             yellow: { name: "Yellow", color: "#ffff00", score: 20000, ability: "Perm +5.0x Multi", curr: "gold" }, 
             gold: { name: "Gold", color: "#ffd700", score: 100000, ability: "Perm +10.0x Multi", curr: "gold" },
             true_gold: { name: "True Gold", color: "#FFD700", score: 10000000, ability: "+15.0x Multi, 2x Gold", curr: "gold" },
-            awakened_gold: { name: "Awakened Gold", color: "#ffd700", splitColor: "#ffffff", ability: "50x Score, 5x Gold", condition: "Extremely rare swing pickup (0.00000001% chance)", curr: "gold" },
+            awakened_gold: { name: "Awakened Gold", color: "#ffd700", splitColor: "#ffffff", ability: "50x Score, 5x Gold", condition: "Extremely rare swing pickup or forge with 1 Refined Gold", curr: "refined", cost: 1 },
             guild_master: { name: "Guild Master", color: "#8e44ad", condition: "Costs 1000 Gold", ability: "Guild Leader Status", curr: "gold" },
             angelic: { name: "Angelic", color: "#ffffff", condition: "Password", ability: "Sky Island Portal", curr: "gold" },
             devil: { name: "Devil", color: "#ff0055", condition: "???", ability: "Underworld Portal", curr: "gold" }, 
@@ -801,15 +802,15 @@
                     if (owned) { btn.onclick = () => { user.equipped_skin = key; localStorage.setItem("eq", key); applySkinAbilities(); renderChangingRoom(); updateUI(); syncSave(0); }; } 
                     else if (key === "angelic") { btn.onclick = () => { let code = prompt("ENTER ACCESS CODE:"); if (code && code.toUpperCase() === "ANGEL") { unlockSkin("angelic"); showToast("😇 ANGELIC UNLOCKED 😇", 4000, "#ffeaa7"); renderChangingRoom(); } else if (code) showToast("❌ INCORRECT PASSWORD", 3000, "#ff4757"); }; } 
                     else if (skinConfig.cost) {
-                        if (user.refined_gold >= 1) {
+                        if (skinConfig.curr === 'refined' && user.refined_gold >= skinConfig.cost) {
                             const forgeBtn = document.createElement("div");
                             forgeBtn.className = "action-btn";
                             forgeBtn.style.marginTop = "6px";
                             forgeBtn.style.cursor = "pointer";
-                            forgeBtn.textContent = "Forge Skin (1 Refined Gold)";
+                            forgeBtn.textContent = `Forge Skin (${skinConfig.cost.toLocaleString()} Refined Gold)`;
                             forgeBtn.onclick = (e) => {
                                 e.stopPropagation();
-                                user.refined_gold -= 1;
+                                user.refined_gold -= skinConfig.cost;
                                 localStorage.setItem("rg", user.refined_gold);
                                 unlockSkin(key);
                                 user.equipped_skin = key;
@@ -860,6 +861,62 @@
                 });
             } catch(e) {}
             renderWeaponForge();
+            renderSkinForge();
+        }
+
+        function renderSkinForge() {
+            const forge = document.getElementById("skinForgeArea");
+            if (!forge) return;
+            forge.style.display = 'block';
+            if (checkUnlockStatus('awakened_gold')) {
+                forge.innerHTML = `<div style="color:#4ecca3; font-size:12px;">Awakened Gold already acquired. Equip it from the Skins Vault.</div>`;
+                return;
+            }
+            forge.innerHTML = "";
+            let title = document.createElement('div');
+            title.style.marginBottom = '8px';
+            title.style.fontSize = '13px';
+            title.style.fontWeight = 'bold';
+            title.textContent = 'Skin Forge';
+            let desc = document.createElement('div');
+            desc.style.fontSize = '11px';
+            desc.style.color = '#aaa';
+            desc.style.marginBottom = '8px';
+            desc.textContent = 'Use Refined Gold to forge the Awakened Gold skin with weapon forge-style mechanics.';
+            let row = document.createElement('div');
+            row.style.display = 'flex';
+            row.style.flexWrap = 'wrap';
+            row.style.gap = '10px';
+            let costInfo = document.createElement('div');
+            costInfo.style.color = '#fff';
+            costInfo.style.fontSize = '12px';
+            costInfo.textContent = `Required: ${SKINS_CONFIG.awakened_gold.cost.toLocaleString()} Refined Gold`;
+            let btn = document.createElement('button');
+            btn.className = 'auth-btn';
+            btn.style.padding = '8px 12px';
+            btn.style.fontSize = '12px';
+            btn.style.background = '#00ffff';
+            btn.style.color = '#111';
+            btn.textContent = `Forge Awakened Gold`;
+            btn.disabled = user.refined_gold < SKINS_CONFIG.awakened_gold.cost;
+            btn.onclick = () => {
+                if (user.refined_gold < SKINS_CONFIG.awakened_gold.cost) return showToast('Not enough Refined Gold.', 3000, '#ff4757');
+                user.refined_gold -= SKINS_CONFIG.awakened_gold.cost;
+                localStorage.setItem('rg', user.refined_gold);
+                unlockSkin('awakened_gold');
+                user.equipped_skin = 'awakened_gold';
+                localStorage.setItem('eq', 'awakened_gold');
+                applySkinAbilities();
+                updateUI();
+                syncSave(0);
+                renderChangingRoom();
+                showToast('Awakened Gold forged successfully!', 4000, '#00ffff');
+            };
+            row.appendChild(costInfo);
+            row.appendChild(btn);
+            forge.appendChild(title);
+            forge.appendChild(desc);
+            forge.appendChild(row);
         }
 
         function upgradeWeapon() {
