@@ -268,7 +268,15 @@
             </div>
             <div class="tutorial-body" style="display: block;">
                 
-                <h4 style="color:#00adb5; border-bottom:1px dashed #2e2e54; padding-bottom:4px; margin-top:0;">v1.7.1 - Visuals & Security Patch</h4>
+                <h4 style="color:#00adb5; border-bottom:1px dashed #2e2e54; padding-bottom:4px; margin-top:0;">v1.7.2 - Refined Forge & Gold Fix</h4>
+                <p style="font-size: 11px; color: #888; margin-top: -5px;">Released: June 9, 2026</p>
+                <ul>
+                    <li><span class="tutorial-highlight">Awakened Gold Forge:</span> Awakened Gold now supports weapon-style Refined Gold upgrades with exponential level costs.</li>
+                    <li><span class="tutorial-highlight">Gold Rewards Fixed:</span> End-of-run score now converts into Guild Gold again, including proper Awakened Gold multiplier scaling.</li>
+                    <li><span class="tutorial-highlight">Persistence:</span> Awakened Gold forge levels now save across sessions and sync to the backend.</li>
+                </ul>
+
+                <h4 style="color:#00adb5; border-bottom:1px dashed #2e2e54; padding-bottom:4px; margin-top:20px;">v1.7.1 - Visuals & Security Patch</h4>
                 <p style="font-size: 11px; color: #888; margin-top: -5px;">Released: June 7, 2026</p>
                 <ul>
                     <li><span class="tutorial-highlight">Boss Art:</span> Every single monthly boss now has custom canvas art (Kraken, Leprechaun, Yeti, etc.).</li>
@@ -1408,11 +1416,12 @@
                         const skinBonus = getSkinForgeBonus('awakened_gold');
                         goldEarned = Math.floor(goldEarned * skinBonus.gold);
                     }
-                let eq = user.equipped_skin || "";
-                if (rawDist < 0 && !user.unlocked.includes("devil")) { unlockSkin("devil"); showToast("🔥 UNLOCKED: THE DEVIL SKIN!", 5000, "#ff4757"); }
-                if (rawDist < 0 && eq.includes("angel") && !user.unlocked.includes("denied_angel")) { unlockSkin("denied_angel"); showToast("🥀 UNLOCKED: DENIED ANGEL", 5000, "#ff4757"); }
-                if (eq.includes("angel")) { let angelDeaths = parseInt(localStorage.getItem("stickman_angelic_deaths") || "0") + 1; localStorage.setItem("stickman_angelic_deaths", angelDeaths); if (angelDeaths >= 20 && !user.unlocked.includes("accurate_angel")) { unlockSkin("accurate_angel"); showToast("👁️ UNLOCKED: ACCURATE ANGEL", 5000, "#ffeaa7"); } }
-                if (eq.includes("devil")) { let devilDeaths = parseInt(localStorage.getItem("stickman_devil_deaths") || "0") + 1; localStorage.setItem("stickman_devil_deaths", devilDeaths); if (devilDeaths >= 20 && !user.unlocked.includes("accurate_devil")) { unlockSkin("accurate_devil"); showToast("🎩 UNLOCKED: ACCURATE DEVIL", 5000, "#d4af37"); } }
+                    user.guild_coins = (user.guild_coins || 0) + goldEarned;
+                    let eq = user.equipped_skin || "";
+                    if (rawDist < 0 && !user.unlocked.includes("devil")) { unlockSkin("devil"); showToast("🔥 UNLOCKED: THE DEVIL SKIN!", 5000, "#ff4757"); }
+                    if (rawDist < 0 && eq.includes("angel") && !user.unlocked.includes("denied_angel")) { unlockSkin("denied_angel"); showToast("🥀 UNLOCKED: DENIED ANGEL", 5000, "#ff4757"); }
+                    if (eq.includes("angel")) { let angelDeaths = parseInt(localStorage.getItem("stickman_angelic_deaths") || "0") + 1; localStorage.setItem("stickman_angelic_deaths", angelDeaths); if (angelDeaths >= 20 && !user.unlocked.includes("accurate_angel")) { unlockSkin("accurate_angel"); showToast("👁️ UNLOCKED: ACCURATE ANGEL", 5000, "#ffeaa7"); } }
+                    if (eq.includes("devil")) { let devilDeaths = parseInt(localStorage.getItem("stickman_devil_deaths") || "0") + 1; localStorage.setItem("stickman_devil_deaths", devilDeaths); if (devilDeaths >= 20 && !user.unlocked.includes("accurate_devil")) { unlockSkin("accurate_devil"); showToast("🎩 UNLOCKED: ACCURATE DEVIL", 5000, "#d4af37"); } }
                     updateUI(); syncSave(added); renderChangingRoom();
                 }
             }
