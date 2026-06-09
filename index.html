@@ -1318,7 +1318,8 @@
                 if (rawDist < 0 && eq.includes("angel") && !user.unlocked.includes("denied_angel")) { unlockSkin("denied_angel"); showToast("🥀 UNLOCKED: DENIED ANGEL", 5000, "#ff4757"); }
                 if (eq.includes("angel")) { let angelDeaths = parseInt(localStorage.getItem("stickman_angelic_deaths") || "0") + 1; localStorage.setItem("stickman_angelic_deaths", angelDeaths); if (angelDeaths >= 20 && !user.unlocked.includes("accurate_angel")) { unlockSkin("accurate_angel"); showToast("👁️ UNLOCKED: ACCURATE ANGEL", 5000, "#ffeaa7"); } }
                 if (eq.includes("devil")) { let devilDeaths = parseInt(localStorage.getItem("stickman_devil_deaths") || "0") + 1; localStorage.setItem("stickman_devil_deaths", devilDeaths); if (devilDeaths >= 20 && !user.unlocked.includes("accurate_devil")) { unlockSkin("accurate_devil"); showToast("🎩 UNLOCKED: ACCURATE DEVIL", 5000, "#d4af37"); } }
-                updateUI(); syncSave(added); renderChangingRoom();
+                    updateUI(); syncSave(added); renderChangingRoom();
+                }
             }
         }
 
