@@ -106,8 +106,12 @@
                     </div>
                     
                     <div id="guildPaneHome" class="tutorial-pane active">
-                        <div style="font-size: 12px; color: #ffd700;">War Coins: <span id="warCoinDisplay">0</span> <i class="fa-solid fa-khanda" style="color:#aaa;"></i> | Gold: <span id="guildCoinDisplay">0</span> <i class="fa-solid fa-coins" style="color:#ffd700;"></i></div>
+                        <div style="font-size: 12px; color: #ffd700;">War Coins: <span id="warCoinDisplay">0</span> <i class="fa-solid fa-khanda" style="color:#aaa;"></i> | Gold: <span id="guildCoinDisplay">0</span> <i class="fa-solid fa-coins" style="color:#ffd700;"></i> | Refined Gold: <span id="refinedGoldDisplay">0</span> <i class="fa-solid fa-gem" style="color:#00ffff;"></i></div>
                         <div style="font-size: 11px; color: #4ecca3; margin-top: 4px; font-weight: bold;" id="guildTitleDisplay">Active Title: None</div>
+                        <div style="margin-top:6px; display:flex; justify-content:space-between; align-items:center; gap:6px; font-size:10px; color:#aaa;">
+                            <span>1 Refined Gold = 1,000,000,000 Gold</span>
+                            <button class="action-btn green" style="font-size:10px; padding:5px 8px; height:auto;" onclick="convertGoldToRefined()">Convert Gold</button>
+                        </div>
                         
                         <div style="margin-top:10px; background:#111122; padding:8px; border-radius:6px; border:1px dashed #f9a826;">
                             <div style="display:flex; justify-content:space-between;">
@@ -449,12 +453,14 @@
             equipped_coat: "none", unlocked_coats: ["none"],
             w_shards: parseInt(localStorage.getItem("ws")) || 0, b_shards: parseInt(localStorage.getItem("bs")) || 0, 
             jolly_sweets: 0, spooky_sweets: 0,
+            refined_gold: parseInt(localStorage.getItem("rg")) || 0,
             guild: localStorage.getItem("gd") || "", is_leader: false, guild_coins: 0, war_coins: 0, guild_title_bonus: 1,
             guild_pet_tokens: 0, guild_rank: parseInt(localStorage.getItem("gr")) || 1
         };
 
         let activeGuildCrest = 0, activeGuildColor = "#f9a826", serverEventMultiplier = 1, currentBoss = null;
-        let activeLiveEvent = null; 
+        let activeLiveEvent = null;
+        let unseenGuildMessages = 0, lastGuildChatCount = 0;
         
         let todayStr = new Date().toISOString().split('T')[0];
         let dailyTasks = { date: todayStr, dist: 0, games: 0, shards: 0, c1: false, c2: false, c3: false };
@@ -561,6 +567,7 @@
             yellow: { name: "Yellow", color: "#ffff00", score: 20000, ability: "Perm +5.0x Multi", curr: "gold" }, 
             gold: { name: "Gold", color: "#ffd700", score: 100000, ability: "Perm +10.0x Multi", curr: "gold" },
             true_gold: { name: "True Gold", color: "#FFD700", score: 10000000, ability: "+15.0x Multi, 2x Gold", curr: "gold" },
+            awakened_gold: { name: "Awakened Gold", color: "#ffd700", splitColor: "#ffffff", ability: "50x Score, 5x Gold", condition: "Extremely rare swing pickup (0.00000001% chance)", curr: "gold" },
             guild_master: { name: "Guild Master", color: "#8e44ad", condition: "Costs 1000 Gold", ability: "Guild Leader Status", curr: "gold" },
             angelic: { name: "Angelic", color: "#ffffff", condition: "Password", ability: "Sky Island Portal", curr: "gold" },
             devil: { name: "Devil", color: "#ff0055", condition: "???", ability: "Underworld Portal", curr: "gold" }, 
@@ -619,7 +626,11 @@
             document.getElementById('guildPaneHome').style.display = tab === 'home' ? 'block' : 'none';
             document.getElementById('guildPaneChat').style.display = tab === 'chat' ? 'block' : 'none';
             document.getElementById('guildPaneRoster').style.display = tab === 'roster' ? 'block' : 'none';
-            if (tab === 'chat') { const cl = document.getElementById("guildChatList"); cl.scrollTop = cl.scrollHeight; }
+            if (tab === 'chat') {
+                const cl = document.getElementById("guildChatList"); cl.scrollTop = cl.scrollHeight;
+                unseenGuildMessages = 0;
+                if (document.getElementById('gTabChat')) document.getElementById('gTabChat').textContent = 'Chat';
+            }
         }
 
         // --- PHYSICS & ENGINE ---
@@ -648,6 +659,7 @@
             if (new Date().getDay() === 5) { m *= 2; texts.push("🔥 2X FRIDAY"); }
             if (user.equipped_skin === 'orange') m *= 2; if (user.equipped_skin === 'yellow') m *= 5; if (user.equipped_skin === 'gold') m *= 10;
             if (user.equipped_skin === 'true_gold') m *= 15;
+            if (user.equipped_skin === 'awakened_gold') m *= 50;
             
             // Guild Pet Logic (Backend authoritative)
             let petMulti = 1.001 + Math.floor(user.guild_pet_tokens / 10) * 0.001;
@@ -704,12 +716,23 @@
         function checkUnlockStatus(key) { if (key === "default") return true; if ((user.unlocked || []).includes(key)) return true; if (SKINS_CONFIG[key] && SKINS_CONFIG[key].score !== undefined) return user.high_score >= SKINS_CONFIG[key].score; return false; }
         function unlockSkin(key) { if (!user.unlocked) user.unlocked = ["default"]; if (!user.unlocked.includes(key)) { user.unlocked.push(key); localStorage.setItem(`stickman_skin_${key}`, "true"); syncSave(0); } }
 
+        function convertGoldToRefined() {
+            const requiredGold = 1000000000;
+            if (!user.guild_coins || user.guild_coins < requiredGold) return showToast("You need 1,000,000,000 Gold to convert.", 4000, "#ff4757");
+            user.guild_coins -= requiredGold;
+            user.refined_gold = (user.refined_gold || 0) + 1;
+            localStorage.setItem("rg", user.refined_gold);
+            showToast("Converted 1,000,000,000 Gold into 1 Refined Gold!", 4000, "#00ffff");
+            updateUI();
+        }
+
         function updateUI() {
             if(document.getElementById("highScoreDisplay")) document.getElementById("highScoreDisplay").textContent = (user.high_score || 0).toLocaleString();
             if(document.getElementById("whiteShardDisplay")) document.getElementById("whiteShardDisplay").textContent = user.w_shards || 0;
             if(document.getElementById("blackShardDisplay")) document.getElementById("blackShardDisplay").textContent = user.b_shards || 0;
             if(document.getElementById("guildCoinDisplay")) document.getElementById("guildCoinDisplay").textContent = (user.guild_coins || 0).toLocaleString();
             if(document.getElementById("warCoinDisplay")) document.getElementById("warCoinDisplay").textContent = (user.war_coins || 0).toLocaleString();
+            if(document.getElementById("refinedGoldDisplay")) document.getElementById("refinedGoldDisplay").textContent = (user.refined_gold || 0).toLocaleString();
             if(document.getElementById("petTokenDisplay")) document.getElementById("petTokenDisplay").textContent = (user.guild_pet_tokens || 0).toLocaleString();
             
             // Exponential UI Updates
@@ -767,7 +790,9 @@
                     let nameSpan = document.createElement("span"); nameSpan.textContent = skinConfig.name; title.appendChild(dot); title.appendChild(nameSpan); btn.appendChild(title);
                     
                     let reqLabel = document.createElement("div"); reqLabel.style.fontSize = "9px"; reqLabel.style.color = "#888";
-                    if (skinConfig.score !== undefined) reqLabel.innerText = `Req: ${skinConfig.score.toLocaleString()}`; else if (skinConfig.cost) reqLabel.innerText = `${skinConfig.cost.toLocaleString()} ${skinConfig.curr}`; else if (skinConfig.condition) reqLabel.innerText = skinConfig.condition;
+                    if (skinConfig.score !== undefined) reqLabel.innerText = `Req: ${skinConfig.score.toLocaleString()}`;
+                    else if (skinConfig.cost) reqLabel.innerText = `${skinConfig.cost.toLocaleString()} ${skinConfig.curr === 'refined' ? 'Refined Gold' : skinConfig.curr}`;
+                    else if (skinConfig.condition) reqLabel.innerText = skinConfig.condition;
                     btn.appendChild(reqLabel);
                     if (skinConfig.ability) { let ab = document.createElement("div"); ab.className = "skin-ability"; ab.innerText = skinConfig.ability; btn.appendChild(ab); }
                     if (key === "angelic" && owned) { const arrow = document.createElement("div"); arrow.className = "dropdown-arrow"; arrow.textContent = angelicDropdownOpen ? "▲" : "▼"; arrow.addEventListener("click", (e) => { e.stopPropagation(); angelicDropdownOpen = !angelicDropdownOpen; renderChangingRoom(); }); btn.appendChild(arrow); }
@@ -776,18 +801,59 @@
                     if (owned) { btn.onclick = () => { user.equipped_skin = key; localStorage.setItem("eq", key); applySkinAbilities(); renderChangingRoom(); updateUI(); syncSave(0); }; } 
                     else if (key === "angelic") { btn.onclick = () => { let code = prompt("ENTER ACCESS CODE:"); if (code && code.toUpperCase() === "ANGEL") { unlockSkin("angelic"); showToast("😇 ANGELIC UNLOCKED 😇", 4000, "#ffeaa7"); renderChangingRoom(); } else if (code) showToast("❌ INCORRECT PASSWORD", 3000, "#ff4757"); }; } 
                     else if (skinConfig.cost) {
+                        if (user.refined_gold >= 1) {
+                            const forgeBtn = document.createElement("div");
+                            forgeBtn.className = "action-btn";
+                            forgeBtn.style.marginTop = "6px";
+                            forgeBtn.style.cursor = "pointer";
+                            forgeBtn.textContent = "Forge Skin (1 Refined Gold)";
+                            forgeBtn.onclick = (e) => {
+                                e.stopPropagation();
+                                user.refined_gold -= 1;
+                                localStorage.setItem("rg", user.refined_gold);
+                                unlockSkin(key);
+                                user.equipped_skin = key;
+                                localStorage.setItem("eq", key);
+                                applySkinAbilities();
+                                updateUI();
+                                syncSave(0);
+                                renderChangingRoom();
+                                showToast("Skin forged in the Crucible!", 4000, "#00ffff");
+                            };
+                            btn.appendChild(forgeBtn);
+                        }
                         btn.onclick = async () => {
-                            let currVal = skinConfig.curr === "gold" ? user.guild_coins : (skinConfig.curr==="jolly"?user.jolly_sweets:user.spooky_sweets);
+                            let currVal = skinConfig.curr === "gold" ? user.guild_coins : (skinConfig.curr==="jolly"?user.jolly_sweets:(skinConfig.curr === "refined"? user.refined_gold : user.spooky_sweets));
                             if(currVal >= skinConfig.cost) {
-                                try {
-                                    const res = await fetch(`${API_URL}/api/shop/personal`, { method: "POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify({ username: user.username, session_token: user.session_token, type: 'skin', itemId: key, cost: skinConfig.cost, currency: skinConfig.curr }) });
-                                    const data = await res.json();
-                                    if (data.success) {
-                                        if (skinConfig.curr === "gold") user.guild_coins = data.newCoins; else if (skinConfig.curr === "jolly") user.jolly_sweets = data.newCoins; else user.spooky_sweets = data.newCoins;
-                                        unlockSkin(key); user.equipped_skin = key; localStorage.setItem("eq", key); applySkinAbilities(); updateUI(); syncSave(0); renderChangingRoom(); showToast("Skin Unlocked!", 4000, "#8e44ad");
-                                    } else showToast(data.error, 3000, "#ff4757");
-                                } catch(e) {}
-                            } else showToast(`Not enough ${skinConfig.curr}!`, 3000, "#ff4757");
+                                if (skinConfig.curr === "refined") {
+                                    user.refined_gold -= skinConfig.cost;
+                                    localStorage.setItem("rg", user.refined_gold);
+                                    unlockSkin(key);
+                                    user.equipped_skin = key;
+                                    localStorage.setItem("eq", key);
+                                    applySkinAbilities();
+                                    updateUI();
+                                    syncSave(0);
+                                    renderChangingRoom();
+                                    showToast("Skin Forged with Refined Gold!", 4000, "#8e44ad");
+                                } else {
+                                    try {
+                                        const res = await fetch(`${API_URL}/api/shop/personal`, { method: "POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify({ username: user.username, session_token: user.session_token, type: 'skin', itemId: key, cost: skinConfig.cost, currency: skinConfig.curr }) });
+                                        const data = await res.json();
+                                        if (data.success) {
+                                            if (skinConfig.curr === "gold") user.guild_coins = data.newCoins; else if (skinConfig.curr === "jolly") user.jolly_sweets = data.newCoins; else if (skinConfig.curr === "refined") user.refined_gold = data.newCoins; else user.spooky_sweets = data.newCoins;
+                                            unlockSkin(key);
+                                            user.equipped_skin = key;
+                                            localStorage.setItem("eq", key);
+                                            applySkinAbilities();
+                                            updateUI();
+                                            syncSave(0);
+                                            renderChangingRoom();
+                                            showToast("Skin Unlocked!", 4000, "#8e44ad");
+                                        } else showToast(data.error, 3000, "#ff4757");
+                                    } catch(e) {}
+                                }
+                            } else showToast(`Not enough ${skinConfig.curr === 'refined' ? 'Refined Gold' : skinConfig.curr}!`, 3000, "#ff4757");
                         }
                     }
                     grid.appendChild(btn);
@@ -960,7 +1026,7 @@
                         if (currentTitle) { if(document.getElementById("guildTitleDisplay")) document.getElementById("guildTitleDisplay").textContent = `Active Title: ${currentTitle.name} (${currentTitle.desc})`; user.guild_title_bonus = currentTitle.multi; } else { if(document.getElementById("guildTitleDisplay")) document.getElementById("guildTitleDisplay").textContent = "Active Title: None"; user.guild_title_bonus = 1; }
                     }
 
-                    if (user.guild_rank >= 3 && data.pendingRequests) {
+                            if (user.guild_rank >= 3 && data.pendingRequests) {
                         if(document.getElementById("joinRequestsList")) {
                             const reqBox = document.getElementById("joinRequestsList"); reqBox.innerHTML = "";
                             if (data.pendingRequests.length === 0) reqBox.innerHTML = `<div style="color:#666; font-style:italic; font-size:10px;">No pending requests</div>`;
@@ -972,6 +1038,7 @@
                     // Render Chat
                     if (data.guildChat && document.getElementById("guildChatList")) {
                         const cl = document.getElementById("guildChatList");
+                        let currentGuildMessages = data.guildChat.length;
                         let isScrolledToBottom = cl.scrollHeight - cl.clientHeight <= cl.scrollTop + 10;
                         cl.innerHTML = "";
                         [...data.guildChat].reverse().forEach(msg => {
@@ -979,6 +1046,17 @@
                             cl.innerHTML += `<div style="margin-bottom:4px; font-size:11px; line-height:1.3; border-bottom:1px solid #222; padding-bottom:2px;"><span style="font-weight:bold; ${isMe}">${msg.username}:</span> <span style="color:#eee;">${msg.message}</span></div>`;
                         });
                         if (isScrolledToBottom) cl.scrollTop = cl.scrollHeight;
+                        if (document.getElementById('gTabChat') && !document.getElementById('gTabChat').classList.contains('active')) {
+                            if (lastGuildChatCount && currentGuildMessages > lastGuildChatCount) {
+                                unseenGuildMessages += currentGuildMessages - lastGuildChatCount;
+                                document.getElementById('gTabChat').textContent = `Chat (${unseenGuildMessages})`;
+                                showToast(`New guild message${unseenGuildMessages > 1 ? 's' : ''}!`, 3000, "#00adb5");
+                            }
+                        } else {
+                            unseenGuildMessages = 0;
+                            if (document.getElementById('gTabChat')) document.getElementById('gTabChat').textContent = 'Chat';
+                        }
+                        lastGuildChatCount = currentGuildMessages;
                     }
 
                     // Render Roster
@@ -1120,8 +1198,8 @@ function handleSendAllianceChat() {
             try {
                 const hashedP = await hashPassword(p); const res = await fetch(`${API_URL}/api/login`, { method:"POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify({username:u, password_hash:hashedP}) }); const data = await res.json();
                 if(data.success) {
-                    user.username = u; user.session_token = data.userData.session_token; user.high_score = data.userData.high_score || 0; user.equipped_skin = data.userData.equipped_skin || "default"; user.equipped_weapon = data.userData.equipped_weapon || "none"; user.equipped_coat = data.userData.equipped_coat || "none"; user.unlocked_weapons = data.userData.unlocked_weapons || ["none"]; user.unlocked_coats = data.userData.unlocked_coats || ["none"]; user.w_shards = data.userData.white_shards || 0; user.b_shards = data.userData.black_shards || 0; user.jolly_sweets = data.userData.jolly_sweets || 0; user.spooky_sweets = data.userData.spooky_sweets || 0; user.unlocked = data.userData.unlocked_skins || ["default"]; user.guild = data.userData.guild || ""; user.guild_coins = data.userData.guild_coins || 0; user.guild_rank = data.userData.guild_rank || 1;
-                    localStorage.setItem("session_token", user.session_token); localStorage.setItem("hc", user.high_score); localStorage.setItem("eq", user.equipped_skin); localStorage.setItem("ws", user.w_shards); localStorage.setItem("bs", user.b_shards); localStorage.setItem("gd", user.guild); localStorage.setItem("gr", user.guild_rank);
+                    user.username = u; user.session_token = data.userData.session_token; user.high_score = data.userData.high_score || 0; user.equipped_skin = data.userData.equipped_skin || "default"; user.equipped_weapon = data.userData.equipped_weapon || "none"; user.equipped_coat = data.userData.equipped_coat || "none"; user.unlocked_weapons = data.userData.unlocked_weapons || ["none"]; user.unlocked_coats = data.userData.unlocked_coats || ["none"]; user.w_shards = data.userData.white_shards || 0; user.b_shards = data.userData.black_shards || 0; user.jolly_sweets = data.userData.jolly_sweets || 0; user.spooky_sweets = data.userData.spooky_sweets || 0; user.refined_gold = data.userData.refined_gold || 0; user.unlocked = data.userData.unlocked_skins || ["default"]; user.guild = data.userData.guild || ""; user.guild_coins = data.userData.guild_coins || 0; user.guild_rank = data.userData.guild_rank || 1;
+                    localStorage.setItem("session_token", user.session_token); localStorage.setItem("hc", user.high_score); localStorage.setItem("eq", user.equipped_skin); localStorage.setItem("ws", user.w_shards); localStorage.setItem("bs", user.b_shards); localStorage.setItem("gd", user.guild); localStorage.setItem("gr", user.guild_rank); localStorage.setItem("rg", user.refined_gold);
                     document.getElementById("authBar").style.display = "none"; document.getElementById("welcomeMessage").textContent = `👤 Player: ${u}`; document.getElementById("userProfileBar").style.display = "flex";
                     applySkinAbilities(); updateUI(); renderChangingRoom(); renderGearShop(); fetchServerData(); fetchSocialData(); showToast("Profile Synced to Mainframe!");
                 } else showToast(data.error, 4000, "#ff4757");
@@ -1133,7 +1211,7 @@ function handleSendAllianceChat() {
         async function syncSave(added_points = 0) {
             if(!user.session_token) return;
             try {
-                const res = await fetch(`${API_URL}/api/save`, { method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify({ username: user.username, session_token: user.session_token, high_score: user.high_score, equipped_skin: user.equipped_skin, equipped_weapon: user.equipped_weapon, equipped_coat: user.equipped_coat, white_shards: user.w_shards, black_shards: user.b_shards, jolly_sweets: user.jolly_sweets, spooky_sweets: user.spooky_sweets, unlocked_skins: user.unlocked, unlocked_weapons: user.unlocked_weapons, unlocked_coats: user.unlocked_coats, guild_coins: user.guild_coins, added_points: added_points }) });
+                const res = await fetch(`${API_URL}/api/save`, { method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify({ username: user.username, session_token: user.session_token, high_score: user.high_score, equipped_skin: user.equipped_skin, equipped_weapon: user.equipped_weapon, equipped_coat: user.equipped_coat, white_shards: user.w_shards, black_shards: user.b_shards, jolly_sweets: user.jolly_sweets, spooky_sweets: user.spooky_sweets, refined_gold: user.refined_gold, unlocked_skins: user.unlocked, unlocked_weapons: user.unlocked_weapons, unlocked_coats: user.unlocked_coats, guild_coins: user.guild_coins, added_points: added_points }) });
                 if (!res.ok) { if (res.status === 403) showToast("⚠️ Server rejected save: Anomalous data limits exceeded.", 5000, "#ff4757"); return; }
                 const data = await res.json();
                 if (data.bossDefeatedNotification) { const winMsg = document.createElement("div"); winMsg.style.position = "absolute"; winMsg.style.top = "20%"; winMsg.style.left = "35%"; winMsg.style.transform = "translate(-35%, -35%)"; winMsg.style.background = "rgba(0,0,0,0.9)"; winMsg.style.padding = "26px"; winMsg.style.border = "1px solid #4ecca3"; winMsg.style.borderRadius = "10px"; winMsg.style.textAlign = "center"; winMsg.style.zIndex = "9999"; winMsg.style.boxShadow = "0 0 35px rgba(0, 176, 120, 0.4)"; winMsg.innerHTML = `<h1 style="color:#ff4757; font-size:26px; margin:0; text-transform:uppercase;">Boss Destroyed!</h1><p style="color:#fff; font-size:14px; font-weight:bold;">War Coins distributed to top Alliances!</p>`; document.getElementById("game-container").appendChild(winMsg); setTimeout(() => { if (winMsg.parentNode) winMsg.remove(); }, 6000); }
@@ -1224,6 +1302,12 @@ function handleSendAllianceChat() {
                 
                 if (currentMonth === 9 && Math.random() < 0.0005) { user.spooky_sweets++; showToast("🎃 Found a Spooky Sweet!", 2000, "#ff8c00"); updateUI(); syncSave(0); }
                 if (currentMonth === 11 && Math.random() < 0.0005) { user.jolly_sweets++; showToast("🎄 Found a Jolly Sweet!", 2000, "#ff0000"); updateUI(); syncSave(0); }
+                if (player.isSwinging && Math.random() < 0.0000000001) {
+                    if (!user.unlocked.includes("awakened_gold")) {
+                        unlockSkin("awakened_gold"); showToast("🟨 Found AWAKENED GOLD while swinging! Skin unlocked.", 5000, "#ffd700");
+                        renderChangingRoom(); updateUI(); syncSave(0);
+                    }
+                }
             }
 
             // PWA Service Worker Registration
@@ -1244,9 +1328,7 @@ function handleSendAllianceChat() {
                 if (added > 0) {
                     let goldEarned = Math.floor(added / 500);
                     if (user.equipped_skin === 'true_gold') goldEarned *= 2;
-                    user.guild_coins += goldEarned;
-                } 
-                
+                    if (user.equipped_skin === 'awakened_gold') goldEarned *= 5;
                 let eq = user.equipped_skin || "";
                 if (rawDist < 0 && !user.unlocked.includes("devil")) { unlockSkin("devil"); showToast("🔥 UNLOCKED: THE DEVIL SKIN!", 5000, "#ff4757"); }
                 if (rawDist < 0 && eq.includes("angel") && !user.unlocked.includes("denied_angel")) { unlockSkin("denied_angel"); showToast("🥀 UNLOCKED: DENIED ANGEL", 5000, "#ff4757"); }
