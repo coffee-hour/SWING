@@ -13,7 +13,7 @@
         body { margin: 0; background: #0f0f1a; display: flex; justify-content: center; align-items: flex-start; min-height: 100vh; overflow-y: auto; font-family: system-ui, sans-serif; color: white; user-select: none; padding: 10px 0; touch-action: manipulation; }
         #main-layout { display: flex; gap: 15px; max-width: 1400px; width: 100%; padding: 15px; box-sizing: border-box; flex-wrap: wrap; }
         #game-container { display: flex; flex-direction: column; align-items: center; gap: 15px; flex: 2; min-width: 320px; }
-        .side-panel { flex: 1; background: rgba(22, 22, 40, 0.95); border: 1px solid #2e2e54; border-radius: 12px; padding: 15px; min-height: 780px; display: flex; flex-direction: column; min-width: 290px; box-shadow: 0 8px 32px rgba(0,0,0,0.3); }
+        .side-panel { flex: 1; background: rgba(22, 22, 40, 0.95); border: 1px solid #2e2e54; border-radius: 12px; padding: 15px; min-height: 780px; display: flex; flex-direction: column; min-width: 340px; box-shadow: 0 8px 32px rgba(0,0,0,0.3); }
         .side-panel h3 { margin: 0 0 12px 0; color: #f9a826; text-transform: uppercase; text-align: center; border-bottom: 2px solid #2e2e54; padding-bottom: 8px; font-size: 16px; }
         canvas { background: #131326; box-shadow: 0 10px 30px rgba(0,0,0,0.6); border-radius: 12px; cursor: crosshair; width: 100%; max-width: 850px; border: 2px solid #2e2e54; touch-action: none; }
         .ui-bar { display: flex; gap: 10px; font-size: 14px; font-weight: bold; background: rgba(18, 18, 32, 0.95); padding: 12px; border-radius: 8px; border: 1px solid #2e2e54; width: 100%; box-sizing: border-box; justify-content: space-between; flex-wrap: wrap; align-items: center; }
@@ -102,21 +102,18 @@
     <div id="toastContainer"></div>
 
     <div id="main-layout">
-       <div class="side-panel" id="left-panel" style="width: 220px;">
-            <div class="panel-box">
-                <div class="panel-header">
-                    <div><i class="fa-solid fa-user"></i> Profile</div>
+       <div class="side-panel" style="min-width: 340px;">
+            <h3><i class="fa-solid fa-shield-halved"></i> Guild Base</h3>
+            
+            <div style="margin-bottom: 12px; background: #17172e; padding: 10px; border-radius: 8px; border: 1px solid #2e2e54;">
+                
+                <div id="noGuildDiv" style="display:none;">
+                    <div style="display:flex; gap:5px;">
+                        <input type="text" id="guildInput" maxlength="4" placeholder="TAG" class="auth-input" style="width: 60px; text-transform: uppercase;">
+                        <button id="reqGuildBtn" class="auth-btn" style="background:#f9a826; color: #111; flex:1;">Send Request</button>
+                        <button id="createGuildBtn" class="auth-btn" style="background:#00adb5; color:#fff;">Create</button>
+                    </div>
                 </div>
-                <div class="panel-body" style="margin-top: 10px;">
-                    <input type="text" id="username" class="auth-input" placeholder="Username" maxlength="15">
-                    <input type="password" id="password" class="auth-input" placeholder="Password">
-                    <button class="auth-btn" onclick="login()">Login</button>
-                    <button class="auth-btn" onclick="register()" style="background: #2e2e54;">Register</button>
-                    <div class="status-indicator" id="status-text">Not logged in</div>
-                    <div style="font-size: 11px; color: #aaa; margin-top: 10px; text-align: center;">Best Score: <span id="high-score-display" style="color: #4ecca3; font-weight: bold;">0</span></div>
-                </div>
-            </div>
-        </div>
 
                 <div id="hasGuildDiv" style="display:none;">
                     <div style="font-size: 14px; margin-bottom: 8px;">Guild: <span id="currentGuildDisplay" class="tag"></span> <span id="guildSizeDisplay" style="color:#aaa; font-size:10px; float:right;">0/10</span></div>
@@ -170,33 +167,6 @@
                             </div>
                         </div>
                     </div>
-                        
-                        <div style="margin-top:10px; background:#111122; padding:8px; border-radius:6px; border:1px dashed #f9a826;">
-                            <div style="display:flex; justify-content:space-between;">
-                                <span style="color:#ff9ff3; font-weight:bold; font-size:12px;"><i class="fa-solid fa-dragon"></i> Guild Pet</span>
-                                <span style="font-size:9px; color:#aaa; font-style:italic;">Cost doubles every 10,000</span>
-                            </div>
-                            <div style="font-size:11px; color:#aaa; margin-bottom: 4px; margin-top: 4px;">Level (Tokens): <span id="petTokenDisplay" style="color:#fff;">0</span> (Multi: <span id="petMultiDisplay" style="color:#4ecca3;">1.001x</span>)</div>
-                            
-                            <div style="font-size:10px; color:#f1c40f; margin-top:4px;">Boost with Gold (<span id="goldPetCostDisplay">100</span> / Token):</div>
-                            <div style="display:flex; gap:3px; margin-top:2px;">
-                                <button class="action-btn blue" onclick="convertPetToken('gold', 1)" style="flex:1;">+1</button>
-                                <button class="action-btn blue" onclick="convertPetToken('gold', 10)" style="flex:1;">+10</button>
-                                <button class="action-btn blue" onclick="convertPetToken('gold', 100)" style="flex:1;">+100</button>
-                                <button class="action-btn blue" onclick="convertPetToken('gold', 1000)" style="flex:1;">+1K</button>
-                            </div>
-
-                            <div id="warCoinPetDiv" style="display:none; margin-top:6px;">
-                                <div style="font-size:10px; color:#aaa;">Boost with War Coins (R4+) (<span id="warPetCostDisplay">10</span> / Token):</div>
-                                <div style="display:flex; gap:3px; margin-top:2px;">
-                                    <button class="action-btn red" onclick="convertPetToken('war', 1)" style="flex:1;">+1</button>
-                                    <button class="action-btn red" onclick="convertPetToken('war', 10)" style="flex:1;">+10</button>
-                                    <button class="action-btn red" onclick="convertPetToken('war', 100)" style="flex:1;">+100</button>
-                                    <button class="action-btn red" onclick="convertPetToken('war', 1000)" style="flex:1;">+1K</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
 
                     <div id="guildPaneChat" class="tutorial-pane" style="display:none;">
                         <div id="guildChatList" class="list-container" style="height:140px; flex:none; background:#111; padding:5px; margin-bottom:5px;"></div>
@@ -215,40 +185,40 @@
                         <button id="leaveGuildBtn" class="auth-btn" style="background:#ff4757; color:#fff; width:100%; margin-top:5px;">Leave Alliance</button>
                     </div>
 
-                </div>
-            </div>
-            
-            <div id="leaderPanel" style="display:none; background: rgba(30,30,55,0.6); padding:8px; border-radius:6px; border: 1px dashed #4ecca3; font-size:11px;">
-                <span style="color:#4ecca3; font-weight:bold;"><i class="fa-solid fa-crown"></i> Command Center</span>
-                
-                <div style="margin-top:8px; font-weight:bold; color:#f9a826;">Join Requests (R3+):</div>
-                <div id="joinRequestsList" style="max-height:60px; overflow-y:auto; display:flex; flex-direction:column; gap:4px; margin-bottom:8px;"></div>
-                
-                <div id="leaderSettingsDiv" style="display:none;">
-                    <div style="margin-top:6px; display:flex; gap:5px; align-items:center;">
-                        <span style="font-size:10px; color:#aaa;">Tag Color (R4+):</span>
-                        <input type="color" id="guildColorPicker" value="#f9a826" style="width:30px; height:20px; border:none; background:none; cursor:pointer;">
-                        <button class="action-btn blue" onclick="setGuildColor()">Save</button>
+                    <div id="leaderPanel" style="display:none; background: rgba(30,30,55,0.6); padding:8px; border-radius:6px; border: 1px dashed #4ecca3; font-size:11px; margin-top:10px;">
+                        <span style="color:#4ecca3; font-weight:bold;"><i class="fa-solid fa-crown"></i> Command Center</span>
+                        
+                        <div style="margin-top:8px; font-weight:bold; color:#f9a826;">Join Requests (R3+):</div>
+                        <div id="joinRequestsList" style="max-height:60px; overflow-y:auto; display:flex; flex-direction:column; gap:4px; margin-bottom:8px;"></div>
+                        
+                        <div id="leaderSettingsDiv" style="display:none;">
+                            <div style="margin-top:6px; display:flex; gap:5px; align-items:center;">
+                                <span style="font-size:10px; color:#aaa;">Tag Color (R4+):</span>
+                                <input type="color" id="guildColorPicker" value="#f9a826" style="width:30px; height:20px; border:none; background:none; cursor:pointer;">
+                                <button class="action-btn blue" onclick="setGuildColor()">Save</button>
+                            </div>
+                            <div style="font-weight:bold; color:#00adb5; margin-top:8px;">Titles (War Coins, R4+):</div>
+                            <div id="titleShop" class="title-shop-grid"></div>
+                            <div style="font-weight:bold; color:#ff9ff3; margin-top:8px;">Crests (War Coins, R4+):</div>
+                            <div id="crestShop" class="title-shop-grid"></div>
+                        </div>
                     </div>
-                    <div style="font-weight:bold; color:#00adb5; margin-top:8px;">Titles (War Coins, R4+):</div>
-                    <div id="titleShop" class="title-shop-grid"></div>
-                    <div style="font-weight:bold; color:#ff9ff3; margin-top:8px;">Crests (War Coins, R4+):</div>
-                    <div id="crestShop" class="title-shop-grid"></div>
+
                 </div>
             </div>
 
             <h4 style="margin:12px 0 5px 0; font-size: 13px; color:#ff4757;">Alliance Raid Damage</h4>
+            <div id="guildWarList" class="list-container" style="flex: 1; max-height: 300px;">Loading...</div>
+            
+            <h4 style="margin:12px 0 5px 0; font-size: 13px; color:#f1c40f;">Top Alliances (Score)</h4>
+            <div id="guildScoreList" class="list-container" style="flex: 1; max-height: 300px;">Loading...</div>
+
+            </div>
+            <h4 style="margin:12px 0 5px 0; font-size: 13px; color:#ff4757;">Alliance Raid Damage</h4>
             <div id="guildWarList" class="list-container" style="flex: 0.5;">Loading...</div>
             
             <h4 style="margin:12px 0 5px 0; font-size: 13px; color:#f1c40f;">Top Alliances (Score)</h4>
-            <div id="guildScoreList" class="list-container" style="flex: 0.5;">Loading...</div>
-
-            <h4 style="margin:12px 0 5px 0; font-size: 13px; color:#0be881;"><i class="fa-solid fa-scroll"></i> Daily Tasks (+20 Gold)</h4>
-            <div class="list-container" style="flex: 0.4;">
-                <div class="list-item"><span>Swing 10,000m</span> <span style="color:#4ecca3;" id="task1">0%</span></div>
-                <div class="list-item"><span>Play 5 Games</span> <span style="color:#4ecca3;" id="task2">0/5</span></div>
-                <div class="list-item"><span>Collect 5 Shards</span> <span style="color:#4ecca3;" id="task3">0/5</span></div>
-            </div>
+            <div id="guildScoreList" class="list-container" style="flex: 0.5;">Loading...</div> 
         </div>
 
         <div id="game-container">
@@ -301,53 +271,6 @@
                 </div>
             </div>
         </div>
-
-    <div style="display: flex; gap: 15px; width: 100%; align-items: flex-start; margin-top: 5px;">
-                    
-                    <div class="panel-box" style="flex: 1;">
-                        <div class="panel-header">
-                            <div><i class="fa-solid fa-shirt"></i> Changing Room</div>
-                        </div>
-                        <div class="panel-body">
-                            <div id="skin-shop" style="display: flex; flex-wrap: wrap; gap: 5px; margin-top: 10px; justify-content: center;"></div>
-                        </div>
-                    </div>
-                    
-                    <div class="panel-box" style="flex: 1;">
-                        <div class="panel-header">
-                            <div><i class="fa-solid fa-hammer"></i> Gear & Forge</div>
-                        </div>
-                        <div class="panel-body">
-                            <div style="display: flex; gap: 5px; margin-bottom: 10px; margin-top: 10px;">
-                                <button class="tutorial-tab active" onclick="document.getElementById('gearShopDiv').style.display='block'; document.getElementById('forgeDiv').style.display='none'; this.classList.add('active'); this.nextElementSibling.classList.remove('active');">Black Market</button>
-                                <button class="tutorial-tab" onclick="document.getElementById('gearShopDiv').style.display='none'; document.getElementById('forgeDiv').style.display='block'; this.classList.add('active'); this.previousElementSibling.classList.remove('active');">Forge</button>
-                            </div>
-                            
-                            <div id="gearShopDiv">
-                                <div style="font-size: 11px; color: #aaa; margin-bottom: 5px; text-align:center;">Weapons (Multiplier Boost)</div>
-                                <div id="weapon-shop" style="display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 15px; justify-content: center;"></div>
-                                <div style="font-size: 11px; color: #aaa; margin-bottom: 5px; text-align:center;">Coats (Physics Boost)</div>
-                                <div id="coat-shop" style="display: flex; flex-wrap: wrap; gap: 5px; justify-content: center;"></div>
-                            </div>
-                            
-                            <div id="forgeDiv" style="display:none;">
-                                <div class="forge-item">
-                                    <div class="forge-title">Yin Yang Shards <i class="fa-solid fa-yin-yang"></i></div>
-                                    <div class="forge-desc">White: <span id="wShardDisplay">0</span>/50 | Black: <span id="bShardDisplay">0</span>/50</div>
-                                    <button class="action-btn" id="fuseBtn" onclick="fuseYinYang()" style="margin-top: 5px;">Fuse True Yin Yang</button>
-                                </div>
-                                
-                                <div class="forge-item" style="margin-top: 10px; background: #1a1a1a; border-color: #ffd700;">
-                                    <div class="forge-title" style="color: #ffd700;">Awakened Gold <i class="fa-solid fa-gavel"></i></div>
-                                    <div class="forge-desc">Current Level: <span id="goldForgeLevel">0</span> (+<span id="goldForgeMulti">0</span>x Multiplier)</div>
-                                    <div class="forge-desc" style="color:#aaa;">Cost: <span id="goldForgeCost">5</span> Refined Gold <i class="fa-solid fa-gem" style="color:#00ffff;"></i></div>
-                                    <button class="action-btn green" onclick="upgradeGoldForge()" style="margin-top: 5px;">Forge Upgrade</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                </div>
 
         <div class="side-panel">
             <h3><i class="fa-solid fa-trophy"></i> Leaderboard</h3>
