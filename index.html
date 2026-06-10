@@ -74,27 +74,6 @@
             font-weight: 900 !important;
             animation: fire-flicker 0.15s infinite alternate;
         }
-
-/* Collapsible Window Styles */
-        .panel-header {
-            cursor: pointer;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            transition: background 0.2s;
-        }
-        .panel-header:hover {
-            background: rgba(255, 255, 255, 0.05);
-        }
-        .toggle-icon {
-            transition: transform 0.3s ease;
-            font-size: 12px;
-            color: #888;
-        }
-        .panel-body {
-            /* Wraps the content so it can be hidden */
-            display: block; 
-        }
         
 /* Safe Mobile & Desktop Layout */
         @media (max-width: 1000px) { 
@@ -129,33 +108,40 @@
     <div id="toastContainer"></div>
 
     <div id="main-layout">
-        <div class="side-panel" id="right-panel">
-            <div class="panel-box">
-                <div class="panel-header" onclick="togglePanel(this)">
-                    <div><i class="fa-solid fa-shield-halved" style="color:#f9a826;"></i> Alliance <span id="guildNameDisplay" style="font-size:12px; color:#aaa; font-weight:normal;"></span></div>
-                    <i class="fa-solid fa-chevron-up toggle-icon"></i>
-                </div>
+        <div class="side-panel">
+            <h3><i class="fa-solid fa-shield-halved"></i> Guild Base</h3>
+            
+            <div style="margin-bottom: 12px; background: #17172e; padding: 10px; border-radius: 8px; border: 1px solid #2e2e54;">
                 
-                <div class="panel-body">
-                    <div style="display: flex; gap: 5px; margin-top: 10px; margin-bottom: 10px;" id="guildNavDiv">
-                        <button class="tutorial-tab active" onclick="switchGuildTab('home')" style="flex:1; padding:5px 0; font-size:11px;">Home</button>
-                        <button class="tutorial-tab" onclick="switchGuildTab('chat')" style="flex:1; padding:5px 0; font-size:11px;">Chat <span id="chatNotif" style="display:none; color:#ff4757;">●</span></button>
-                        <button class="tutorial-tab" onclick="switchGuildTab('roster')" style="flex:1; padding:5px 0; font-size:11px;">Roster</button>
-                        <button class="tutorial-tab" onclick="switchGuildTab('titles')" style="flex:1; padding:5px 0; font-size:11px;">Titles</button>
+                <div id="noGuildDiv" style="display:none;">
+                    <div style="display:flex; gap:5px;">
+                        <input type="text" id="guildInput" maxlength="4" placeholder="TAG" class="auth-input" style="width: 60px; text-transform: uppercase;">
+                        <button id="reqGuildBtn" class="auth-btn" style="background:#f9a826; color: #111; flex:1;">Send Request</button>
+                        <button id="createGuildBtn" class="auth-btn" style="background:#00adb5; color:#fff;">Create</button>
                     </div>
+                </div>
 
+                <div id="hasGuildDiv" style="display:none;">
+                    <div style="font-size: 14px; margin-bottom: 8px;">Guild: <span id="currentGuildDisplay" class="tag"></span> <span id="guildSizeDisplay" style="color:#aaa; font-size:10px; float:right;">0/10</span></div>
+                    
+                    <div class="tutorial-tabs" style="margin-bottom:8px;">
+                        <button class="tutorial-tab-btn active" onclick="switchGuildTab('home')" id="gTabHome" style="padding: 6px;">Home</button>
+                        <button class="tutorial-tab-btn" onclick="switchGuildTab('chat')" id="gTabChat" style="padding: 6px;">Chat</button>
+                        <button class="tutorial-tab-btn" onclick="switchGuildTab('roster')" id="gTabRoster" style="padding: 6px;">Roster</button>
+                    </div>
+                    
                     <div id="guildPaneHome" class="tutorial-pane active">
-                        <div style="font-size: 12px; color: #ffd700; line-height: 1.4;">War Coins: <span id="warCoinDisplay">0</span> <i class="fa-solid fa-khanda" style="color:#aaa;"></i> | Gold: <span id="guildCoinDisplay">0</span> <i class="fa-solid fa-coins" style="color:#ffd700;"></i> | Refined Gold: <span id="refinedGoldDisplay">0</span> <i class="fa-solid fa-gem" style="color:#00ffff;"></i></div>
+                        <div style="font-size: 12px; color: #ffd700;">War Coins: <span id="warCoinDisplay">0</span> <i class="fa-solid fa-khanda" style="color:#aaa;"></i> | Gold: <span id="guildCoinDisplay">0</span> <i class="fa-solid fa-coins" style="color:#ffd700;"></i> | Refined Gold: <span id="refinedGoldDisplay">0</span> <i class="fa-solid fa-gem" style="color:#00ffff;"></i></div>
                         <div style="font-size: 11px; color: #4ecca3; margin-top: 4px; font-weight: bold;" id="guildTitleDisplay">Active Title: None</div>
                         
                         <div style="margin-top:8px; font-size:10px; color:#aaa;">
                             <div style="margin-bottom:4px;">Refine Gold (1 Refined = 1,000,000,000 Gold):</div>
-                            <div style="display:flex; gap:3px; flex-wrap: wrap;">
-                                <button class="action-btn green" onclick="convertGoldToRefined(1)" style="flex:1; min-width:35px;">+1</button>
-                                <button class="action-btn green" onclick="convertGoldToRefined(10)" style="flex:1; min-width:35px;">+10</button>
-                                <button class="action-btn green" onclick="convertGoldToRefined(100)" style="flex:1; min-width:35px;">+100</button>
-                                <button class="action-btn green" onclick="convertGoldToRefined(1000)" style="flex:1; min-width:35px;">+1K</button>
-                                <button class="action-btn green" onclick="convertGoldToRefined('max')" style="flex:1; min-width:45px; background:#8e44ad;">Max</button>
+                            <div style="display:flex; gap:3px;">
+                                <button class="action-btn green" onclick="convertGoldToRefined(1)" style="flex:1;">+1</button>
+                                <button class="action-btn green" onclick="convertGoldToRefined(10)" style="flex:1;">+10</button>
+                                <button class="action-btn green" onclick="convertGoldToRefined(100)" style="flex:1;">+100</button>
+                                <button class="action-btn green" onclick="convertGoldToRefined(1000)" style="flex:1;">+1K</button>
+                                <button class="action-btn green" onclick="convertGoldToRefined('max')" style="flex:1; background:#8e44ad;">Max</button>
                             </div>
                         </div>
                         
@@ -167,51 +153,26 @@
                             <div style="font-size:11px; color:#aaa; margin-bottom: 4px; margin-top: 4px;">Level (Tokens): <span id="petTokenDisplay" style="color:#fff;">0</span> (Multi: <span id="petMultiDisplay" style="color:#4ecca3;">1.001x</span>)</div>
                             
                             <div style="font-size:10px; color:#f1c40f; margin-top:4px;">Boost with Gold (<span id="goldPetCostDisplay">100</span> / Token):</div>
-                            <div style="display:flex; gap:3px; margin-top:2px; flex-wrap: wrap;">
-                                <button class="action-btn blue" onclick="convertPetToken('gold', 1)" style="flex:1; min-width:35px;">+1</button>
-                                <button class="action-btn blue" onclick="convertPetToken('gold', 10)" style="flex:1; min-width:35px;">+10</button>
-                                <button class="action-btn blue" onclick="convertPetToken('gold', 100)" style="flex:1; min-width:35px;">+100</button>
-                                <button class="action-btn blue" onclick="convertPetToken('gold', 1000)" style="flex:1; min-width:35px;">+1K</button>
-                                <button class="action-btn blue" onclick="convertPetToken('gold', 'max')" style="flex:1; min-width:45px; background:#8e44ad;">Max</button>
+                            <div style="display:flex; gap:3px; margin-top:2px;">
+                                <button class="action-btn blue" onclick="convertPetToken('gold', 1)" style="flex:1;">+1</button>
+                                <button class="action-btn blue" onclick="convertPetToken('gold', 10)" style="flex:1;">+10</button>
+                                <button class="action-btn blue" onclick="convertPetToken('gold', 100)" style="flex:1;">+100</button>
+                                <button class="action-btn blue" onclick="convertPetToken('gold', 1000)" style="flex:1;">+1K</button>
+                                <button class="action-btn blue" onclick="convertPetToken('gold', 'max')" style="flex:1; background:#8e44ad;">Max</button>
                             </div>
 
                             <div id="warCoinPetDiv" style="display:none; margin-top:6px;">
                                 <div style="font-size:10px; color:#aaa;">Boost with War Coins (R4+) (<span id="warPetCostDisplay">10</span> / Token):</div>
-                                <div style="display:flex; gap:3px; margin-top:2px; flex-wrap: wrap;">
-                                    <button class="action-btn red" onclick="convertPetToken('war', 1)" style="flex:1; min-width:35px;">+1</button>
-                                    <button class="action-btn red" onclick="convertPetToken('war', 10)" style="flex:1; min-width:35px;">+10</button>
-                                    <button class="action-btn red" onclick="convertPetToken('war', 100)" style="flex:1; min-width:35px;">+100</button>
-                                    <button class="action-btn red" onclick="convertPetToken('war', 1000)" style="flex:1; min-width:35px;">+1K</button>
-                                    <button class="action-btn red" onclick="convertPetToken('war', 'max')" style="flex:1; min-width:45px; background:#8e44ad;">Max</button>
+                                <div style="display:flex; gap:3px; margin-top:2px;">
+                                    <button class="action-btn red" onclick="convertPetToken('war', 1)" style="flex:1;">+1</button>
+                                    <button class="action-btn red" onclick="convertPetToken('war', 10)" style="flex:1;">+10</button>
+                                    <button class="action-btn red" onclick="convertPetToken('war', 100)" style="flex:1;">+100</button>
+                                    <button class="action-btn red" onclick="convertPetToken('war', 1000)" style="flex:1;">+1K</button>
+                                    <button class="action-btn red" onclick="convertPetToken('war', 'max')" style="flex:1; background:#8e44ad;">Max</button>
                                 </div>
                             </div>
                         </div>
                     </div>
-
-                    <div id="guildPaneChat" class="tutorial-pane"><div id="guildChatBox" class="chat-box"></div><div style="display:flex; gap:5px; margin-top:5px;"><input type="text" id="guildChatInput" class="auth-input" placeholder="Message Alliance (R1+)..." style="flex-grow:1; margin:0;" maxlength="150" onkeypress="if(event.key==='Enter') sendGuildChat()"><button class="auth-btn" onclick="sendGuildChat()" style="margin:0; width:auto; padding:0 15px;"><i class="fa-solid fa-paper-plane"></i></button></div></div>
-                    <div id="guildPaneRoster" class="tutorial-pane"><div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;"><div style="font-size:12px; color:#aaa;">Members: <span id="guildMemberCount">1/10</span></div><div id="guildInviteDiv" style="display:none;"><input type="text" id="guildInviteInput" class="auth-input" placeholder="Username" style="width:90px; padding:4px 8px; font-size:11px; margin:0;"><button class="action-btn green" onclick="sendGuildInvite()" style="padding:4px 8px; font-size:11px;">Invite</button></div></div><div class="leaderboard-list" id="guildRosterList"></div><div id="guildRequestsDiv" style="display:none; margin-top:15px; border-top:1px dashed #444; padding-top:10px;"><div style="font-size:12px; color:#f9a826; margin-bottom:5px;">Pending Requests:</div><div id="guildRequestsList"></div></div></div>
-                    <div id="guildPaneTitles" class="tutorial-pane"><div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;"><span style="font-size:12px; color:#ff9ff3;"><i class="fa-solid fa-crown"></i> Titles & Crests</span><span style="font-size:11px; color:#aaa;">R4+ to purchase/equip</span></div><div style="height:150px; overflow-y:auto; background:#111; border-radius:4px; padding:5px; border:1px solid #333;" id="guildTitlesList"></div></div>
-                </div>
-            </div>
-
-            <div class="panel-box">
-                <div class="panel-header" onclick="togglePanel(this)">
-                    <div><i class="fa-solid fa-fire" style="color:#ff4757;"></i> Live Boss Damage</div>
-                    <i class="fa-solid fa-chevron-up toggle-icon"></i>
-                </div>
-                <div class="panel-body">
-                    <div class="leaderboard-list" id="boss-damage-content" style="margin-top:10px;">
-                        <div style="text-align:center; color:#888; font-size:12px; margin-top:10px;">Loading Data...</div>
-                    </div>
-                    
-                    <div style="text-align:center; margin-top: 15px; border-top: 1px dashed #333; padding-top: 10px;">
-                        <a href="leaderboard.html" style="color:#4ecca3; font-size:12px; text-decoration:none; font-weight:bold;">
-                            <i class="fa-solid fa-trophy"></i> View Global Leaderboards
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </div>
                         
                         <div style="margin-top:10px; background:#111122; padding:8px; border-radius:6px; border:1px dashed #f9a826;">
                             <div style="display:flex; justify-content:space-between;">
@@ -344,67 +305,17 @@
             </div>
         </div>
 
-      <div class="side-panel" id="left-panel">
-            <div class="panel-box">
-                <div class="panel-header" onclick="togglePanel(this)">
-                    <div><i class="fa-solid fa-user"></i> Profile</div>
-                    <i class="fa-solid fa-chevron-up toggle-icon"></i>
-                </div>
-                <div class="panel-body" style="margin-top: 10px;">
-                    <input type="text" id="username" class="auth-input" placeholder="Username" maxlength="15">
-                    <input type="password" id="password" class="auth-input" placeholder="Password">
-                    <button class="auth-btn" onclick="login()">Login</button>
-                    <button class="auth-btn" onclick="register()" style="background: #2e2e54;">Register</button>
-                    <div class="status-indicator" id="status-text">Not logged in</div>
-                    <div style="font-size: 11px; color: #aaa; margin-top: 10px; text-align: center;">Best Score: <span id="high-score-display" style="color: #4ecca3; font-weight: bold;">0</span></div>
-                </div>
+        <div class="side-panel">
+            <h3><i class="fa-solid fa-trophy"></i> Leaderboard</h3>
+            <div id="leaderboardList" class="list-container" style="flex: 1;">Loading ranks...</div>
+            <h3 style="margin-top: 15px;"><i class="fa-solid fa-handshake"></i> Friends & Rivals</h3>
+            <div style="display:flex; gap:5px; margin-bottom: 5px;">
+                <input type="text" id="friendInput" placeholder="Enter name..." class="auth-input" style="font-size:11px; flex:1;">
+                <button id="addFriendBtn" class="auth-btn" style="background:#00adb5; font-size:11px; padding:6px 10px;">Add</button>
             </div>
-
-            <div class="panel-box">
-                <div class="panel-header" onclick="togglePanel(this)">
-                    <div><i class="fa-solid fa-shirt"></i> Changing Room</div>
-                    <i class="fa-solid fa-chevron-up toggle-icon"></i>
-                </div>
-                <div class="panel-body">
-                    <div id="skin-shop" style="display: flex; flex-wrap: wrap; gap: 5px; margin-top: 10px; justify-content: center;"></div>
-                </div>
-            </div>
-            
-            <div class="panel-box">
-                <div class="panel-header" onclick="togglePanel(this)">
-                    <div><i class="fa-solid fa-hammer"></i> Gear & Forge</div>
-                    <i class="fa-solid fa-chevron-up toggle-icon"></i>
-                </div>
-                <div class="panel-body">
-                    <div style="display: flex; gap: 5px; margin-bottom: 10px; margin-top: 10px;">
-                        <button class="tutorial-tab active" onclick="document.getElementById('gearShopDiv').style.display='block'; document.getElementById('forgeDiv').style.display='none'; this.classList.add('active'); this.nextElementSibling.classList.remove('active');">Black Market</button>
-                        <button class="tutorial-tab" onclick="document.getElementById('gearShopDiv').style.display='none'; document.getElementById('forgeDiv').style.display='block'; this.classList.add('active'); this.previousElementSibling.classList.remove('active');">Forge</button>
-                    </div>
-                    
-                    <div id="gearShopDiv">
-                        <div style="font-size: 11px; color: #aaa; margin-bottom: 5px; text-align:center;">Weapons (Multiplier Boost)</div>
-                        <div id="weapon-shop" style="display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 15px; justify-content: center;"></div>
-                        <div style="font-size: 11px; color: #aaa; margin-bottom: 5px; text-align:center;">Coats (Physics Boost)</div>
-                        <div id="coat-shop" style="display: flex; flex-wrap: wrap; gap: 5px; justify-content: center;"></div>
-                    </div>
-                    
-                    <div id="forgeDiv" style="display:none;">
-                        <div class="forge-item">
-                            <div class="forge-title">Yin Yang Shards <i class="fa-solid fa-yin-yang"></i></div>
-                            <div class="forge-desc">White: <span id="wShardDisplay">0</span>/50 | Black: <span id="bShardDisplay">0</span>/50</div>
-                            <button class="action-btn" id="fuseBtn" onclick="fuseYinYang()" style="margin-top: 5px;">Fuse True Yin Yang</button>
-                        </div>
-                        
-                        <div class="forge-item" style="margin-top: 10px; background: #1a1a1a; border-color: #ffd700;">
-                            <div class="forge-title" style="color: #ffd700;">Awakened Gold <i class="fa-solid fa-gavel"></i></div>
-                            <div class="forge-desc">Current Level: <span id="goldForgeLevel">0</span> (+<span id="goldForgeMulti">0</span>x Multiplier)</div>
-                            <div class="forge-desc" style="color:#aaa;">Cost: <span id="goldForgeCost">5</span> Refined Gold <i class="fa-solid fa-gem" style="color:#00ffff;"></i></div>
-                            <button class="action-btn green" onclick="upgradeGoldForge()" style="margin-top: 5px;">Forge Upgrade</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            <div id="socialList" class="list-container" style="flex: 1;">Login to sync friends.</div>
         </div>
+    </div>
 
     <a href="https://docs.google.com/forms/d/e/1FAIpQLSfJclvl8BNUM62RUaqUOjbdaf68Eg8B3SZrlEC9uiymRmzC8Q/viewform?usp=publish-editor" target="_blank" class="help-fab" style="right: 130px; background: #2ed573; text-decoration: none; color: white;" title="Feedback Form"><i class="fa-solid fa-comment-dots"></i></a>
     <button class="help-fab" id="openDevlogBtn" title="Devlog & Patch Notes" style="right: 75px; background: #00adb5;"><i class="fa-solid fa-newspaper"></i></button>
@@ -418,86 +329,110 @@
             </div>
             <div class="tutorial-body" style="display: block;">
                 
-                <h4 style="color:#ff4757; border-bottom:1px dashed #2e2e54; padding-bottom:4px; margin-top:0;">v1.8.3 - QoL & Mobile Optimization</h4>
-                <p style="font-size: 11px; color: #888; margin-top: -5px;">Released: June 9, 2026</p>
-                <ul>
-                    <li><span class="tutorial-highlight">Mobile Layouts:</span> Revamped layout engines, stacked layout components, and fluid responsive buttons for smartphones and mini-tablets!</li>
-                    <li><span class="tutorial-highlight">Bulk Refines & Upgrades:</span> Introduced +10, +100, +1K, and MAX controls to Gold Refining and Pet feeds to minimize click strain.</li>
-                </ul>
-
-                <h2 style="color:#ffd700; border-bottom:1px dashed #2e2e54; padding-bottom:4px; margin-top:15px;">DEV NOTE:</h2>
+                  <h2 style="color:#ffffff; border-bottom:1px dashed #000000; padding-bottom:4px; margin-top:0;">DEV NOTE:</h2>
                 <p style="font-size: 11px; color: #888; margin-top: -5px;">In Act As Of: June 8, 2026</p>
                 <ul>
                     <li><span class="tutorial-highlight">No More Large Updates For a Bit:</span> Due to me having to focus on school work I am slowing down for a bit.</li>
-                    <li><span class="tutorial-highlight">Live Events:</span> Live events are garunteed to happen ~7:00 PM EST on Fridays.</li>
+                    <li><span class="tutorial-highlight">Live Events:</span> Live events are gaurunteed to happen ~7:00 PM EST on Fridays.</li>
                     <li><span class="tutorial-highlight">The Summer:</span> I am going to be away for the summer most likely unless this gets big enough to be a side gig.</li>
                 </ul>
                 
-                <h4 style="color:#ff4757; border-bottom:1px dashed #2e2e54; padding-bottom:4px; margin-top:20px;">v1.8.2 - Refined Forge & Gold Fix</h4>
+                <h4 style="color:#00adb5; border-bottom:1px dashed #2e2e54; padding-bottom:4px; margin-top:20px;">v1.9.3 - QoL & UI Polish</h4>
+                <p style="font-size: 11px; color: #888; margin-top: -5px;">Released: June 9, 2026</p>
+                <ul>
+                    <li><span class="tutorial-highlight">Mobile Responsive:</span> Major UI optimizations to make playing on phones and smaller screens significantly better!</li>
+                    <li><span class="tutorial-highlight">Bulk Upgrades:</span> Added +10, +100, +1K, and MAX buttons for Refined Gold and Guild Pet upgrades. No more clicking a million times!</li>
+                </ul>
+
+                  <h4 style="color:#00adb5; border-bottom:1px dashed #2e2e54; padding-bottom:4px; margin-top:20px;">v1.9.2 - Security v2</h4>
+                <p style="font-size: 11px; color: #888; margin-top: -5px;">Released: June 9, 2026</p>
+                <ul>
+                    <li><span class="tutorial-highlight">Password Hashing Security Increase:</span> Passwords are hashed more aggresively now on the server side to add another layer of security.</li>
+                    <li><span class="tutorial-highlight">Score Security:</span> Score is checked more frequently during runs to handle anomolies and reject hacked in scores.</li>
+                       <li><span class="tutorial-highlight">Other Backend Patches:</span> Cant go into too much detail but these new features make attacks way less likely.</li>
+                </ul>
+                
+                <h4 style="color:#00adb5; border-bottom:1px dashed #2e2e54; padding-bottom:4px; margin-top:0;">v1.8.2 - Refined Forge & Gold Fix</h4>
                 <p style="font-size: 11px; color: #888; margin-top: -5px;">Released: June 8, 2026</p>
                 <ul>
                     <li><span class="tutorial-highlight">Awakened Gold Forge:</span> Awakened Gold now supports weapon-style Refined Gold upgrades with exponential level costs.</li>
+                    <li><span class="tutorial-highlight">Gold Rewards Fixed:</span> End-of-run score now converts into Guild Gold again, including proper Awakened Gold multiplier scaling.</li>
+                    <li><span class="tutorial-highlight">Persistence:</span> Awakened Gold forge levels now save across sessions and sync to the backend.</li>
                 </ul>
 
-                <h4 style="color:#ff4757; border-bottom:1px dashed #2e2e54; padding-bottom:4px; margin-top:20px;">v1.7.7 - Gear/Forge Update</h4>
+                  <h4 style="color:#00adb5; border-bottom:1px dashed #2e2e54; padding-bottom:4px; margin-top:0;">v1.7.7 - Gear/Forge Update</h4>
                 <p style="font-size: 11px; color: #888; margin-top: -5px;">Released: June 8, 2026</p>
                 <ul>
-                    <li><span class="tutorial-highlight">Weapon Forge:</span> You can now forge weapons with gold which increases there base multiplier infinitly.</li>
+                    <li><span class="tutorial-highlight">Weapon Forge:</span> You can now forge weapons with gold which increases there base multiplier infinitly but getting exponentially more expensive.</li>
+                    <li><span class="tutorial-highlight">New Gen Weapons:</span> Added new very expensive very powerful weapons and cloaks to the shops for late game grinders.</li>
+                    <li><span class="tutorial-highlight">New Gold Rush Event:</span> Added a new type of event to my dev switches in the backend which allow me to activate a new live event called the gold rush which gives 2x gold.</li>
                 </ul>
 
-                <h4 style="color:#ff4757; border-bottom:1px dashed #2e2e54; padding-bottom:4px; margin-top:20px;">v1.7.5 - Visuals & Security Patch</h4>
+                <h4 style="color:#00adb5; border-bottom:1px dashed #2e2e54; padding-bottom:4px; margin-top:20px;">v1.7.5 - Visuals & Security Patch</h4>
                 <p style="font-size: 11px; color: #888; margin-top: -5px;">Released: June 7, 2026</p>
                 <ul>
-                    <li><span class="tutorial-highlight">Security:</span> Integrated PurgoMalum profanity filter for chat/tags.</li>
+                    <li><span class="tutorial-highlight">Boss Art:</span> Every single monthly boss now has custom canvas art (Kraken, Leprechaun, Yeti, etc.).</li>
+                    <li><span class="tutorial-highlight">Admin Tags:</span> Added exclusive animated neon-fire rendering for the DEV alliance across the game and leaderboards.</li>
+                    <li><span class="tutorial-highlight">Security:</span> Integrated PurgoMalum profanity filter for chat/tags and added strict HTML sanitization to prevent code injection.</li>
                 </ul>
 
-                <h4 style="color:#ff4757; border-bottom:1px dashed #2e2e54; padding-bottom:4px; margin-top:20px;">v1.7.3 - The Hierarchy Update</h4>
+                <h4 style="color:#ffffff; border-bottom:1px dashed #2e2e54; padding-bottom:4px; margin-top:20px;">v1.7.3 - The Hierarchy Update</h4>
                 <p style="font-size: 11px; color: #888; margin-top: -5px;">Released: June 7, 2026</p>
                 <ul>
                     <li><span class="tutorial-highlight">Alliance Chat:</span> Live Alliance Chat added (requires R2 Member status to talk).</li>
+                    <li><span class="tutorial-highlight">Ranks R1-R5:</span> Complete role overhaul. R3s invite, R4s manage notices/kicks, and R5 Leaders control the ranks!</li>
                 </ul>
 
-                <h4 style="color:#ff4757; border-bottom:1px dashed #2e2e54; padding-bottom:4px; margin-top:20px;">v1.6.3 - Proportional Raid Rewards</h4>
+                <h4 style="color:#ffffff; border-bottom:1px dashed #2e2e54; padding-bottom:4px; margin-top:20px;">v1.6.3 - Proportional Raid Rewards</h4>
                 <p style="font-size: 11px; color: #888; margin-top: -5px;">Released: June 6, 2026</p>
                 <ul>
-                    <li><span class="tutorial-highlight">Fair War Coins:</span> Defeating the Boss distributes War Coins based on damage percentage.</li>
+                    <li><span class="tutorial-highlight">Fair War Coins:</span> Defeating the Boss now distributes War Coins dynamically to ALL participating Alliances based on their exact damage percentage!</li>
                 </ul>
 
-                <h4 style="color:#ff4757; border-bottom:1px dashed #2e2e54; padding-bottom:4px; margin-top:20px;">v1.5.3 - The Hazards Update</h4>
+                <h4 style="color:#ffffff; border-bottom:1px dashed #2e2e54; padding-bottom:4px; margin-top:20px;">v1.5.3 - The Hazards Update</h4>
                 <p style="font-size: 11px; color: #888; margin-top: -5px;">Released: June 5, 2026</p>
                 <ul>
-                    <li><span class="tutorial-highlight">Galaxy Mines:</span> Floating purple hazards added to the sky.</li>
+                    <li><span class="tutorial-highlight">Galaxy Mines:</span> Floating purple hazards added to the sky. Hitting one snaps your rope and drops momentum by 90%.</li>
                 </ul>
 
-                <h4 style="color:#ff4757; border-bottom:1px dashed #2e2e54; padding-bottom:4px; margin-top:20px;">v1.4.3 - The Live Events Update</h4>
+                <h4 style="color:#ffffff; border-bottom:1px dashed #2e2e54; padding-bottom:4px; margin-top:20px;">v1.4.3 - The Live Events Update</h4>
                 <p style="font-size: 11px; color: #888; margin-top: -5px;">Released: June 4, 2026</p>
                 <ul>
-                    <li><span class="tutorial-highlight">Live Operations:</span> The server can now push live global events.</li>
+                    <li><span class="tutorial-highlight">Live Operations:</span> The server can now push live global events (like the 3x Boss Frenzy) directly to all connected clients!</li>
+                    <li><span class="tutorial-highlight">Daily Tasks:</span> Swing, play, and collect shards to earn daily Gold payouts.</li>
                 </ul>
 
-                <h4 style="color:#ff4757; border-bottom:1px dashed #2e2e54; padding-bottom:4px; margin-top:20px;">v1.3.3 - The Prestige Guild Update</h4>
+                <h4 style="color:#ffffff; border-bottom:1px dashed #2e2e54; padding-bottom:4px; margin-top:20px;">v1.3.3 - The Prestige Guild Update</h4>
                 <p style="font-size: 11px; color: #888; margin-top: -5px;">Released: June 3, 2026</p>
                 <ul>
-                    <li><span class="tutorial-highlight">Exponential Pets:</span> Guild Pet exchange rates now double.</li>
+                    <li><span class="tutorial-highlight">Exponential Pets:</span> Guild Pet exchange rates now actively double every 10,000 tokens to balance late-game scaling.</li>
+                    <li><span class="tutorial-highlight">True Gold Skin:</span> Added a new ultra-tier skin that unlocks at 10M Score, boosting points by 15x and doubling Gold output.</li>
                 </ul>
 
-                <h4 style="color:#ff4757; border-bottom:1px dashed #2e2e54; padding-bottom:4px; margin-top:20px;">v1.2.1 - Alliances & The Black Market</h4>
+                <h4 style="color:#ffffff; border-bottom:1px dashed #2e2e54; padding-bottom:4px; margin-top:20px;">v1.2.1 - Alliances & The Black Market</h4>
                 <p style="font-size: 11px; color: #888; margin-top: -5px;">Released: June 2, 2026</p>
                 <ul>
-                    <li><span class="tutorial-highlight">Guilds:</span> Create/join Alliances.</li>
+                    <li><span class="tutorial-highlight">Guilds:</span> Create/join Alliances. Added active Titles and custom Crest buffs.</li>
+                    <li><span class="tutorial-highlight">Gear System:</span> Added Black Market Weapons (Multipliers) and Coats (Physics buffs) purchasable with Gold.</li>
+                    <li><span class="tutorial-highlight">Social:</span> Friends list and 1v1 score duels added.</li>
                 </ul>
 
-                <h4 style="color:#4ecca3; border-bottom:1px dashed #2e2e54; padding-bottom:4px; margin-top:20px;">v1.1.0 - The Underworld Update</h4>
+                <h4 style="color:#ffffff; border-bottom:1px dashed #2e2e54; padding-bottom:4px; margin-top:20px;">v1.1.0 - The Underworld Update</h4>
                 <p style="font-size: 11px; color: #888; margin-top: -5px;">Released: June 1, 2026</p>
                 <ul>
-                    <li><span class="tutorial-highlight">Realms:</span> Added Angel and Devil portal realms.</li>
+                    <li><span class="tutorial-highlight">Realms:</span> Added Angel and Devil portal realms. Collect White and Black shards to fuse the Yin Yang skin.</li>
+                    <li><span class="tutorial-highlight">Secrets:</span> Added password-locked skins (ANGEL) and death-streak achievements.</li>
                 </ul>
 
-                <h4 style="color:#ffffff; border-bottom:1px dashed #2e2e54; padding-bottom:4px; margin-top:20px;">v1.0.0 - Official Launch</h4>
+                <h4 style="color:#2ed573; border-bottom:1px dashed #2e2e54; padding-bottom:4px; margin-top:20px;">v1.0.0 - Official Launch</h4>
                 <p style="font-size: 11px; color: #888; margin-top: -5px;">Released: May 31, 2026</p>
                 <ul>
-                    <li><span class="tutorial-highlight">Game Live:</span> Core mechanics enabled!</li>
+                    <li><span class="tutorial-highlight">Game Live:</span> Core grappling mechanics, momentum physics, bouncers, and base cosmetics enabled!</li>
                 </ul>
+
+            </div>
+            <div class="tutorial-footer" style="justify-content: center;">
+                <span style="font-size:11px; color:#666;">Thanks for playing Infinite Swing!</span>
             </div>
         </div>
     </div>
@@ -790,42 +725,6 @@
         async function hashPassword(p) { const m = new TextEncoder().encode(p); const h = await crypto.subtle.digest('SHA-256', m); return Array.from(new Uint8Array(h)).map(b => b.toString(16).padStart(2, '0')).join(''); }
         function showToast(msg, duration=4000, color="#4ecca3") { const c = document.getElementById("toastContainer"); if (!c) return; const t = document.createElement("div"); t.className = "toast"; t.style.borderColor = color; t.style.animationDuration = (duration/1000)+"s"; t.innerText = msg; c.appendChild(t); setTimeout(() => { if (t.parentElement) t.remove(); }, duration); }
 
-function renderLeaderboard(data) {
-            if (!data || !data.success) return;
-            
-            // Only rendering Guild Boss Damage on the main page now!
-            const bossContainer = document.getElementById('boss-damage-content');
-            if (bossContainer) {
-                bossContainer.innerHTML = '';
-                if (!data.guildWars || data.guildWars.length === 0) {
-                    bossContainer.innerHTML = '<div style="text-align:center; color:#888; font-size:12px; margin-top:10px;">No damage dealt yet.</div>';
-                } else {
-                    data.guildWars.forEach((g, index) => {
-                        let color = index === 0 ? '#ffd700' : (index === 1 ? '#c0c0c0' : (index === 2 ? '#cd7f32' : '#aaa'));
-                        bossContainer.innerHTML += `
-                            <div class="leaderboard-item">
-                                <span style="color:${color}; font-weight:bold; width: 20px;">#${index + 1}</span>
-                                <span style="color:${g.name_color || '#f9a826'}; flex-grow:1; text-align:left; font-weight:bold;">[${g.tag}]</span>
-                                <span style="color:#ff4757; font-weight:bold;">${formatNumber(g.damage)} <i class="fa-solid fa-fire"></i></span>
-                            </div>
-                        `;
-                    });
-                }
-            }
-        }
-        
-function togglePanel(btn) {
-            const body = btn.nextElementSibling;
-            const icon = btn.querySelector('.toggle-icon');
-            if (body.style.display === 'none') {
-                body.style.display = 'block';
-                icon.style.transform = 'rotate(0deg)';
-            } else {
-                body.style.display = 'none';
-                icon.style.transform = 'rotate(180deg)';
-            }
-        }
-        
         function switchGuildTab(tab) {
             document.getElementById('gTabHome').classList.toggle('active', tab === 'home');
             document.getElementById('gTabChat').classList.toggle('active', tab === 'chat');
