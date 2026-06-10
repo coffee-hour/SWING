@@ -76,17 +76,11 @@
         }
         
 /* Safe Mobile & Desktop Layout */
-        @media (max-width: 1000px) { 
-            #main-layout { flex-direction: column; padding: 10px; } 
-            .side-panel { min-height: auto; width: 100%; box-sizing: border-box; } 
-            #game-container { min-width: unset; width: 100%; }
-        }
-        
-        @media (max-width: 650px) {
-            #bottom-panels { flex-direction: column; }
-            .panel-box { width: 100%; box-sizing: border-box; }
-            .ui-bar { justify-content: center; }
-            canvas { height: auto; max-height: 45vh; width: 100%; border-radius: 8px; }
+      /* Restored Standard Layout - Mobile Support Disabled to Prevent Squishing */
+        @media (max-width: 900px) { 
+            /* Disabled window stacking to preserve wide layout aspect ratios */
+            body { padding: 10px; }
+            #main-layout { flex-direction: row; } 
         }
     </style>
 </head>
@@ -328,31 +322,22 @@
                 <button class="tutorial-close" id="closeDevlogBtn">&times;</button>
             </div>
             <div class="tutorial-body" style="display: block;">
-                
-                  <h2 style="color:#ffffff; border-bottom:1px dashed #000000; padding-bottom:4px; margin-top:0;">DEV NOTE:</h2>
+
+                <h2 style="color:#ffd700; border-bottom:1px dashed #2e2e54; padding-bottom:4px; margin-top:15px;">DEV NOTE:</h2>
                 <p style="font-size: 11px; color: #888; margin-top: -5px;">In Act As Of: June 8, 2026</p>
                 <ul>
                     <li><span class="tutorial-highlight">No More Large Updates For a Bit:</span> Due to me having to focus on school work I am slowing down for a bit.</li>
-                    <li><span class="tutorial-highlight">Live Events:</span> Live events are gaurunteed to happen ~7:00 PM EST on Fridays.</li>
+                    <li><span class="tutorial-highlight">Live Events:</span> Live events are guaranteed to happen ~7:00 PM EST on Fridays.</li>
                     <li><span class="tutorial-highlight">The Summer:</span> I am going to be away for the summer most likely unless this gets big enough to be a side gig.</li>
                 </ul>
                 
-                <h4 style="color:#00adb5; border-bottom:1px dashed #2e2e54; padding-bottom:4px; margin-top:20px;">v1.9.3 - QoL & UI Polish</h4>
+                <h4 style="color:#ff4757; border-bottom:1px dashed #2e2e54; padding-bottom:4px; margin-top:0;">v1.8.3 - QoL & Bulk Controls</h4>
                 <p style="font-size: 11px; color: #888; margin-top: -5px;">Released: June 9, 2026</p>
                 <ul>
-                    <li><span class="tutorial-highlight">Mobile Responsive:</span> Major UI optimizations to make playing on phones and smaller screens significantly better!</li>
-                    <li><span class="tutorial-highlight">Bulk Upgrades:</span> Added +10, +100, +1K, and MAX buttons for Refined Gold and Guild Pet upgrades. No more clicking a million times!</li>
-                </ul>
-
-                  <h4 style="color:#00adb5; border-bottom:1px dashed #2e2e54; padding-bottom:4px; margin-top:20px;">v1.9.2 - Security v2</h4>
-                <p style="font-size: 11px; color: #888; margin-top: -5px;">Released: June 9, 2026</p>
-                <ul>
-                    <li><span class="tutorial-highlight">Password Hashing Security Increase:</span> Passwords are hashed more aggresively now on the server side to add another layer of security.</li>
-                    <li><span class="tutorial-highlight">Score Security:</span> Score is checked more frequently during runs to handle anomolies and reject hacked in scores.</li>
-                       <li><span class="tutorial-highlight">Other Backend Patches:</span> Cant go into too much detail but these new features make attacks way less likely.</li>
+                    <li><span class="tutorial-highlight">Bulk Refines & Upgrades:</span> Introduced +10, +100, +1K, and MAX controls to Gold Refining and Pet feeds to minimize click strain.</li>
                 </ul>
                 
-                <h4 style="color:#00adb5; border-bottom:1px dashed #2e2e54; padding-bottom:4px; margin-top:0;">v1.8.2 - Refined Forge & Gold Fix</h4>
+                <h4 style="color:#ff4757; border-bottom:1px dashed #2e2e54; padding-bottom:4px; margin-top:20px;">v1.8.2 - Refined Forge & Gold Fix</h4>
                 <p style="font-size: 11px; color: #888; margin-top: -5px;">Released: June 8, 2026</p>
                 <ul>
                     <li><span class="tutorial-highlight">Awakened Gold Forge:</span> Awakened Gold now supports weapon-style Refined Gold upgrades with exponential level costs.</li>
@@ -360,15 +345,15 @@
                     <li><span class="tutorial-highlight">Persistence:</span> Awakened Gold forge levels now save across sessions and sync to the backend.</li>
                 </ul>
 
-                  <h4 style="color:#00adb5; border-bottom:1px dashed #2e2e54; padding-bottom:4px; margin-top:0;">v1.7.7 - Gear/Forge Update</h4>
+                <h4 style="color:#ff4757; border-bottom:1px dashed #2e2e54; padding-bottom:4px; margin-top:20px;">v1.7.7 - Gear/Forge Update</h4>
                 <p style="font-size: 11px; color: #888; margin-top: -5px;">Released: June 8, 2026</p>
                 <ul>
-                    <li><span class="tutorial-highlight">Weapon Forge:</span> You can now forge weapons with gold which increases there base multiplier infinitly but getting exponentially more expensive.</li>
+                    <li><span class="tutorial-highlight">Weapon Forge:</span> You can now forge weapons with gold which increases their base multiplier infinitely but getting exponentially more expensive.</li>
                     <li><span class="tutorial-highlight">New Gen Weapons:</span> Added new very expensive very powerful weapons and cloaks to the shops for late game grinders.</li>
                     <li><span class="tutorial-highlight">New Gold Rush Event:</span> Added a new type of event to my dev switches in the backend which allow me to activate a new live event called the gold rush which gives 2x gold.</li>
                 </ul>
 
-                <h4 style="color:#00adb5; border-bottom:1px dashed #2e2e54; padding-bottom:4px; margin-top:20px;">v1.7.5 - Visuals & Security Patch</h4>
+                <h4 style="color:#ff4757; border-bottom:1px dashed #2e2e54; padding-bottom:4px; margin-top:20px;">v1.7.5 - Visuals & Security Patch</h4>
                 <p style="font-size: 11px; color: #888; margin-top: -5px;">Released: June 7, 2026</p>
                 <ul>
                     <li><span class="tutorial-highlight">Boss Art:</span> Every single monthly boss now has custom canvas art (Kraken, Leprechaun, Yeti, etc.).</li>
@@ -376,40 +361,40 @@
                     <li><span class="tutorial-highlight">Security:</span> Integrated PurgoMalum profanity filter for chat/tags and added strict HTML sanitization to prevent code injection.</li>
                 </ul>
 
-                <h4 style="color:#ffffff; border-bottom:1px dashed #2e2e54; padding-bottom:4px; margin-top:20px;">v1.7.3 - The Hierarchy Update</h4>
+                <h4 style="color:#ff4757; border-bottom:1px dashed #2e2e54; padding-bottom:4px; margin-top:20px;">v1.7.3 - The Hierarchy Update</h4>
                 <p style="font-size: 11px; color: #888; margin-top: -5px;">Released: June 7, 2026</p>
                 <ul>
                     <li><span class="tutorial-highlight">Alliance Chat:</span> Live Alliance Chat added (requires R2 Member status to talk).</li>
                     <li><span class="tutorial-highlight">Ranks R1-R5:</span> Complete role overhaul. R3s invite, R4s manage notices/kicks, and R5 Leaders control the ranks!</li>
                 </ul>
 
-                <h4 style="color:#ffffff; border-bottom:1px dashed #2e2e54; padding-bottom:4px; margin-top:20px;">v1.6.3 - Proportional Raid Rewards</h4>
+                <h4 style="color:#ff4757; border-bottom:1px dashed #2e2e54; padding-bottom:4px; margin-top:20px;">v1.6.3 - Proportional Raid Rewards</h4>
                 <p style="font-size: 11px; color: #888; margin-top: -5px;">Released: June 6, 2026</p>
                 <ul>
                     <li><span class="tutorial-highlight">Fair War Coins:</span> Defeating the Boss now distributes War Coins dynamically to ALL participating Alliances based on their exact damage percentage!</li>
                 </ul>
 
-                <h4 style="color:#ffffff; border-bottom:1px dashed #2e2e54; padding-bottom:4px; margin-top:20px;">v1.5.3 - The Hazards Update</h4>
+                <h4 style="color:#ff4757; border-bottom:1px dashed #2e2e54; padding-bottom:4px; margin-top:20px;">v1.5.3 - The Hazards Update</h4>
                 <p style="font-size: 11px; color: #888; margin-top: -5px;">Released: June 5, 2026</p>
                 <ul>
                     <li><span class="tutorial-highlight">Galaxy Mines:</span> Floating purple hazards added to the sky. Hitting one snaps your rope and drops momentum by 90%.</li>
                 </ul>
 
-                <h4 style="color:#ffffff; border-bottom:1px dashed #2e2e54; padding-bottom:4px; margin-top:20px;">v1.4.3 - The Live Events Update</h4>
+                <h4 style="color:#ff4757; border-bottom:1px dashed #2e2e54; padding-bottom:4px; margin-top:20px;">v1.4.3 - The Live Events Update</h4>
                 <p style="font-size: 11px; color: #888; margin-top: -5px;">Released: June 4, 2026</p>
                 <ul>
                     <li><span class="tutorial-highlight">Live Operations:</span> The server can now push live global events (like the 3x Boss Frenzy) directly to all connected clients!</li>
                     <li><span class="tutorial-highlight">Daily Tasks:</span> Swing, play, and collect shards to earn daily Gold payouts.</li>
                 </ul>
 
-                <h4 style="color:#ffffff; border-bottom:1px dashed #2e2e54; padding-bottom:4px; margin-top:20px;">v1.3.3 - The Prestige Guild Update</h4>
+                <h4 style="color:#ff4757; border-bottom:1px dashed #2e2e54; padding-bottom:4px; margin-top:20px;">v1.3.3 - The Prestige Guild Update</h4>
                 <p style="font-size: 11px; color: #888; margin-top: -5px;">Released: June 3, 2026</p>
                 <ul>
                     <li><span class="tutorial-highlight">Exponential Pets:</span> Guild Pet exchange rates now actively double every 10,000 tokens to balance late-game scaling.</li>
                     <li><span class="tutorial-highlight">True Gold Skin:</span> Added a new ultra-tier skin that unlocks at 10M Score, boosting points by 15x and doubling Gold output.</li>
                 </ul>
 
-                <h4 style="color:#ffffff; border-bottom:1px dashed #2e2e54; padding-bottom:4px; margin-top:20px;">v1.2.1 - Alliances & The Black Market</h4>
+                <h4 style="color:#ff4757; border-bottom:1px dashed #2e2e54; padding-bottom:4px; margin-top:20px;">v1.2.1 - Alliances & The Black Market</h4>
                 <p style="font-size: 11px; color: #888; margin-top: -5px;">Released: June 2, 2026</p>
                 <ul>
                     <li><span class="tutorial-highlight">Guilds:</span> Create/join Alliances. Added active Titles and custom Crest buffs.</li>
@@ -417,19 +402,18 @@
                     <li><span class="tutorial-highlight">Social:</span> Friends list and 1v1 score duels added.</li>
                 </ul>
 
-                <h4 style="color:#ffffff; border-bottom:1px dashed #2e2e54; padding-bottom:4px; margin-top:20px;">v1.1.0 - The Underworld Update</h4>
+                <h4 style="color:#4ecca3; border-bottom:1px dashed #2e2e54; padding-bottom:4px; margin-top:20px;">v1.1.0 - The Underworld Update</h4>
                 <p style="font-size: 11px; color: #888; margin-top: -5px;">Released: June 1, 2026</p>
                 <ul>
                     <li><span class="tutorial-highlight">Realms:</span> Added Angel and Devil portal realms. Collect White and Black shards to fuse the Yin Yang skin.</li>
                     <li><span class="tutorial-highlight">Secrets:</span> Added password-locked skins (ANGEL) and death-streak achievements.</li>
                 </ul>
 
-                <h4 style="color:#2ed573; border-bottom:1px dashed #2e2e54; padding-bottom:4px; margin-top:20px;">v1.0.0 - Official Launch</h4>
+                <h4 style="color:#ffffff; border-bottom:1px dashed #2e2e54; padding-bottom:4px; margin-top:20px;">v1.0.0 - Official Launch</h4>
                 <p style="font-size: 11px; color: #888; margin-top: -5px;">Released: May 31, 2026</p>
                 <ul>
                     <li><span class="tutorial-highlight">Game Live:</span> Core grappling mechanics, momentum physics, bouncers, and base cosmetics enabled!</li>
                 </ul>
-
             </div>
             <div class="tutorial-footer" style="justify-content: center;">
                 <span style="font-size:11px; color:#666;">Thanks for playing Infinite Swing!</span>
