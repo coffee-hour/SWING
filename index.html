@@ -102,9 +102,23 @@
     <div id="toastContainer"></div>
 
     <div id="main-layout">
-       <div class="side-panel" style="min-width: 340px;">
-            <h3><i class="fa-solid fa-shield-halved"></i> Guild Base</h3>
+       <div class="side-panel" id="left-panel" style="min-width: 340px;">
             
+            <div class="panel-box" style="margin-bottom: 15px;">
+                <div class="panel-header">
+                    <div><i class="fa-solid fa-user"></i> Profile</div>
+                </div>
+                <div class="panel-body" style="margin-top: 10px;">
+                    <input type="text" id="username" class="auth-input" placeholder="Username" maxlength="15">
+                    <input type="password" id="password" class="auth-input" placeholder="Password">
+                    <button class="auth-btn" onclick="login()">Login</button>
+                    <button class="auth-btn" onclick="register()" style="background: #2e2e54;">Register</button>
+                    <div class="status-indicator" id="status-text">Not logged in</div>
+                    <div style="font-size: 11px; color: #aaa; margin-top: 10px; text-align: center;">Best Score: <span id="high-score-display" style="color: #4ecca3; font-weight: bold;">0</span></div>
+                </div>
+            </div>
+
+            <h3><i class="fa-solid fa-shield-halved"></i> Guild Base</h3>
             <div style="margin-bottom: 12px; background: #17172e; padding: 10px; border-radius: 8px; border: 1px solid #2e2e54;">
                 
                 <div id="noGuildDiv" style="display:none;">
@@ -213,14 +227,8 @@
             <h4 style="margin:12px 0 5px 0; font-size: 13px; color:#f1c40f;">Top Alliances (Score)</h4>
             <div id="guildScoreList" class="list-container" style="flex: 1; max-height: 300px;">Loading...</div>
 
-            </div>
-            <h4 style="margin:12px 0 5px 0; font-size: 13px; color:#ff4757;">Alliance Raid Damage</h4>
-            <div id="guildWarList" class="list-container" style="flex: 0.5;">Loading...</div>
-            
-            <h4 style="margin:12px 0 5px 0; font-size: 13px; color:#f1c40f;">Top Alliances (Score)</h4>
-            <div id="guildScoreList" class="list-container" style="flex: 0.5;">Loading...</div> 
         </div>
-
+        
         <div id="game-container">
             <div class="ui-bar" id="authBar">
                 <span>☁️ Cloud Save</span>
