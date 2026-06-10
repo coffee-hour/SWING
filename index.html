@@ -218,11 +218,18 @@
         <div id="game-container">
             <div class="ui-bar" id="authBar">
                 <span>☁️ Cloud Save</span>
-                <input type="email" id="email" class="auth-input" placeholder="Email (For Registering)" maxlength="50">
+                <input type="email" id="email" class="auth-input" placeholder="Email (For Register/Link)" maxlength="50">
                     <input type="text" id="username" class="auth-input" placeholder="Username" maxlength="15">
                     <input type="password" id="password" class="auth-input" placeholder="Password">
-                    <button class="auth-btn" onclick="login()">Login</button>
-                    <button class="auth-btn" onclick="register()" style="background: #2e2e54;">Register</button>
+                    
+                    <div style="display:flex; gap:5px; margin-top:5px;">
+                        <button class="auth-btn" onclick="login()" style="flex:1;">Login</button>
+                        <button class="auth-btn" onclick="register()" style="background: #2e2e54; flex:1;">Register</button>
+                    </div>
+                    <button class="auth-btn" onclick="linkOldAccountEmail()" style="background: #f9a826; color: #111; margin-top:5px; width:100%;">Link Email (Old Players)</button>
+                    
+                    <div class="status-indicator" id="status-text" style="margin-top:10px;">Not logged in</div>
+                    <div style="font-size: 11px; color: #aaa; margin-top: 10px; text-align: center;">Best Score: <span id="high-score-display" style="color: #4ecca3; font-weight: bold;">0</span></div>
             </div>
             <div class="ui-bar" style="display:none; background: #17173a;" id="userProfileBar"><span id="welcomeMessage" style="color: #4ecca3;"></span></div>
 
@@ -1369,6 +1376,39 @@
                     showToast("Registered! You can now login.", 3000, "#4ecca3");
                 } else {
                     showToast(data.error || "Registration failed", 3000, "#ff4757");
+                }
+            } catch(err) { showToast("Server error", 3000, "#ff4757"); }
+        }
+
+        // Email Validation Regex for the Frontend
+        function isValidEmailFormat(email) {
+            return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+        }
+
+        async function linkOldAccountEmail() {
+            if (!user.username || !user.session_token) return showToast("You must log in to your old account first!", 3000, "#ff4757");
+            
+            const e = document.getElementById('email').value.trim();
+            if (!e) return showToast("Please type an email in the Email box!", 3000, "#ff4757");
+            if (!isValidEmailFormat(e)) return showToast("Please enter a valid email format!", 3000, "#ff4757");
+
+            try {
+                const res = await fetch(API_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ 
+                        action: 'link_email', 
+                        username: user.username, 
+                        token: user.session_token,
+                        email: e 
+                    })
+                });
+                const data = await res.json();
+                if (data.success) {
+                    showToast("Email successfully linked to your account!", 3000, "#4ecca3");
+                    document.getElementById('email').value = ""; // clear box
+                } else {
+                    showToast(data.error || "Failed to link email", 3000, "#ff4757");
                 }
             } catch(err) { showToast("Server error", 3000, "#ff4757"); }
         }
