@@ -102,18 +102,21 @@
     <div id="toastContainer"></div>
 
     <div id="main-layout">
-        <div class="side-panel">
-            <h3><i class="fa-solid fa-shield-halved"></i> Guild Base</h3>
-            
-            <div style="margin-bottom: 12px; background: #17172e; padding: 10px; border-radius: 8px; border: 1px solid #2e2e54;">
-                
-                <div id="noGuildDiv" style="display:none;">
-                    <div style="display:flex; gap:5px;">
-                        <input type="text" id="guildInput" maxlength="4" placeholder="TAG" class="auth-input" style="width: 60px; text-transform: uppercase;">
-                        <button id="reqGuildBtn" class="auth-btn" style="background:#f9a826; color: #111; flex:1;">Send Request</button>
-                        <button id="createGuildBtn" class="auth-btn" style="background:#00adb5; color:#fff;">Create</button>
-                    </div>
+       <div class="side-panel" id="left-panel" style="width: 220px;">
+            <div class="panel-box">
+                <div class="panel-header">
+                    <div><i class="fa-solid fa-user"></i> Profile</div>
                 </div>
+                <div class="panel-body" style="margin-top: 10px;">
+                    <input type="text" id="username" class="auth-input" placeholder="Username" maxlength="15">
+                    <input type="password" id="password" class="auth-input" placeholder="Password">
+                    <button class="auth-btn" onclick="login()">Login</button>
+                    <button class="auth-btn" onclick="register()" style="background: #2e2e54;">Register</button>
+                    <div class="status-indicator" id="status-text">Not logged in</div>
+                    <div style="font-size: 11px; color: #aaa; margin-top: 10px; text-align: center;">Best Score: <span id="high-score-display" style="color: #4ecca3; font-weight: bold;">0</span></div>
+                </div>
+            </div>
+        </div>
 
                 <div id="hasGuildDiv" style="display:none;">
                     <div style="font-size: 14px; margin-bottom: 8px;">Guild: <span id="currentGuildDisplay" class="tag"></span> <span id="guildSizeDisplay" style="color:#aaa; font-size:10px; float:right;">0/10</span></div>
@@ -298,6 +301,53 @@
                 </div>
             </div>
         </div>
+
+    <div style="display: flex; gap: 15px; width: 100%; align-items: flex-start; margin-top: 5px;">
+                    
+                    <div class="panel-box" style="flex: 1;">
+                        <div class="panel-header">
+                            <div><i class="fa-solid fa-shirt"></i> Changing Room</div>
+                        </div>
+                        <div class="panel-body">
+                            <div id="skin-shop" style="display: flex; flex-wrap: wrap; gap: 5px; margin-top: 10px; justify-content: center;"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="panel-box" style="flex: 1;">
+                        <div class="panel-header">
+                            <div><i class="fa-solid fa-hammer"></i> Gear & Forge</div>
+                        </div>
+                        <div class="panel-body">
+                            <div style="display: flex; gap: 5px; margin-bottom: 10px; margin-top: 10px;">
+                                <button class="tutorial-tab active" onclick="document.getElementById('gearShopDiv').style.display='block'; document.getElementById('forgeDiv').style.display='none'; this.classList.add('active'); this.nextElementSibling.classList.remove('active');">Black Market</button>
+                                <button class="tutorial-tab" onclick="document.getElementById('gearShopDiv').style.display='none'; document.getElementById('forgeDiv').style.display='block'; this.classList.add('active'); this.previousElementSibling.classList.remove('active');">Forge</button>
+                            </div>
+                            
+                            <div id="gearShopDiv">
+                                <div style="font-size: 11px; color: #aaa; margin-bottom: 5px; text-align:center;">Weapons (Multiplier Boost)</div>
+                                <div id="weapon-shop" style="display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 15px; justify-content: center;"></div>
+                                <div style="font-size: 11px; color: #aaa; margin-bottom: 5px; text-align:center;">Coats (Physics Boost)</div>
+                                <div id="coat-shop" style="display: flex; flex-wrap: wrap; gap: 5px; justify-content: center;"></div>
+                            </div>
+                            
+                            <div id="forgeDiv" style="display:none;">
+                                <div class="forge-item">
+                                    <div class="forge-title">Yin Yang Shards <i class="fa-solid fa-yin-yang"></i></div>
+                                    <div class="forge-desc">White: <span id="wShardDisplay">0</span>/50 | Black: <span id="bShardDisplay">0</span>/50</div>
+                                    <button class="action-btn" id="fuseBtn" onclick="fuseYinYang()" style="margin-top: 5px;">Fuse True Yin Yang</button>
+                                </div>
+                                
+                                <div class="forge-item" style="margin-top: 10px; background: #1a1a1a; border-color: #ffd700;">
+                                    <div class="forge-title" style="color: #ffd700;">Awakened Gold <i class="fa-solid fa-gavel"></i></div>
+                                    <div class="forge-desc">Current Level: <span id="goldForgeLevel">0</span> (+<span id="goldForgeMulti">0</span>x Multiplier)</div>
+                                    <div class="forge-desc" style="color:#aaa;">Cost: <span id="goldForgeCost">5</span> Refined Gold <i class="fa-solid fa-gem" style="color:#00ffff;"></i></div>
+                                    <button class="action-btn green" onclick="upgradeGoldForge()" style="margin-top: 5px;">Forge Upgrade</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                </div>
 
         <div class="side-panel">
             <h3><i class="fa-solid fa-trophy"></i> Leaderboard</h3>
