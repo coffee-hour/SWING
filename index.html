@@ -218,18 +218,10 @@
         <div id="game-container">
             <div class="ui-bar" id="authBar">
                 <span>☁️ Cloud Save</span>
-                <input type="email" id="email" class="auth-input" placeholder="Email (For Register/Link)" maxlength="50">
-                    <input type="text" id="username" class="auth-input" placeholder="Username" maxlength="15">
-                    <input type="password" id="password" class="auth-input" placeholder="Password">
-                    
-                    <div style="display:flex; gap:5px; margin-top:5px;">
-                        <button class="auth-btn" onclick="login()" style="flex:1;">Login</button>
-                        <button class="auth-btn" onclick="register()" style="background: #2e2e54; flex:1;">Register</button>
-                    </div>
-                    <button class="auth-btn" onclick="linkOldAccountEmail()" style="background: #f9a826; color: #111; margin-top:5px; width:100%;">Link Email (Old Players)</button>
-                    
-                    <div class="status-indicator" id="status-text" style="margin-top:10px;">Not logged in</div>
-                    <div style="font-size: 11px; color: #aaa; margin-top: 10px; text-align: center;">Best Score: <span id="high-score-display" style="color: #4ecca3; font-weight: bold;">0</span></div>
+                <input type="text" id="usernameInput" class="auth-input" placeholder="Account Name" style="width:110px;">
+                <input type="password" id="passwordInput" class="auth-input" placeholder="Password" style="width:110px;">
+                <button id="loginBtn" class="auth-btn" style="background:#4ecca3; color:#111;">Login</button>
+                <button id="registerBtn" class="auth-btn" style="background:#00adb5; color:#fff;">Register</button>
             </div>
             <div class="ui-bar" style="display:none; background: #17173a;" id="userProfileBar"><span id="welcomeMessage" style="color: #4ecca3;"></span></div>
 
@@ -446,7 +438,7 @@
     </div>
 
     <script>
-        const API_URL = "https://swingworker.xaviersgames.workers.dev/";
+        const API_URL = "https://swingworker.xaviersgames.workers.dev";
         const currentMonth = new Date().getMonth(); // 0-11
 
         // ==========================================
@@ -456,22 +448,6 @@
     // The specific local storage keys that need military-grade protection
     const SECURE_KEYS = ['mmo_swing_gold', 'mmo_swing_score', 'mmo_swing_shards', 'mmo_swing_skins', 'mmo_swing_gear'];
     const SECURITY_SALT = "InfiniteSwingSecretSalt_2026!!";
-
-    const allowedDomains = ["swing-game.pages.dev", "https://swing-game.pages.dev", "localhost", "127.0.0.1"];
-        
-        if (!allowedDomains.includes(window.location.hostname) && window.location.hostname !== "") {
-            document.body.innerHTML = `
-                <div style='color:white; text-align:center; padding:50px; font-family:sans-serif; background:#0f0f1a; height:100vh;'>
-                    <h1 style='color:#ff4757;'>⚠️ Unauthorized Host</h1>
-                    <p>This game has been stolen. Please play the official version at <br><br>
-                    <a href='https://swing-game.pages.dev' style='color:#4ecca3; font-size:20px; text-decoration:none; font-weight:bold;'>swing-game.pages.dev</a></p>
-                </div>`;
-            throw new Error("Unauthorized host. Game execution stopped.");
-        }
-        // --------------------------
-
-        const canvas = document.getElementById("gameCanvas");
-        const ctx = canvas.getContext("2d");    
 
     // Generates a fast, tamper-proof verification signature based on the value + salt
     function generateSignature(value) {
@@ -543,6 +519,7 @@
         let dailyTasks = { date: todayStr, dist: 0, games: 0, shards: 0, c1: false, c2: false, c3: false };
         try { let p = JSON.parse(localStorage.getItem("mmo_swing_tasks")); if (p && p.date === todayStr) dailyTasks = p; } catch(e) {}
         
+        let activeChallenges = [], angelicDropdownOpen = false, devilDropdownOpen = false, currentGearTab = 'weapon';
         let storedWeaponLevels = {};
         try { storedWeaponLevels = JSON.parse(localStorage.getItem("weapon_levels") || "{}"); } catch(e) { storedWeaponLevels = {}; }
         user.weapon_levels = storedWeaponLevels;
@@ -1332,8 +1309,15 @@
                         let isSender = f.user1 === user.username; let other = isSender ? f.user2 : f.user1; let isOnline = false;
                         if (f.last_seen) { let lsTime = new Date(f.last_seen + "Z").getTime(); if (nowUTC - lsTime < 300000) isOnline = true; }
                         let dot = isOnline ? "🟢" : "⚪";
-                        if (f.status === 'pending') { if (!isSender) sl.innerHTML += `<div class="list-item"><span>📥 ${other}</span> <div><button class="action-btn green" onclick="respondFriend(${f.id}, 'accepted')">✓</button> <button class="action-btn red" onclick="respondFriend(${f.id}, 'declined')">X</button></div></div>`; else sl.innerHTML += `<div class="list-item"><span>⏳ ${other} (Sent)</span></div>`; }
+                        if (f.status === 'pending') { if (!isSender) sl.innerHTML += `<div class="list-item"><span>📥 ${other}</span> <div><button class="action-btn green" onclick="respondFriend(${f.id}, 'accepted')">✓</button> <button class="action-btn red" onclick="respondFriend(${f.id}, 'declined')">X</button></div></div>`; else sl.innerHTML += `<div class="list-item"><span>⏳ ${other} (Sent)</span></div>`; } else { sl.innerHTML += `<div class="list-item"><span>${dot} ${other}</span> <button class="action-btn blue" onclick="sendChallenge('${other}')">Duel</button></div>`; }
                     });
+                    activeChallenges = [];
+                    data.challenges.forEach(c => {
+                        let isSender = c.challenger === user.username; let other = isSender ? c.challenged : c.challenger;
+                        if (c.status === 'pending') { if (!isSender) sl.innerHTML += `<div class="list-item"><span>⚔️ ${other}: ${c.goal.toLocaleString()}pts</span> <div><button class="action-btn green" onclick="respondChallenge(${c.id}, 'accepted')">✓</button> <button class="action-btn red" onclick="respondChallenge(${c.id}, 'declined')">X</button></div></div>`; else sl.innerHTML += `<div class="list-item"><span>⏳ Duel ${other}: ${c.goal.toLocaleString()}pts</span></div>`; } else if (c.status === 'accepted') { activeChallenges.push(c); sl.innerHTML += `<div class="list-item" style="border-color:#f9a826;"><span>🔥 vs ${other}: ${c.goal.toLocaleString()}pts</span></div>`; }
+                    });
+                    if(sl.innerHTML === "") sl.innerHTML = "<div style='text-align:center; color:#555; font-size:11px; padding:10px;'>Add friends to duel!</div>";
+                }
             } catch(e){}
         }
 
@@ -1341,6 +1325,10 @@
 
         document.getElementById("addFriendBtn").onclick = async () => { if(!user.session_token) return showToast("You must be logged in to add friends!", 3000, "#ff4757"); const target = document.getElementById("friendInput").value.trim(); if(!target || target === user.username) return showToast("Invalid target username", 3000, "#ff4757"); try { const res = await fetch(`${API_URL}/api/social`, { method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify({username: user.username, session_token: user.session_token, action: "add_friend", payload: {target}}) }); const data = await res.json(); if(data.success) { showToast(`Friend request sent to ${target}!`); document.getElementById("friendInput").value = ""; fetchSocialData(); } else { showToast(data.error, 3000, "#ff4757"); } } catch(e) {} };
         async function respondFriend(id, response) { try { await fetch(`${API_URL}/api/social`, { method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify({username: user.username, session_token: user.session_token, action: "respond_friend", payload: {id, response}}) }); fetchSocialData(); } catch(e) {} }
+        async function sendChallenge(target) { let goal = parseInt(prompt(`Enter score goal to challenge ${target}:`, "50000")); if (!goal || isNaN(goal) || goal <= 0) return; try { const res = await fetch(`${API_URL}/api/social`, { method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify({username: user.username, session_token: user.session_token, action: "send_challenge", payload: {target, goal}}) }); const data = await res.json(); if(data.success) { showToast(`Challenge sent to ${target} for ${goal} pts!`, 3000, "#f9a826"); fetchSocialData(); } else { showToast(data.error, 3000, "#ff4757"); } } catch(e) {} }
+        async function respondChallenge(id, response) { try { await fetch(`${API_URL}/api/social`, { method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify({username: user.username, session_token: user.session_token, action: "respond_challenge", payload: {id, response}}) }); fetchSocialData(); } catch(e) {} }
+        
+        async function winChallenge(id) { try { const res = await fetch(`${API_URL}/api/social`, { method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify({username: user.username, session_token: user.session_token, action: "win_challenge", payload: {id}}) }); const data = await res.json(); if(data.success) { showToast(`🏆 Duel Won! +50 Gold`, 5000, "#f1c40f"); user.guild_coins += 50; updateUI(); fetchSocialData(); } } catch(e) {} }
 
         // Send chat on Enter key
         document.getElementById("guildChatInput").addEventListener("keypress", function(event) { if (event.key === "Enter") { event.preventDefault(); sendGuildChat(); } });
@@ -1359,59 +1347,7 @@
             } catch(e) { showToast("Server Offline", 3000, "#ff4757"); }
         };
 
-        async function register() {
-            const u = document.getElementById('username').value.trim();
-            const p = document.getElementById('password').value.trim();
-            const e = document.getElementById('email').value.trim();
-            if(!u || !p || !e) return showToast("Email, Username, and Password required!", 3000, "#ff4757");
-            
-            try {
-                const res = await fetch(API_URL, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ action: 'register', username: u, password: p, email: e })
-                });
-                const data = await res.json();
-                if(data.success) {
-                    showToast("Registered! You can now login.", 3000, "#4ecca3");
-                } else {
-                    showToast(data.error || "Registration failed", 3000, "#ff4757");
-                }
-            } catch(err) { showToast("Server error", 3000, "#ff4757"); }
-        }
-
-        // Email Validation Regex for the Frontend
-        function isValidEmailFormat(email) {
-            return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-        }
-
-        async function linkOldAccountEmail() {
-            if (!user.username || !user.session_token) return showToast("You must log in to your old account first!", 3000, "#ff4757");
-            
-            const e = document.getElementById('email').value.trim();
-            if (!e) return showToast("Please type an email in the Email box!", 3000, "#ff4757");
-            if (!isValidEmailFormat(e)) return showToast("Please enter a valid email format!", 3000, "#ff4757");
-
-            try {
-                const res = await fetch(API_URL, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ 
-                        action: 'link_email', 
-                        username: user.username, 
-                        token: user.session_token,
-                        email: e 
-                    })
-                });
-                const data = await res.json();
-                if (data.success) {
-                    showToast("Email successfully linked to your account!", 3000, "#4ecca3");
-                    document.getElementById('email').value = ""; // clear box
-                } else {
-                    showToast(data.error || "Failed to link email", 3000, "#ff4757");
-                }
-            } catch(err) { showToast("Server error", 3000, "#ff4757"); }
-        }
+        document.getElementById("registerBtn").onclick = async () => { const u = document.getElementById("usernameInput").value.trim(); const p = document.getElementById("passwordInput").value; if(!u || !p) return; try { const hashedP = await hashPassword(p); const res = await fetch(`${API_URL}/api/register`, { method:"POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify({username: u, password_hash: hashedP}) }); const data = await res.json(); if(data.success) showToast("Identity created! Click Login."); else showToast(data.error, 4000, "#ff4757"); } catch(e){} };
 
         async function syncSave(added_points = 0) {
             if(!user.session_token) return;
@@ -1498,6 +1434,7 @@
             } else {
                 let currentScore = rawDist * calculateMultiplier(); if (Math.abs(currentScore) > Math.abs(score)) score = currentScore;
                 if(document.getElementById("scoreDisplay")) document.getElementById("scoreDisplay").textContent = Math.floor(score).toLocaleString();
+                if (activeChallenges.length > 0) { for(let i=0; i<activeChallenges.length; i++) { let c = activeChallenges[i]; if (score >= c.goal) { activeChallenges.splice(i, 1); i--; winChallenge(c.id); } } }
                 if (score >= 5000 && !localStorage.getItem("stickman_hint_5000")) { showToast("🔒 A secret skin requires a password...", 5000, "#f9a826"); localStorage.setItem("stickman_hint_5000", "true"); }
                 if (score >= 10000 && !localStorage.getItem("stickman_hint_10000")) { showToast("🗝️ The secret password is: ANGEL", 6000, "#f9a826"); localStorage.setItem("stickman_hint_10000", "true"); }
                 let eq = user.equipped_skin || "";
