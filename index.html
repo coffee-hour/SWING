@@ -449,6 +449,22 @@
     const SECURE_KEYS = ['mmo_swing_gold', 'mmo_swing_score', 'mmo_swing_shards', 'mmo_swing_skins', 'mmo_swing_gear'];
     const SECURITY_SALT = "InfiniteSwingSecretSalt_2026!!";
 
+    const allowedDomains = ["swing-game.pages.dev", "https://swing-game.pages.dev", "localhost", "127.0.0.1"];
+        
+        if (!allowedDomains.includes(window.location.hostname) && window.location.hostname !== "") {
+            document.body.innerHTML = `
+                <div style='color:white; text-align:center; padding:50px; font-family:sans-serif; background:#0f0f1a; height:100vh;'>
+                    <h1 style='color:#ff4757;'>⚠️ Unauthorized Host</h1>
+                    <p>This game has been stolen. Please play the official version at <br><br>
+                    <a href='https://swing-game.pages.dev' style='color:#4ecca3; font-size:20px; text-decoration:none; font-weight:bold;'>swing-game.pages.dev</a></p>
+                </div>`;
+            throw new Error("Unauthorized host. Game execution stopped.");
+        }
+        // --------------------------
+
+        const canvas = document.getElementById("gameCanvas");
+        const ctx = canvas.getContext("2d");    
+
     // Generates a fast, tamper-proof verification signature based on the value + salt
     function generateSignature(value) {
         let str = value + SECURITY_SALT;
