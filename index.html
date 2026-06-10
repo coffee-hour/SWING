@@ -218,11 +218,16 @@
         <div id="game-container">
             <div class="ui-bar" id="authBar">
                 <span>☁️ Cloud Save</span>
-                <input type="text" id="usernameInput" class="auth-input" placeholder="Account Name" style="width:110px;">
-                <input type="password" id="passwordInput" class="auth-input" placeholder="Password" style="width:110px;">
-                <button id="loginBtn" class="auth-btn" style="background:#4ecca3; color:#111;">Login</button>
-                <button id="registerBtn" class="auth-btn" style="background:#00adb5; color:#fff;">Register</button>
-            </div>
+              <div><i class="fa-solid fa-user"></i> Profile</div>
+                </div>
+                <div class="panel-body" style="margin-top: 10px;">
+                    <input type="text" id="username" class="auth-input" placeholder="Username or Email" maxlength="50">
+                    <input type="email" id="email" class="auth-input" placeholder="Email (For Registration)" maxlength="50">
+                    <input type="password" id="password" class="auth-input" placeholder="Password">
+                    <button class="auth-btn" onclick="login()">Login</button>
+                    <button class="auth-btn" onclick="register()" style="background: #2e2e54;">Register</button>
+                    <div class="status-indicator" id="status-text">Not logged in</div>
+                    <div style="font-size: 11px; color: #aaa; margin-top: 10px; text-align: center;">Best Score: <span id="high-score-display" style="color: #4ecca3; font-weight: bold;">0</span></div>
             <div class="ui-bar" style="display:none; background: #17173a;" id="userProfileBar"><span id="welcomeMessage" style="color: #4ecca3;"></span></div>
 
             <div class="ui-bar" style="background: linear-gradient(180deg, #2c1111 0%, #170707 100%); border-color: #5e1d1d;">
