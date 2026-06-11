@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <script>window.onerror = function(msg, url, line) { alert("🚨 ERROR: " + msg + "\nLine: " + line); };</script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>↺</text></svg>">
@@ -14,7 +13,7 @@
         body { margin: 0; background: #0f0f1a; display: flex; justify-content: center; align-items: flex-start; min-height: 100vh; overflow-y: auto; font-family: system-ui, sans-serif; color: white; user-select: none; padding: 10px 0; touch-action: manipulation; }
         #main-layout { display: flex; gap: 15px; max-width: 1400px; width: 100%; padding: 15px; box-sizing: border-box; flex-wrap: wrap; }
         #game-container { display: flex; flex-direction: column; align-items: center; gap: 15px; flex: 2; min-width: 320px; }
-        .side-panel { flex: 1; background: rgba(22, 22, 40, 0.95); border: 1px solid #2e2e54; border-radius: 12px; padding: 15px; min-height: 780px; display: flex; flex-direction: column; min-width: 340px; box-shadow: 0 8px 32px rgba(0,0,0,0.3); }
+        .side-panel { flex: 1; background: rgba(22, 22, 40, 0.95); border: 1px solid #2e2e54; border-radius: 12px; padding: 15px; min-height: 780px; display: flex; flex-direction: column; min-width: 290px; box-shadow: 0 8px 32px rgba(0,0,0,0.3); }
         .side-panel h3 { margin: 0 0 12px 0; color: #f9a826; text-transform: uppercase; text-align: center; border-bottom: 2px solid #2e2e54; padding-bottom: 8px; font-size: 16px; }
         canvas { background: #131326; box-shadow: 0 10px 30px rgba(0,0,0,0.6); border-radius: 12px; cursor: crosshair; width: 100%; max-width: 850px; border: 2px solid #2e2e54; touch-action: none; }
         .ui-bar { display: flex; gap: 10px; font-size: 14px; font-weight: bold; background: rgba(18, 18, 32, 0.95); padding: 12px; border-radius: 8px; border: 1px solid #2e2e54; width: 100%; box-sizing: border-box; justify-content: space-between; flex-wrap: wrap; align-items: center; }
@@ -76,13 +75,7 @@
             animation: fire-flicker 0.15s infinite alternate;
         }
         
-/* Safe Mobile & Desktop Layout */
-      /* Restored Standard Layout - Mobile Support Disabled to Prevent Squishing */
-        @media (max-width: 900px) { 
-            /* Disabled window stacking to preserve wide layout aspect ratios */
-            body { padding: 10px; }
-            #main-layout { flex-direction: row; } 
-        }
+        @media (max-width: 900px) { #main-layout { flex-direction: column; } .side-panel { min-height: auto; width: 100%; } }
     </style>
 </head>
 <body>
@@ -103,9 +96,9 @@
     <div id="toastContainer"></div>
 
     <div id="main-layout">
-       <div class="side-panel" id="left-panel" style="min-width: 340px;">
-
-         <h3><i class="fa-solid fa-shield-halved"></i> Guild Base</h3>
+        <div class="side-panel">
+            <h3><i class="fa-solid fa-shield-halved"></i> Guild Base</h3>
+            
             <div style="margin-bottom: 12px; background: #17172e; padding: 10px; border-radius: 8px; border: 1px solid #2e2e54;">
                 
                 <div id="noGuildDiv" style="display:none;">
@@ -128,16 +121,9 @@
                     <div id="guildPaneHome" class="tutorial-pane active">
                         <div style="font-size: 12px; color: #ffd700;">War Coins: <span id="warCoinDisplay">0</span> <i class="fa-solid fa-khanda" style="color:#aaa;"></i> | Gold: <span id="guildCoinDisplay">0</span> <i class="fa-solid fa-coins" style="color:#ffd700;"></i> | Refined Gold: <span id="refinedGoldDisplay">0</span> <i class="fa-solid fa-gem" style="color:#00ffff;"></i></div>
                         <div style="font-size: 11px; color: #4ecca3; margin-top: 4px; font-weight: bold;" id="guildTitleDisplay">Active Title: None</div>
-                        
-                        <div style="margin-top:8px; font-size:10px; color:#aaa;">
-                            <div style="margin-bottom:4px;">Refine Gold (1 Refined = 1,000,000,000 Gold):</div>
-                            <div style="display:flex; gap:3px;">
-                                <button class="action-btn green" onclick="convertGoldToRefined(1)" style="flex:1;">+1</button>
-                                <button class="action-btn green" onclick="convertGoldToRefined(10)" style="flex:1;">+10</button>
-                                <button class="action-btn green" onclick="convertGoldToRefined(100)" style="flex:1;">+100</button>
-                                <button class="action-btn green" onclick="convertGoldToRefined(1000)" style="flex:1;">+1K</button>
-                                <button class="action-btn green" onclick="convertGoldToRefined('max')" style="flex:1; background:#8e44ad;">Max</button>
-                            </div>
+                        <div style="margin-top:6px; display:flex; justify-content:space-between; align-items:center; gap:6px; font-size:10px; color:#aaa;">
+                            <span>1 Refined Gold = 1,000,000,000 Gold</span>
+                            <button class="action-btn green" style="font-size:10px; padding:5px 8px; height:auto;" onclick="convertGoldToRefined()">Convert Gold</button>
                         </div>
                         
                         <div style="margin-top:10px; background:#111122; padding:8px; border-radius:6px; border:1px dashed #f9a826;">
@@ -153,7 +139,6 @@
                                 <button class="action-btn blue" onclick="convertPetToken('gold', 10)" style="flex:1;">+10</button>
                                 <button class="action-btn blue" onclick="convertPetToken('gold', 100)" style="flex:1;">+100</button>
                                 <button class="action-btn blue" onclick="convertPetToken('gold', 1000)" style="flex:1;">+1K</button>
-                                <button class="action-btn blue" onclick="convertPetToken('gold', 'max')" style="flex:1; background:#8e44ad;">Max</button>
                             </div>
 
                             <div id="warCoinPetDiv" style="display:none; margin-top:6px;">
@@ -163,7 +148,6 @@
                                     <button class="action-btn red" onclick="convertPetToken('war', 10)" style="flex:1;">+10</button>
                                     <button class="action-btn red" onclick="convertPetToken('war', 100)" style="flex:1;">+100</button>
                                     <button class="action-btn red" onclick="convertPetToken('war', 1000)" style="flex:1;">+1K</button>
-                                    <button class="action-btn red" onclick="convertPetToken('war', 'max')" style="flex:1; background:#8e44ad;">Max</button>
                                 </div>
                             </div>
                         </div>
@@ -186,49 +170,50 @@
                         <button id="leaveGuildBtn" class="auth-btn" style="background:#ff4757; color:#fff; width:100%; margin-top:5px;">Leave Alliance</button>
                     </div>
 
-                    <div id="leaderPanel" style="display:none; background: rgba(30,30,55,0.6); padding:8px; border-radius:6px; border: 1px dashed #4ecca3; font-size:11px; margin-top:10px;">
-                        <span style="color:#4ecca3; font-weight:bold;"><i class="fa-solid fa-crown"></i> Command Center</span>
-                        
-                        <div style="margin-top:8px; font-weight:bold; color:#f9a826;">Join Requests (R3+):</div>
-                        <div id="joinRequestsList" style="max-height:60px; overflow-y:auto; display:flex; flex-direction:column; gap:4px; margin-bottom:8px;"></div>
-                        
-                        <div id="leaderSettingsDiv" style="display:none;">
-                            <div style="margin-top:6px; display:flex; gap:5px; align-items:center;">
-                                <span style="font-size:10px; color:#aaa;">Tag Color (R4+):</span>
-                                <input type="color" id="guildColorPicker" value="#f9a826" style="width:30px; height:20px; border:none; background:none; cursor:pointer;">
-                                <button class="action-btn blue" onclick="setGuildColor()">Save</button>
-                            </div>
-                            <div style="font-weight:bold; color:#00adb5; margin-top:8px;">Titles (War Coins, R4+):</div>
-                            <div id="titleShop" class="title-shop-grid"></div>
-                            <div style="font-weight:bold; color:#ff9ff3; margin-top:8px;">Crests (War Coins, R4+):</div>
-                            <div id="crestShop" class="title-shop-grid"></div>
-                        </div>
+                </div>
+            </div>
+            
+            <div id="leaderPanel" style="display:none; background: rgba(30,30,55,0.6); padding:8px; border-radius:6px; border: 1px dashed #4ecca3; font-size:11px;">
+                <span style="color:#4ecca3; font-weight:bold;"><i class="fa-solid fa-crown"></i> Command Center</span>
+                
+                <div style="margin-top:8px; font-weight:bold; color:#f9a826;">Join Requests (R3+):</div>
+                <div id="joinRequestsList" style="max-height:60px; overflow-y:auto; display:flex; flex-direction:column; gap:4px; margin-bottom:8px;"></div>
+                
+                <div id="leaderSettingsDiv" style="display:none;">
+                    <div style="margin-top:6px; display:flex; gap:5px; align-items:center;">
+                        <span style="font-size:10px; color:#aaa;">Tag Color (R4+):</span>
+                        <input type="color" id="guildColorPicker" value="#f9a826" style="width:30px; height:20px; border:none; background:none; cursor:pointer;">
+                        <button class="action-btn blue" onclick="setGuildColor()">Save</button>
                     </div>
-
+                    <div style="font-weight:bold; color:#00adb5; margin-top:8px;">Titles (War Coins, R4+):</div>
+                    <div id="titleShop" class="title-shop-grid"></div>
+                    <div style="font-weight:bold; color:#ff9ff3; margin-top:8px;">Crests (War Coins, R4+):</div>
+                    <div id="crestShop" class="title-shop-grid"></div>
                 </div>
             </div>
 
             <h4 style="margin:12px 0 5px 0; font-size: 13px; color:#ff4757;">Alliance Raid Damage</h4>
-            <div id="guildWarList" class="list-container" style="flex: 1; max-height: 300px;">Loading...</div>
+            <div id="guildWarList" class="list-container" style="flex: 0.5;">Loading...</div>
             
             <h4 style="margin:12px 0 5px 0; font-size: 13px; color:#f1c40f;">Top Alliances (Score)</h4>
-            <div id="guildScoreList" class="list-container" style="flex: 1; max-height: 300px;">Loading...</div>
+            <div id="guildScoreList" class="list-container" style="flex: 0.5;">Loading...</div>
 
+            <h4 style="margin:12px 0 5px 0; font-size: 13px; color:#0be881;"><i class="fa-solid fa-scroll"></i> Daily Tasks (+20 Gold)</h4>
+            <div class="list-container" style="flex: 0.4;">
+                <div class="list-item"><span>Swing 10,000m</span> <span style="color:#4ecca3;" id="task1">0%</span></div>
+                <div class="list-item"><span>Play 5 Games</span> <span style="color:#4ecca3;" id="task2">0/5</span></div>
+                <div class="list-item"><span>Collect 5 Shards</span> <span style="color:#4ecca3;" id="task3">0/5</span></div>
+            </div>
         </div>
-        
+
         <div id="game-container">
             <div class="ui-bar" id="authBar">
                 <span>☁️ Cloud Save</span>
-              <div><i class="fa-solid fa-user"></i> Profile</div>
-                </div>
-                <div class="panel-body" style="margin-top: 10px;">
-                    <input type="text" id="username" class="auth-input" placeholder="Username or Email" maxlength="50">
-                    <input type="email" id="email" class="auth-input" placeholder="Email (For Registration)" maxlength="50">
-                    <input type="password" id="password" class="auth-input" placeholder="Password">
-                    <button class="auth-btn" onclick="login()">Login</button>
-                    <button class="auth-btn" onclick="register()" style="background: #2e2e54;">Register</button>
-                    <div class="status-indicator" id="status-text">Not logged in</div>
-                    <div style="font-size: 11px; color: #aaa; margin-top: 10px; text-align: center;">Best Score: <span id="high-score-display" style="color: #4ecca3; font-weight: bold;">0</span></div>
+                <input type="text" id="usernameInput" class="auth-input" placeholder="Account Name" style="width:110px;">
+                <input type="password" id="passwordInput" class="auth-input" placeholder="Password" style="width:110px;">
+                <button id="loginBtn" class="auth-btn" style="background:#4ecca3; color:#111;">Login</button>
+                <button id="registerBtn" class="auth-btn" style="background:#00adb5; color:#fff;">Register</button>
+            </div>
             <div class="ui-bar" style="display:none; background: #17173a;" id="userProfileBar"><span id="welcomeMessage" style="color: #4ecca3;"></span></div>
 
             <div class="ui-bar" style="background: linear-gradient(180deg, #2c1111 0%, #170707 100%); border-color: #5e1d1d;">
@@ -295,22 +280,16 @@
                 <button class="tutorial-close" id="closeDevlogBtn">&times;</button>
             </div>
             <div class="tutorial-body" style="display: block;">
-
-                <h2 style="color:#ffd700; border-bottom:1px dashed #2e2e54; padding-bottom:4px; margin-top:15px;">DEV NOTE:</h2>
+                
+                  <h2 style="color:#111111; border-bottom:1px dashed #000000; padding-bottom:4px; margin-top:0;">DEV NOTE:</h2>
                 <p style="font-size: 11px; color: #888; margin-top: -5px;">In Act As Of: June 8, 2026</p>
                 <ul>
                     <li><span class="tutorial-highlight">No More Large Updates For a Bit:</span> Due to me having to focus on school work I am slowing down for a bit.</li>
-                    <li><span class="tutorial-highlight">Live Events:</span> Live events are guaranteed to happen ~7:00 PM EST on Fridays.</li>
+                    <li><span class="tutorial-highlight">Live Events:</span> Live events are garunteed to happen ~7:00 PM EST on Fridays.</li>
                     <li><span class="tutorial-highlight">The Summer:</span> I am going to be away for the summer most likely unless this gets big enough to be a side gig.</li>
                 </ul>
                 
-                <h4 style="color:#ff4757; border-bottom:1px dashed #2e2e54; padding-bottom:4px; margin-top:0;">v1.8.3 - QoL & Bulk Controls</h4>
-                <p style="font-size: 11px; color: #888; margin-top: -5px;">Released: June 9, 2026</p>
-                <ul>
-                    <li><span class="tutorial-highlight">Bulk Refines & Upgrades:</span> Introduced +10, +100, +1K, and MAX controls to Gold Refining and Pet feeds to minimize click strain.</li>
-                </ul>
-                
-                <h4 style="color:#ff4757; border-bottom:1px dashed #2e2e54; padding-bottom:4px; margin-top:20px;">v1.8.2 - Refined Forge & Gold Fix</h4>
+                <h4 style="color:#00adb5; border-bottom:1px dashed #2e2e54; padding-bottom:4px; margin-top:0;">v1.8.2 - Refined Forge & Gold Fix</h4>
                 <p style="font-size: 11px; color: #888; margin-top: -5px;">Released: June 8, 2026</p>
                 <ul>
                     <li><span class="tutorial-highlight">Awakened Gold Forge:</span> Awakened Gold now supports weapon-style Refined Gold upgrades with exponential level costs.</li>
@@ -318,15 +297,15 @@
                     <li><span class="tutorial-highlight">Persistence:</span> Awakened Gold forge levels now save across sessions and sync to the backend.</li>
                 </ul>
 
-                <h4 style="color:#ff4757; border-bottom:1px dashed #2e2e54; padding-bottom:4px; margin-top:20px;">v1.7.7 - Gear/Forge Update</h4>
+                  <h4 style="color:#00adb5; border-bottom:1px dashed #2e2e54; padding-bottom:4px; margin-top:0;">v1.7.7 - Gear/Forge Update</h4>
                 <p style="font-size: 11px; color: #888; margin-top: -5px;">Released: June 8, 2026</p>
                 <ul>
-                    <li><span class="tutorial-highlight">Weapon Forge:</span> You can now forge weapons with gold which increases their base multiplier infinitely but getting exponentially more expensive.</li>
+                    <li><span class="tutorial-highlight">Weapon Forge:</span> You can now forge weapons with gold which increases there base multiplier infinitly but getting exponentially more expensive.</li>
                     <li><span class="tutorial-highlight">New Gen Weapons:</span> Added new very expensive very powerful weapons and cloaks to the shops for late game grinders.</li>
-                    <li><span class="tutorial-highlight">New Gold Rush Event:</span> Added a new type of event to my dev switches in the backend which allow me to activate a new live event called the gold rush which gives 2x gold.</li>
+                    <li><span class="tutorial-highlight">New Gold Rush Event:</span> Added a neww type of event to my dev switches in the backend which allow me to activate a new live event called the gold rush which gives 2x gold.</li>
                 </ul>
 
-                <h4 style="color:#ff4757; border-bottom:1px dashed #2e2e54; padding-bottom:4px; margin-top:20px;">v1.7.5 - Visuals & Security Patch</h4>
+                <h4 style="color:#00adb5; border-bottom:1px dashed #2e2e54; padding-bottom:4px; margin-top:20px;">v1.7.5 - Visuals & Security Patch</h4>
                 <p style="font-size: 11px; color: #888; margin-top: -5px;">Released: June 7, 2026</p>
                 <ul>
                     <li><span class="tutorial-highlight">Boss Art:</span> Every single monthly boss now has custom canvas art (Kraken, Leprechaun, Yeti, etc.).</li>
@@ -334,14 +313,14 @@
                     <li><span class="tutorial-highlight">Security:</span> Integrated PurgoMalum profanity filter for chat/tags and added strict HTML sanitization to prevent code injection.</li>
                 </ul>
 
-                <h4 style="color:#ff4757; border-bottom:1px dashed #2e2e54; padding-bottom:4px; margin-top:20px;">v1.7.3 - The Hierarchy Update</h4>
+                <h4 style="color:#f9a826; border-bottom:1px dashed #2e2e54; padding-bottom:4px; margin-top:20px;">v1.7.3 - The Hierarchy Update</h4>
                 <p style="font-size: 11px; color: #888; margin-top: -5px;">Released: June 7, 2026</p>
                 <ul>
                     <li><span class="tutorial-highlight">Alliance Chat:</span> Live Alliance Chat added (requires R2 Member status to talk).</li>
                     <li><span class="tutorial-highlight">Ranks R1-R5:</span> Complete role overhaul. R3s invite, R4s manage notices/kicks, and R5 Leaders control the ranks!</li>
                 </ul>
 
-                <h4 style="color:#ff4757; border-bottom:1px dashed #2e2e54; padding-bottom:4px; margin-top:20px;">v1.6.3 - Proportional Raid Rewards</h4>
+                <h4 style="color:#4ecca3; border-bottom:1px dashed #2e2e54; padding-bottom:4px; margin-top:20px;">v1.6.3 - Proportional Raid Rewards</h4>
                 <p style="font-size: 11px; color: #888; margin-top: -5px;">Released: June 6, 2026</p>
                 <ul>
                     <li><span class="tutorial-highlight">Fair War Coins:</span> Defeating the Boss now distributes War Coins dynamically to ALL participating Alliances based on their exact damage percentage!</li>
@@ -353,21 +332,21 @@
                     <li><span class="tutorial-highlight">Galaxy Mines:</span> Floating purple hazards added to the sky. Hitting one snaps your rope and drops momentum by 90%.</li>
                 </ul>
 
-                <h4 style="color:#ff4757; border-bottom:1px dashed #2e2e54; padding-bottom:4px; margin-top:20px;">v1.4.3 - The Live Events Update</h4>
+                <h4 style="color:#e056fd; border-bottom:1px dashed #2e2e54; padding-bottom:4px; margin-top:20px;">v1.4.3 - The Live Events Update</h4>
                 <p style="font-size: 11px; color: #888; margin-top: -5px;">Released: June 4, 2026</p>
                 <ul>
                     <li><span class="tutorial-highlight">Live Operations:</span> The server can now push live global events (like the 3x Boss Frenzy) directly to all connected clients!</li>
                     <li><span class="tutorial-highlight">Daily Tasks:</span> Swing, play, and collect shards to earn daily Gold payouts.</li>
                 </ul>
 
-                <h4 style="color:#ff4757; border-bottom:1px dashed #2e2e54; padding-bottom:4px; margin-top:20px;">v1.3.3 - The Prestige Guild Update</h4>
+                <h4 style="color:#ff9ff3; border-bottom:1px dashed #2e2e54; padding-bottom:4px; margin-top:20px;">v1.3.3 - The Prestige Guild Update</h4>
                 <p style="font-size: 11px; color: #888; margin-top: -5px;">Released: June 3, 2026</p>
                 <ul>
                     <li><span class="tutorial-highlight">Exponential Pets:</span> Guild Pet exchange rates now actively double every 10,000 tokens to balance late-game scaling.</li>
                     <li><span class="tutorial-highlight">True Gold Skin:</span> Added a new ultra-tier skin that unlocks at 10M Score, boosting points by 15x and doubling Gold output.</li>
                 </ul>
 
-                <h4 style="color:#ff4757; border-bottom:1px dashed #2e2e54; padding-bottom:4px; margin-top:20px;">v1.2.1 - Alliances & The Black Market</h4>
+                <h4 style="color:#f1c40f; border-bottom:1px dashed #2e2e54; padding-bottom:4px; margin-top:20px;">v1.2.1 - Alliances & The Black Market</h4>
                 <p style="font-size: 11px; color: #888; margin-top: -5px;">Released: June 2, 2026</p>
                 <ul>
                     <li><span class="tutorial-highlight">Guilds:</span> Create/join Alliances. Added active Titles and custom Crest buffs.</li>
@@ -375,18 +354,19 @@
                     <li><span class="tutorial-highlight">Social:</span> Friends list and 1v1 score duels added.</li>
                 </ul>
 
-                <h4 style="color:#4ecca3; border-bottom:1px dashed #2e2e54; padding-bottom:4px; margin-top:20px;">v1.1.0 - The Underworld Update</h4>
+                <h4 style="color:#ffffff; border-bottom:1px dashed #2e2e54; padding-bottom:4px; margin-top:20px;">v1.1.0 - The Underworld Update</h4>
                 <p style="font-size: 11px; color: #888; margin-top: -5px;">Released: June 1, 2026</p>
                 <ul>
                     <li><span class="tutorial-highlight">Realms:</span> Added Angel and Devil portal realms. Collect White and Black shards to fuse the Yin Yang skin.</li>
                     <li><span class="tutorial-highlight">Secrets:</span> Added password-locked skins (ANGEL) and death-streak achievements.</li>
                 </ul>
 
-                <h4 style="color:#ffffff; border-bottom:1px dashed #2e2e54; padding-bottom:4px; margin-top:20px;">v1.0.0 - Official Launch</h4>
+                <h4 style="color:#2ed573; border-bottom:1px dashed #2e2e54; padding-bottom:4px; margin-top:20px;">v1.0.0 - Official Launch</h4>
                 <p style="font-size: 11px; color: #888; margin-top: -5px;">Released: May 31, 2026</p>
                 <ul>
                     <li><span class="tutorial-highlight">Game Live:</span> Core grappling mechanics, momentum physics, bouncers, and base cosmetics enabled!</li>
                 </ul>
+
             </div>
             <div class="tutorial-footer" style="justify-content: center;">
                 <span style="font-size:11px; color:#666;">Thanks for playing Infinite Swing!</span>
@@ -782,29 +762,15 @@
         function checkUnlockStatus(key) { if (key === "default") return true; if ((user.unlocked || []).includes(key)) return true; if (SKINS_CONFIG[key] && SKINS_CONFIG[key].score !== undefined) return user.high_score >= SKINS_CONFIG[key].score; return false; }
         function unlockSkin(key) { if (!user.unlocked) user.unlocked = ["default"]; if (!user.unlocked.includes(key)) { user.unlocked.push(key); localStorage.setItem(`stickman_skin_${key}`, "true"); syncSave(0); } }
 
-       function convertGoldToRefined(amount) {
-            if (!user.username) return showToast("Must be logged in!", 3000, "#ff4757");
-            
-            let baseCost = 1000000000; // 1 Billion Gold
-            let maxPossible = Math.floor((user.guild_coins || 0) / baseCost);
-            let qty = 0;
-            
-            if (amount === 'max') {
-                qty = maxPossible;
-            } else {
-                qty = parseInt(amount) || 1;
-            }
-            
-            if (qty <= 0) return showToast("Not enough Gold to refine!", 3000, "#ff4757");
-            if ((user.guild_coins || 0) < baseCost * qty) return showToast("Not enough Gold!", 3000, "#ff4757");
-            
-            user.guild_coins -= baseCost * qty;
-            user.refined_gold = (user.refined_gold || 0) + qty;
-            
-            showToast(`Refined ${qty.toLocaleString()} Gold!`, 3000, "#4ecca3");
-            
-            try { updateUI(); } catch(e) {}
-            try { syncSave(0); } catch(e) {}
+        function convertGoldToRefined() {
+            const requiredGold = 1000000000;
+            if (!user.guild_coins || user.guild_coins < requiredGold) return showToast("You need 1,000,000,000 Gold to convert.", 4000, "#ff4757");
+            user.guild_coins -= requiredGold;
+            user.refined_gold = (user.refined_gold || 0) + 1;
+            localStorage.setItem("rg", user.refined_gold);
+            showToast("Converted 1,000,000,000 Gold into 1 Refined Gold!", 4000, "#00ffff");
+            updateUI();
+            if (user.session_token) syncSave(0);
         }
 
         function updateUI() {
@@ -1339,94 +1305,21 @@
         // Send chat on Enter key
         document.getElementById("guildChatInput").addEventListener("keypress", function(event) { if (event.key === "Enter") { event.preventDefault(); sendGuildChat(); } });
 
-       async function login() {
-            const username = document.getElementById("username").value.trim();
-            const password_hash = document.getElementById("password").value.trim();
-            if (!username || !password_hash) return showToast("Enter username/email and password", 3000, "#ff4757");
-
-            document.getElementById("status-text").innerText = "Logging in...";
-           try {
-            const res = await fetch(`${SERVER_URL}/api/login`, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ username: usernameInput, password_hash: passwordInput })
-            });
-            
-            if (!res.ok) {
-                showToast("Server returned an error. Check backend logs!", 3000, "#ff4757");
-                return;
-            }
-
-            const data = await res.json();
-
-            if (data.success) {
-                user = data.userData;
-                document.getElementById("status-text").innerText = `Logged in: ${user.username}`;
-                document.getElementById("status-text").style.color = "#4ecca3";
-                
-                document.getElementById("email").style.display = "none";
-                document.getElementById("username").style.display = "none";
-                document.getElementById("password").style.display = "none";
-
-                showToast(`Welcome back, ${user.username}!`, 3000, "#4ecca3");
-                updateUI();
-                fetchServerData();
-
-                // Safely prompt legacy users without emails
-                if (!user.email || user.email === "") {
-                    setTimeout(async () => {
-                        const userEmail = prompt("⚠️ Security Update: Please link an email to your account so you don't lose your progress!");
-                        if (userEmail && userEmail.includes("@")) {
-                            const linkRes = await fetch(`${SERVER_URL}/api/link-email`, {
-                                method: "POST", 
-                                headers: { "Content-Type": "application/json" },
-                                body: JSON.stringify({ username: user.username, session_token: user.session_token, email: userEmail })
-                            });
-                            const updateData = await linkRes.json();
-                            if (updateData.success) {
-                                user.email = userEmail;
-                                showToast("Email linked successfully!", 3000, "#4ecca3");
-                            } else {
-                                showToast(updateData.error, 3000, "#ff4757");
-                            }
-                        }
-                    }, 1000);
-                }
-            } else {
-                showToast(data.error || "Login failed", 3000, "#ff4757");
-            }
-        } catch (error) {
-            console.error(error);
-            showToast("Failed to connect to authentication server.", 3000, "#ff4757");
-        }
-                    
-        async function register() {
-            const username = document.getElementById("username").value.trim();
-            const email = document.getElementById("email").value.trim();
-            const password_hash = document.getElementById("password").value.trim();
-            
-            if (!username || !password_hash || !email) return showToast("Enter username, email, and password", 3000, "#ff4757");
-            if (!email.includes("@") || !email.includes(".")) return showToast("Enter a valid email address.", 3000, "#ff4757");
-
-            document.getElementById("status-text").innerText = "Registering...";
+        document.getElementById("loginBtn").onclick = async () => {
+            const u = document.getElementById("usernameInput").value.trim(); const p = document.getElementById("passwordInput").value; if(!u || !p) return showToast("Enter profile credentials", 3000, "#ff4757");
             try {
-                const res = await fetch(`${SERVER_URL}/api/register`, {
-                    method: "POST", headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ username, email, password_hash })
-                });
-                const data = await res.json();
-                if (data.success) {
-                    document.getElementById("status-text").innerText = "Registered! Now log in.";
-                    document.getElementById("status-text").style.color = "#4ecca3";
-                    showToast("Account created successfully!", 3000, "#4ecca3");
-                } else {
-                    document.getElementById("status-text").innerText = data.error || "Registration failed";
-                    showToast(data.error || "Registration failed", 3000, "#ff4757");
-                }
-            } catch (e) {
-                document.getElementById("status-text").innerText = "Server Error";
-            }
-        }
+                const hashedP = await hashPassword(p); const res = await fetch(`${API_URL}/api/login`, { method:"POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify({username:u, password_hash:hashedP}) }); const data = await res.json();
+                if(data.success) {
+                    user.username = u; user.session_token = data.userData.session_token; user.high_score = data.userData.high_score || 0; user.equipped_skin = data.userData.equipped_skin || "default"; user.equipped_weapon = data.userData.equipped_weapon || "none"; user.equipped_coat = data.userData.equipped_coat || "none"; user.unlocked_weapons = data.userData.unlocked_weapons || ["none"]; user.unlocked_coats = data.userData.unlocked_coats || ["none"]; user.w_shards = data.userData.white_shards || 0; user.b_shards = data.userData.black_shards || 0; user.jolly_sweets = data.userData.jolly_sweets || 0; user.spooky_sweets = data.userData.spooky_sweets || 0; user.refined_gold = data.userData.refined_gold || 0; user.unlocked = data.userData.unlocked_skins || ["default"]; user.guild = data.userData.guild || ""; user.guild_coins = data.userData.guild_coins || 0; user.guild_rank = data.userData.guild_rank || 1; const skinLevelsFromServer = data.userData.skin_levels || user.skin_levels || {};
+                    user.skin_levels = typeof skinLevelsFromServer === 'string' ? JSON.parse(skinLevelsFromServer) : skinLevelsFromServer;
+                    localStorage.setItem("session_token", user.session_token); localStorage.setItem("hc", user.high_score); localStorage.setItem("eq", user.equipped_skin); localStorage.setItem("ws", user.w_shards); localStorage.setItem("bs", user.b_shards); localStorage.setItem("gd", user.guild); localStorage.setItem("gr", user.guild_rank); localStorage.setItem("rg", user.refined_gold); localStorage.setItem("sk", JSON.stringify(user.skin_levels || {}));
+                    document.getElementById("authBar").style.display = "none"; document.getElementById("welcomeMessage").textContent = `👤 Player: ${u}`; document.getElementById("userProfileBar").style.display = "flex";
+                    applySkinAbilities(); updateUI(); renderChangingRoom(); renderGearShop(); fetchServerData(); fetchSocialData(); showToast("Profile Synced to Mainframe!");
+                } else showToast(data.error, 4000, "#ff4757");
+            } catch(e) { showToast("Server Offline", 3000, "#ff4757"); }
+        };
+
+        document.getElementById("registerBtn").onclick = async () => { const u = document.getElementById("usernameInput").value.trim(); const p = document.getElementById("passwordInput").value; if(!u || !p) return; try { const hashedP = await hashPassword(p); const res = await fetch(`${API_URL}/api/register`, { method:"POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify({username: u, password_hash: hashedP}) }); const data = await res.json(); if(data.success) showToast("Identity created! Click Login."); else showToast(data.error, 4000, "#ff4757"); } catch(e){} };
 
         async function syncSave(added_points = 0) {
             if(!user.session_token) return;
