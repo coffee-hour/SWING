@@ -1338,21 +1338,67 @@
         // Send chat on Enter key
         document.getElementById("guildChatInput").addEventListener("keypress", function(event) { if (event.key === "Enter") { event.preventDefault(); sendGuildChat(); } });
 
-        document.getElementById("loginBtn").onclick = async () => {
-            const u = document.getElementById("usernameInput").value.trim(); const p = document.getElementById("passwordInput").value; if(!u || !p) return showToast("Enter profile credentials", 3000, "#ff4757");
-            try {
-                const hashedP = await hashPassword(p); const res = await fetch(`${API_URL}/api/login`, { method:"POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify({username:u, password_hash:hashedP}) }); const data = await res.json();
-                if(data.success) {
-                    user.username = u; user.session_token = data.userData.session_token; user.high_score = data.userData.high_score || 0; user.equipped_skin = data.userData.equipped_skin || "default"; user.equipped_weapon = data.userData.equipped_weapon || "none"; user.equipped_coat = data.userData.equipped_coat || "none"; user.unlocked_weapons = data.userData.unlocked_weapons || ["none"]; user.unlocked_coats = data.userData.unlocked_coats || ["none"]; user.w_shards = data.userData.white_shards || 0; user.b_shards = data.userData.black_shards || 0; user.jolly_sweets = data.userData.jolly_sweets || 0; user.spooky_sweets = data.userData.spooky_sweets || 0; user.refined_gold = data.userData.refined_gold || 0; user.unlocked = data.userData.unlocked_skins || ["default"]; user.guild = data.userData.guild || ""; user.guild_coins = data.userData.guild_coins || 0; user.guild_rank = data.userData.guild_rank || 1; const skinLevelsFromServer = data.userData.skin_levels || user.skin_levels || {};
-                    user.skin_levels = typeof skinLevelsFromServer === 'string' ? JSON.parse(skinLevelsFromServer) : skinLevelsFromServer;
-                    localStorage.setItem("session_token", user.session_token); localStorage.setItem("hc", user.high_score); localStorage.setItem("eq", user.equipped_skin); localStorage.setItem("ws", user.w_shards); localStorage.setItem("bs", user.b_shards); localStorage.setItem("gd", user.guild); localStorage.setItem("gr", user.guild_rank); localStorage.setItem("rg", user.refined_gold); localStorage.setItem("sk", JSON.stringify(user.skin_levels || {}));
-                    document.getElementById("authBar").style.display = "none"; document.getElementById("welcomeMessage").textContent = `👤 Player: ${u}`; document.getElementById("userProfileBar").style.display = "flex";
-                    applySkinAbilities(); updateUI(); renderChangingRoom(); renderGearShop(); fetchServerData(); fetchSocialData(); showToast("Profile Synced to Mainframe!");
-                } else showToast(data.error, 4000, "#ff4757");
-            } catch(e) { showToast("Server Offline", 3000, "#ff4757"); }
-        };
+       async function login() {
+            const username = document.getElementById("username").value.trim();
+            const password_hash = document.getElementById("password").value.trim();
+            if (!username || !password_hash) return showToast("Enter username/email and password", 3000, "#ff4757");
 
-        document.getElementById("registerBtn").onclick = async () => { const u = document.getElementById("usernameInput").value.trim(); const p = document.getElementById("passwordInput").value; if(!u || !p) return; try { const hashedP = await hashPassword(p); const res = await fetch(`${API_URL}/api/register`, { method:"POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify({username: u, password_hash: hashedP}) }); const data = await res.json(); if(data.success) showToast("Identity created! Click Login."); else showToast(data.error, 4000, "#ff4757"); } catch(e){} };
+            document.getElementById("status-text").innerText = "Logging in...";
+            try {
+                const res = await fetch(`${SERVER_URL}/api/login`, {
+                    method: "POST", headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ username, password_hash })
+                });
+                const data = await res.json();
+                if (data.success) {
+                    user = data.userData;
+                    document.getElementById("status-text").innerText = `Logged in: ${user.username}`;
+                    document.getElementById("status-text").style.color = "#4ecca3";
+                    
+                    // Hide auth fields to save space
+                    document.getElementById("email").style.display = "none";
+                    document.getElementById("username").style.display = "none";
+                    document.getElementById("password").style.display = "none";
+
+                    showToast(`Welcome back, ${user.username}!`, 3000, "#4ecca3");
+                    updateUI();
+                    fetchServerData();
+                } else {
+                    document.getElementById("status-text").innerText = data.error || "Login failed";
+                    showToast(data.error || "Login failed", 3000, "#ff4757");
+                }
+            } catch (e) {
+                document.getElementById("status-text").innerText = "Server Error";
+            }
+        }
+
+        async function register() {
+            const username = document.getElementById("username").value.trim();
+            const email = document.getElementById("email").value.trim();
+            const password_hash = document.getElementById("password").value.trim();
+            
+            if (!username || !password_hash || !email) return showToast("Enter username, email, and password", 3000, "#ff4757");
+            if (!email.includes("@") || !email.includes(".")) return showToast("Enter a valid email address.", 3000, "#ff4757");
+
+            document.getElementById("status-text").innerText = "Registering...";
+            try {
+                const res = await fetch(`${SERVER_URL}/api/register`, {
+                    method: "POST", headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ username, email, password_hash })
+                });
+                const data = await res.json();
+                if (data.success) {
+                    document.getElementById("status-text").innerText = "Registered! Now log in.";
+                    document.getElementById("status-text").style.color = "#4ecca3";
+                    showToast("Account created successfully!", 3000, "#4ecca3");
+                } else {
+                    document.getElementById("status-text").innerText = data.error || "Registration failed";
+                    showToast(data.error || "Registration failed", 3000, "#ff4757");
+                }
+            } catch (e) {
+                document.getElementById("status-text").innerText = "Server Error";
+            }
+        }
 
         async function syncSave(added_points = 0) {
             if(!user.session_token) return;
