@@ -1350,11 +1350,12 @@
                     body: JSON.stringify({ username, password_hash })
                 });
                 const data = await res.json();
-if (data.success) {
+                if (data.success) {
                     user = data.userData;
                     document.getElementById("status-text").innerText = `Logged in: ${user.username}`;
                     document.getElementById("status-text").style.color = "#4ecca3";
                     
+                    // Hide auth fields to save space
                     document.getElementById("email").style.display = "none";
                     document.getElementById("username").style.display = "none";
                     document.getElementById("password").style.display = "none";
@@ -1362,26 +1363,14 @@ if (data.success) {
                     showToast(`Welcome back, ${user.username}!`, 3000, "#4ecca3");
                     updateUI();
                     fetchServerData();
-
-                    // 👇 THE FIX: Prompt legacy users for an email
-                    if (user.email === "") {
-                        setTimeout(async () => {
-                            const userEmail = prompt("⚠️ Security Update: Please link an email to your account so you don't lose your progress!");
-                            if (userEmail && userEmail.includes("@")) {
-                                const res = await fetch(`${SERVER_URL}/api/link-email`, {
-                                    method: "POST", headers: { "Content-Type": "application/json" },
-                                    body: JSON.stringify({ username: user.username, session_token: user.session_token, email: userEmail })
-                                });
-                                const updateData = await res.json();
-                                if (updateData.success) {
-                                    user.email = userEmail;
-                                    showToast("Email linked successfully!", 3000, "#4ecca3");
-                                } else {
-                                    showToast(updateData.error, 3000, "#ff4757");
-                                }
-                            }
-                        }, 1000); // Waits 1 second after login before popping up
-                    }
+                } else {
+                    document.getElementById("status-text").innerText = data.error || "Login failed";
+                    showToast(data.error || "Login failed", 3000, "#ff4757");
+                }
+            } catch (e) {
+                document.getElementById("status-text").innerText = "Server Error";
+            }
+        }
 
         async function register() {
             const username = document.getElementById("username").value.trim();
