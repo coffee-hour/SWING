@@ -1345,51 +1345,60 @@
             if (!username || !password_hash) return showToast("Enter username/email and password", 3000, "#ff4757");
 
             document.getElementById("status-text").innerText = "Logging in...";
-            try {
-                // Locate this section inside your index.html file and make sure it looks like this:
-const res = await fetch(`${SERVER_URL}/api/login`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ username: usernameInput, password_hash: passwordInput })
-});
-const data = await res.json();
-
-if (data.success) {
-    user = data.userData;
-    document.getElementById("status-text").innerText = `Logged in: ${user.username}`;
-    document.getElementById("status-text").style.color = "#4ecca3";
-    
-    document.getElementById("email").style.display = "none";
-    document.getElementById("username").style.display = "none";
-    document.getElementById("password").style.display = "none";
-
-    showToast(`Welcome back, ${user.username}!`, 3000, "#4ecca3");
-    updateUI();
-    fetchServerData();
-
-    // Prompt legacy users who don't have an email registered yet
-    if (!user.email || user.email === "") {
-        setTimeout(async () => {
-            const userEmail = prompt("⚠️ Security Update: Please link an email to your account so you don't lose your progress!");
-            if (userEmail && userEmail.includes("@")) {
-                const linkRes = await fetch(`${SERVER_URL}/api/link-email`, {
-                    method: "POST", 
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ username: user.username, session_token: user.session_token, email: userEmail })
-                });
-                const updateData = await linkRes.json();
-                if (updateData.success) {
-                    user.email = userEmail;
-                    showToast("Email linked successfully!", 3000, "#4ecca3");
-                } else {
-                    showToast(updateData.error, 3000, "#ff4757");
-                }
+           try {
+            const res = await fetch(`${SERVER_URL}/api/login`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ username: usernameInput, password_hash: passwordInput })
+            });
+            
+            if (!res.ok) {
+                showToast("Server returned an error. Check backend logs!", 3000, "#ff4757");
+                return;
             }
-        }, 1000);
-    }
-} else {
-    showToast(data.error || "Login failed", 3000, "#ff4757");
-}
+
+            const data = await res.json();
+
+            if (data.success) {
+                user = data.userData;
+                document.getElementById("status-text").innerText = `Logged in: ${user.username}`;
+                document.getElementById("status-text").style.color = "#4ecca3";
+                
+                document.getElementById("email").style.display = "none";
+                document.getElementById("username").style.display = "none";
+                document.getElementById("password").style.display = "none";
+
+                showToast(`Welcome back, ${user.username}!`, 3000, "#4ecca3");
+                updateUI();
+                fetchServerData();
+
+                // Safely prompt legacy users without emails
+                if (!user.email || user.email === "") {
+                    setTimeout(async () => {
+                        const userEmail = prompt("⚠️ Security Update: Please link an email to your account so you don't lose your progress!");
+                        if (userEmail && userEmail.includes("@")) {
+                            const linkRes = await fetch(`${SERVER_URL}/api/link-email`, {
+                                method: "POST", 
+                                headers: { "Content-Type": "application/json" },
+                                body: JSON.stringify({ username: user.username, session_token: user.session_token, email: userEmail })
+                            });
+                            const updateData = await linkRes.json();
+                            if (updateData.success) {
+                                user.email = userEmail;
+                                showToast("Email linked successfully!", 3000, "#4ecca3");
+                            } else {
+                                showToast(updateData.error, 3000, "#ff4757");
+                            }
+                        }
+                    }, 1000);
+                }
+            } else {
+                showToast(data.error || "Login failed", 3000, "#ff4757");
+            }
+        } catch (error) {
+            console.error(error);
+            showToast("Failed to connect to authentication server.", 3000, "#ff4757");
+        }
                     
         async function register() {
             const username = document.getElementById("username").value.trim();
