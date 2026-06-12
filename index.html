@@ -1375,6 +1375,7 @@
         window.addEventListener("keydown", e => { if(e.code === "Space" && document.activeElement?.tagName !== "INPUT") { e.preventDefault(); if(gameStatus === "playing" && user.equipped_skin === 'split_neon_synth') { player.vx += 10; showToast("⚡ Synth Dash!", 1000, "#ff00ff"); } else { pointerDown(); } } }); window.addEventListener("keyup", e => { if(e.code === "Space") pointerUp(); });
 
 // --- GAMEPAD / CONTROLLER SUPPORT ---
+// --- GAMEPAD / CONTROLLER SUPPORT ---
 let isGamepadSwinging = false; // Prevents holding the button from firing 100 times a second
 
 function pollGamepad() {
@@ -1386,23 +1387,24 @@ function pollGamepad() {
     const pad = gamepads[0]; 
     
     if (pad) {
-        // pad.buttons[0] is usually 'A' on Xbox / 'X' on PlayStation
-        // pad.buttons[7] is usually the Right Trigger (feels great for web-swinging!)
-        const swingButtonPressed = pad.buttons[0].pressed || pad.buttons[7].pressed;
+        // pad.buttons[0] = Bottom Button (Xbox A / Switch B / PS Cross)
+        // pad.buttons[1] = Right Button (Xbox B / Switch A / PS Circle)
+        // pad.buttons[7] = Right Trigger (RT / ZR / R2)
+        const swingButtonPressed = pad.buttons[0].pressed || pad.buttons[1].pressed || pad.buttons[7].pressed;
 
         if (swingButtonPressed && !isGamepadSwinging) {
             isGamepadSwinging = true;
-
-            pointerDown();
             
+            pointerDown(); // Triggers your game's swing logic!
             console.log("Controller Button Pressed!"); 
             
         } else if (!swingButtonPressed && isGamepadSwinging) {
             isGamepadSwinging = false;
-
-            pointerUp();
+            
+            pointerUp(); // Releases the swing
+        }
     }
-}
+} // <-- This closing bracket was missing in your code!
 
         function tick() {
             if (gameStatus === "fusion" || gameStatus === "menu" || gameStatus === "lost") return;
