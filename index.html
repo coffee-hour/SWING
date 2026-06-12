@@ -1122,6 +1122,7 @@
                     
                     let reqLabel = document.createElement("div"); reqLabel.style.fontSize = "9px"; reqLabel.style.color = isOwned ? "#4ecca3" : "#ff9ff3"; reqLabel.innerText = isOwned ? (isEquipped ? "EQUIPPED" : "OWNED") : `Cost: ${item.cost.toLocaleString()} ${item.curr}`; btn.appendChild(reqLabel);
                     if (item.desc) { let ab = document.createElement("div"); ab.className = "skin-ability"; ab.innerText = item.desc; btn.appendChild(ab); }
+                    if (SKINS_CONFIG[skinId].secret && (!user || !user.skins || !user.skins.includes(skinId))) continue;
 
                     btn.onclick = async () => {
                         if (isOwned) {
