@@ -1720,7 +1720,11 @@
             } catch(e) { console.error("Render error caught and suppressed: ", e); }
         }
 
-       // --- GAMEPAD / CONTROLLER SUPPORT ---
+        // --- CONTROLLER CONNECTION TEST ---
+        window.addEventListener("gamepadconnected", (e) => {
+            alert("SUCCESS! Chrome sees your controller: " + e.gamepad.id);
+        });
+
         let isGamepadSwinging = false; 
 
         function checkGamepad() {
