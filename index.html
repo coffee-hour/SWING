@@ -1374,7 +1374,36 @@
         
         window.addEventListener("keydown", e => { if(e.code === "Space" && document.activeElement?.tagName !== "INPUT") { e.preventDefault(); if(gameStatus === "playing" && user.equipped_skin === 'split_neon_synth') { player.vx += 10; showToast("⚡ Synth Dash!", 1000, "#ff00ff"); } else { pointerDown(); } } }); window.addEventListener("keyup", e => { if(e.code === "Space") pointerUp(); });
 
-        let lastGamepadState = false; function checkGamepad() { const pads = navigator.getGamepads ? navigator.getGamepads() : []; if(pads[0]) { const pressed = pads[0].buttons[0].pressed; if(pressed && !lastGamepadState) pointerDown(); else if (!pressed && lastGamepadState) pointerUp(); lastGamepadState = pressed; } }
+// --- GAMEPAD / CONTROLLER SUPPORT ---
+let isGamepadSwinging = false; // Prevents holding the button from firing 100 times a second
+
+function pollGamepad() {
+    // Grab all connected controllers
+    const gamepads = navigator.getGamepads ? navigator.getGamepads() : [];
+    if (!gamepads) return;
+
+    // Grab Player 1's controller
+    const pad = gamepads[0]; 
+    
+    if (pad) {
+        // pad.buttons[0] is usually 'A' on Xbox / 'X' on PlayStation
+        // pad.buttons[7] is usually the Right Trigger (feels great for web-swinging!)
+        const swingButtonPressed = pad.buttons[0].pressed || pad.buttons[7].pressed;
+
+        if (swingButtonPressed && !isGamepadSwinging) {
+            isGamepadSwinging = true;
+
+            pointerDown();
+            
+            console.log("Controller Button Pressed!"); 
+            
+        } else if (!swingButtonPressed && isGamepadSwinging) {
+            isGamepadSwinging = false;
+
+            pointerUp();
+        }
+    }
+}
 
         function tick() {
             if (gameStatus === "fusion" || gameStatus === "menu" || gameStatus === "lost") return;
