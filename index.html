@@ -133,22 +133,8 @@
                             </div>
                             <div style="font-size:11px; color:#aaa; margin-bottom: 4px; margin-top: 4px;">Level (Tokens): <span id="petTokenDisplay" style="color:#fff;">0</span> (Multi: <span id="petMultiDisplay" style="color:#4ecca3;">1.001x</span>)</div>
                             
-                            <div style="font-size:10px; color:#f1c40f; margin-top:4px;">Boost with Gold (<span id="goldPetCostDisplay">100</span> / Token):</div>
-                            <div style="display:flex; gap:3px; margin-top:2px;">
-                                <button class="action-btn blue" onclick="convertPetToken('gold', 1)" style="flex:1;">+1</button>
-                                <button class="action-btn blue" onclick="convertPetToken('gold', 10)" style="flex:1;">+10</button>
-                                <button class="action-btn blue" onclick="convertPetToken('gold', 100)" style="flex:1;">+100</button>
+                           <button class="action-btn blue" onclick="convertPetToken('gold', 100)" style="flex:1;">+100</button>
                                 <button class="action-btn blue" onclick="convertPetToken('gold', 1000)" style="flex:1;">+1K</button>
-                            </div>
-
-                            <div id="warCoinPetDiv" style="display:none; margin-top:6px;">
-                                <div style="font-size:10px; color:#aaa;">Boost with War Coins (R4+) (<span id="warPetCostDisplay">10</span> / Token):</div>
-                                <div style="display:flex; gap:3px; margin-top:2px;">
-                                    <button class="action-btn red" onclick="convertPetToken('war', 1)" style="flex:1;">+1</button>
-                                    <button class="action-btn red" onclick="convertPetToken('war', 10)" style="flex:1;">+10</button>
-                                    <button class="action-btn red" onclick="convertPetToken('war', 100)" style="flex:1;">+100</button>
-                                    <button class="action-btn red" onclick="convertPetToken('war', 1000)" style="flex:1;">+1K</button>
-                                </div>
                             </div>
                         </div>
                     </div>
@@ -727,26 +713,60 @@
             return finalM;
         }
 
-        async function convertPetToken(type, rawAmount) {
-            if (!user.guild) return showToast("You must be in an Alliance!", 3000, "#ff4757");
-            if (type === 'war' && user.guild_rank < 4) return showToast("Only R4+ Co-Leaders can spend War Coins!", 3000, "#ff4757");
+       async function convertPetToken(type, amount) {
+            if (!user || !user.guild || user.guild === "") return;
+            
+            // Calculate current costs
+            let costPerToken = type === 'gold' ? 100 * Math.pow(2, Math.floor(guildData.pet_tokens / 10000)) : 10;
+            let finalAmount = amount;
 
-            let amount = 0; let totalCost = 0; let tempTokens = user.guild_pet_tokens || 0;
-            let baseCost = type === 'gold' ? 100 : 10; let currencyAvailable = type === 'gold' ? user.guild_coins : user.war_coins;
-
-            if (rawAmount === 'max') {
-                while (true) { let tier = Math.floor(tempTokens / 10000); let cost = baseCost * Math.pow(2, tier); if (currencyAvailable >= totalCost + cost) { totalCost += cost; tempTokens++; amount++; } else { break; } }
-            } else {
-                amount = rawAmount; for (let i = 0; i < amount; i++) { let tier = Math.floor(tempTokens / 10000); totalCost += baseCost * Math.pow(2, tier); tempTokens++; }
+            // --- THE "MAX" MATH ---
+            if (amount === 'max') {
+                if (type === 'gold') {
+                    finalAmount = Math.floor(user.gold / costPerToken);
+                } else if (type === 'war') {
+                    finalAmount = Math.floor(guildData.war_coins / costPerToken);
+                }
+                
+                if (finalAmount <= 0) {
+                    showToast("Not enough currency to buy any tokens!", 3000, "#ff4757");
+                    return;
+                }
             }
 
-            if (amount <= 0 || currencyAvailable < totalCost) return showToast(`Not enough ${type === 'gold' ? 'Gold' : 'War Coins'} for ${rawAmount === 'max' ? 'any tokens' : rawAmount + ' tokens'}!`, 3000, "#ff4757");
+            // Client-side verification before bothering the server
+            if (type === 'gold' && user.gold < (costPerToken * finalAmount)) {
+                showToast("Not enough Gold!", 3000, "#ff4757"); return;
+            }
+            if (type === 'war' && guildData.war_coins < (costPerToken * finalAmount)) {
+                showToast("Not enough War Coins!", 3000, "#ff4757"); return;
+            }
 
+            // Send to server
             try {
-                const res = await fetch(`${API_URL}/api/guild/upgrade_pet`, { method: "POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify({ username: user.username, session_token: user.session_token, type: type, amount: amount }) });
+                const res = await fetch(`${SERVER_URL}/api/guild/pet`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ 
+                        username: user.username, 
+                        session_token: user.session_token, 
+                        type: type, 
+                        amount: finalAmount 
+                    })
+                });
                 const data = await res.json();
-                if (data.success) { showToast(`Bought ${amount.toLocaleString()} Tokens for ${totalCost.toLocaleString()} ${type === 'gold' ? 'Gold' : 'War Coins'}!`, 3000, "#4ecca3"); if (type === 'gold') user.guild_coins -= totalCost; fetchServerData(); } else { showToast(data.error || "Failed to upgrade pet", 3000, "#ff4757"); }
-            } catch(e) {}
+                
+                if (data.success) {
+                    if (type === 'gold') user.gold -= (costPerToken * finalAmount);
+                    showToast(`Added ${finalAmount.toLocaleString()} Pet Tokens!`, 3000, "#4ecca3");
+                    fetchSocialData(); // Refresh the guild screen
+                    updateUI();
+                } else {
+                    showToast(data.error, 3000, "#ff4757");
+                }
+            } catch(e) {
+                showToast("Network error", 3000, "#ff4757");
+            }
         }
 
         function checkTaskCompletion() {
