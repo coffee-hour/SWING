@@ -1374,8 +1374,6 @@
         
         window.addEventListener("keydown", e => { if(e.code === "Space" && document.activeElement?.tagName !== "INPUT") { e.preventDefault(); if(gameStatus === "playing" && user.equipped_skin === 'split_neon_synth') { player.vx += 10; showToast("⚡ Synth Dash!", 1000, "#ff00ff"); } else { pointerDown(); } } }); window.addEventListener("keyup", e => { if(e.code === "Space") pointerUp(); });
 
-        let lastGamepadState = false; function checkGamepad() { const pads = navigator.getGamepads ? navigator.getGamepads() : []; if(pads[0]) { const pressed = pads[0].buttons[0].pressed || pads[0].buttons[7].pressed; if(pressed && !lastGamepadState) pointerDown(); else if (!pressed && lastGamepadState) pointerUp(); lastGamepadState = pressed; } }
-
         function tick() {
             if (gameStatus === "fusion" || gameStatus === "menu" || gameStatus === "lost") return;
             checkGamepad(); flameOffset += 0.05;
@@ -1725,7 +1723,7 @@
        // --- GAMEPAD / CONTROLLER SUPPORT ---
         let isGamepadSwinging = false; 
 
-        function pollGamepad() {
+        function checkGamepad() {
             const gamepads = navigator.getGamepads ? navigator.getGamepads() : [];
             const pad = gamepads[0]; 
             
@@ -1745,7 +1743,7 @@
 
         // --- MAIN GAME LOOP ---
         function loop() { 
-            pollGamepad(); // Checks the controller every frame
+            checkGamepad(); // Checks the controller every frame
             
             if (gameStatus === "fusion") {
                 drawFusionCutscene(); 
