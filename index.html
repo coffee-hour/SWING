@@ -615,7 +615,6 @@
             angelic: { name: "Angelic", color: "#ffffff", condition: "Password", ability: "Sky Island Portal", curr: "gold" },
             devil: { name: "Devil", color: "#ff0055", condition: "???", ability: "Underworld Portal", curr: "gold" }, 
             yin_yang: { name: "Yin Yang", color: "#ffffff", splitColor: "#000000", condition: "FUSED", curr: "gold" }
-            party_hat: { name: "The 100 Club", color: "#ffffff", splitColor: "#ff00ea", condition: "SECRET", ability: "100x Score, 100x Gold", secret: true, curr: "gold" }
         };
 
         if (eventCurrencyType === "jolly") {
@@ -703,7 +702,6 @@
             if (new Date().getDay() === 5) { m *= 2; texts.push("🔥 2X FRIDAY"); }
             if (user.equipped_skin === 'orange') m *= 2; if (user.equipped_skin === 'yellow') m *= 5; if (user.equipped_skin === 'gold') m *= 10;
             if (user.equipped_skin === 'true_gold') m *= 15;
-            if (user.equipped_skin === 'party_hat') m *= 100;
             if (user.equipped_skin === 'awakened_gold') {
                 const skinBonus = getSkinForgeBonus('awakened_gold');
                 m *= skinBonus.score;
@@ -882,7 +880,6 @@
             try {
                 const grid = document.getElementById("skinsGrid"); if(!grid) return; grid.innerHTML = "";
                 Object.keys(SKINS_CONFIG).forEach(key => {
-                    if (SKINS_CONFIG[skinId].secret && !user.skins.includes(skinId)) continue;
                     let skinConfig = SKINS_CONFIG[key]; if (skinConfig.parent === "angelic" && !angelicDropdownOpen) return; if (skinConfig.parent === "devil" && !devilDropdownOpen) return;
                     let owned = checkUnlockStatus(key); let isEquipped = user.equipped_skin === key;
                     let btn = document.createElement("button"); btn.className = `skin-btn ${owned ? 'unlocked' : ''} ${isEquipped ? 'equipped' : ''}`; if (skinConfig.parent) btn.classList.add("sub-skin");
@@ -1122,7 +1119,6 @@
                     
                     let reqLabel = document.createElement("div"); reqLabel.style.fontSize = "9px"; reqLabel.style.color = isOwned ? "#4ecca3" : "#ff9ff3"; reqLabel.innerText = isOwned ? (isEquipped ? "EQUIPPED" : "OWNED") : `Cost: ${item.cost.toLocaleString()} ${item.curr}`; btn.appendChild(reqLabel);
                     if (item.desc) { let ab = document.createElement("div"); ab.className = "skin-ability"; ab.innerText = item.desc; btn.appendChild(ab); }
-                    if (SKINS_CONFIG[skinId].secret && (!user || !user.skins || !user.skins.includes(skinId))) continue;
 
                     btn.onclick = async () => {
                         if (isOwned) {
@@ -1495,7 +1491,6 @@
                 
                 if (added > 0) {
                     let goldEarned = Math.floor(added / 500);
-                    if (user.equipped_skin === 'party_hat') goldEarned *= 100;
                     if (user.equipped_skin === 'true_gold') goldEarned *= 2;
                     if (user.equipped_skin === 'awakened_gold') {
                         const skinBonus = getSkinForgeBonus('awakened_gold');
@@ -1702,30 +1697,6 @@
                     else { ctx.shadowColor = ctx.fillStyle; ctx.shadowBlur = 10; ctx.beginPath(); ctx.moveTo(player.radius, 0); ctx.lineTo(player.radius + 30, -5); ctx.lineTo(player.radius + 30, 5); ctx.fill(); }
                     ctx.restore();
                 }
-
-                if (user.skin === 'party_hat') {
-        ctx.save();
-        ctx.translate(player.x, player.y - player.radius); // Move to top of player's head
-        
-        // Draw the cone hat
-        ctx.beginPath();
-        ctx.moveTo(-8, 0); // Bottom left of hat
-        ctx.lineTo(8, 0);  // Bottom right of hat
-        ctx.lineTo(0, -20); // Top tip of hat
-        ctx.closePath();
-        
-        // Fill it with a cool neon cyan
-        ctx.fillStyle = "#00ffff";
-        ctx.fill();
-        
-        // Draw a tiny magenta pom-pom on top
-        ctx.beginPath();
-        ctx.arc(0, -20, 3, 0, Math.PI * 2);
-        ctx.fillStyle = "#ff00ea";
-        ctx.fill();
-        
-        ctx.restore();
-    }
 
                 if (eq === "exalted_angel") { ctx.fillStyle = "rgba(255, 255, 255, 0.9)"; ctx.beginPath(); ctx.moveTo(-6, 0); ctx.quadraticCurveTo(-25, -18, -30, -5); ctx.quadraticCurveTo(-20, +12, -8, +4); ctx.fill(); ctx.beginPath(); ctx.moveTo(+6, 0); ctx.quadraticCurveTo(+25, -18, +30, -5); ctx.quadraticCurveTo(+20, +12, +8, +4); ctx.fill(); } else if (eq === "exalted_devil" && gameStatus !== "realm") { ctx.strokeStyle = "#8b0000"; ctx.lineWidth = 2.5; ctx.beginPath(); ctx.moveTo(-8, +5); ctx.quadraticCurveTo(-25, +15, -20, -8); ctx.stroke(); ctx.fillStyle = "#8b0000"; ctx.beginPath(); ctx.moveTo(-20, -10); ctx.lineTo(-25, -4); ctx.lineTo(-15, -4); ctx.fill(); }
 
