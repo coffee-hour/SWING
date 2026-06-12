@@ -1395,13 +1395,13 @@ function pollGamepad() {
         if (swingButtonPressed && !isGamepadSwinging) {
             isGamepadSwinging = true;
             
-            pointerDown(); // Triggers your game's swing logic!
+            pointerUp(); // Triggers your game's swing logic!
             console.log("Controller Button Pressed!"); 
             
         } else if (!swingButtonPressed && isGamepadSwinging) {
             isGamepadSwinging = false;
             
-            pointerUp(); // Releases the swing
+            pointerDown(); // Releases the swing
         }
     }
 } // <-- This closing bracket was missing in your code!
